@@ -8,7 +8,7 @@ shu repo ichida o'qiydi). Asl nusxa (manba) — shu fayllar.
 |---|---|---|
 | [`media-audit-reality`](../.claude/skills/media-audit-reality/SKILL.md) | 1.3.0 | chiqarilgan film, rasm yoki ovozni ko'z va quloq bilan emas, o'lchov bilan haqiqatga solishtirish. Oq Ko'chadagi 41 tekshiruv va `loyihalar/` dagi 14 tasi shu yondashuvdan o'sib chiqqan: har tekshiruv o'zining ataylab buzilgan holatini olib yuradi, isbotlay olmasa `UNPROVEN` |
 | [`code-audit-structure-scale`](../.claude/skills/code-audit-structure-scale/SKILL.md) | 1.0.1 | kattalashgan manbani qayta tuzish kerakmi: ta'sir radiusi, sintetik masshtab sinovi, mashina va muallif narxi |
-| [`media-match-reference`](../.claude/skills/media-match-reference/SKILL.md) | 1.0.0 | kod bilan chizilgan animatsiyani namuna klipga kadrma-kadr, o'lchov bilan yaqinlashtirish; asbobi — [`taqqos/`](../taqqos/), usul va topilmalar — [`taqqos/METOD.md`](../taqqos/METOD.md) |
+| [`media-match-reference`](../.claude/skills/media-match-reference/SKILL.md) | 1.0.1 | kod bilan chizilgan animatsiyani namuna klipga kadrma-kadr, o'lchov bilan yaqinlashtirish; asbobi — [`taqqos/`](../taqqos/), usul va topilmalar — [`taqqos/METOD.md`](../taqqos/METOD.md) |
 
 ## Chegara
 
@@ -30,6 +30,11 @@ o'zgartirib qo'yishi mumkin.
   Sarlavhasi endi shu loyihaga bog'langan (oldin abc oilasiga yozilgan edi).
 - `code-audit-structure-scale` 1.0.1 — mazmuni o'zgarmagan; faqat doirasi
   (shu loyiha) va manba ko'rsatkichi tuzatildi.
+- `media-match-reference` 1.0.1 — "oldin" topshirilgan faylning o'zi bo'lishi kerak:
+  10-o'tishning "oldin" papkasi qayta render bo'lib, yangi bosh joylashuvini olib
+  yurgan edi. Natija raqamlari topshirilgan 9-o'tishga nisbatan qayta o'lchandi
+  (siluet 0.71 → 0.87, figura xaritasi 0.89 → 0.95); 1.0.0 dagi "0.86" xatosi
+  tuzatildi.
 - `media-match-reference` 1.0.0 — yangi.
 
 Claude akkauntidagi nusxalar shu fayllardan yuklanadi; farq qilsa — shu yerdagisi to'g'ri.

@@ -80,7 +80,8 @@ nishonlar 1..6 da 0.0 px.
 siljishining medianasi 0.00 (`harakat`).
 
 **Ushlangan rasm titramaydi.** Bizda har tasvir o'z titroq urug'i bilan chizilardi:
-ushlangan juftlarda harakat 0.25..0.50, qaynash 1.25..1.50 (misol 0.00). Birinchi
+topshirilgan 9-o'tishda ushlangan juftlarda (yuz qutisi 72,22,140,112) harakat
+0.00..1.12, qaynash 1.12..1.80 (misolda harakat 0.00). Birinchi
 urinish — bitta urug' — yetmadi: bitta urug'ning siljish maydoni oltita tasvirni
 BIR XIL suradi: qattiq nishonlar 0.7..1.1 px chetga (titroqsiz 0.0), og'iz 1.2 px
 tepaga — oltitasida bir xil (iz titroqsiz sozlangan). Ushlangan tasvirlar
@@ -100,8 +101,8 @@ Raqam to'g'ri, sababi noto'g'ri bo'lishi mumkin.
 - 9-o'tish: soch kechikishi tasvirlararo farq o'lchovini oshirdi (0.347 → 0.351),
   lekin misolning bosh bloklari 10→11 da bosh BILAN (+2,+2) suriladi — kechikish
   harakat farqini 1.1 dan 2.2 px ga oshirdi. Olib tashlandi.
-- 10-o'tish: 1-kadr tezlanishi (tendensiya) +14.6% edi, misol +14.3% — deyarli
-  aniq. Yuz titrog'i olib tashlangach +39.4% bo'ldi. Sabab: ushlangan juftlardagi
+- 10-o'tish: 1-kadr tezlanishi (tendensiya) topshirilgan 9-o'tishda +14.6% edi,
+  misol +14.3% — deyarli aniq. Yuz titrog'i olib tashlangach +39.4% bo'ldi. Sabab: ushlangan juftlardagi
   yuz titrog'i misoldagi soch qimirlashining o'rnini bosib turgan edi. Raqam
   yomonlashdi, haqiqat ochildi; tuzatish sochda.
 - Ikki nuqtali tendensiya (birinchi va oxirgi juft) mo'rt: har juftning farqini
@@ -161,8 +162,9 @@ parametrli modelimiz o'lchovga moslanadi (`test/qol-fit.py` usuli):
 - **Moslangandan keyin haqiqiy render o'lchanadi**, model emas (model moslash
   qutisida IoU 0.84..0.95; render, siluet qutisida, titroqsiz 0.84..0.91).
 
-Natija: figura siluet IoU 0.70 → 0.87 (titroqsiz 0.88), figura xaritasi IoU
-0.92 → 0.95.
+Natija (topshirilgan 9-o'tishga nisbatan, ikkala tomon bir xil GIF yo'lidan):
+figura siluet IoU 0.71 → 0.87, figura xaritasi IoU 0.89 → 0.95 (10-o'tish PNG da
+0.871, titroqsiz 0.881).
 
 ## 10. Kod tuzilishi xatolari o'lchovda chiqadi
 
@@ -183,6 +185,22 @@ Tekshiruv: qurilgan hujjatda takrorlangan id soni 0 bo'lishi kerak.
 grep -o ' id="[^"]*"' film.html | sort | uniq -d
 ```
 
+## 11. "Oldin" — topshirilgan faylning o'zi
+
+Eski manbalarni qayta render qilish "oldin"ni bermaydi: render keyin o'zgargan
+fayllarni ham o'qiydi (masalan bosh izi `izlar.json` mutlaq yo'l bilan o'qiladi).
+10-o'tishdagi `ff-9` papkasi shunday qayta render edi va 10-o'tishning bosh
+joylashuvini olib yurgan: yaqin ko'z langari x farqi ff-9 da 2.11, hozir 2.18,
+topshirilgan 9-o'tish GIF ida 1.01. 12..22-tasvirlar topshirilgan fayl bilan GIF
+shovqini darajasida bir xil (o'rtacha farq 0.02..0.15), 1..11 da 1.4..2.7 farq
+qiladi; tendensiya ff-9 da +19.9%, topshirilganda +14.6%. Natijada oldin/keyin
+jadvali bosh joylashuvi o'zgarishini yashirgan va ikki xil "oldin"ni aralashtirgan.
+
+Qoida: "oldin" — foydalanuvchiga topshirilgan faylning o'zi (bu yerda `ff-9t/` —
+`kadr-toliq.gif` tasvirlari). U GIF bo'lsa, "keyin"ni ham xuddi shu yo'ldan
+o'tkazing (`ff-10t/`): bu yo'l siluet IoU ni 0.001, tendensiyani 0.2 punkt, og'iz
+zondini 0.4 px gacha suradi.
+
 ---
 
 ## Bir o'tish tartibi
@@ -194,22 +212,35 @@ grep -o ' id="[^"]*"' film.html | sort | uniq -d
 4. Tuzatish modelning o'z parametrlarida, o'lchangan son bilan; shakl — moslash
    bilan (9-qoida).
 5. Qayta o'lchash: o'sha zond, qo'shnilari, `harakat`, `ritm`, `xarita`, `yopilish`.
-6. Oddiy (titroqli) render bilan tekshirish; oldin/keyin varaqasi (`eski` qatori).
+6. Oddiy (titroqli) render bilan tekshirish; oldin/keyin varaqasi (`eski` qatori —
+   topshirilgan fayl, 11-qoida).
 7. Kartaga yozish: nima o'lchandi, oldin/keyin raqami, nima ochiq qoldi.
 
 ## 10-o'tish hisobi (1-kadr, 11 tasvir)
 
+Oldin — 9-o'tishda topshirilgan fayl (11-qoida); ikkala tomon bir xil yo'ldan:
+480×270 GIF → 320×180.
+
 | o'lchov | oldin | keyin | misol |
 |---|---|---|---|
-| figura siluet IoU (o'rtacha) | 0.697 | 0.871 (titroqsiz 0.881) | — |
-| figura xaritasi IoU | 0.92 | 0.95 | — |
+| figura siluet IoU (o'rtacha; eng yomoni) | 0.714; 0.63 | 0.872; 0.82 | — |
+| figura xaritasi IoU | 0.89 | 0.95 | — |
+| ushlangan juftlar harakati (yuz qutisi 72,22,140,112) | 0.00..1.12 | 0.00 | 0.00 |
+| 1-kadr tendensiyasi | +14.6% | +39.6% | +14.3% (sabab: soch — ochiq) |
+
+Zondlar 10-o'tish ichida PNG da o'lchangan; ularning "oldin"i — `ff-9`: 9-o'tish
+chizmasi, 10-o'tishning bosh joylashuvi bilan (11-qoida). Bosh joylashuvi
+o'zgarishi bu ustunda yo'q.
+
+| o'lchov | ff-9 | keyin | misol |
+|---|---|---|---|
 | qo'l uchi x (tuzatilgan zond bilan) | −8..+5, o'rtacha \|farq\| 3.00 | −1..−4, o'rtacha 2.36 | — |
-| ushlangan juftlar harakati | 0.25..0.50 | 0.00 | 0.00 |
-| qattiq nishonlar (1..6) | −1.1..+1.1 px | 0.0 px | — |
+| qattiq nishonlar (uzoq chet, iyak oldi; 1..6) | −1.2..+1.1 px | 0.0 px | — |
 | og'iz zondi x, o'rtacha \|farq\| (1..11) | 1.66 | 0.71 | — |
 | uzoq ko'z o'rtacha \|farq\| x / y | 1.11 / 0.98 | 0.50 / 0.58 | — |
 | iyak osti ustuni L | 19 | 8 | 7..9 |
-| 1-kadr tendensiyasi | +14.6% | +39.4% | +14.3% (sabab: soch — ochiq) |
+| figura siluet IoU / xaritasi | 0.697 / 0.92 | 0.871 (titroqsiz 0.881) / 0.95 | — |
+| 1-kadr tendensiyasi | +19.9% | +39.4% | +14.3% |
 
 Ochiq (keyingi — soch o'tishi): yaqin tutamning yuz ustidagi "(" massasi (6..9),
 uzoq yondagi tutamlar orasidagi osmon, ushlangan tasvirlardagi soch qimirlashi,

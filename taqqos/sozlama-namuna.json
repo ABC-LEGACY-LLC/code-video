@@ -4,6 +4,7 @@
  "misol": "../misol/k%02d.png", "misol_boshi": 1,
  "biz": "../ff/%02d.png", "biz_boshi": 0,
  "eski": "../ff-oldingi/%02d.png", "eski_boshi": 0,
+ "eski_izoh": "oldingi o'tishda TOPSHIRILGAN faylning tasvirlari -- eski manbalardan qayta render emas (render keyin o'zgargan fayllarni ham o'qiydi; METOD 11)",
  "olcham": [320, 180],
  "kadrlar": 22,
  "guruhlar": {"1-kadr": [1, 11], "2-kadr": [12, 13], "3-kadr": [14, 22]},

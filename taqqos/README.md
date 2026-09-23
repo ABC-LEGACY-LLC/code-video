@@ -31,7 +31,7 @@ sozlama joylashgan papkaga nisbatan. To'liq namuna: [`sozlama-namuna.json`](sozl
 | kalit | ma'nosi |
 |---|---|
 | `misol`, `biz` | kadr yo'li naqshi (`k%02d.png`), `*_boshi` — 1-kadr qaysi raqamda |
-| `eski` | ixtiyoriy: oldingi holat (oldin/keyin varaqalari uchun) |
+| `eski` | ixtiyoriy: oldingi holat (oldin/keyin varaqalari uchun) — topshirilgan faylning o'zi, eski manbalardan qayta render emas ([METOD 11](METOD.md)) |
 | `olcham` | IKKALA tomon shu o'lchamga keltiriladi (LANCZOS, keyin L) |
 | `kadrlar`, `guruhlar` | kadr soni; kadr (shot) guruhlari `{"1-kadr":[1,11]}` |
 | `langar` | har kadrda MISOLDA o'lchanadigan tayanch nuqta (qattiq nishon) |
@@ -89,7 +89,8 @@ Manfiy son bilan boshlanadigan qiymatni `=` bilan bering: `--quti=-40,-34,52,66`
    tuzating, `izoh` ga sababini yozing.
 4. Tuzatish modelning o'z parametrlarida (kalit, jadval), o'lchangan son bilan.
 5. Qayta o'lchash: o'sha zond + qo'shnilari + `siluet`/`harakat`/`ritm`.
-6. `varaq --qatorlar misol,eski,biz` — oldin/keyin.
+6. `varaq --qatorlar misol,eski,biz` — oldin/keyin (`eski` — topshirilgan fayl; u GIF
+   bo'lsa, `biz` ni ham xuddi shu GIF yo'lidan o'tkazing).
 7. Topilmalarni loyiha kartasiga yozing: nima o'lchandi, oldin/keyin raqami.
 
 ## Fayllar

@@ -5,7 +5,7 @@ description: "code-video project only: bring a code-drawn animation toward a ref
 
 # Media Match — reference
 
-> **code-video project skill · `media-match-reference` v1.0.0**
+> **code-video project skill · `media-match-reference` v1.0.1**
 > Scope: the code-video repository only — bringing its code-drawn animation toward a reference clip. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web or dashboard work, and do not add it to that repository.
 > Source of truth: `.claude/skills/media-match-reference/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
 > A calibrated reference implementation (Python: numpy, scipy, Pillow) is the `taqqos/` folder of that repository; where only this file is available, fetch it from there. Everything below also works with your own code — the method is what matters, not the tool.
@@ -34,7 +34,7 @@ Every detail must be **measured or counted**, never invented. Two plausible "loo
 3. For each large difference open the sheet: **what did the probe touch?** (see *Probe confounds*).
 4. Fix through the model's own parameters — keys, tables, fitted shapes — with the measured number.
 5. Re-measure the same probe, its neighbours, motion, rhythm, silhouette.
-6. Check the normal render (with boil and particles) and make a before/after sheet: reference / previous / ours.
+6. Check the normal render (with boil and particles) and make a before/after sheet: reference / previous / ours. "Previous" is the file you delivered last round, not a re-render of old sources (see *The before is what was delivered*).
 7. Record in the project card: what was measured, before → after, what stays open.
 
 **Every frame, not five.** In one round the only way three defects surfaced was the full per-frame table: shadows drawn unclipped in frames 2–6 but not in frame 1 (a sample built on frame 1 never finds it), a light slit under an arm in frames 1–4, and a second curved shape under the forearm in frames 8–11.
@@ -78,7 +78,7 @@ Measure in a clean render. A tracking loop that measured its own boil and sway f
 
 **Detect them:** rigid landmarks identical to ≤0.1 px and a block-motion median of 0.00 in the rigid region.
 
-**A held drawing does not boil.** Ours redrew every frame with its own boil seed: 0.25–0.50 px motion and 1.25–1.50 boil where the reference had 0.00. Reusing one seed is not the fix — one seed's warp moves all held frames by the same field: the rigid landmarks went 0.7–1.1 px off (0.0 without boil) and the mouth 1.2 px up, in all six frames. Render held frames without boil; the calibrated geometry is the drawing.
+**A held drawing does not boil.** Ours redrew every frame with its own boil seed: in the delivered round the held pairs moved 0.00–1.12 px with 1.12–1.80 boil (face region) where the reference's motion was 0.00. Reusing one seed is not the fix — one seed's warp moves all held frames by the same field: the rigid landmarks went 0.7–1.1 px off (0.0 without boil) and the mouth 1.2 px up, in all six frames. Render held frames without boil; the calibrated geometry is the drawing.
 
 **But a hold can still move.** In the same held frames the reference's hair strands changed every frame: difference-map energy in the left 40% of the frame (hair, face, body — the map shows it is the hair) 0.067–0.095 against ours 0.009–0.017. The block median said 0.00 because hair is a minority of blocks. A median of zero means *the rigid parts are held*, not *nothing moves* — check with a difference map.
 
@@ -121,7 +121,11 @@ Copying the reference outline point by point is tracing. Fit your own parametric
 - **Fit:** soft masks (4× supersampling, area fraction), IoU, Nelder–Mead from several starts plus random restarts, with penalties that keep the SVG equal to the rasteriser: edges must not cross (the upper control stays above the lower along the normal — otherwise nonzero fill and the rasteriser disagree), tip inside the frame, base attached to the body.
 - **Then measure the real render**, not the model. Model IoU 0.84–0.95 became render IoU 0.84–0.91 (antialiasing, boil).
 
-Result in one round: silhouette IoU 0.70 → 0.86 (clean 0.88), occlusion-map IoU 0.92 → 0.95.
+Result in one round, against the delivered previous round with the same pipeline on both sides: silhouette IoU 0.71 → 0.87, occlusion-map IoU 0.89 → 0.95.
+
+## The before is what was delivered
+
+A re-render of old sources reads every file that has changed since. Our "previous" folder had been re-rendered after the head track was updated, so it already carried the new placement: near-eye anchor offset x 2.11 (now 2.18; 1.01 in the file actually delivered). Frames outside the shot matched the delivered file to GIF noise (mean abs difference 0.02–0.15); inside it they differed by 1.4–2.7, and its trend read +19.9% against the delivered +14.6%. The before/after table hid the placement change and mixed two baselines. Use the delivered file itself. If it is a GIF, put the "after" through the same GIF path — here that path moved silhouette IoU by 0.001, the trend by 0.2 points and a mouth probe by up to 0.4 px.
 
 ## Right number, wrong reason
 
@@ -136,7 +140,7 @@ Many frames in one document, each its own SVG: a clip id built from the rounded 
 
 ## Output
 
-A ranked per-frame table (probe × frame, ours − reference, flagged against tolerance), the sheets for the top items with the probe hits confirmed, before/after sheets (reference / previous / ours), and the project card updated with before → after numbers and what stays open. Say which differences were probe errors and how you know. Do not claim the clip was "watched"; say frames were measured.
+A ranked per-frame table (probe × frame, ours − reference, flagged against tolerance), the sheets for the top items with the probe hits confirmed, before/after sheets (reference / previous as delivered / ours), and the project card updated with before → after numbers and what stays open. Say which differences were probe errors and how you know. Do not claim the clip was "watched"; say frames were measured.
 
 ## Division of labour
 
