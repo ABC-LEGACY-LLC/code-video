@@ -5,7 +5,7 @@ description: "code-video project only: bring a code-drawn animation toward a ref
 
 # Media Match — reference
 
-> **code-video project skill · `media-match-reference` v1.0.1**
+> **code-video project skill · `media-match-reference` v1.1.0**
 > Scope: the code-video repository only — bringing its code-drawn animation toward a reference clip. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web or dashboard work, and do not add it to that repository.
 > Source of truth: `.claude/skills/media-match-reference/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
 > A calibrated reference implementation (Python: numpy, scipy, Pillow) is the `taqqos/` folder of that repository; where only this file is available, fetch it from there. Everything below also works with your own code — the method is what matters, not the tool.
@@ -45,6 +45,8 @@ Every detail must be **measured or counted**, never invented. Two plausible "loo
 |---|---|---|
 | anchored probe | where is this feature, relative to the face/body? | anchor measured on the REFERENCE each frame; probe geometry relative to it, applied to both sides at the same place; diff = ours − reference |
 | sheet | what did the number touch? | per frame: reference / previous / ours / overlay (R=reference, G=ours, B=reference: magenta = only reference bright, green = only ours bright, grey = agree); gridded zoom with pixel coordinates; a luminance table to read numbers, not impressions |
+| mass IoU | is the mass the same, whatever the tips do? | blur both masks with a σ≈2 px Gaussian and cut at 0.5; tips differ by design, so fit the mass and measure tip size (period and depth along the edge) separately, as technique |
+| pair masks | does a held frame still move, and how much? | the same mask on frames k and k+1 of ONE side; IoU and area change per pair, on both sides |
 | silhouette profile | is the mass the same shape? | median filter (removes particles), threshold, the component connected to a body point, holes filled; per row the extreme x (or per column the extreme y); report IoU, area %, row ranges that differ and by how much |
 | pair motion | is it held? how much does it boil? | 12×12 blocks at 2×, ±3 px search, low-gradient blocks dropped; motion = median shift, boil = median deviation from it; region-restricted |
 | difference map | WHAT changes between two frames? | normalised abs difference, split into regions (e.g. left 40% / right 60%) with energy per region |
@@ -81,6 +83,8 @@ Measure in a clean render. A tracking loop that measured its own boil and sway f
 **A held drawing does not boil.** Ours redrew every frame with its own boil seed: in the delivered round the held pairs moved 0.00–1.12 px with 1.12–1.80 boil (face region) where the reference's motion was 0.00. Reusing one seed is not the fix — one seed's warp moves all held frames by the same field: the rigid landmarks went 0.7–1.1 px off (0.0 without boil) and the mouth 1.2 px up, in all six frames. Render held frames without boil; the calibrated geometry is the drawing.
 
 **But a hold can still move.** In the same held frames the reference's hair strands changed every frame: difference-map energy in the left 40% of the frame (hair, face, body — the map shows it is the hair) 0.067–0.095 against ours 0.009–0.017. The block median said 0.00 because hair is a minority of blocks. A median of zero means *the rigid parts are held*, not *nothing moves* — check with a difference map.
+
+**Give the moving layer its own motion — of the reference's kind.** Pair masks put a number on it: the reference's light hair changed between held frames at IoU 0.61–0.72 (ours 0.96–0.98) while its face moved 0.00. Moving only the strand tips was too weak — even the largest flutter took the pairs from 0.85 to 0.82, because tips are a small share of the mass. A smooth displacement field over the whole hair (its own phase each frame, the face left still), one head radius in wavelength, brought them to 0.64–0.72 — but it had been added after the fit and pushed the brow zones off (see *The fit breaks what it does not see*). Refitted with the field inside the model, the fit cancelled it at mass scale: 0.73–0.83. A finer random field (a tuft period in wavelength) got the number right again, 0.68–0.73, and the sheet showed edges wobbling as if melting, where the reference's edges stay sharp and its change is tufts passing from light into shadow. Right number, wrong mechanism: it was removed. Match the kind of change, not only its size.
 
 ## Same code on both sides — including the fit
 
@@ -122,6 +126,18 @@ Copying the reference outline point by point is tracing. Fit your own parametric
 - **Then measure the real render**, not the model. Model IoU 0.84–0.95 became render IoU 0.84–0.91 (antialiasing, boil).
 
 Result in one round, against the delivered previous round with the same pipeline on both sides: silhouette IoU 0.71 → 0.87, occlusion-map IoU 0.89 → 0.95.
+
+## The fit breaks what it does not see
+
+An optimiser moves every free parameter toward its objective and is free wherever the objective is blind. In one hair round:
+
+- A hair-shadow band's thickness grew to a full head radius and darkened the whole face (L 60 → 30): the objective saw only the light-hair mask and two brow zones. A probe outside the fit caught it (near-eye anchor 2.2 → 7.5 px). Fix: a bound, and a cheek zone in the objective.
+- The fit's model must reproduce the render's layer order. The shadow drawn after the eyes covered the eye whites (anchor 8.4 px), so it moved before the eyes. The model first imitated that by restoring "eye pixels" (any difference between renders with and without eyes) over the shadow; that mask also caught a faint lid crease, which left a skin-coloured line inside the model's shadow. Brow zone: 0.62 in the model, 0.78 in the render, 0.66 in the reference — the log said "exact" while the render was over-darkened. Exact fix: render once with a full shadow-coloured layer at the shadow's place in the stack, and use that render inside the shadow polygon; model and render then agree to 0.00–0.02 (one zone of ten 0.05).
+- Independent per-frame fits swapped the hair chunk by chunk across held frames (large blobs in the difference map, occlusion map 0.95 → 0.88). A penalty on the change from the previous frame's parameters brought it back to 0.93–0.94.
+- A closed shell cannot switch off: where the fit set outer = inner radius, a 1–2 px light arc remained (L ≈ 75 — under the L > 85 threshold, and removed by the median anyway): invisible to the instrument, a glasses-like arc across the face on the sheet, with interior lines drawn from under it crossing the face. Drop what is thinner than the instrument sees — mask IoU was flat for cut-offs of 0.10–0.18 head radius, so the cut cost nothing — and clip interior lines to the mass.
+- A change made after the fit invalidates the fit's numbers: adding the hair boil after the fit moved one frame's brow zones from 0.82 / 0.38 to 0.46 / 0.17 (reference 0.60 / 0.38) while the log still said "exact" — and the 0.82 itself was the layer error above.
+
+After every fit, run every probe on the real render and look at the sheet, not only the fitted measures. Every free parameter needs a measurement that sees its whole reach, and anything added later goes into the model and the fit is run again.
 
 ## The before is what was delivered
 

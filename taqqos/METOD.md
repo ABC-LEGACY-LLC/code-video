@@ -201,6 +201,100 @@ Qoida: "oldin" — foydalanuvchiga topshirilgan faylning o'zi (bu yerda `ff-9t/`
 o'tkazing (`ff-10t/`): bu yo'l siluet IoU ni 0.001, tendensiyani 0.2 punkt, og'iz
 zondini 0.4 px gacha suradi.
 
+## 12. Soch: yuz ushlangan, soch tirik
+
+**Asbob.** Yorug' massa uchun siluet (`"shart":">85"`, `"median":3`, `"toldir":false`,
+`"min_maydon":60`, `"qiymat":true`) va `--ketma` (bir tomonda k va k+1). Kalibr:
+`siluet/yorug'` (tutam 6 px qisqa → "past" −6.0; 2 px surilgan → "chap" +2.0; katta
+zarra niqobga kirmaydi; teshik ochiq qoladi), `siluet/ketma` (bir xil juft 0.00, 2 px →
+2.00), `siluet/qiymat` (median/p90 aniq).
+
+**Topilma.** Misolning 1..6-tasviri ushlangan (yuz 0.00 px), lekin sochi har tasvirda
+o'zgaradi: ketma-ket niqob IoU 0.61..0.72 (bizda 0.96..0.98), 1 va 6 orasida IoU 0.40,
+maydon −30% — asosan o'rta tasmadagi ton o'zgarishi (yorug' tutamlar soyaga o'tadi).
+Ikki qatlam, ikki vaqt: yuz — ushlangan rasm, soch — o'z harakati.
+
+**Ton.** Misolda yorug' soch bir tekis: median ~100, p90 103..104. Bizda yorug'
+chiziqlar L 124 edi (p90 122..124); endi bitta tekis ton — p90 101..102.
+
+**Massa va uch.** Piksel IoU tutam UCHLARINI ham solishtiradi — bu dizayn. Massani
+solishtirish uchun ikkala niqob sigma 2 px Gauss bilan yoyilib 0.5 da kesiladi
+("massa IoU"). Moslash massaga qilinadi; uchlarning o'lchami esa TEXNIKA sifatida
+o'lchanadi (niqob chetining silliq qobiqdan qoldig'i, nurlar 1 gradus): o'ngdagi
+tutamlar davri ~14 px, chuqurligi ~7.7; yaqin yon pasti ~8 / 3.4; peshona ~8 / 3.2.
+Bizning tishlar shu o'lchamda, joylari esa bizning urug'imizdan, burchakka bog'langan
+(yoy uzunligiga bog'langanda massa o'zgarishi bilan tishlar chet bo'ylab "o'rmalardi").
+
+**Model.** Birinchi urinish — guruh tutamlari (supurma, peshona, yaqin yon; har
+guruhga uzunlik, yo'nalish, en) — 1-tasvirda IoU ni 0.33 dan 0.42 ga olib chiqdi xolos:
+guruh parametrlari massaning qayerda turishini bera olmadi. Ikkinchisi — bosh markazi
+atrofida qutb qobig'i (har 12 gradusda tashqi va ichki radius) — massa IoU 0.67..0.80.
+Moslash modeli = shu tasvirning sochsiz toza renderi + geometriya (serverdan, bitta
+kod) 4x da chizilib kichraytirilgan → taqqos quvuri; haqiqiy render bilan niqob IoU
+0.977..0.987. Bosh markazi yaqin ko'zning o'zida (0.02..0.08 R) — markazga qaragan har
+narsa ko'zga tushadi (13-qoida).
+
+**Qimirlash.** Tish uchi titrog'i (har tish o'z fazasi bilan oqim bo'ylab) yetmadi:
+0.08 R da ham ushlangan juftlar IoU 0.85 → 0.82, misol 0.67 — uchlar massaning kichik
+qismi. Butun soch geometriyasiga silliq siljish maydoni (to'lqin ~1.06 R, har tasvirga
+o'z fazasi; yuz qaynamaydi), amplitudasi juftlar IoU si misolnikiga teng bo'lguncha
+tanlangan (0.06 R) — juftlar 0.64..0.72. Lekin bu moslashdan KEYIN qo'shilgan edi
+(13-qoida); moslash uni modelga olib qayta qilinganda uzun to'lqinni massa darajasida
+qoplab yubordi — juftlar 0.73..0.83 ga qaytdi. Ikkinchi, mayda tasodifiy maydon
+(to'lqin 0.3 R — o'lchangan tish davrlari 0.21..0.37 R oralig'ida) modelga kiritilib
+qayta moslanganda juftlar 0.68..0.73 (misol 0.61..0.72) — raqam to'g'ri. Varaqda esa
+soch chetlari eriyotganday to'lqinlandi; misolda chetlar o'tkir qoladi, o'zgarish
+tutamlarning yorug'dan soyaga o'tishi. Raqam to'g'ri, sabab noto'g'ri (6-qoida) —
+olib tashlandi. Qoldi: uzun to'lqin moslash ichida, juftlar 0.73..0.83; tutam
+soyalari (ichki tuzilish) — keyingi soch qadami.
+
+## 13. Optimizator ko'rmagan joyni buzadi
+
+- Peshona soyasi (qorong'i soch tasmasi) qalinligi `soyaH` 1.0 R gacha o'sdi va butun
+  yuzni L 60 dan 30 ga tushirdi: maqsad funksiyasi faqat yorug' sochni va ko'z ustidagi
+  ikki zonani ko'rardi. Buni moslashga kirmagan zond topdi — yaqin ko'z langari
+  (x farqi 2.2 → 7.5 px). Tuzatish: chegara 0.30 R, yonoq zonasi (qorong'i ulush misolnikiga).
+- Keyin soya ko'z oqini qopladi (sochdan keyin, ko'zlar ustida chizilgan) — qorachiq
+  bilan bitta qorong'i komponenta (langar 8.4 px). Tuzatish: soya ko'zlardan OLDIN;
+  moslash modeli ham shu tartibda. Birinchi model buni TAXMINAN qilardi: soya chizilgach
+  "ko'z piksellari" (ko'zli va ko'zsiz fon farqi > 0) fondan qaytarilardi — bu niqobga ko'z
+  ustidagi xira qovoq chizig'i ham kirgan va soya ichida teri rangli chiziq qolgan. Qosh
+  zonasi modelda 0.62, haqiqiy renderda 0.78 (1-tasvir; misol 0.66): moslash qoshni
+  ortiqcha qoraytirgan, jurnal esa "aniq" degan. Tuzatish: soya o'rnida soya rangli
+  to'liq qatlam bilan bir render (`__soyaTest`, xuddi shu klip ichida) — model soya
+  ko'pburchagi ichida shu renderni oladi; model va render qosh zonalarida 0.00..0.02
+  farq qiladi (8-tasvir B zonasi 0.05).
+- Keyin soya ikki ko'z ustini qoplab, ularni bitta komponentaga uladi (langar 10.4 px).
+  Tuzatish: soya faqat yaqin ko'z ustida (qosh qutisining burchagi ±30).
+- Mustaqil (har tasvir alohida) moslashda ushlangan tasvirlarda soch BO'LAK-BO'LAK
+  almashdi: farq xaritasida katta dog'lar (misolda ingichka chetlar), yopilish xaritasi
+  0.95 → 0.88 (qimirlagan yorug' uchlarni zarra deb o'qidi). Tuzatish: oldingi tasvirga
+  bog'lash (radiuslar farqi jarimasi) — yopilish 0.93..0.94; ingichka qimirlash esa
+  12-qoidadagi qaynash bilan.
+- Hamma raqam yaxshilangach varaqda INGICHKA YOYLAR chiqdi: uzoq ko'z ostida ko'zoynak
+  gardishiday yorug' yoy, pastda radial chiziqlar, tashlangan massa ostidan yuzni kesib
+  o'tgan siyoh chiziqlari. Qobiq bitta halqa — soch yo'q burchakda moslash ro=ri qilgan,
+  ichki chet esa ro−0.01 bilan qisilgan. Asbob ularni ko'rmaydi: 320 da yoy 1..2 px,
+  L ~75 — L>85 dan past, median 3 dan ham o'tmaydi; qosh zonalariga ham ta'sir qilmaydi
+  (olib tashlanganda 1, 4, 7-tasvirda qosh ulushi 0.01 dan kam o'zgaradi) — moslash
+  ularni ko'rmagan va joyini tanlamagan. Tuzatish: qalinligi `minQal` dan kichik joy
+  tashlanadi, siyoh soch ichiga kliplanadi. `minQal` niqob IoU platosidan: 0 da 0.594,
+  0.10..0.18 da 0.595..0.598 — tanlangani 0.15.
+- Soch qaynashi (12-qoida) moslashdan KEYIN qo'shilgan edi — qosh zonalari endi faqat
+  moslash jurnalida "aniq" edi. Haqiqiy renderda 4-tasvir qaynashsiz 0.82/0.38, qaynash
+  bilan 0.46/0.17 (misol 0.60/0.38); 7-tasvir 0.83/0.28 → 0.57/0.14 (0.66/0.29). A dagi
+  0.82 ning o'zi yuqoridagi model xatosi. Moslashdan keyingi har o'zgarishdan so'ng hamma
+  zond qayta o'lchanadi; moslash qaynash va `minQal` modelga kirgan holda qayta qilindi.
+
+Qoida: har moslashdan keyin HAMMA zondni ishga tushiring va varaqni ko'ring, faqat
+moslanganini emas; har erkin parametrga uning butun ta'sir sohasini ko'radigan o'lchov
+kerak; asbob ko'rmaydigan narsa (filtrdan ingichka, chegaradan xira) model
+cheklovi bilan yopiladi; model render qatlamlari tartibini takrorlashi shart.
+
+- "Oldin" yana bir ko'rinishda: tasma tirqishi moslashi "tirqishsiz" holatni o'lchayotib
+  varaq.mjs dagi oldingi natijani ham yuklab olgan — hamma tasvirga "kerak emas" yozdi.
+  Qayta o'lchashda o'zgartirilayotgan parametr ANIQ beriladi (null ham).
+
 ---
 
 ## Bir o'tish tartibi
@@ -210,7 +304,9 @@ zondini 0.4 px gacha suradi.
 3. Har biri uchun varaq/setka/L jadvali: zond nimaga tegdi (7-qoida), nima o'qildi
    (8-qoida).
 4. Tuzatish modelning o'z parametrlarida, o'lchangan son bilan; shakl — moslash
-   bilan (9-qoida).
+   bilan (9-qoida). Moslash modeli render qatlamlari tartibini aynan takrorlaydi;
+   moslashdan keyin qo'shilgan har narsa modelga kiradi va moslash qayta qilinadi
+   (13-qoida).
 5. Qayta o'lchash: o'sha zond, qo'shnilari, `harakat`, `ritm`, `xarita`, `yopilish`.
 6. Oddiy (titroqli) render bilan tekshirish; oldin/keyin varaqasi (`eski` qatori —
    topshirilgan fayl, 11-qoida).
@@ -245,3 +341,33 @@ o'zgarishi bu ustunda yo'q.
 Ochiq (keyingi — soch o'tishi): yaqin tutamning yuz ustidagi "(" massasi (6..9),
 uzoq yondagi tutamlar orasidagi osmon, ushlangan tasvirlardagi soch qimirlashi,
 yaqin ko'zdan tutamning sirg'anishi (langar x +1.2..+3.5).
+
+## 11-o'tish hisobi (1-kadr, 11 tasvir — soch)
+
+Oldin — 10-o'tishda topshirilgan fayl (`oldin-hozir-10.gif` ning HOZIR paneli = `ff-10`
+renderi, film.html bayt-bayt tekshirilgan); ikkala tomon bir xil yo'ldan: 480×270 GIF →
+320×180 (`ff-10t`, `ff-11t`).
+
+| o'lchov | oldin | keyin | misol |
+|---|---|---|---|
+| soch niqobi IoU (L>85, median 3; o'rtacha; eng yomoni) | 0.399; 0.30 | 0.639; 0.58 | — |
+| soch_osti / soch_ong / soch_yaqin_ichki IoU | 0.405 / 0.379 / 0.452 | 0.688 / 0.698 / 0.553 | — |
+| figura siluet IoU (tana_ong) | 0.872 | 0.872 | — |
+| ushlangan juftlar soch niqobi IoU (1..6) | 0.96..0.98 | 0.73..0.83 | 0.61..0.72 |
+| yorug' soch toni median / p90 | 100 / 122..124 | 100 / 101..102 | 99..102 / 103..104 |
+| qosh zonalari \|farq\| A / B / yonoq (o'rtacha) | 0.566 / 0.248 / 0.019 | 0.046 / 0.021 / 0.004 | — |
+| 1-kadr tendensiyasi (qirqilgan) | +39.6% (+91.0%) | +14.8% (+37.8%) | +14.3% (+31.2%) |
+| juftlar MAE | 0.0503 | 0.0424 | — |
+| yopilish xaritasi IoU | 0.95 | 0.94 | — |
+| tasma n% (uzoq yon tutamlari orasidagi osmon) | 11.80 | 5.41 | — |
+| langar x / y, uzoq ko'z x / y, og'iz x (o'rtacha \|farq\|, px) | 2.19 / 1.27, 0.53 / 0.59, 1.15 | 2.15 / 1.59, 0.57 / 0.53, 1.03 | — |
+| ingichka yorug' (yonoq, soch massasidan tashqarida; test/ingichka.py) | 417 | 743 (ingichka yoylar bilan 1167 edi) | 803 |
+
+12..22-tasvirlar 10-o'tish bilan bir xil (chizma o'zgarmagan; Chromium fonida ±1 shovqin).
+
+Ochiq: yaqin yon sochi yassi parda — ichki tutam soyalari yo'q (misolda ushlangan
+tasvirlardagi o'zgarish aynan shu soyalarning o'tishi — juftlar 0.73..0.83 → 0.61..0.72
+shu yerdan); peshonadagi o'rta tonli tutamlar (L 70..85) — bizda teri; yaqin ko'z
+ustidagi soya shakli (ikki bo'lakli), 4..6-tasvirda langar y −1.8..−4.3 px (soya ko'z
+komponentasiga yopishadi); 2- va 3-kadr sochi eski; yuz shakli o'tishi (ko'z eni 13 vs 9,
+qovoq, burun, og'iz).
