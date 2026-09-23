@@ -12,6 +12,7 @@
   yopilish LOY --kadrlar 1-11                 figura xaritasi IoU
   yoyish   LOY --kadr 1 [--chiq F] [--jadval x0,x1,dx:y0,y1,dy] [--tomon misol]
   siluet   LOY --nom tana_ong [--kadrlar 1-11] [--chiq F] [--qator 5]
+           [--ketma]  (bir tomonda k va k+1 -- ushlangan tasvirlarda nima qimirlaydi)
            (yoki --quti ... --bog x,y [--shart <26] [--median 5] [--yon ong])
   gif      LOY --chiq F"""
 import argparse, json, sys
@@ -37,6 +38,7 @@ def main(argv=None):
     p.add_argument('--ustun', type=int, default=6)
     p.add_argument('--kontrast', type=float, default=1.0)
     p.add_argument('--langarli', action='store_true')
+    p.add_argument('--ketma', action='store_true')
     a = p.parse_args(argv)
     if a.buyruq == 'kalibr':
         t, yiq = kalibr.hammasi(); print(t); return 1 if yiq else 0
@@ -87,6 +89,10 @@ def main(argv=None):
         else:
             spec = {'nom': 'ad-hoc', 'quti': [int(v) for v in _q(a.quti)], 'bog': _q(a.bog),
                     'shart': a.shart or '<26', 'median': a.median, 'yon': a.yon or 'ong'}
+        if a.ketma:
+            KK, o = siluet.ketma(loy, spec, K if a.kadrlar else None)
+            print(siluet.ketma_jadval(spec, KK, o))
+            return 0
         r = siluet.yugur(loy, spec, K if a.kadrlar else None)
         print(siluet.jadval(spec, r))
         if a.qator:

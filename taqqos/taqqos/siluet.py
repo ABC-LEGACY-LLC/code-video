@@ -13,7 +13,15 @@ Qator bir tomonda bo'sh, ikkinchisida bor bo'lsa -- "faqat misolda"/"faqat bizda
 (masalan qo'l uchi biznikida yetib bormagan qatorlar).
 
 Sozlamada: "siluetlar": [{"nom":..,"quti":[x0,y0,x1,y1],"bog":[x,y],
-"shart":"<26","median":5,"yon":"ong","kadrlar":"1-11"}]"""
+"shart":"<26","median":5,"yon":"ong","kadrlar":"1-11"}]
+
+Yorug' massa uchun (masalan soch, 11-o'tish): "shart":">85", "median":3 (ingichka
+tutam median 5 da yo'qoladi), "toldir":false (tutamlar orasidagi teshik -- haqiqiy
+bo'shliq, to'ldirilmaydi), "min_maydon":60 (bog' o'rniga: qutidagi maydoni >= 60 px
+bo'lgan HAMMA komponenta -- soch bir necha bo'lak bo'lishi mumkin, qor zarrasi
+esa kichik), "qiymat":true (niqob ichidagi L median va p90).
+--ketma: bir tomonda ketma-ket tasvirlar solishtiriladi (k va k+1) -- ushlangan
+tasvirlarda sochning cheti qancha qimirlaydi (ikkala tomonda bir xil kod)."""
 import numpy as np
 from scipy import ndimage
 from PIL import Image, ImageDraw
@@ -21,10 +29,25 @@ from . import tasvir
 from .loyiha import oraliq
 
 
-def niqob(L, shart='<26', median=5, bog=None):
+def niqob(L, shart='<26', median=5, bog=None, toldir=True, min_maydon=None, quti=None):
     op, t = shart[0], float(shart[1:])
     Lm = ndimage.median_filter(L, median) if median > 1 else L
     m = (Lm < t) if op == '<' else (Lm > t)
+    if min_maydon is not None:
+        # bog' o'rniga: qutidagi maydoni >= min_maydon bo'lgan hamma komponenta
+        if quti is not None:
+            x0, y0, x1, y1 = [int(v) for v in quti]
+            q = np.zeros_like(m)
+            q[max(0, y0):y1, max(0, x0):x1] = True
+            m = m & q
+        lab, n = ndimage.label(m)
+        if n == 0:
+            return m
+        s = ndimage.sum(m, lab, index=np.arange(1, n + 1))
+        keep = np.zeros(n + 1, bool)
+        keep[1:] = s >= min_maydon
+        o = keep[lab]
+        return ndimage.binary_fill_holes(o) if toldir else o
     if bog is None:
         return m
     lab, n = ndimage.label(m)
@@ -38,7 +61,23 @@ def niqob(L, shart='<26', median=5, bog=None):
         if not len(v):
             return np.zeros_like(m)
         c = np.bincount(v).argmax()
-    return ndimage.binary_fill_holes(lab == c)
+    return ndimage.binary_fill_holes(lab == c) if toldir else (lab == c)
+
+
+def spec_niqob(L, spec, bog):
+    """sozlamadagi siluet spec'i bo'yicha niqob -- yugur va ketma bir xil yo'ldan o'tadi"""
+    mm = spec.get('min_maydon')
+    return niqob(L, spec.get('shart', '<26'), spec.get('median', 5), bog, spec.get('toldir', True),
+                 mm, spec['quti'] if mm is not None else None)
+
+
+def qiymat(L, m, quti):
+    """niqob ichidagi (qutida) L: median va 90-persentil; niqob bo'sh -> (nan, nan)"""
+    x0, y0, x1, y1 = [int(v) for v in quti]
+    v = L[y0:y1, x0:x1][m[y0:y1, x0:x1]]
+    if not len(v):
+        return float('nan'), float('nan')
+    return float(np.median(v)), float(np.percentile(v, 90))
 
 
 def profil(m, quti, yon='ong'):
@@ -88,19 +127,66 @@ def _oraliqlar(o, d, chegara):
     return q
 
 
+def _bog(spec, k):
+    bog = spec.get('bog')
+    return bog.get(str(k), bog.get('*')) if isinstance(bog, dict) else bog
+
+
 def yugur(loy, spec, kadrlar=None):
     K = kadrlar or (oraliq(spec['kadrlar']) if 'kadrlar' in spec else list(range(1, loy.n + 1)))
-    bog = spec['bog']
     r = {}
     for k in K:
-        b = bog.get(str(k), bog.get('*')) if isinstance(bog, dict) else bog
-        M = {}
+        b = _bog(spec, k)
+        M, Q = {}, {}
         for t in ('misol', 'biz'):
             L = tasvir.ol(loy.fayl(t, k), loy.olcham)
-            M[t] = niqob(L, spec.get('shart', '<26'), spec.get('median', 5), b)
+            M[t] = spec_niqob(L, spec, b)
+            if spec.get('qiymat'):
+                Q[t] = qiymat(L, M[t], spec['quti'])
         r[k] = solishtir(M['misol'], M['biz'], spec['quti'], spec.get('yon', 'ong'))
         r[k]['_m'] = M
+        if Q:
+            r[k]['qiymat'] = Q
     return r
+
+
+def ketma_massiv(Ls, spec, boglar=None):
+    """bir tomonning ketma-ket tasvirlari (L massivlari): har juft (i, i+1) uchun
+    niqoblar orasidagi IoU, maydon o'zgarishi va chekkaning o'rtacha |siljishi| (px)"""
+    ms = [spec_niqob(L, spec, (boglar[i] if boglar else None)) for i, L in enumerate(Ls)]
+    return [solishtir(ms[i], ms[i + 1], spec['quti'], spec.get('yon', 'ong')) for i in range(len(ms) - 1)]
+
+
+def ketma(loy, spec, kadrlar=None):
+    K = kadrlar or (oraliq(spec['kadrlar']) if 'kadrlar' in spec else list(range(1, loy.n + 1)))
+    o = {}
+    for t in ('misol', 'biz'):
+        Ls = [tasvir.ol(loy.fayl(t, k), loy.olcham) for k in K]
+        o[t] = ketma_massiv(Ls, spec, [_bog(spec, k) for k in K])
+    return K, o
+
+
+def ketma_jadval(spec, K, o):
+    q = ['KETMA-KET %s (yon %s): juft ichida niqob qancha o\'zgaradi -- IoU, maydon %%, chekka o\'rtacha |siljish| px' % (
+        spec.get('nom', ''), spec.get('yon', 'ong'))]
+    q.append('%7s   %6s %8s %7s   %6s %8s %7s' % ('juft', 'misol', 'maydon', '|sil|', 'biz', 'maydon', '|sil|'))
+    for i in range(len(K) - 1):
+        a, b = o['misol'][i], o['biz'][i]
+        q.append('%3d-%-3d   %6.2f %+8.1f %7.2f   %6.2f %+8.1f %7.2f' % (
+            K[i], K[i + 1], a['iou'], a['maydon'], a['ortacha'], b['iou'], b['maydon'], b['ortacha']))
+    return '\n'.join(q)
+
+
+def _qator_oraliq(v):
+    """[0,1,2,5,6,9] -> '0..2,5..6,9' (uzuq qatorlar min..max bo'lib ko'rinmasin)"""
+    v = sorted(int(x) for x in v)
+    q, bosh = [], v[0]
+    for i in range(1, len(v) + 1):
+        if i == len(v) or v[i] != v[i - 1] + 1:
+            q.append('%d' % bosh if bosh == v[i - 1] else '%d..%d' % (bosh, v[i - 1]))
+            if i < len(v):
+                bosh = v[i]
+    return ','.join(q)
 
 
 def jadval(spec, r, chegara=2.0):
@@ -113,9 +199,12 @@ def jadval(spec, r, chegara=2.0):
         ora = _oraliqlar(e['o'], e['farq'], chegara)
         s = ', '.join('%d..%d:%+.1f' % a for a in ora)
         if e['faqat_misol']:
-            s += '  | faqat misolda %d..%d' % (min(e['faqat_misol']), max(e['faqat_misol']))
+            s += '  | faqat misolda ' + _qator_oraliq(e['faqat_misol'])
         if e['faqat_biz']:
-            s += '  | faqat bizda %d..%d' % (min(e['faqat_biz']), max(e['faqat_biz']))
+            s += '  | faqat bizda ' + _qator_oraliq(e['faqat_biz'])
+        if 'qiymat' in e:
+            (mm, mp), (bm, bp) = e['qiymat']['misol'], e['qiymat']['biz']
+            s = 'L med/p90 misol %.0f/%.0f biz %.0f/%.0f  ' % (mm, mp, bm, bp) + s
         q.append('%5d %6.2f %+8.1f %8.2f  %s' % (k, e['iou'], e['maydon'], e['ortacha'], s))
     ious = [e['iou'] for e in r.values()]
     q.append('o\'rtacha IoU %.3f, eng yomoni %.3f (kadr %d)' % (

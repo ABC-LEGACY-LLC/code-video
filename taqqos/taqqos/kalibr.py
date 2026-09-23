@@ -156,10 +156,66 @@ def k_siluet():
         s0['iou'], s0['ortacha'], np.median(qo), s1['iou'], not uz.any())
 
 
+def _soch_tasvir(uzun=40, dx=0, rng=None):
+    """sintetik 'soch': yorug' massa (L 105) qorong'i fonda (L 30), ikki tutam,
+    massa ichida qorong'i teshik, 1 px zarralar va bitta 4x4 katta zarra"""
+    rng = rng or np.random.default_rng(5)
+    L = np.full((H, W), 30.0)
+    L[20:60, 100:200] = 105
+    L[60:60 + uzun, 110 + dx:118 + dx] = 105
+    L[60:100, 150:158] = 105
+    L[30:40, 140:150] = 30
+    ys, xs = rng.integers(0, H, 400), rng.integers(0, W, 400)
+    L[ys, xs] = 200
+    L[150:154, 20:24] = 200
+    return L
+
+
+def k_siluet_yorug():
+    from . import siluet
+    q = [95, 15, 205, 110]
+    n = lambda L, toldir=False: siluet.niqob(L, '>85', 3, None, toldir, 60, q)
+    a, b, c = n(_soch_tasvir(40)), n(_soch_tasvir(34)), n(_soch_tasvir(40, 2))
+    t = n(_soch_tasvir(40), True)
+    sp = siluet.solishtir(a, b, q, 'past')
+    ust = sp['farq'][(sp['o'] >= 111) & (sp['o'] < 117)]                 # 1-tutam ustunlari
+    sc = siluet.solishtir(a, c, [95, 62, 205, 98], 'chap')
+    chp = sc['farq'][(sc['o'] >= 64) & (sc['o'] < 96)]                  # 1-tutam qatorlari
+    zarra, teshik, toldi = a[150:154, 20:24].any(), a[32:38, 142:148].any(), t[32:38, 142:148].all()
+    ok = abs(np.median(ust) + 6) < 0.6 and abs(np.median(chp) - 2) < 0.6 and not zarra and not teshik and toldi
+    return ok, ('tutam 6 px qisqa -> "past" %+.1f px; tutam 2 px o\'ngga -> "chap" %+.1f px; '
+                'katta zarra niqobda %s; teshik ochiq %s (toldir: yopiq %s)') % (
+        np.median(ust), np.median(chp), zarra, not teshik, toldi)
+
+
+def k_ketma():
+    from . import siluet
+    spec = {'quti': [95, 62, 205, 98], 'shart': '>85', 'median': 3, 'toldir': False, 'min_maydon': 60, 'yon': 'chap'}
+    A, B = _soch_tasvir(40), _soch_tasvir(40, 2)
+    r = siluet.ketma_massiv([A, A, B], spec)
+    ok = r[0]['ortacha'] == 0 and r[0]['iou'] == 1.0 and abs(r[1]['ortacha'] - 2) < 0.3 and r[1]['iou'] < 1
+    return ok, 'bir xil juft -> |siljish| %.2f, IoU %.2f; 2 px surilgan tutam -> %.2f px, IoU %.2f' % (
+        r[0]['ortacha'], r[0]['iou'], r[1]['ortacha'], r[1]['iou'])
+
+
+def k_qiymat():
+    from . import siluet
+    L = np.full((H, W), 30.0)
+    L[20:70, 100:200] = 100
+    L[20:30, 100:200] = 120                                              # 20% yorug'roq
+    m = siluet.niqob(L, '>85', 1, None, False, 60, [0, 0, W, H])
+    med, p90 = siluet.qiymat(L, m, [0, 0, W, H])
+    L2 = L.copy(); L2[20:70, 100:200] += 10
+    med2, _ = siluet.qiymat(L2, siluet.niqob(L2, '>85', 1, None, False, 60, [0, 0, W, H]), [0, 0, W, H])
+    ok = med == 100 and p90 == 120 and med2 == 110
+    return ok, 'niqob ichida median %.0f (100), p90 %.0f (120); hammasi +10 -> median %.0f (110)' % (med, p90, med2)
+
+
 TESTLAR = [('zond/komponent', k_komponent), ('zond/chet', k_chet), ('zond/uch', k_uch),
            ('zond/hisob+soha', k_hisob_soha), ('harakat/qaynash', k_harakat), ('farq/ritm', k_ritm),
            ('yopilish/xarita', k_yopilish), ('yoyish', k_yoyish), ('varaq/ustma', k_ustma),
-           ('siluet/profil', k_siluet)]
+           ('siluet/profil', k_siluet), ('siluet/yorug\'', k_siluet_yorug), ('siluet/ketma', k_ketma),
+           ('siluet/qiymat', k_qiymat)]
 
 
 def hammasi():
