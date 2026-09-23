@@ -24,7 +24,8 @@ holatga qarshi isbotlaydi; isbotlay olmasa `UNPROVEN` bo'ladi va qurish to'xtayd
 | `mushuk/` | Mushuk uchta yo'l bilan, shahar halftone bilan; bosilganda javob beradi | karta |
 | `not-a-measurement/` | 8 kesim, butun film 39 chizish buyrug'ida | karta |
 | `masofa-maydoni/` | SDF qumloq — primitivlar, birlashmalar, marching | — |
-| `skills/` | Shu ishlar qaysi ko'rsatmalar ostida qilinganining qaydi | — |
+| `taqqos/` | Kod bilan chizilgan kadrlarni namuna klipga **kadrma-kadr, bir xil kod bilan** solishtirish: zond, siluet, harakat/qaynash, farq xaritasi, ritm, yopilish. `METOD.md` — usul va topilmalar | **10** (`kalibr`) |
+| `skills/` → `.claude/skills/` | Shu ishlar qaysi ko'rsatmalar ostida qilingan: uchta skill, faqat shu loyiha doirasida (abc UX-audit oilasiga kirmaydi) | — |
 
 ## Nega bu tadqiqot
 
@@ -46,6 +47,14 @@ o'lchovning o'zidan chiqdi:
   hech qachon o'lchov emas, quyi chegara edi. Haqiqiysi **3,72×**.
 - O'lchov tooli chetlarni faqat **birinchi** kadrdan olardi, va shu asosda chop
   etilgan xulosa noto'g'ri chiqdi. Xulosa qaytarib olindi.
+- Oltita ushlangan tasvir **bitta klip id sini** baham ko'rardi; `url(#id)` yashirin
+  kadrdagi birinchisiga bog'lanib, beshtasida soyalar kesilmasdan chizilardi.
+  Konsol toza, eskiz toza — faqat har kadr siluet o'lchovi 2..6-tasvirda bo'rtiq
+  ko'rsatdi (`taqqos/METOD.md`, 10-qoida).
+- Misolga yaqinlik jadvalidagi uchta katta «farq» chizmaning emas, **zondning**
+  xatosi edi: qo'l uchi zondi qorong'i osmonga oqardi, ko'z yoshi zondi soch
+  yaltirog'ini, halqa zondi qor zarrasini olardi. To'rtinchisi — og'iz «1.7 px
+  chapda» — og'iz surilmagan, chiziqning bitta uchi 3 px uzun edi.
 
 Ro'yxat uzun, va u qasddan uzun: bu loyihaning haqiqiy natijasi — **o'tib ketgan,
 lekin ko'r bo'lgan mezonlar ro'yxati**.
@@ -57,6 +66,7 @@ cd oq-kocha  && npm i && npm run build && npm run audit   # 41 tekshiruv
 cd loyihalar && npm i && node test/run.mjs                # 14 tekshiruv
 cd loyihalar && node tools/karta.mjs                      # kartalar manba bilan rozimi
 cd loyihalar && node tools/katalog.mjs out.html           # katalog sahifasi
+cd taqqos    && python3 -m taqqos kalibr                   # 10 o'lchov isboti
 ```
 
 Render qilingan video va ovoz fayllari bu yerda saqlanmaydi — ularni kod qaytadan
