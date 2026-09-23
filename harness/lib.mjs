@@ -47,7 +47,13 @@ const f=(v)=> typeof v==='number' ? (Math.abs(v)>=1000||(v!==0&&Math.abs(v)<0.00
         sahifaning o'zi "2 warnings, 2 notices" deb Node 20 ogohlantirishini
         kirmasdan ko'rsatib turibdi. Yiqilgan tekshiruv nomi va sababi endi
         o'sha yo'ldan chiqadi. */
-const qoch=s=>String(s).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A').replace(/:/g,'%3A').replace(/,/g,'%2C');
+/* IKKI XIL QOCHIRISH, va ularni aralashtirish ko'rinib qoldi. GitHub'da
+   XABAR uchun faqat %, CR va LF qochiriladi; ikki nuqta va vergul esa faqat
+   SARLAVHA kabi xossa qiymatlarida. Men bittasini ikkalasiga ham qo'llagan
+   edim, va ochiq sahifada xabar "15 tekshiruv%2C 0 muammo" bo'lib chiqdi --
+   vergul o'rniga kodi. Ko'rib turib topildi, taxmin qilib emas. */
+const qochX=s=>String(s).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');
+const qochS=s=>qochX(s).replace(/:/g,'%3A').replace(/,/g,'%2C');
 function belgi(nom,bad){
  if(!process.env.GITHUB_ACTIONS) return;
  for(const r of bad.slice(0,10)){
@@ -55,10 +61,10 @@ function belgi(nom,bad){
               : r.calErr ? "kalibratsiya o'zi yiqildi: "+String(r.calErr).split('\n')[0]
               : r.status==='UNPROVEN' ? "buzilgan holat ham o'tdi -- bu tekshiruv o'zi qaraydigan nosozlikni ko'rmaydi"
               : `o'lchangan ${f(r.value)}, buzilgan holat ${r.cal==null?'—':f(r.cal)}${r.note?' ('+r.note+')':''}`;
-  console.log(`::error title=${qoch(nom+' / '+r.name)}::${qoch(sabab)}`);
+  console.log(`::error title=${qochS(nom+' / '+r.name)}::${qochX(sabab)}`);
  }
- if(bad.length>10) console.log(`::error title=${qoch(nom)}::${qoch(`yana ${bad.length-10} ta muammo`)}`);
- if(!bad.length) console.log(`::notice title=${qoch(nom)}::${qoch(`${R.length} tekshiruv, 0 muammo -- har biri o'zining buzilgan holatidan ajratdi`)}`);
+ if(bad.length>10) console.log(`::error title=${qochS(nom)}::${qochX(`yana ${bad.length-10} ta muammo`)}`);
+ if(!bad.length) console.log(`::notice title=${qochS(nom)}::${qochX(`${R.length} tekshiruv, 0 muammo -- har biri o'zining buzilgan holatidan ajratdi`)}`);
 }
 function xulosa(nom,satrlar,bad){
  const fayl=process.env.GITHUB_STEP_SUMMARY; if(!fayl) return;
