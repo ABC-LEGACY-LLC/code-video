@@ -25,7 +25,7 @@ holatga qarshi isbotlaydi; isbotlay olmasa `UNPROVEN` bo'ladi va qurish to'xtayd
 | `not-a-measurement/` | 8 kesim, butun film 39 chizish buyrug'ida | karta |
 | `masofa-maydoni/` | SDF qumloq — primitivlar, birlashmalar, marching | — |
 | `taqqos/` | Kod bilan chizilgan kadrlarni namuna klipga **kadrma-kadr, bir xil kod bilan** solishtirish: zond, siluet, harakat/qaynash, farq xaritasi, ritm, yopilish. `METOD.md` — usul va topilmalar | **10** (`kalibr`) |
-| `skills/` → `.claude/skills/` | Shu ishlar qaysi ko'rsatmalar ostida qilingan: uchta skill, faqat shu loyiha doirasida (abc UX-audit oilasiga kirmaydi) | — |
+| `skills/` → `.claude/skills/` | Shu ishlar qaysi ko'rsatmalar ostida qilingan: to'rtta skill, faqat shu loyiha doirasida (abc UX-audit oilasiga kirmaydi) | — |
 
 ## Nega bu tadqiqot
 

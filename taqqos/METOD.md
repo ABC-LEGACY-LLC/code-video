@@ -350,10 +350,32 @@ boshning orqasi kapyushon ichida yashirin, bo'shliqda ichi (pona) ko'rinadi.
   o'lchangan chiziqqa (kadr tepasini kesgan joy → o'ng-tepa burchak) kesildi — cho'qqi
   zondi (205..207, 0) dan (220..233, 23..30) ga (misol 225..238, 29..35).
 
+## 15. Sahna avval: qayerga qaraydi, kamera qayerda (3D, 5-o'tish)
+
+Foydalanuvchi: "bizniki yonga qaraydi, misol pastga". Yuz detallari sahna tushunilmasdan moslangan edi.
+- **Bitta ko'rinish faqat NISBIY yo'nalishni beradi.** 1-shot yuz nuqtalari el -8/-20/-30 da bir xil
+  tushadi (RMS 0.6 px): bosh +17/+8/0 gr tepaga, lekin yonga 3/13/21 gr og'ishi kerak. Mutlaq qiymat --
+  "bosh burilmagan/og'magan" tamoyili, kesishlar orasidagi voqea va 3D belgilar bilan tanlanadi; oila
+  (hamma variant) hisobotda yoziladi.
+- **Nuqtalar emas, kontur.** 2-shot profil 4 nuqtaga (RMS 2.0 px) va profil vazniga bog'langan pastki yuz
+  surishiga moslangan edi -- butun old kontur 19.5 px gacha qochgan (RMS 9.9), yuz ~20 gr tepaga og'gan.
+  21 kontur qatori + iyak osti bilan: bosh tekis, RMS 1.33 px. Silueta zich olinadi (110x70 to'rda bir
+  qator +3.3 px xato).
+- **Anime ko'rinish usuli -- belgi joylashuvi, shakl emas.** Profilda misol ko'zi qattiq bosh qo'yadigan
+  joydan 17.5 px (0.6 birlik) orqada: ko'z chizmasi sirt bo'ylab karta bilan ko'chadi (w=0 da o'zi,
+  0.0014 birlik); pastki yuzni surish yuzni og'dirardi. Vazn -- BOSH fazosidagi burchak.
+- **Sahna renderda tekshiriladi.** Eski 3-shotda model "ko'z 2.5 px" dedi; renderda ko'z qutisida qorong'i
+  chiziq yo'q (L 38), iyak plash ortida -- model okklyuziyani bilmaydi.
+- **2D fon qatlami kamera haqida gapirmaydi.** Misolda qor zichligi gradienti va harakati uch shotda bir xil;
+  3-shotda kamera 30 gr pastdan qaraganda fon "tepasi" kameraga bog'lanadi.
+Skill: `media-staging-audit`. Hisob: `personaj3d/README.md` (5-o'tish).
+
 ---
 
 ## Bir o'tish tartibi
 
+0. Sahna (15-qoida): har shotda nima qiladi, qayerga qaraydi, kamera qayerda -- 3D da tiklanadi,
+   renderda bir xil kod bilan tekshiriladi. Detallar undan keyin.
 1. `kalibr` — hammasi PROVEN.
 2. Titroqsiz render → `zond` (hamma tasvir) va `siluet`: eng katta farqlar.
 3. Har biri uchun varaq/setka/L jadvali: zond nimaga tegdi (7-qoida), nima o'qildi
