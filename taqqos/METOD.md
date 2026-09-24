@@ -399,13 +399,41 @@ Skill: `media-staging-audit`. Hisob: `personaj3d/README.md` (5-o'tish).
   qilinmadi; minimal qo'lda variant (bir xil o'lchov bilan tekshirilgan) olindi.
 Hisob: `personaj3d/README.md` (6-o'tish), `chiqish/soch-audit-6.png`.
 
+## 17. Kapyushon: ko'rinadigan bosh har shotda -- o'lcham va sakrash (3D, 7-o'tish)
+
+Foydalanuvchi: "tasvirdan tasvirga sakraydi, katta-kichik bo'ladi". Oldingi zondlar faqat JOYNI o'lchardi (ko'z markazi,
+kontur qatori) -- o'lcham va sakrashni hech biri ko'rmasdi.
+- **O'lcham -- alohida o'lchov.** Ko'rinadigan bosh maydoni va IoU (misolda L>=40 niqob, bizda rol renderi): misolda uch
+  shotda 6300-7400 / 6600 / 4100-5700 px, bizda 11 800-12 900 / 4 000 / 13 500-14 100 (1.75 / 0.61 / 3.03 barobar).
+  Sakrash -- qo'shni tasvirlar farq energiyasi (chap 40 %): 9->10 0.490 (misol 0.201); xarita -- misolda faqat soch va
+  yuz belgilari o'zgaradi, bizda ochiq bosh orqasi, qopqoq, bo'yin butun siljiydi.
+- **Anime kiyimi shot bo'yicha.** Misolda kapyushon har shotda boshqacha yotadi; bizda kesishda qayta quriladi, shot ichida
+  boshga KF/KT ulushida ergashadi. Bosh IoU 0.41 / 0.49 / 0.23 -> 0.81 / 0.62 / 0.69, sakrash 0.490 -> 0.307.
+- **Ikkinchi maqsad -- og'irlik emas, SHART.** Figura 0.5 og'irlikda edi: 3-shotda bosh IoU +0.33 uchun figura 0.857 ->
+  0.784 (kapyushon tepasi oldinga, chap-tepa burchak osmon). "Topshirilgan darajadan past emas" sharti bilan xuddi shu
+  shot 0.69 / 0.884 berdi. (16-qoidadagi "maqsadni tekshiring" ning davomi: tekshirish yetmaydi -- shart qo'ying.)
+- **"Artefakt"ni o'chirishdan oldin misolni o'sha piksellarda o'lchang.** 1-shotda yuz o'ngidagi ingichka yorug' chiziq
+  (uzoq qirra astari) xatoga o'xshardi; misolda o'sha piksellarda L median 43 -- misolning o'z astar tasmasi, yuz chetidan
+  qirragacha ~14 px L 43-45, jag' ostida esa L 7-10. To'g'risi -- tasmani yuz balandligida kengaytirish va jag'da tugatish
+  (2D loyihaning tasma zondi -86 % -> 11.6 %), o'chirish emas.
+- **Chegaradagi parametr -- erkinlik yetishmaydi; yangi erkinlik -- ko'rilgan xato uchun.** Parametrlar chegarada qoldi
+  (teshik 1.0, siljish -0.6); har qo'shilgan erkinlik varaqda ko'rilgan bitta aniq xatoga javob edi: ikki qirra alohida
+  (uzoq qirra chizig'i), tasma eni (misol astari), tasma tugashi (jag' osti). Ko'r-ko'rona parametr qo'shish emas.
+- **Bir qism boshqasining o'lchovini yorug'lik orqali siljitadi.** Kapyushon boshni yopgach, uning soyasi 3-shot sochiga
+  tushdi: misol yorug' sochining biznikiga tushishi 43 % -> 4 % (soyasiz render 39 %). Qo'shni o'lchovlar qayta
+  o'lchandi va hisobotda OCHIQ deb yozildi: misolda old tutamlar soyabon ostidan yorug'likka osiladi -- soch ishi.
+- **Yopish harakatni ham yopadi.** Sochning ko'rinmay qolgan qismi ushlangan juftlar energiyasini ham olib ketdi:
+  3-shot 0.037-0.067 -> 0.009-0.039 (misol 0.059-0.083). "Tinchroq" -- misolga yaqinroq degani emas.
+Hisob: `personaj3d/README.md` (7-o'tish), `chiqish/kapyushon-audit-7.png`.
+
 ---
 
 ## Bir o'tish tartibi
 
 0. Sahna (15-qoida): har shotda nima qiladi, qayerga qaraydi, kamera qayerda -- 3D da tiklanadi,
    renderda bir xil kod bilan tekshiriladi. Detallar undan keyin. Massa (soch, kiyim) -- misolning
-   yorug'i/qorong'isi bizda qaysi qismga tushishi bilan (16-qoida).
+   yorug'i/qorong'isi bizda qaysi qismga tushishi bilan (16-qoida). Joy bilan birga O'LCHAM va
+   tasvirdan tasvirga SAKRASH ham o'lchanadi (17-qoida).
 1. `kalibr` — hammasi PROVEN.
 2. Titroqsiz render → `zond` (hamma tasvir) va `siluet`: eng katta farqlar.
 3. Har biri uchun varaq/setka/L jadvali: zond nimaga tegdi (7-qoida), nima o'qildi
