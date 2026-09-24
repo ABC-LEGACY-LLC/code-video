@@ -298,7 +298,8 @@ cheklovi bilan yopiladi; model render qatlamlari tartibini takrorlashi shart.
 ## 14. Kamera va fizika: kapyushon
 
 **Kamera qayerda.** Avval o'qing, keyin chizing: personaj uch kadrda ham ekranda o'ngga
-qaraydi, kamera uning CHAP tomonida; 3-kadrda PASTDA — buni faqat pastdan ko'rinadigan
+qaraydi, kamera uning O'NG tomonida (o'ngga qaragan yuzning ko'rinadigan yuzi — o'ng yuz;
+12-o'tishda "chap" deb yozilgan edi — xato); 3-kadrda PASTDA — buni faqat pastdan ko'rinadigan
 narsalar aytadi: soyabon (qirra) OSTINING yorug' astari L 43..48, kapyushon ICHI L 7..9,
 tashqi sirt L 19. Chet yoyilishi (sigma ~1.0 px, soch 0.6..0.7) — "xira" ko'rinish defokus
 emas. Zarralar uch kadrda bir xil (+2.9,−1.1) — shamol orqadan oldinga.
