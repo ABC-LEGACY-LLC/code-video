@@ -370,12 +370,42 @@ Foydalanuvchi: "bizniki yonga qaraydi, misol pastga". Yuz detallari sahna tushun
   3-shotda kamera 30 gr pastdan qaraganda fon "tepasi" kameraga bog'lanadi.
 Skill: `media-staging-audit`. Hisob: `personaj3d/README.md` (5-o'tish).
 
+## 16. Soch massasi: misolning yorug'i bizda NIMAGA tushadi (3D, 6-o'tish)
+
+"Yonga qaraydi" taassurotining qolgani sochda edi: yaqin ko'z ortida 28-33 px ochiq teri (misol 1-9), peshona ochiq.
+- **Farq emas -- tushish joyi.** Yangi asbob (`personaj3d/test/audit_misol/soch_qoplash.py`): misolning yorug' soch
+  pikseli bizda qaysi SINFGA tushadi -- rol renderidan aniq (teri / soch soyada / ichki qopqoq / kapyushon / fon).
+  1-shotda misol yorug'ining atigi 1 % i bizning yorug' sochga tushardi; 52 % teriga, 30 % kapyushonga -- bir son
+  "soch yo'q" va "kapyushon to'sadi" ni ajratdi (kapyushon keyingi o'tishga qoldi, soch -- hozir). Kalibr: o'zi 100 %,
+  5 px surilgan 56 %.
+- **Misol o'lchovini modelning fazosiga o'tkazing.** 2-shot yorug' massasining har qatori shot kamerasi bilan bosh
+  fazosiga o'girildi (28.7 px/birlik): soch tojdan ~1 birlik yuqorida, peshonadan ~1 birlik OLDINDA. Bitta 3D shakl
+  uchala shotni tushuntirdi: 3/4 da pastdan qaralganda oldingi soch peshonani ko'zgacha "yopadi", bosh egilganda yuz
+  oldida osiladi. Qor harakati (o'ngga-tepaga) shamol yo'nalishini berdi -- sochning taralishi shu bilan izohlanadi.
+- **Qayerda turgani yetmaydi -- qayerda osilgani.** Dam shakli bosh fazosida qotib qolsa, bosh 17 gr tepaga qaraganda
+  "tik" tutam ekranda yonoqni diagonal kesadi (panja). Misolda soch dunyoda osiladi: dam shakli og'irlik va shamol
+  tomon egiladi. 3/4 da yaqin soch ko'z ortidan jag' ORTIGA tushadi; yonoq ustida qolsa bosh profilga burilganda yuz
+  ustiga chiqadi (misol 9-11 da soch yonoq ortida).
+- **Ko'rinishga bog'liq joy o'z vazni bilan.** Soch vazni ko'z kartasi vaznidan alohida (kamera burchagidan, 70 gr
+  dan): ko'z kartasi 1-shot 10-11 da 0..0.1 da moslangan, bir vaznda soch yonoqqa "panja" bo'lib tushardi.
+- **Niqob tuzilma o'lchamini ham o'lchaydi.** Uzoq tomondagi ingichka tutamlar 480 px da yorug' (L 102..131), lekin
+  320 px da kontur chiziqlari bilan aralashib niqob ochishidan o'tmaydi -- yorug'lik yo'nalishini 4 marta o'zgartirish
+  hech narsa bermadi. Avval to'liq o'lchamda piksel qiymatiga qarang, keyin sabab tanlang.
+- **Zond sochga tegadi.** Uzoq ko'z zondi 0.97 -> 2.25 px yomonlashdi: ko'z ustidan endi tutamlar o'tadi va qimirlaydi
+  (misolda ham shunday), bosh geometriyasi tegilmagan. Ritm detektori ushlangan tasvirlarimizning medianasi past
+  (0.229 vs 0.337) bo'lgani uchun bosh harakati juftlarini (misolnikiga yaqinlashgan) "kesish" deb belgiladi.
+- **Moslash maqsadini tekshiring.** Kapyushon moslashi (figura IoU + "misol sochi kapyushon ostida" + "sochimiz misol
+  qorong'isida") figura IoU ni sochni ochish uchun berib yubordi -- 1-shotda uzoq yon ichki yuzi ochildi. Qabul
+  qilinmadi; minimal qo'lda variant (bir xil o'lchov bilan tekshirilgan) olindi.
+Hisob: `personaj3d/README.md` (6-o'tish), `chiqish/soch-audit-6.png`.
+
 ---
 
 ## Bir o'tish tartibi
 
 0. Sahna (15-qoida): har shotda nima qiladi, qayerga qaraydi, kamera qayerda -- 3D da tiklanadi,
-   renderda bir xil kod bilan tekshiriladi. Detallar undan keyin.
+   renderda bir xil kod bilan tekshiriladi. Detallar undan keyin. Massa (soch, kiyim) -- misolning
+   yorug'i/qorong'isi bizda qaysi qismga tushishi bilan (16-qoida).
 1. `kalibr` — hammasi PROVEN.
 2. Titroqsiz render → `zond` (hamma tasvir) va `siluet`: eng katta farqlar.
 3. Har biri uchun varaq/setka/L jadvali: zond nimaga tegdi (7-qoida), nima o'qildi
