@@ -295,6 +295,60 @@ cheklovi bilan yopiladi; model render qatlamlari tartibini takrorlashi shart.
   varaq.mjs dagi oldingi natijani ham yuklab olgan — hamma tasvirga "kerak emas" yozdi.
   Qayta o'lchashda o'zgartirilayotgan parametr ANIQ beriladi (null ham).
 
+## 14. Kamera va fizika: kapyushon
+
+**Kamera qayerda.** Avval o'qing, keyin chizing: personaj uch kadrda ham ekranda o'ngga
+qaraydi, kamera uning CHAP tomonida; 3-kadrda PASTDA — buni faqat pastdan ko'rinadigan
+narsalar aytadi: soyabon (qirra) OSTINING yorug' astari L 43..48, kapyushon ICHI L 7..9,
+tashqi sirt L 19. Chet yoyilishi (sigma ~1.0 px, soch 0.6..0.7) — "xira" ko'rinish defokus
+emas. Zarralar uch kadrda bir xil (+2.9,−1.1) — shamol orqadan oldinga.
+
+**Fizika o'lchovda.** Kapyushon yelkaga tayangan mato, qirrasi sochga TAYANADI; bosh
+egilganda soyabon peshona ustiga tushadi: 14→18 da astar tasmaning pastki cheti 53 px
+pastga, soch uchlari atigi 18 px, yorug' soch maydoni −67%. Soyabon sochni YOPADI —
+boshning orqasi kapyushon ichida yashirin, bo'shliqda ichi (pona) ko'rinadi.
+
+- **Ikki o'lchangan nuqta orasidagi to'g'ri chiziq — taxmin.** Qirra cho'qqidan chakkaga
+  to'g'ri chiziq qilib olingan edi (ikkala uchi o'lchangan): misolda u chiziq astar
+  tasmaning USTIDAN o'tadi, tasma bizda osmonda "shox" bo'lib qoldi. Qirra — tasmaning
+  o'lchangan tepa cheti (7 ustun kaliti), tasma — tepa va past chet.
+- **Median o'tkir uchni yeydi.** Pona (median 5) uchi sintetikda 5 px pastga, past uchi
+  3 px yuqoriga tushdi; to'g'ri chetlar saqlanadi. Uchlar niqobdan olinmaydi: har qatorda
+  chap/o'ng chekka, chetlarga `x = a·y + b`, uchlar — kesishmalar (kalibr: ≤0.8 px;
+  o'ng cheti tik bo'lsa ikki uch R1, R2). Moslash bilan (IoU, Nelder-Mead) uch 2 px
+  qoldi — maqsad funksiyasi yeyilgan uchni ko'rmaydi.
+- **Erkin moslash kapyushonni buzdi.** 17 parametrli CMA o'tkir tikan va kesishgan qirra
+  chiqardi (13-qoida: ko'rmagan joyni buzadi). O'rniga — o'lchangan kalitlar, kadr ichida
+  [1,2,1]/4 silliqlangan.
+- **Bizning bosh boshqa.** Misolning boshi pastdan, egilgan holda; bizniki 3/4, kattaroq —
+  orqasi aynan pona joyida. Tashqi sirt boshning orqasini qanday yopsa, pona ham boshning
+  USTIDA chiziladi (orqasida chizilganda sochimiz uni butunlay yopardi, pona 0..129 px).
+- **Langar boshqa narsaga tushdi.** Tasma/pona asboblari eng katta yorug' soch qismiga
+  bog'langan; bizda u yuz chapidagi uzun tutamlar (x 130..170) — quti 15..18-tasvirda
+  tasmani ko'rmadi (11..35 px, misol 378..881). Qo'shimcha o'lchov: misol qismining 4 px
+  kengaytirilgan sohasi ichida, ikkala tomonda bir xil sinf chegarasi (joyida IoU).
+- **Qisman yopilgan massaning markazi — joy emas.** Bosh izini yorug' soha markazi
+  bo'yicha qayta sozlash (5-o'tish halqasi) yangi kapyushon bilan boshni 19→20 da 27 px
+  sakratdi: soyabon/pona yopgan qism har siljishda o'zgaradi. O'rniga fizik shart —
+  soyabon sochga tegadi: tasma pastki cheti bilan soch tepasi orasidagi bo'shliq
+  (misolda ta'rifan 0), silliq iz, 18-tasvirdan keyin bosh USHLANADI (misolda tasma cheti
+  87..88 da turadi). Yorug' soha markazi farqi shunda ham 18.7 → 7.7 px.
+- **Raqam to'g'ri, sabab noto'g'ri (yana).** 11-o'tishda 3-kadr juftlar MAE 0.0448 edi —
+  bosh 19..22 da 15 px YUQORIGA qaytgani (misolda yo'q) farq berardi. Bosh ushlanganda
+  MAE 0.0501: 18..22 juftlari misolda 0.29..0.30, bizda 0.22..0.26. Yetishmayotgani farq
+  xaritasida: misolda chap 40% energiya 0.06..0.08, bizda 0.00..0.01. U yerda misolda
+  plash USTIDA qor zarralari bor (chap-pastda, x 0..110, y 100..180: 46..65 ta, maydonning
+  ~2%; bizda 0) — bizning qor figuraning ORTIDA chiziladi. Juft farqi = 0.4·chap + 0.6·o'ng:
+  18-19 da farq 0.303 vs 0.223 — chapdan 0.026, qolgan 0.053 o'ng 60% da (qor, soch uchlari).
+  Qoida: qo'shimcha qimirlash qo'shib raqamni tiklamang — yetishmayotgan qatlamni toping.
+- **Kapyushon o'zgarsa, unga bog'liq ton ham qayta o'lchanadi.** Yuzdagi kapyushon soyasi
+  0.22 da yuz L 49 (astar sinfiga tushardi); misol yuz sinfi median L 59 har tasvirda →
+  0.03 (yuz sinfi IoU 0.19 → 0.26).
+- **Qo'pol profil o'lchangan chiziqdan oshmasin.** Plash 18 qatorli profil — 3-kadr tepasida
+  misoldagi kapyushon chizig'idan 30 px o'ngga chiqqan edi (osmon L 2..8 o'rnida L 19);
+  o'lchangan chiziqqa (kadr tepasini kesgan joy → o'ng-tepa burchak) kesildi — cho'qqi
+  zondi (205..207, 0) dan (220..233, 23..30) ga (misol 225..238, 29..35).
+
 ---
 
 ## Bir o'tish tartibi
@@ -371,3 +425,33 @@ shu yerdan); peshonadagi o'rta tonli tutamlar (L 70..85) — bizda teri; yaqin k
 ustidagi soya shakli (ikki bo'lakli), 4..6-tasvirda langar y −1.8..−4.3 px (soya ko'z
 komponentasiga yopishadi); 2- va 3-kadr sochi eski; yuz shakli o'tishi (ko'z eni 13 vs 9,
 qovoq, burun, og'iz).
+
+## 12-o'tish hisobi (2- va 3-kadr — kapyushon)
+
+Oldin — 11-o'tishda topshirilgan fayl (`oldin-hozir-11.gif` HOZIR paneli = `ff-11` renderi);
+ikkala tomon bir xil yo'ldan: 480×270 GIF → 320×180 (`ff-11t`, `ff-12t`).
+
+| o'lchov (2-kadr \| 3-kadr) | oldin | keyin | misol |
+|---|---|---|---|
+| astar tasma joyida IoU | 0.00 \| 0.04 | 0.67 \| 0.67 | — |
+| pona joyida IoU | 0.52 \| 0.36 | 0.91 \| 0.86 | — |
+| pona maydoni (kapyushon asbobi) | 2418..2556 \| 1275..1617 | 727..738 \| 356..735 | 745 \| 663..838 |
+| tasma qalinligi 19..22 (px) | 2.4..5.8 | 19.3..21.6 | 19.8..21.2 |
+| o'ng-tepa burchak (cho'qqi zondi) 17..22 | (205..225, 0..14) | (220..233, 23..30) | (225..238, 29..35) |
+| ton sinflari massa IoU: tashqi / astar / ichi / yuz / soch (3-kadr) | 0.70 / 0.21 / 0.15 / 0.10 / 0.20 | 0.81 / 0.28 / 0.23 / 0.26 / 0.27 | — |
+| ton sinflari massa IoU (2-kadr) | 0.66 / 0.06 / 0.18 / 0.22 / 0.33 | 0.70 / 0.15 / 0.18 / 0.21 / 0.33 | — |
+| yorug' soha markazi farqi, 12..22 o'rtacha (px) | 18.7 | 7.7 | — |
+| blok harakati vektori farqi, 3-kadr (px/juft) | 1.58 | 0.68 | — |
+| yopilish xaritasi IoU 12-13 / 14-22 | 0.90 / 0.90 | 0.91 / 0.92 | — |
+| 3-kadr tendensiyasi; juftlar MAE | −14.3%; 0.0448 | −21.0%; 0.0501 | −17.7% |
+| butun klip tendensiyasi; MAE | −14.6%; 0.0425 | −17.6%; 0.0458 | −14.7% |
+
+1-kadr chizmasi o'zgarmagan: xom render ±1 (Chromium), zondlar xom renderda aynan bir xil
+(langar 2.08/1.52, og'iz 0.71/0.68). GIF yo'lida og'iz x 1.03 → 1.18: palitra butun klip uchun
+bitta — 2-3-kadr o'zgarganda 1-kadr dither'i siljiydi.
+
+Ochiq: bosh 3-kadrda misolnikidan katta va boshqa pozada (misolda pastdan, egilgan; yuz
+pastki-chapda, ostida qorong'i yoqa) — iyak kadrdan chiqadi, yuz chap cheti qirraning tik
+chizig'i; plash ustidan o'tgan yaqin qor (bizda qor figuraning ortida); plash burmalari
+ingichka diagonal chiziqlar (bizda 1-kadrda ovallar); 1-kadr kapyushoni (pona uchi 6..10
+tasvirda ~8 px pastroq).
