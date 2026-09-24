@@ -5,7 +5,7 @@ description: "code-video project only: bring a code-drawn animation toward a ref
 
 # Media Match — reference
 
-> **code-video project skill · `media-match-reference` v1.1.0**
+> **code-video project skill · `media-match-reference` v1.2.0**
 > Scope: the code-video repository only — bringing its code-drawn animation toward a reference clip. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web or dashboard work, and do not add it to that repository.
 > Source of truth: `.claude/skills/media-match-reference/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
 > A calibrated reference implementation (Python: numpy, scipy, Pillow) is the `taqqos/` folder of that repository; where only this file is available, fetch it from there. Everything below also works with your own code — the method is what matters, not the tool.
@@ -76,6 +76,15 @@ A head track bound to the near eye's dark blob followed the blob as it changed �
 
 Measure in a clean render. A tracking loop that measured its own boil and sway fed that jitter back into the track: boil rose from 1.96 to 2.34 px until the loop measured a clean render.
 
+## Read the camera first — the physics constrains the model
+
+Before shaping an object, establish where the camera is from what is visible, then let contact and gravity constrain the model. In one hood round the reference showed the brim's lit underside (L 43–48), the hood's dark interior (L 7–9) and its outer surface (L 19) together — visible only from the side and below. The brim rests on the hair: as the head bows, the band's lower edge dropped 53 px in four frames while the hair tips dropped 18 px (lit hair −67%).
+
+- **A straight line between two measured points is a guess about everything between them.** The rim was drawn from the measured peak to the measured temple; in the reference that line runs above the lit band, so ours hung the band in empty sky as a horn. Measure the edge itself — a few column keys along the band's top and bottom.
+- **Filters eat sharp tips.** A median-5 class mask moved a wedge's apex 5 px and its lower tip 3 px on a synthetic case; straight edges survive. Take vertices from intersections of lines fitted to the edge rows away from the corners (calibrated to ≤0.8 px). An IoU fit of the polygon left the apex 2 px off: the objective cannot see the eaten tip.
+- **Our subject may be bigger than the reference's.** The hood hides the back of the head; ours is larger, and its back sat exactly where the reference shows the interior. Draw the interior over the head, as the outer surface already is — behind it, our own hair hid it completely.
+- **A centroid of a partly covered mass is not a position.** Re-running the lit-area centroid loop with the new occluders made the head jump 27 px between two frames: every shift changes how much the brim hides. A contact criterion — the gap between the band's lower edge and the hair top, zero in the reference by definition — gave a smooth track; the head holds once the brim stops, as in the reference, and the lit-centroid distance still fell from 18.7 to 7.7 px.
+
 ## Held frames
 
 **Detect them:** rigid landmarks identical to ≤0.1 px and a block-motion median of 0.00 in the rigid region.
@@ -102,6 +111,7 @@ Open the sheet for every large difference and see what the probe hit. Over two r
 | brightest spot on the cheek (tear) | the lower-lid highlight and a lit hair edge (7×36 px) | box moved off the hair and the eye |
 | brightest spot at the jaw (tear ring) | a snow particle (L 150) brighter than the ring's highlight | narrower box |
 | mouth centroid −1.7 px, every held frame | not a shifted mouth: the stroke's LEFT end was 3 px long, the right end exact | move only the left key |
+| band and interior boxes anchored to the largest lit component | in ours that component was a hair lock beside the face; the boxes missed the band (11–35 px against 378–881) | measure inside the reference's own mask dilated by 4 px, the same class code on both sides |
 
 The last one generalises: a centroid difference can be a SHAPE difference. List the component's extents (left, right, top, bottom) on both sides before moving anything. Keep the reason for every probe fix in the project file, or the next person undoes it.
 
@@ -149,6 +159,7 @@ After the numbers pass, look at the sheet — and when a number improves, ask wh
 - A hair-lag rule raised the frame-difference measure (0.347 → 0.351) while reversing the motion it modelled (difference 1.1 → 2.2 px): removed.
 - A shot's acceleration trend matched the reference (+14.6% vs +14.3%) only because face boil in held frames stood in for the reference's hair motion. Removing the boil made it +39.4%: the number got worse and the truth came out; the fix belongs to the hair.
 - A two-point trend (last pair / first pair) is fragile; report every pair and the per-pair MAE. One change improved MAE 0.043 → 0.029 while the trend "worsened" +17.7% → +7.7%.
+- A shot's pair-difference MAE (0.0448) was helped by our head rising 15 px at the end of the shot, where the reference's brim holds. With the head held it read 0.0501. The missing change was a layer: the reference has snow falling in front of the cloak (46–65 specks in the lower-left; ours 0 — our snow is drawn behind the figure). Find the missing layer; do not add motion to restore the number.
 
 ## Structure bugs show up as measurements
 
