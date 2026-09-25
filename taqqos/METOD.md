@@ -426,6 +426,27 @@ kontur qatori) -- o'lcham va sakrashni hech biri ko'rmasdi.
   3-shot 0.037-0.067 -> 0.009-0.039 (misol 0.059-0.083). "Tinchroq" -- misolga yaqinroq degani emas.
 Hisob: `personaj3d/README.md` (7-o'tish), `chiqish/kapyushon-audit-7.png`.
 
+## 18. "Kamera zoom" -- masshtab zondi, katta massa, fon qatlami (3D, 8-o'tish)
+
+Foydalanuvchi: "10 dan keyin kamera zoom ga o'xshab katta-kichik bo'ladi". Zondlar yuzni yaqin ko'z langariga nisbatan
+o'lchardi -- kadrning o'zi kattalashib-kichrayishini hech biri ko'rmasdi.
+- **Masshtab -- alohida zond.** Qo'shni tasvirlar orasida figura mintaqasining affin moslashi (ECC; kalibr: 1.02 zoom ->
+  1.0203): misolda shot ichida 0.985..1.008, bizda 9->10 0.924. Sabab joyda emas, mato ERGASHISHIDA edi: bosh burilganda
+  kapyushon qirrasi bosh orqasini yopib borardi. Shot ichidagi aylanishga ergashish ulushi alohida parametr bo'ldi (skan:
+  1-shotda 0.2, 3-shotda eski 0.35 eng yaxshisi) -> 1.007.
+- **Kamera masshtabi katta massadan.** 2-shot masofasi pastki yuz konturiga (21 qator) moslangan edi -- RMS 1.3 px, lekin
+  butun bosh va kapyushon 20 % kichik chiqdi (figura 0.407, misol 0.509; misolda figura shotdan shotga O'SADI, bizda
+  kichrayardi). Anime profil yuzi boshiga nisbatan kichik chiziladi: kichik belgi kamerani emas, yuzni o'zgartiradi. Tartib:
+  kamera -- figura va ko'rinadigan bosh siluetiga, yuz -- keyin, shu masshtab ichida.
+- **Fon qatlami texnika sifatida.** Misolda qor bitta 2D qatlam: kesishda davom etadi (fazaviy korrelyatsiya r 0.71 / 0.69),
+  zichligi uch shotda bir xil (271 / 273 / 272 zarra/10k px). 3D qor har shot kamerasidan qayta chizilganda kesishda uzilardi
+  (r 0.12 / 0.03) va 2-shotda +51 % zichlashardi -- ko'zga "kamera uzoqlashdi". Qatlam kamera fazosida, shotga o'xshashlik
+  bilan ko'chiriladi (chuqurlik d_shot/d_1 ga cho'ziladi -- yopilish saqlanadi).
+- **Statistika qutisi personajdan toza bo'lsin.** Birinchi qor o'lchovi (o'ng 55 %) 2- va 3-shotda sochimizni "katta zarra"
+  deb sanadi (p99 15 / 32) -- har shot uchun ikkala tomonda personajdan o'ngdagi quti. Qutidan qutiga zichlik o'zgarsa
+  (bizning qor o'ngda siyrak: 195 -> 160), avval bitta shotning o'zida qutilarni solishtiring.
+Hisob: `personaj3d/README.md` (8-o'tish), `chiqish/kamera-audit-8.png`.
+
 ---
 
 ## Bir o'tish tartibi
@@ -433,7 +454,8 @@ Hisob: `personaj3d/README.md` (7-o'tish), `chiqish/kapyushon-audit-7.png`.
 0. Sahna (15-qoida): har shotda nima qiladi, qayerga qaraydi, kamera qayerda -- 3D da tiklanadi,
    renderda bir xil kod bilan tekshiriladi. Detallar undan keyin. Massa (soch, kiyim) -- misolning
    yorug'i/qorong'isi bizda qaysi qismga tushishi bilan (16-qoida). Joy bilan birga O'LCHAM va
-   tasvirdan tasvirga SAKRASH ham o'lchanadi (17-qoida).
+   tasvirdan tasvirga SAKRASH ham o'lchanadi (17-qoida). Kamera masshtabi -- katta massadan, fon qatlami
+   kesishda uzluksiz; figura masshtabi har juftda (18-qoida).
 1. `kalibr` — hammasi PROVEN.
 2. Titroqsiz render → `zond` (hamma tasvir) va `siluet`: eng katta farqlar.
 3. Har biri uchun varaq/setka/L jadvali: zond nimaga tegdi (7-qoida), nima o'qildi
