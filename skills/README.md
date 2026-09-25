@@ -8,11 +8,13 @@ shu repo ichida o'qiydi). Asl nusxa (manba) — shu fayllar.
 |---|---|---|
 | [`media-audit-reality`](../.claude/skills/media-audit-reality/SKILL.md) | 1.3.0 | chiqarilgan film, rasm yoki ovozni ko'z va quloq bilan emas, o'lchov bilan haqiqatga solishtirish. Oq Ko'chadagi 41 tekshiruv va `loyihalar/` dagi 14 tasi shu yondashuvdan o'sib chiqqan: har tekshiruv o'zining ataylab buzilgan holatini olib yuradi, isbotlay olmasa `UNPROVEN` |
 | [`code-audit-structure-scale`](../.claude/skills/code-audit-structure-scale/SKILL.md) | 1.0.1 | kattalashgan manbani qayta tuzish kerakmi: ta'sir radiusi, sintetik masshtab sinovi, mashina va muallif narxi |
-| [`media-match-reference`](../.claude/skills/media-match-reference/SKILL.md) | 1.0.1 | kod bilan chizilgan animatsiyani namuna klipga kadrma-kadr, o'lchov bilan yaqinlashtirish; asbobi — [`taqqos/`](../taqqos/), usul va topilmalar — [`taqqos/METOD.md`](../taqqos/METOD.md) |
+| [`media-match-reference`](../.claude/skills/media-match-reference/SKILL.md) | 1.3.0 | kod bilan chizilgan animatsiyani namuna klipga kadrma-kadr, o'lchov bilan yaqinlashtirish; asbobi — [`taqqos/`](../taqqos/), usul va topilmalar — [`taqqos/METOD.md`](../taqqos/METOD.md) |
+| [`media-staging-audit`](../.claude/skills/media-staging-audit/SKILL.md) | 1.1.0 | detallardan oldin sahna: har shotda nima qiladi, qayerga qaraydi, kamera qayerda (3D da; bitta ko'rinish faqat nisbiy yo'nalishni beradi), kontur qatorlari, renderda tekshirish |
+| [`media-3d-consistency-audit`](../.claude/skills/media-3d-consistency-audit/SKILL.md) | 1.0.0 | 3D modelni chizilgan misolga moslashda "3D ichida 2D fikrlash"ni topish: shot, ko'rinish burchagi yoki kadrga bog'langan shakl/joy/fon; faqat kamera yuradigan kalibrlangan sinov; har yamoq o'rniga barcha shotlarga birgalikda moslangan bitta dunyo |
 
 ## Chegara
 
-Bu uchala skill **abc UX-audit oilasiga kirmaydi** (`github.com/AlonurKomilov/skills` —
+Bu skill'lar **abc UX-audit oilasiga kirmaydi** (`github.com/AlonurKomilov/skills` —
 veb va dashboard loyihalari uchun `ux-audit-*` skill'lari). U yerga qo'shilmaydi,
 u yerdagi README yoki taksonomiyaga yozilmaydi, u yerdagi skill'lar bu yerdan
 o'zgartirilmaydi. Har SKILL.md boshida shu chegara yozilgan.
@@ -23,6 +25,21 @@ o'zgartirib qo'yishi mumkin.
 
 ## Versiyalar
 
+- `media-3d-consistency-audit` 1.0.0 — yangi (personaj3d 9-o'tish, 1-qadam). Sakkiz
+  o'tishda yig'ilgan oltita yamoq (ko'z kartasi, pastki yuz surishi, soch aralashmasi,
+  shot bo'yicha kapyushon, kameraga yopishgan qor, fon "tepasi"); faqat kamera yuradigan
+  sinov (poza va vaqt ushlangan; kalibr: yamoqlar muzlatilganda 0.0000 px, sun'iy siljish
+  mustaqil kamera modelining o'zi) — kapyushon 114 / 159 px, ko'z 33 / 36 px sakraydi, qor
+  138 px kamera bilan yuradi; qor qutisi haqidagi "sabab" sinab ko'rilib tasdiqlanmadi.
+- `media-staging-audit` 1.1.0 — 4- va 6-bo'lim: ko'rinishga bog'liq chizma usuli va 2D
+  fon qatlami endi O'LCHANADI, 3D modelga qurilmaydi (1.0.0 dagi ko'z kartasi va fon
+  "tepasi" kamera sinovida sirg'anib-sakradi); `media-3d-consistency-audit` ga havola.
+- `media-staging-audit` 1.0.0 — yangi (5-o'tish: sahna avval).
+- `media-match-reference` 1.3.0 — "3D model shotlar bo'yicha emas, birgalikda moslanadi"
+  bo'limi va `media-3d-consistency-audit` ga havola.
+- `media-match-reference` 1.2.0 — kamera va fizika: avval kamera o'qiladi, keyin
+  tegish/og'irlik modelni cheklaydi; qisman yopilgan massaning markazi joy emas.
+- `media-match-reference` 1.1.0 — optimizator ko'rmagan joyni buzadi (soch o'tishi).
 - `media-audit-reality` 1.3.0 — 10-o'tishdan uchta qo'shimcha: bir hujjatdagi ko'p
   kadrda id lar kadrga xos bo'lishi (takrorlangan klip id); har zond nimaga
   tegganini ko'rish; ushlangan rasm titramaydi (bitta urug' bilan ham), ushlangan

@@ -447,6 +447,32 @@ o'lchardi -- kadrning o'zi kattalashib-kichrayishini hech biri ko'rmasdi.
   (bizning qor o'ngda siyrak: 195 -> 160), avval bitta shotning o'zida qutilarni solishtiring.
 Hisob: `personaj3d/README.md` (8-o'tish), `chiqish/kamera-audit-8.png`.
 
+## 19. 3D ichida 2D fikrlash -- faqat kamera yuradigan sinov (3D, 9-o'tish)
+
+Foydalanuvchi: "fully 3D model qilishing kerak ki kamera o'sha example positionga kelganda 1:1 bo'lishi kerak ... 2D deb
+ishlov bersang kamera siljisa noto'g'ri joyi bo'lib qolish ehtimoli katta". Sakkiz o'tishda shotga, ko'rinish burchagiga
+yoki kadrga bog'langan oltita shakl/fon qiymati yig'ilgan edi (ko'z kartasi, pastki yuz surishi, soch dam aralashmasi,
+shot bo'yicha kapyushon va ergashish ulushi, kameraga yopishgan qor, fon "tepasi") -- har biri o'z shotida raqamni
+yaxshilagan, hech biri bitta shotda ko'rinmaydi.
+- **Bitta dunyo: shotga faqat kamera tegishli.** Qolgan hamma narsa -- doimiy, vaqt (animatsiya, fizika) yoki poza
+  funksiyasi. Test: "hech kim qaramasa ham obyekt shunday qilarmidi?" Ko'rish yo'nalishiga bog'liq soyalash (rim) -- joiz.
+- **Sinov: poza va vaqt ushlanadi, faqat kamera yuradi** -- misol kameralari orasida uzluksiz (~1.2 gr qadam) va bosh
+  atrofida (10 gr). Rasm emas, DUNYO o'qiladi: har qismning namuna nuqtalari sahna grafidan; har tasvirda joriy va
+  0-tasvir nuqtalari JORIY kamera bilan proyeksiyalanadi -- qism qattiq bo'lganda turishi kerak bo'lgan joydan farq (px);
+  oldingi tasvirga nisbatan -- qadam (sakrash -- bitta katta qadam, sirg'anish -- ketma-ket qadamlar).
+- **Kalibr.** Ma'lum yamoqlar 0-tasvirda muzlatilganda hamma qism 0.0000 px (49 + 37 tasvir) -- ro'yxat to'liqligining
+  ham tekshiruvi. Sun'iy +0.1 birlik siljish -- mustaqil teshik-kamera modelining o'zi (0.000 %). Birinchi urinishda asbob
+  2.27 px, model 3.77 px dedi: siljish personajning mahalliy o'qida berilgan edi (ildiz 90 gr burilgan) -- xato sinovda.
+- **Natija** (320x180): kapyushon kalit almashganda 114 / 159 px sakraydi; yaqin ko'z 33 / 36 px sakraydi, orbitada yuz
+  bo'ylab 38 px gacha suriladi; pastki yuz 5.3 px; soch kamera boshga nisbatan 70..84 gr da qadamiga 18 px gacha
+  sirg'anadi (orbitada 98 px); qor kamera bilan yuradi (yo'l oxirida 138 px, orbitada 398 px -- paralaks yo'q); fon
+  tepasi 3-shot kamerasida 22 gr og'gan. Bo'yin, plash, ichki soch -- 0.00.
+- **Ishonarli sabab ham taxmin.** 2-shot qori zichroq (+21 %, 235 / 195): qor qutisi z <= 7 da tugaydi, 2-shot kamerasi
+  z 10.2 da -- tashqarida. Quti hamma kamerani o'rab olganda (zichlik o'sha) o'zgarmadi: 245 / 195 / 186. Sabab ochiq.
+- **Kesishlar orasidagi qarama-qarshilik -- o'lchov:** 2-shot yuzga d 12.88, siluetga 10.32 -- modelning yuz/bosh nisbati
+  misolnikidan boshqa; bitta shotda bitta kamera, farq modelda tuzatiladi yoki qoldiq sifatida aytiladi.
+Hisob: `personaj3d/README.md` (9-o'tish), `chiqish/kamera-sinov-9.{png,gif}`; skill `media-3d-consistency-audit`.
+
 ---
 
 ## Bir o'tish tartibi
@@ -455,7 +481,8 @@ Hisob: `personaj3d/README.md` (8-o'tish), `chiqish/kamera-audit-8.png`.
    renderda bir xil kod bilan tekshiriladi. Detallar undan keyin. Massa (soch, kiyim) -- misolning
    yorug'i/qorong'isi bizda qaysi qismga tushishi bilan (16-qoida). Joy bilan birga O'LCHAM va
    tasvirdan tasvirga SAKRASH ham o'lchanadi (17-qoida). Kamera masshtabi -- katta massadan, fon qatlami
-   kesishda uzluksiz; figura masshtabi har juftda (18-qoida).
+   kesishda uzluksiz; figura masshtabi har juftda (18-qoida). 3D modelda shotga faqat kamera tegishli: har o'tishdan keyin faqat kamera
+   yuradigan sinov -- har qism 0 px (19-qoida).
 1. `kalibr` — hammasi PROVEN.
 2. Titroqsiz render → `zond` (hamma tasvir) va `siluet`: eng katta farqlar.
 3. Har biri uchun varaq/setka/L jadvali: zond nimaga tegdi (7-qoida), nima o'qildi

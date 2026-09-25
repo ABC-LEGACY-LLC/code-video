@@ -1,14 +1,14 @@
 ---
 name: "media-staging-audit"
-description: "code-video project only: before matching a reference clip's face or other details, recover per shot what the subject does, where it looks and where the camera is, in 3D (a single view gives only the relative orientation), fit contours not only points, place view-dependent drawing cheats as features rather than shape, and check the staging on the render with the same code on both sides."
+description: "code-video project only: before matching a reference clip's face or other details, recover per shot what the subject does, where it looks and where the camera is, in 3D (a single view gives only the relative orientation), fit contours not only points, measure view-dependent drawing cheats as targets without building them into a 3D model, and check the staging on the render with the same code on both sides."
 ---
 
 # Media Staging Audit
 
-> **code-video project skill · `media-staging-audit` v1.0.0**
+> **code-video project skill · `media-staging-audit` v1.1.0**
 > Scope: the code-video repository only — bringing its code-built (3D or drawn) animation toward a reference clip. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web or dashboard work, and do not add it to that repository.
 > Source of truth: `.claude/skills/media-staging-audit/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
-> Pairs with `media-match-reference` (measuring details against the clip) and `media-audit-reality` (would it be true in the world). This one comes FIRST.
+> Pairs with `media-match-reference` (measuring details against the clip) and `media-audit-reality` (would it be true in the world). This one comes FIRST. In a 3D model, `media-3d-consistency-audit` decides what may differ between shots: only the camera.
 
 Use it before any detail matching (face, eyes, mouth, hair) against a reference, and whenever the reviewer says the result "looks the wrong way": "ours looks sideways, the reference looks down", "the camera is wrong", "she is looking up, not down".
 
@@ -47,21 +47,19 @@ Fit with the elevation fixed and scanned, and report the family, not one point. 
 
 Pose and camera fits need silhouette rows (the profile line, the jaw underside, the far contour), not only landmarks. Profile shot: 4 points at RMS 2.0 px hid a 19.5 px contour error; with 21 contour rows plus the jaw underside the correct pose fitted at RMS 1.33 px (head level, not the tilted one). Sample the model silhouette densely: a 110x70 grid put one row 3.3 px off (checked against 600x400); restrict the sampled region instead of thinning it.
 
-## 4. View-dependent drawing cheats are feature placement, not shape
+## 4. View-dependent drawing cheats: measure them, do not build them into a 3D model
 
-Drawn animation moves features by view. In the reference profile the eye sat 17.5 px (0.6 head units) behind and 5 px above where a rigid head puts it. Do it as view-dependent feature placement, not by deforming the silhouette (pushing the lower face forward tilted the whole face up):
-- fit the pose WITHOUT the cheated feature, then back-project the reference feature (both ends of the closed-eye line) onto the model surface: that is the target;
-- relocate the feature drawing along the surface with a chart: origin, tangent axes, scale, tilt; at weight 0 it must equal the plain mapping (checked: 0.0014 units);
-- drive the weight by the view angle in the HEAD frame: a head bowed 39 deg seen from a low camera is ~3/4 in head space (~46 deg) while the world-horizontal angle is 55 deg;
-- a cheat that the data supports only in some frames (the reference drew the lower face ahead of the eye in a fast turn, shot 1 frames 7-11) gets its own per-frame weight, never tied to the view angle.
+Drawn animation moves features by view. In the reference profile the eye sat 17.5 px (0.6 head units) behind and 5 px above where a rigid head puts it. Measure it: fit the pose WITHOUT the cheated feature, then back-project the reference feature (both ends of the closed-eye line) onto the model surface — that is the target. Do not reach it by deforming the silhouette either: pushing the lower face forward tilted the whole face up.
+
+v1.0.0 of this skill went on to relocate the feature along the surface with a chart weighted by the view angle, and to give a cheat seen only in some frames its own per-frame weight. In a 3D model both are patches: with the camera moved between the reference positions (pose and time held) the eye popped 33–36 px and in an orbit slid up to 38 px along the face; the per-frame lower-face push popped the jaw 5.3 px. Give the feature one 3D place fitted to all views at once and report what is left as a residual — see `media-3d-consistency-audit`. In a drawn (2D) rig a view-weighted chart is the rig's own mechanism and stays valid.
 
 ## 5. Verify the staging on the render, same code on both sides
 
 The model does not know occlusion. For the old shot 3 the model said the eye was 1.0 / 2.3 px off; in the render the eye box held no dark lid line (min L 38) and the chin rows were behind the cloak. Measure the render: contour rows scanned from a seed inside the face, the eye lash line as the darkest 5x2 window in a box that excludes dark neighbours (a box reaching the hood interior locked onto L 7 instead of the eye), the eye track per frame. Cross-check the node projection against the page once per change (it matched to 0.0 px).
 
-## 6. 2D background layers
+## 6. 2D background layers are a property of the reference, not of the camera
 
-If the reference's background gradient and particle motion are the same in every shot (snow density top->bottom 11.7->35.4, 12.5->37.6, 10.4->34.0; particles +2.9,-1.1 px/frame in all three), it is a 2D layer. It says nothing about the camera, and a tilted 3D camera must not change it: tie the gradient's and the density's "up" to the camera, tilted by the camera's extra pitch relative to the reference shot (otherwise a camera 30 deg below turned the snow field into black sky).
+If the reference's background gradient and particle motion are the same in every shot (snow density top->bottom 11.7->35.4, 12.5->37.6, 10.4->34.0; particles +2.9,-1.1 px/frame in all three), it is a 2D layer. It says nothing about the camera. v1.0.0 tied the 3D background's "up" and the snow to the camera instead; the camera-only test then showed the snow following the camera (138 px off the world between the reference cameras, 398 px in an orbit) and the sky tilted 22 deg. In a 3D model fit one world background to all shots under their own cameras and report what remains (`media-3d-consistency-audit`, section 6).
 
 ## 7. Deliver
 

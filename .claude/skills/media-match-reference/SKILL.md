@@ -5,7 +5,7 @@ description: "code-video project only: bring a code-drawn animation toward a ref
 
 # Media Match — reference
 
-> **code-video project skill · `media-match-reference` v1.2.0**
+> **code-video project skill · `media-match-reference` v1.3.0**
 > Scope: the code-video repository only — bringing its code-drawn animation toward a reference clip. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web or dashboard work, and do not add it to that repository.
 > Source of truth: `.claude/skills/media-match-reference/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
 > A calibrated reference implementation (Python: numpy, scipy, Pillow) is the `taqqos/` folder of that repository; where only this file is available, fetch it from there. Everything below also works with your own code — the method is what matters, not the tool.
@@ -136,6 +136,10 @@ Copying the reference outline point by point is tracing. Fit your own parametric
 - **Then measure the real render**, not the model. Model IoU 0.84–0.95 became render IoU 0.84–0.91 (antialiasing, boil).
 
 Result in one round, against the delivered previous round with the same pipeline on both sides: silhouette IoU 0.71 → 0.87, occlusion-map IoU 0.89 → 0.95.
+
+## A 3D model is fitted across shots, not per shot
+
+When the model is 3D and the reference is drawn, only the camera belongs to a shot. Fit shape parameters to all shots together — one camera per shot, one objective. A shape, a feature's place on a surface, a cloth or a background fitted per shot, per view angle or per frame improves each shot and makes the model inconsistent. In one project six such fits passed every per-shot measure; a camera-only test (pose and time held, the camera moved between the reference positions) showed the hood popping by up to 159 px, the near eye by 36 px and a camera-carried snow layer drifting 138 px. The method, the test and its calibration are in `media-3d-consistency-audit`.
 
 ## The fit breaks what it does not see
 
