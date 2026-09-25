@@ -5,7 +5,7 @@ description: "code-video project only: bring a code-drawn animation toward a ref
 
 # Media Match — reference
 
-> **code-video project skill · `media-match-reference` v1.3.0**
+> **code-video project skill · `media-match-reference` v1.4.0**
 > Scope: the code-video repository only — bringing its code-drawn animation toward a reference clip. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web or dashboard work, and do not add it to that repository.
 > Source of truth: `.claude/skills/media-match-reference/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
 > A calibrated reference implementation (Python: numpy, scipy, Pillow) is the `taqqos/` folder of that repository; where only this file is available, fetch it from there. Everything below also works with your own code — the method is what matters, not the tool.
@@ -141,6 +141,20 @@ Result in one round, against the delivered previous round with the same pipeline
 
 When the model is 3D and the reference is drawn, only the camera belongs to a shot. Fit shape parameters to all shots together — one camera per shot, one objective. A shape, a feature's place on a surface, a cloth or a background fitted per shot, per view angle or per frame improves each shot and makes the model inconsistent. In one project six such fits passed every per-shot measure; a camera-only test (pose and time held, the camera moved between the reference positions) showed the hood popping by up to 159 px, the near eye by 36 px and a camera-carried snow layer drifting 138 px. The method, the test and its calibration are in `media-3d-consistency-audit`.
 
+## Separate the parts — the bare model first, then the layers
+
+A face "fitted down to the mouth" hides the chin. In one 3D round the ongoing probes covered the eyes, the mouth and three jaw-underside columns next to the chin in the 3/4 shot, and only the front contour and the eye in the other two shots; the brows and the nose tip were never measured, and the head fit held a single contour row of the chin. The user saw it before any number did: toward the ear the jaw sat up to 17 px low.
+
+- **Inventory first.** List the parts — hair, brows, eyes, nose, mouth, lip shadow, chin, jaw line, neck, ear, cloth — and, for each shot, the measurement that sees each one. A part with no measurement is not "fine"; it is unmeasured.
+- **You know the truth on your side — calibrate there.** Project named 3D landmarks of every part into every frame (checked against the renderer to 0.005 px) and run the detector meant for the reference on your own render. A constant offset (a dark eye component's centroid sat −1.6, −3.7 px from the iris centre) cancels on both sides; a large or varying one means the detector hit something else — a hair edge, or the lip shadow instead of the mouth. Review every frame's detections on a sheet; reject a detector where it picks a different mark each frame.
+- **Bare first, then the layers.** Render the model without hair, hood and cloak and measure the head's own outline (jaw trace per column, contour per row, the chin). Then add one layer at a time and measure what lands on the reference's *visible* skin: here our hair covered 16 / 18 / 10 % of it per shot, the hood another 2–17 %. A part hidden in the dressed render is unmeasured, not correct.
+- **The model's outline must equal the render's.** Silhouette points sampled from the front half only put the jaw trace 1.5–2.7 px above the render — in the 3/4 view the jaw underside came from the middle of the head. Full sampling and the pixel-centre rule (last covered row ≈ y − 1.0) brought it to 0.7–1.3 px.
+- **The pose swallows the shape.** With only lower-face targets and free poses, the head yaw of two shots ran to the 17° bound. Penalise pose change away from the values fitted with everything else.
+- **Equal shot weights can sacrifice the main shot.** A drawn reference is not one rigid object across views (the profile face was drawn ~20 % smaller relative to the head): equal weights lifted the chin 5–6 px in the 3/4 shot to suit the other two. Fit the main shot with a "no other shot gets worse" penalty and report the contradiction as a residual. Moving another shot's pose also moves any pose-driven rig keyed to it — here it brought back a scale jump in the main shot (1.008 → 1.057).
+- **When a number disagrees with the look, overlay the masks.** A hair-lock refit cut its cover of the visible face from 14 % to 2 %, but the reference/ours overlay showed the old lock lying exactly on the reference's lock in frames 1–9, and the new one had left the face edge. One lock cannot sit where the drawing puts it in both the 3/4 and the profile view; the refit was rejected.
+
+In that round: jaw-underside error in the main shot 3.9 → 1.3 px (max 17 → 7), chin unchanged; the chin residuals of the other shots traced to the drawing (profile face scale) and to pose (eye-to-chin 45 px in the reference, 61 px in ours).
+
 ## The fit breaks what it does not see
 
 An optimiser moves every free parameter toward its objective and is free wherever the objective is blind. In one hair round:
@@ -171,7 +185,7 @@ Many frames in one document, each its own SVG: a clip id built from the rounded 
 
 ## Output
 
-A ranked per-frame table (probe × frame, ours − reference, flagged against tolerance), the sheets for the top items with the probe hits confirmed, before/after sheets (reference / previous as delivered / ours), and the project card updated with before → after numbers and what stays open. Say which differences were probe errors and how you know. Do not claim the clip was "watched"; say frames were measured.
+A parts inventory (which measurement sees which part, per shot), a ranked per-frame table (probe × frame, ours − reference, flagged against tolerance), the sheets for the top items with the probe hits confirmed, before/after sheets (reference / previous as delivered / ours), and the project card updated with before → after numbers and what stays open. Say which differences were probe errors and how you know. Do not claim the clip was "watched"; say frames were measured.
 
 ## Division of labour
 

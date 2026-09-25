@@ -8,7 +8,7 @@ shu repo ichida o'qiydi). Asl nusxa (manba) — shu fayllar.
 |---|---|---|
 | [`media-audit-reality`](../.claude/skills/media-audit-reality/SKILL.md) | 1.3.0 | chiqarilgan film, rasm yoki ovozni ko'z va quloq bilan emas, o'lchov bilan haqiqatga solishtirish. Oq Ko'chadagi 41 tekshiruv va `loyihalar/` dagi 14 tasi shu yondashuvdan o'sib chiqqan: har tekshiruv o'zining ataylab buzilgan holatini olib yuradi, isbotlay olmasa `UNPROVEN` |
 | [`code-audit-structure-scale`](../.claude/skills/code-audit-structure-scale/SKILL.md) | 1.0.1 | kattalashgan manbani qayta tuzish kerakmi: ta'sir radiusi, sintetik masshtab sinovi, mashina va muallif narxi |
-| [`media-match-reference`](../.claude/skills/media-match-reference/SKILL.md) | 1.3.0 | kod bilan chizilgan animatsiyani namuna klipga kadrma-kadr, o'lchov bilan yaqinlashtirish; asbobi — [`taqqos/`](../taqqos/), usul va topilmalar — [`taqqos/METOD.md`](../taqqos/METOD.md) |
+| [`media-match-reference`](../.claude/skills/media-match-reference/SKILL.md) | 1.4.0 | kod bilan chizilgan animatsiyani namuna klipga kadrma-kadr, o'lchov bilan yaqinlashtirish; asbobi — [`taqqos/`](../taqqos/), usul va topilmalar — [`taqqos/METOD.md`](../taqqos/METOD.md) |
 | [`media-staging-audit`](../.claude/skills/media-staging-audit/SKILL.md) | 1.1.0 | detallardan oldin sahna: har shotda nima qiladi, qayerga qaraydi, kamera qayerda (3D da; bitta ko'rinish faqat nisbiy yo'nalishni beradi), kontur qatorlari, renderda tekshirish |
 | [`media-3d-consistency-audit`](../.claude/skills/media-3d-consistency-audit/SKILL.md) | 1.0.0 | 3D modelni chizilgan misolga moslashda "3D ichida 2D fikrlash"ni topish: shot, ko'rinish burchagi yoki kadrga bog'langan shakl/joy/fon; faqat kamera yuradigan kalibrlangan sinov; har yamoq o'rniga barcha shotlarga birgalikda moslangan bitta dunyo |
 
@@ -35,6 +35,8 @@ o'zgartirib qo'yishi mumkin.
   fon qatlami endi O'LCHANADI, 3D modelga qurilmaydi (1.0.0 dagi ko'z kartasi va fon
   "tepasi" kamera sinovida sirg'anib-sakradi); `media-3d-consistency-audit` ga havola.
 - `media-staging-audit` 1.0.0 — yangi (5-o'tish: sahna avval).
+- `media-match-reference` 1.4.0 — "qismlar alohida: yalang'och model avval, keyin qatlamlar" (ro'yxat, o'zimizda
+  kalibr, model izi = render, poza shaklni yutadi, asosiy shot + yomonlashmasin jarimasi, ustma-ust niqob) (10-o'tish).
 - `media-match-reference` 1.3.0 — "3D model shotlar bo'yicha emas, birgalikda moslanadi"
   bo'limi va `media-3d-consistency-audit` ga havola.
 - `media-match-reference` 1.2.0 — kamera va fizika: avval kamera o'qiladi, keyin
