@@ -1,6 +1,6 @@
 ---
 name: "media-match-reference"
-description: "code-video project only: bring a code-drawn animation toward a reference clip by measurement, frame by frame: the same code on both sides at one working size, calibrated probes anchored to rigid landmarks, silhouette profiles, per-pair motion and boil, difference maps, rhythm; every probe hit verified on a sheet; shapes fitted from your own models, never traced. Only technique is taken from the reference, never its character or drawing."
+description: "code-video project only: bring a code-drawn animation toward a reference clip by measurement, frame by frame: the same code on both sides at one working size, calibrated probes anchored to rigid landmarks, every part (eyes, brows, nose, mouth, chin, jaw, hair, cloth) measured separately on the bare model first and then layer by layer, silhouette profiles, per-pair motion and boil, difference maps, rhythm; every probe hit verified on a sheet; shapes fitted from your own models, never traced. Only technique is taken from the reference, never its character or drawing."
 ---
 
 # Media Match — reference
