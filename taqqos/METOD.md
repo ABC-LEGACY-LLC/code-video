@@ -471,7 +471,38 @@ yaxshilagan, hech biri bitta shotda ko'rinmaydi.
   z 10.2 da -- tashqarida. Quti hamma kamerani o'rab olganda (zichlik o'sha) o'zgarmadi: 245 / 195 / 186. Sabab ochiq.
 - **Kesishlar orasidagi qarama-qarshilik -- o'lchov:** 2-shot yuzga d 12.88, siluetga 10.32 -- modelning yuz/bosh nisbati
   misolnikidan boshqa; bitta shotda bitta kamera, farq modelda tuzatiladi yoki qoldiq sifatida aytiladi.
+- **Natija (9-o'tish oxiri):** yamoqlar olib tashlangach kamera sinovi hamma qismda 0.00 px (yo'l va orbita). Kapyushon
+  shot bo'yicha emas -- POZAGA bog'liq rig (kalit pozalar, kechikkan poza bo'yicha Gauss og'irliklar): bu ham bitta dunyo
+  (kameraga bog'liq emas); poza yo'li sinovi (kamera ushlangan, poza uzluksiz) -- sakrash yo'q. Qoldiqlar misolning 2D
+  ishlab chiqarishidan: profil ko'zi, qor qatlamining kesishdan o'tishi, uch shotda bitta osmon plitasi.
 Hisob: `personaj3d/README.md` (9-o'tish), `chiqish/kamera-sinov-9.{png,gif}`; skill `media-3d-consistency-audit`.
+
+## 20. Qismlar alohida -- yalang'och model avval, keyin qatlamlar (3D, 10-o'tish)
+
+Foydalanuvchi: "qaysi biri soch, burun, ko'z, qosh, og'iz, daha -- ajratib olmayapsan; boshni og'izgacha o'lchab dahani
+qoldirma; o'z modelimizda soch va kapyushonni olib turib birma-bir o'lcha, keyin qo'yib o'lcha".
+- **Qismlar ro'yxati -- o'lchovdan oldin.** Har shotda har qism uchun: qaysi o'lchov uni ko'radi? Bu loyihada qosh va burun
+  uchi hech qayerda, iyak uchi va jag'ning quloqqa tomon qismi hech qayerda o'lchanmagan edi; bosh moslashida 1-shot iyagi
+  bitta kontur qatori edi. Yuz "og'izgacha" moslangan -- jag' 17 px noto'g'ri, hech bir raqam buni ko'rsatmagan.
+- **Bizda haqiqat ma'lum -- asbobni o'zimizda kalibrlang.** Modeldan har qismning nomli nuqtalari (3D -> ekran, sahifa
+  bilan 0.005 px); misolga qo'llanadigan qoida bizning renderda shu nuqtalarga qarshi: doimiy siljish (bo'lak markazi
+  aniq nuqtadan -1.6, -3.7 px) ikkala tomonda bir xil -- qisqaradi; o'zgaruvchan katta farq -- asbob boshqa narsani topgan.
+- **Yalang'och avval.** Soch, kapyushon, plash yashirilgan render -- boshning o'z siluetasi (jag' osti izi, kontur, iyak);
+  keyin qatlamma-qatlam: misolning KO'RINADIGAN yuzi ustida bizda nima -- teri / soch / kapyushon (bu loyihada soch 16 / 18 /
+  10 %). Kiyingan renderda qism yashirilsa -- u yo'q deb o'lchanadi, yalang'ochda -- qayerdaligi.
+- **Model izi render bilan bir xil bo'lsin.** Sirt nuqtalari siluetasi faqat old tomondan olinganda render skanidan 1.5-2.7
+  px yuqori chiqdi (1-shotda jag' izi boshning o'rtasidagi jag' tagidan keladi) -- to'liq azimut; qator skani o'rtacha
+  floor(y - 0.5) = y - 1.0.
+- **Poza shakl farqini yutadi.** Faqat pastki yuz nishonlari bilan poza erkin bo'lsa 2- va 3-shot burilishi chegaraga (17 gr)
+  yetdi -- poza boshqa (soch, kapyushon, massa) bilan moslangan edi; jarima (x / 0.04 rad)^2.
+- **Teng shot og'irligi asosiy shotni qurbon qilishi mumkin.** Misol ko'rinishlari 2D da bir-biriga to'liq mos emas (profil
+  yuzi boshiga nisbatan ~20 % kichik): teng og'irlikda 1-shot iyagi 5-6 px ketdi. Asosiy shot + "boshqasi yomonlashmasin"
+  jarimasi; qarama-qarshilik qoldiq sifatida yoziladi.
+- **Poza -- rig kaliti -- masshtab zanjiri.** Shot pozasi surilsa pozaga bog'liq kiyim rigi boshqa shotlarda ham o'zgaradi
+  (2-shot kaliti 1-shot pozalariga yaqinlashib 10 -> 11 masshtab sakrashini qaytardi) -- poza, rig va kamera birga.
+- **Metrika ko'rinishga to'g'ri kelmasa -- ustma-ust niqob.** Soch qoplashi 14 -> 2 % ga tushdi, lekin ustma-ust niqob 1-9 kadrda
+  eski tutam misolnikiga aniq tushganini ko'rsatdi: bitta tutam 3/4 va profilni birga bermaydi -- sinov qabul qilinmadi.
+Hisob: `personaj3d/README.md` (10-o'tish), `chiqish/qismlar-audit-10*.png`, `chiqish/soch-tutam-10.png`.
 
 ---
 
