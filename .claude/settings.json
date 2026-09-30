@@ -99,7 +99,8 @@
   "permissions": {
     "allow": [
       "Bash(npx -y https://labs.abclegacyllc.com/cli.tgz rooms *)",
-      "Bash(npx -y https://labs.abclegacyllc.com/cli/* rooms *)"
+      "Bash(npx -y https://labs.abclegacyllc.com/cli/* rooms *)",
+      "Bash(node abc-labs/labs.mjs rooms *)"
     ]
   }
 }
