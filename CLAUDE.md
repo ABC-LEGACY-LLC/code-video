@@ -19,3 +19,8 @@ A work page answers the studio's contract (`studio/README.md`): `__ready`, the f
 while a work loads; a work is ready in under 3 s on the owner's machine; one scrub step takes
 under 50 ms at 4× CPU throttle. The studio's colours and sizes come from `studio/tokens.css`
 only.
+
+An export is made in the person's browser and saved to their disk; nothing of it is kept on the
+server or in CI. After a change to a work's sound or to the export, run `make audit-studio`: it
+exports and opens the files again, and checks that the sound lands on its frame
+(`studio/export-in-sync`, within one frame). CI runs the same on every push.

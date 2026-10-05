@@ -576,7 +576,11 @@ async function exportVideo({from=0,to=S.total-1,width=null,sound=true,onStep=()=
  const paint=()=>new Promise(r=>W.requestAnimationFrame(()=>W.requestAnimationFrame(r)));
  try{
   if(S.mode==='play'){ pauseStage(); setTransport(); }
-  const audio=sound?await exportAudio(from,to,fps):null;      // first, while the film is as it was
+  /* a work whose sound follows its drawing records the frames as they are drawn, and its
+     sound is made after them; the others render theirs first, while the film is as it was */
+  const record=sound&&typeof W.__soundRecord==='function';
+  let audio=sound&&!record?await exportAudio(from,to,fps):null;
+  if(record) W.__soundRecord(true);
   for(let n=from,i=0;n<=to;n++,i++){
    if(document.hidden){ onPause(true); await whileHidden(job); onPause(false); }
    if(job.cancel) throw new Error('cancelled');
@@ -592,9 +596,10 @@ async function exportVideo({from=0,to=S.total-1,width=null,sound=true,onStep=()=
    await turn();                                        // the studio stays answerable, and Cancel is heard
   }
   await encoder.flush(); if(failed) throw failed;
+  if(record){ W.__soundRecord(false); audio=await exportAudio(from,to,fps); }
   if(enc.codec==='avc'&&!description) throw new Error('the encoder gave no stream description');
   return MP4.file({codec:enc.codec,description,width:w,height:h,fps,samples,audio});
- } finally { try{ encoder.close(); }catch(e){} exporting=null; }
+ } finally { try{ encoder.close(); }catch(e){} try{ W.__soundRecord&&W.__soundRecord(false); }catch(e){} exporting=null; }
 }
 function saveBlob(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
  document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),60000); }

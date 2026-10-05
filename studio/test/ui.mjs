@@ -439,7 +439,9 @@ async function exportOff(frames){
  },frames).catch(e=>({error:e.message}));
  await done(p);
  if(r.error) throw new Error(r.error);
- return (r.w===270&&r.h===152?0:1)+(Math.abs(r.duration-0.5)<0.03?0:1)+(r.lit>50?0:1)+(r.type==='video/mp4'?0:1)+sent.length;
+ const faults=(r.w===270&&r.h===152?0:1)+(Math.abs(r.duration-frames/24)<0.03?0:1)+(r.lit>50?0:1)+(r.type==='video/mp4'?0:1)+sent.length;
+ if(faults&&frames===12) console.log('  export-plays saw: '+JSON.stringify({w:r.w,h:r.h,duration:r.duration,lit:r.lit,type:r.type,sent}));
+ return frames===12?faults:faults+(Math.abs(r.duration-0.5)<0.03?0:1);
 }
 await check({name:'studio/export-plays', unit:'faults: size, length, picture, type, things sent to the server',
  measure:()=>exportOff(12), pass:v=>v===0, calibrate:()=>exportOff(6),
@@ -450,23 +452,51 @@ await check({name:'studio/export-plays', unit:'faults: size, length, picture, ty
    long as the picture and is not silence -- and the picture must still open. The broken
    case exports without sound: there is then no track to decode. */
 async function soundOff(sound){
- const p=await studio('#whiteout'); await ready(p,'whiteout');
- const r=await p.evaluate(async sound=>{
-  const blob=await exportVideo({from:216,to:251,width:480,sound});
+ let off=0;
+ for(const [id,from] of [['whiteout',216],['bir-tomchi',400]]){
+ const p=await studio('#'+id); await ready(p,id);
+ const r=await p.evaluate(async ([sound,from])=>{
+  const blob=await exportVideo({from,to:from+35,width:480,sound});
   const v=document.createElement('video'); v.muted=true; v.src=URL.createObjectURL(blob);
   const opens=await new Promise(ok=>{ v.onloadedmetadata=()=>ok(true); v.onerror=()=>ok(false); });
   let dur=0, rms=0;
   try{ const ac=new OfflineAudioContext(2,48000,48000), b=await ac.decodeAudioData(await blob.arrayBuffer());
    dur=b.duration; const d=b.getChannelData(0); let q=0; for(let i=0;i<d.length;i++) q+=d[i]*d[i]; rms=Math.sqrt(q/d.length); }catch(e){}
   return {opens,w:v.videoWidth,vdur:v.duration,dur,rms};
- },sound).catch(e=>({error:e.message}));
+ },[sound,from]).catch(e=>({error:e.message}));
  await done(p);
- if(r.error) throw new Error(r.error);
- return (r.opens&&r.w===480?0:1)+(Math.abs(r.dur-1.5)<0.12?0:1)+(r.rms>0.002?0:1);
+ if(r.error) throw new Error(id+': '+r.error);
+ off+=(r.opens&&r.w===480?0:1)+(Math.abs(r.dur-1.5)<0.12?0:1)+(r.rms>0.002?0:1);
+ }
+ return off;
 }
-await check({name:'studio/export-has-sound', unit:'faults: the picture opens, the sound is 1.5 s, it is not silence',
+await check({name:'studio/export-has-sound', unit:'faults, per work: the picture opens, the sound is 1.5 s, it is not silence',
  measure:()=>soundOff(true), pass:v=>v===0, calibrate:()=>soundOff(false),
- note:'whiteout, frames 216–251: the score table and the footfalls, rendered offline and encoded in the browser'});
+ note:'whiteout frames 216–251 (its score table and footfalls) and bir-tomchi 400–435 (sound from the frames as drawn), 1.5 s each'});
+
+/* THE SOUND LANDS ON ITS FRAME. In Whiteout the steel hit is scored at 9.59 s, the frame
+   the blades meet. An export of frames 216–251 must carry that hit 0.59 s into its sound
+   track, give or take one frame; the onset is found in the decoded file, so the encoder's
+   delay and the cut of the sound are measured together. The broken case cuts the sound
+   three frames late, as an export that took the wrong start would. */
+async function hitOffset(late){
+ const p=await studio('#whiteout'); await ready(p,'whiteout');
+ const ms=await p.evaluate(async late=>{
+  if(late){ const real=exportAudio; exportAudio=(from,to,fps)=>real(from+late,to+late,fps); }
+  const blob=await exportVideo({from:216,to:251,width:320,sound:true});
+  const b=await new OfflineAudioContext(1,48000,48000).decodeAudioData(await blob.arrayBuffer());
+  const d=b.getChannelData(0), sr=b.sampleRate, win=Math.round(sr*0.004), E=[];
+  for(let i=0;i+win<=d.length;i+=win){ let q=0; for(let k=i;k<i+win;k++) q+=d[k]*d[k]; E.push(q/win); }
+  /* the first 4 ms window after 0.45 s whose energy is ten times the median of the 100 ms before it */
+  for(let j=Math.round(0.45*sr/win);j<E.length;j++){ const ref=E.slice(j-25,j).sort((x,y)=>x-y)[12];
+   if(E[j]>10*ref) return Math.round((j*win/sr-(9.59-216/24))*1000); }
+  return 9999; },late);
+ await done(p);
+ return Math.abs(ms);
+}
+await check({name:'studio/export-in-sync', unit:'ms between the steel hit in the file and its frame',
+ measure:()=>hitOffset(0), pass:v=>v<=42, calibrate:()=>hitOffset(3),
+ note:'whiteout frames 216–251; the hit is scored at 9.59 s; one frame is 42 ms'});
 
 /* THE LAYOUT HOLDS AT EVERY WIDTH. Under 700 px the list sat in a 70vh row of its own and
    the header broke in two; on a phone the shot names pushed the page sideways; on a

@@ -25,7 +25,7 @@
    "evidence": "drawCalls.beginPath"
   },
   {
-   "text": "Each scene has its own draw(t,p) function, camera keyframes and sound bed — 29 functions.",
+   "text": "Each scene has its own draw(t,p) function, camera keyframes and sound bed — 31 functions.",
    "evidence": "functions"
   }
  ],
@@ -44,10 +44,10 @@
  },
  "count": {
   "files": 1,
-  "bytes": 70679,
-  "lines": 1175,
+  "bytes": 72995,
+  "lines": 1214,
   "renderer": "canvas2d",
-  "functions": 29,
+  "functions": 31,
   "audio": true,
   "events": [
    "click",

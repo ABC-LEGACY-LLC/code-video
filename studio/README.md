@@ -6,7 +6,7 @@ make stop
 make install                    # as a systemd user service: back if it dies, up after a reboot
 make expose                     # on https://code-video.abclegacyllc.com, login through the Telegram bot
 node studio/test/run.mjs        # 15 checks: the server, the login, the notes, the colours
-node studio/test/ui.mjs         # 17 checks in Chromium: the page itself (cd studio && npm i first)
+node studio/test/ui.mjs         # 18 checks in Chromium: the page itself (cd studio && npm i first)
 ```
 
 No library, Node alone. The server listens on this machine only (127.0.0.1). If you use VS Code
@@ -109,8 +109,9 @@ work:
   nothing is kept on the server. The person picks the size and the range (the whole film, the
   shot on screen, from here to the end); what is exported is what is on the stage — the style,
   the layers and the view chosen there. A work that can render its sound offline
-  (`__renderAudio`: oq-kocha, whiteout) is exported with it, as AAC or, where the browser has
-  no AAC encoder, Opus; the others are silent until their sound can be scheduled offline.
+  (`__renderAudio`: oq-kocha, whiteout, bir-tomchi) is exported with it, as AAC or, where the
+  browser has no AAC encoder, Opus. Bir tomchi's calls come from what it draws, so its export
+  records the frames as they are drawn (`__soundRecord`) and makes the sound from that record.
 - **A stuck work says so.** The studio does not wait for the page's `load` event: it asks the
   page whether it is ready. A page that sets `__failed` is shown as failed with its message; one
   that is not ready after 10 s is shown as not ready, with why that may be.
@@ -149,6 +150,7 @@ gets and says what it does not.
 | `__tracks()` | the timeline: `[{id, name, kind: "clips"｜"events", items: [{f, n?, label?}], derived?, why?, src?: {file, find}}]`, read from the tables the film runs on; `src` names a file in the work and a piece of text, and the studio finds the line |
 | an item's `edit` | what a clip lets a person change: `[{name, unit, file, row: {key, is}, key, value, min, max, step, per?, drag?}]` — the row of a table named by one of its own fields, and the key in it; `per` is the value of one frame for a drag |
 | `__renderAudio(seconds, sampleRate)` | the film's sound, rendered offline: resolves to `{sr, channels: [Float32Array, …]}` or `{sr, pcm}` (mono); an export puts it in the mp4 |
+| `__soundRecord(on)` | for a work whose sound follows what it draws: while on, the frames are written down as they are drawn, and `__renderAudio` then makes the sound from them |
 | `__layers()`, `__layer(id, on)` | parts of the picture that can be switched off: `[{id, name, on}]` |
 | `__views()`, `__view(id)` | the buffers the picture is made from: `[{id, name}]` |
 

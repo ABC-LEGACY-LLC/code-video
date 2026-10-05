@@ -908,6 +908,10 @@ function layersAt(T){
 let AC=null,soundOn=false,master,busOut,verb,limiter;
 let vTight,vMed,vVast;
 let beds=[],pinkBuf,noiseBuf,tapBufs=[],rockBufs=[];
+/* THE SOUND'S CLOCK. Live it is the context's own time; while an export's sound is being
+   scheduled ahead (see __renderAudio) it is the time of the frame being scheduled. */
+let SCHED=null;
+const now=()=>SCHED!=null?SCHED:AC.currentTime;
 function pinkData(n){const d=new Float32Array(n);let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
  for(let i=0;i<n;i++){const w=Math.random()*2-1;
   b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.969*b2+w*.153852;
@@ -935,8 +939,8 @@ function irOf(sr,sec,decay,tone){const n=Math.floor(sr*sec),ir=AC.createBuffer(2
 
 // the acoustic of each place: which of the three spaces, and how much of it
 // declarative layers: [src, playbackRate, filterType, freq, Q, gain, panPos]
-function initAudio(){
- AC=new (window.AudioContext||window.webkitAudioContext)();
+function initAudio(ctx){                         // ctx: an offline context, for an export
+ AC=ctx||new (window.AudioContext||window.webkitAudioContext)();
  const sr=AC.sampleRate;
  master=gn(0);
  limiter=AC.createDynamicsCompressor();
@@ -994,7 +998,7 @@ function initAudio(){
   src.connect(bp).connect(am).connect(gn(.34)).connect(beds[5]);}
 }
 function tone(f0,f1,dur,peak,type,dest,vibHz,vibD){
- if(!soundOn)return;const t0=AC.currentTime,o=AC.createOscillator();o.type=type||'sine';
+ if(!soundOn)return;const t0=now(),o=AC.createOscillator();o.type=type||'sine';
  o.frequency.setValueAtTime(f0,t0);o.frequency.exponentialRampToValueAtTime(Math.max(1,f1),t0+dur);
  const g2=gn(0);
  g2.gain.setValueAtTime(0,t0);g2.gain.linearRampToValueAtTime(peak,t0+Math.min(.25,dur*.25));
@@ -1004,7 +1008,7 @@ function tone(f0,f1,dur,peak,type,dest,vibHz,vibD){
  o.connect(g2).connect(dest||busOut);o.start(t0);o.stop(t0+dur+.05);
 }
 function siren(f,dur,peak,dest){
- if(!soundOn)return;const t0=AC.currentTime;
+ if(!soundOn)return;const t0=now();
  const o=AC.createOscillator();o.type='sawtooth';o.frequency.value=f;
  const lp=bq('lowpass',760,.7);                  // half a kilometre of air, not a chiptune
  const g2=gn(0);
@@ -1015,7 +1019,7 @@ function siren(f,dur,peak,dest){
  o.connect(lp).connect(g2).connect(dest||busOut);o.start(t0);o.stop(t0+dur+.05);
 }
 function horn(f,dur,peak,dest){                   // a dual-tone horn, heard from far above
- if(!soundOn)return;const t0=AC.currentTime;
+ if(!soundOn)return;const t0=now();
  const o=AC.createOscillator();o.type='sawtooth';o.frequency.value=f;
  const lp=bq('lowpass',f*2.4,.7),g2=gn(0);        // only the first partials get here
  g2.gain.setValueAtTime(0,t0);
@@ -1025,7 +1029,7 @@ function horn(f,dur,peak,dest){                   // a dual-tone horn, heard fro
  o.connect(lp).connect(g2).connect(dest||busOut);o.start(t0);o.stop(t0+dur+.05);
 }
 function swell(dur,peak,f,q,pp,dest,rate){
- if(!soundOn)return;const t0=AC.currentTime,s=AC.createBufferSource();
+ if(!soundOn)return;const t0=now(),s=AC.createBufferSource();
  s.buffer=noiseBuf;s.playbackRate.value=rate||1;s.loop=true;
  const bp2=bq('bandpass',f,q),g2=gn(0);
  g2.gain.setValueAtTime(0,t0);
@@ -1035,7 +1039,7 @@ function swell(dur,peak,f,q,pp,dest,rate){
  s.start(t0,Math.random()*3);s.stop(t0+dur+.06);
 }
 function nblast(dur,peak,f0,f1,dest,pp){        // an explosion's noise, not a block of hiss
- if(!soundOn)return;const t0=AC.currentTime,s=AC.createBufferSource();
+ if(!soundOn)return;const t0=now(),s=AC.createBufferSource();
  s.buffer=noiseBuf;s.loop=true;s.playbackRate.value=.85;
  const lp=bq('lowpass',f0,.8),hp2=bq('highpass',90,.7),g2=gn(0);
  lp.frequency.setValueAtTime(f0,t0);
@@ -1047,7 +1051,7 @@ function nblast(dur,peak,f0,f1,dest,pp){        // an explosion's noise, not a b
  s.start(t0,Math.random()*3);s.stop(t0+dur+.05);
 }
 function burst(buf,rate,peak,pp,dest,hp){
- if(!soundOn)return;const t0=AC.currentTime,s=AC.createBufferSource();
+ if(!soundOn)return;const t0=now(),s=AC.createBufferSource();
  s.buffer=buf;s.playbackRate.value=rate;
  let node=s;if(hp){const f=bq('highpass',hp,.7);s.connect(f);node=f;}
  const g2=gn(peak);node.connect(g2).connect(pan(pp)).connect(dest||busOut);
@@ -1055,7 +1059,8 @@ function burst(buf,rate,peak,pp,dest,hp){
  s.start(t0,off);s.stop(t0+.5);                                          // short tap renders silence
 }
 const LAST={};                                     // nothing retriggers on top of itself
-function gate(k,ms){const n=performance.now();if(LAST[k]&&n-LAST[k]<ms)return false;LAST[k]=n;return true;}
+function gate(k,ms){const n=now()*1000;          // on the sound's clock, so an export gates the same way
+if(LAST[k]&&n-LAST[k]<ms)return false;LAST[k]=n;return true;}
 // per-scene accents. Amplitude comes from the scene's own bus, so they fade with it.
 // a short melody that surfaces only over the record
 const MEL=[0,3,7,10,7,3,12,7],ROOT=196;
@@ -1107,23 +1112,32 @@ function paint(buf,L2){
 }
 const lbl=document.getElementById('lbl'),tc=document.getElementById('tc'),bar=document.getElementById('bar');
 let last=performance.now(),T=0,shown='',paused=false;
-function frame(now){
- const dt=Math.min(.05,(now-last)/1000);last=now;
+// audio weights follow the visuals exactly
+function weightsAt(Ls){
+ const w=new Array(SC.length).fill(0);
+ for(const l of Ls)w[l.i]=Math.max(w[l.i],l===Ls[Ls.length-1]?l.alpha:1-(Ls[Ls.length-1]||{alpha:0}).alpha);
+ if(Ls.length===1)w[Ls[0].i]=1;
+ return w;
+}
+function soundStep(w,dt){
+ const t=now();
+ for(let i=0;i<beds.length;i++)beds[i].gain.setTargetAtTime(w[i]*SC[i].trim,t,.05);
+ // an event sound only fires while its scene IS the picture: during a crossfade the outgoing
+ // scene's exit zoom throws its own source out of frame, and you hear what you cannot see
+ for(let i=0;i<SC.length;i++)if(w[i]>.40)SC[i].acc(dt,w[i],beds[i]);
+ melody(dt,w[7],beds[7]);
+}
+let RECORDING=false,REC=new Map();
+function frame(stamp){
+ const dt=Math.min(.05,(stamp-last)/1000);last=stamp;
  if(!paused)T=(T+dt)%TOTAL;
  const Ls=layersAt(T);
  const n=cv.width;
  ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
  ctx.fillStyle='#000';ctx.fillRect(0,0,n,n);
- // audio weights follow the visuals exactly
- const w=new Array(SC.length).fill(0);
- for(const l of Ls)w[l.i]=Math.max(w[l.i],l===Ls[Ls.length-1]?l.alpha:1-(Ls[Ls.length-1]||{alpha:0}).alpha);
- if(Ls.length===1)w[Ls[0].i]=1;
- if(AC&&soundOn){const nowT=AC.currentTime;
-  for(let i=0;i<beds.length;i++)beds[i].gain.setTargetAtTime(w[i]*SC[i].trim,nowT,.05);
-  // an event sound only fires while its scene IS the picture: during a crossfade the outgoing
-  // scene's exit zoom throws its own source out of frame, and you hear what you cannot see
-  for(let i=0;i<SC.length;i++)if(w[i]>.40)SC[i].acc(dt,w[i],beds[i]);
-  melody(dt,w[7],beds[7]);}
+ /* an export's frames are written down as they are drawn: what the sound will need */
+ if(RECORDING){const k=Math.round(T*24);if(!REC.has(k))REC.set(k,{T,ev:{...EV}});}
+ if(AC&&soundOn)soundStep(weightsAt(Ls),dt);
  paint(A,Ls[0]);
  ctx.drawImage(A,0,0);
  if(Ls[1]){paint(B,Ls[1]);ctx.globalAlpha=Ls[1].alpha;ctx.drawImage(B,0,0);ctx.globalAlpha=1;}
@@ -1161,6 +1175,31 @@ window.__tracks=()=>{
    items:SC.map((s,i)=>({...scene(s,i),n:Math.min(F(s.dur-OV),N-F(starts[i])),label:s.bed.length+' voices · trim '+s.trim,
     edit:[{name:'trim',unit:'gain',file,row:{key:'name',is:s.name},key:'trim',value:s.trim,min:0,max:4,step:0.01}]}))}
  ];
+};
+/* THE SOUND OF AN EXPORT. The calls you hear come from what is drawn -- a whale calls
+   when the drawing makes it call -- so an export writes its frames down as they are drawn
+   (__soundRecord), and the sound is then scheduled from that record on an offline
+   context, through the functions that play it live, at each frame's own time. Nothing
+   asynchronous happens while the live context is set aside. */
+window.__soundRecord=on=>{if(on)REC=new Map();RECORDING=!!on;};
+window.__renderAudio=async(seconds,sr)=>{
+ const keys=[...REC.keys()].sort((a,b)=>a-b);
+ const off=new OfflineAudioContext(2,Math.ceil(seconds*(sr||48000)),sr||48000);
+ if(!keys.length)return off.startRendering().then(b=>({sr:b.sampleRate,channels:[b.getChannelData(0),b.getChannelData(1)]}));
+ const live={AC,soundOn,master,busOut,verb,limiter,vTight,vMed,vVast,beds,pinkBuf,noiseBuf,tapBufs,rockBufs};
+ const ev={...EV},seen={...EVSEEN},gates={...LAST},mel=[melT,melI];
+ try{
+  beds=[];tapBufs=[];rockBufs=[];for(const k in LAST)delete LAST[k];
+  initAudio(off);soundOn=true;master.gain.value=.95;
+  Object.assign(EVSEEN,REC.get(keys[0]).ev);     // what happened before the export is not heard
+  for(const k of keys){const r=REC.get(k);SCHED=k/24;Object.assign(EV,r.ev);soundStep(weightsAt(layersAt(r.T)),1/24);}
+ }finally{
+  SCHED=null;({AC,soundOn,master,busOut,verb,limiter,vTight,vMed,vVast,beds,pinkBuf,noiseBuf,tapBufs,rockBufs}=live);
+  Object.assign(EV,ev);for(const k in EVSEEN)delete EVSEEN[k];Object.assign(EVSEEN,seen);
+  for(const k in LAST)delete LAST[k];Object.assign(LAST,gates);[melT,melI]=mel;
+ }
+ const b=await off.startRendering();
+ return {sr:b.sampleRate,channels:[b.getChannelData(0),b.getChannelData(1)]};
 };
 window.__sound=setSound;
 // lets the video export record exactly what the page plays
