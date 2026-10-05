@@ -1,542 +1,542 @@
-/* KIRISH: ?style=anime|siyoh|akvarel &kamera=pastdan|old|yon &w=960&h=540&fps=24
-   window.kadr(n) -- n-tasvirni aniq (deterministik) chizadi: fizika 0 dan ketma-ket yuradi.
-   Style almashganda sahna, personaj, harakat, kamera kodi O'ZGARMAYDI -- faqat src/style/<nom>.js. */
+/* ENTRY: ?style=anime|ink|watercolour &camera=below|front|side &w=960&h=540&fps=24
+   window.frame(n) -- draws frame n exactly (deterministically): the physics runs in order from 0.
+   When the style changes, the stage, character, motion and camera code DO NOT CHANGE -- only src/style/<name>.js. */
 import * as THREE from 'three';
-import {personaj, KIYIM, BOSH, YUZ, SOCH, yuzNuqta, iyakNuqta, burunNuqta, kozKarta, qismNuqtalari, qobiqChuqurlik} from './personaj.js';
-import {KAP_U, KOZ, KOZ_U, BG_U, AO_U, AO_N, AO_G} from './style/umumiy.js';
-import {sahna, jadval, shamol} from './sahna.js';
-import {FILMLAR, shotTop} from './film.js';
+import {personaj, CLOTHES, HEAD, FACE, HAIR, facePoint, chinPoint, nosePoint, eyeMap, partPoints, shellDepth} from './personaj.js';
+import {HOOD_U, EYE, EYE_U, BG_U, AO_U, AO_N, AO_G} from './style/common.js';
+import {stage, table, wind} from './stage.js';
+import {FILMS, shotTop} from './film.js';
 
 const q = new URLSearchParams(location.search);
-const STYLE = q.get('style') || 'anime', KAM = q.get('kamera') || 'pastdan';
+const STYLE = q.get('style') || 'anime', CAM = q.get('camera') || 'below';
 const W = +q.get('w') || 960, H = +q.get('h') || 540, FPS = +q.get('fps') || 24;
 const S = (await import(`./style/${STYLE}.js`)).default;
-const ADIM = S.adim || 1;                // personaj pozasi necha tasvirda bir yangilanadi (anime: 2)
-const FILM = q.get('film') ? FILMLAR[q.get('film')] : null;   // shotlar ro'yxati (vaqt va ushlash shotdan)
+const STRIDE = S.stride || 1;                // every how many frames the character pose is updated (anime: 2)
+const FILM = q.get('film') ? FILMS[q.get('film')] : null;   // shot list (timing and holds come from the shot)
 const TFPS = FILM ? 1000 / FILM.ms : FPS;
 
 const renderer = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer: true});
 renderer.setPixelRatio(1); renderer.setSize(W, H);
 document.body.appendChild(renderer.domElement);
 
-const scene = new THREE.Scene(); scene.background = new THREE.Color(S.fon || '#000');
-/* tekshiruv/moslash: ?soch={"pesh":{...},"yaqin":{...}} -- soch dizayni parametrlari (personaj qurilishidan oldin) */
-if (q.get('soch')) { const o = JSON.parse(q.get('soch')); for (const k in o) Object.assign(SOCH[k] || (SOCH[k] = {}), o[k]); }
-const P = personaj(); scene.add(P.ildiz); P.tutamlar.forEach(t => scene.add(t.m));
-const {kamera, qor} = sahna(scene, S, W, H, KAM);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(S.background || '#000');
+/* check/fit: ?hair={"short":{...},"near":{...}} -- hair design parameters (before the character is built) */
+if (q.get('hair')) { const o = JSON.parse(q.get('hair')); for (const k in o) Object.assign(HAIR[k] || (HAIR[k] = {}), o[k]); }
+const P = personaj(); scene.add(P.root); P.strands.forEach(t => scene.add(t.m));
+const {camera, snow} = stage(scene, S, W, H, CAM);
 
-for (const m of P.meshlar()) {                          // style: rol -> material + kontur
-  m.material = S.material(m.userData.rol, m.userData);
-  const km = S.kontur && S.kontur(m.userData.rol, W, H);
+for (const m of P.meshes()) {                          // style: role -> material + contour
+  m.material = S.material(m.userData.role, m.userData);
+  const km = S.contour && S.contour(m.userData.role, W, H);
   if (km) { const o = new THREE.Mesh(m.geometry, km); o.frustumCulled = false; o.renderOrder = -1; m.add(o); }
   m.frustumCulled = false;
 }
-const composer = S.post(renderer, scene, kamera, W, H);
-kozKartaQoy(0);                                              // ko'z kartasi: 3/4 (tekis proyeksiyaning o'zi)
-/* tushayotgan ko'z yoshi tomchisi (4-o'tish; misol 10-11: iyak ostida yorug' nuqta, yosh_jag zondi) -- film pozasidagi
-   yosh.tomchi dunyo nuqtasida; chuqurlik sinovisiz (kichik yaltiroq nuqta, kapyushon/plash ortida yo'qolmasin) */
-const tomchi = new THREE.Mesh(new THREE.SphereGeometry(0.028, 12, 8), new THREE.MeshBasicMaterial({color: '#c3c5f6', depthTest: false}));
-tomchi.renderOrder = 10; tomchi.visible = false; tomchi.frustumCulled = false;
-if (S.nom !== 'rol') scene.add(tomchi);
-if (q.get('kiyim')) P.kiyimQur(JSON.parse(q.get('kiyim')));      // tekshiruv: kiyim parametrlarini URL dan
-/* 12-o'tish (moslash/tekshiruv): sochni sahifada qayta qurish -- yangi tutamlarga material va kontur (yuqoridagidek) */
-window.sochQur = (o) => {
-  const eski = P.sochQur(o || {});
-  for (const t of eski) { scene.remove(t.m); t.g.dispose(); }
-  for (const t of P.tutamlar) {
-    scene.add(t.m); t.m.material = S.material(t.m.userData.rol, t.m.userData);
-    const km = S.kontur && S.kontur(t.m.userData.rol, W, H);
+const composer = S.post(renderer, scene, camera, W, H);
+setEyeMap(0);                                              // eye map: 3/4 (the flat projection itself)
+/* the falling tear drop (pass 4; sample 10-11: a bright point under the chin, the tear_jaw probe) -- at the world point
+   tear.droplet of the film pose; without a depth test (a small shiny point, so it does not vanish behind the hood/cloak) */
+const droplet = new THREE.Mesh(new THREE.SphereGeometry(0.028, 12, 8), new THREE.MeshBasicMaterial({color: '#c3c5f6', depthTest: false}));
+droplet.renderOrder = 10; droplet.visible = false; droplet.frustumCulled = false;
+if (S.name !== 'role') scene.add(droplet);
+if (q.get('clothes')) P.buildClothes(JSON.parse(q.get('clothes')));      // check: clothes parameters from the URL
+/* pass 12 (fit/check): rebuild the hair in the page -- material and contour for the new strands (as above) */
+window.buildHair = (o) => {
+  const old = P.buildHair(o || {});
+  for (const t of old) { scene.remove(t.m); t.g.dispose(); }
+  for (const t of P.strands) {
+    scene.add(t.m); t.m.material = S.material(t.m.userData.role, t.m.userData);
+    const km = S.contour && S.contour(t.m.userData.role, W, H);
     if (km) { const ko = new THREE.Mesh(t.m.geometry, km); ko.frustumCulled = false; ko.renderOrder = -1; t.m.add(ko); }
-    if ((q.get('gizla') || '').split(',').includes('soch')) t.m.visible = false;
+    if ((q.get('hide') || '').split(',').includes('hair')) t.m.visible = false;
   }
-  oxirgi = -1; return P.tutamlar.length;
+  last = -1; return P.strands.length;
 };
-/* tekshiruv: ?gizla=kapyushon,plash -- rollarni yashirish; ?tutam=5 -- faqat shu tutam qizil */
-const GIZ = (q.get('gizla') || '').split(',').filter(Boolean);
-for (const m of P.meshlar()) if (GIZ.includes(m.userData.rol)) m.visible = false;
-if (q.get('tutam')) { const ti = +q.get('tutam'); P.tutamlar.forEach((t, i) => { if (i === ti) t.m.material = new THREE.MeshBasicMaterial({color: 0xff2020}); }); }
-/* tekshiruv: ?tutamlar=1 -- har tutam o'z rangida (i-tutam: hue = i/N; qaysi tutam ekranda qayerda) */
-const GR = {yel: [0.08, 0.62], qisqa: [0.33, 0.95], yaqin: [0.75, 0.9], uzoq: [0.55, 0.95], orqa: [0.0, 0.2]};   // guruh: [hue, yorug'lik]
-if (q.get('tutamlar')) P.tutamlar.forEach((t, i) => { const g = GR[t.gr];
-  t.m.material = new THREE.MeshBasicMaterial({color: q.get('tutamlar') === 'guruh' && g ? new THREE.Color().setHSL(g[0], 1, 0.35 + 0.3 * ((i * 7) % 5) / 4) : new THREE.Color().setHSL(i / P.tutamlar.length, 1, 0.5)}); });
+/* check: ?hide=hood,cloak -- hide roles; ?strand=5 -- only this strand red */
+const HIDE = (q.get('hide') || '').split(',').filter(Boolean);
+for (const m of P.meshes()) if (HIDE.includes(m.userData.role)) m.visible = false;
+if (q.get('strand')) { const ti = +q.get('strand'); P.strands.forEach((t, i) => { if (i === ti) t.m.material = new THREE.MeshBasicMaterial({color: 0xff2020}); }); }
+/* check: ?strands=1 -- each strand in its own colour (strand i: hue = i/N; which strand is where on screen) */
+const GR = {fan: [0.08, 0.62], short: [0.33, 0.95], near: [0.75, 0.9], far: [0.55, 0.95], back: [0.0, 0.2]};   // group: [hue, lightness]
+if (q.get('strands')) P.strands.forEach((t, i) => { const g = GR[t.gr];
+  t.m.material = new THREE.MeshBasicMaterial({color: q.get('strands') === 'group' && g ? new THREE.Color().setHSL(g[0], 1, 0.35 + 0.3 * ((i * 7) % 5) / 4) : new THREE.Color().setHSL(i / P.strands.length, 1, 0.5)}); });
 
-let oxirgi = -1;
-function kameraQoy(k) {
-  kamera.fov = k.fov;
-  if (k.az !== undefined) {                                           // orbita + linza siljishi (film.js izohi)
-    const m = new THREE.Vector3(...(k.markaz || [0, 0, 0])), az = k.az * Math.PI / 180, el = k.el * Math.PI / 180;
-    kamera.position.set(Math.cos(el) * Math.cos(az), Math.sin(el), Math.cos(el) * Math.sin(az)).multiplyScalar(k.d).add(m);
-    kamera.lookAt(m);
-    const [sx, sy] = k.ekran || [0.5, 0.5];
-    kamera.setViewOffset(W, H, -(sx - 0.5) * W, -(sy - 0.5) * H, W, H);
-  } else { kamera.position.set(...k.poz); kamera.lookAt(...k.nishon); kamera.clearViewOffset(); }
-  kamera.updateProjectionMatrix();
+let last = -1;
+function setCamera(k) {
+  camera.fov = k.fov;
+  if (k.az !== undefined) {                                           // orbit + lens shift (film.js comment)
+    const m = new THREE.Vector3(...(k.centre || [0, 0, 0])), az = k.az * Math.PI / 180, el = k.el * Math.PI / 180;
+    camera.position.set(Math.cos(el) * Math.cos(az), Math.sin(el), Math.cos(el) * Math.sin(az)).multiplyScalar(k.d).add(m);
+    camera.lookAt(m);
+    const [sx, sy] = k.screen || [0.5, 0.5];
+    camera.setViewOffset(W, H, -(sx - 0.5) * W, -(sy - 0.5) * H, W, H);
+  } else { camera.position.set(...k.pos); camera.lookAt(...k.target); camera.clearViewOffset(); }
+  camera.updateProjectionMatrix();
 }
-/* kapyushon soya xaritasi: kalit yorug'lik yo'nalishidan ortografik kamera, faqat 1-qatlamdagi kapyushon */
-const soyaRT = new THREE.WebGLRenderTarget(1024, 1024);
-soyaRT.depthTexture = new THREE.DepthTexture(1024, 1024);
-const soyaKam = new THREE.OrthographicCamera(-4, 4, 4, -4, 0.1, 30); soyaKam.layers.set(1);
-P.kap.layers.enable(1);
-KAP_U.uSoyaMap.value = soyaRT.depthTexture;
-const _m = new THREE.Vector3(), _soyaBor = q.get('kapsoya') !== '0';
-/* 12-o'tish: kapyushon SOYASI yo'nalishi KAPYUSHON RAMKASIDA (KIYIM.kap.soya = [yon, tepa] gradus: kapyushon oldidan yaqin
-   (-x) tomonga va tepaga) -- kapyushon ichiga yorug'lik faqat teshikdan kiradi: bosh/sochning teshik qirrasi ORTIDAGI qismi
-   qorong'i (misol: qirra va yorug' soch orasidagi qorong'i uchburchak, uch shotda). Kapyushon bilan birga buriladi (poza),
-   kameraga bog'liq emas. soya berilmasa -- dunyo kalit yorug'ligi (oldingi). */
+/* hood shadow map: an orthographic camera from the key light direction, only the hood on layer 1 */
+const shadowRT = new THREE.WebGLRenderTarget(1024, 1024);
+shadowRT.depthTexture = new THREE.DepthTexture(1024, 1024);
+const shadowCam = new THREE.OrthographicCamera(-4, 4, 4, -4, 0.1, 30); shadowCam.layers.set(1);
+P.hood.layers.enable(1);
+HOOD_U.uShadowMap.value = shadowRT.depthTexture;
+const _m = new THREE.Vector3(), _hasShadow = q.get('hoodShadow') !== '0';
+/* pass 12: the hood SHADOW direction is IN THE HOOD FRAME (CLOTHES.hood.shadow = [side, up] degrees: from the hood front toward the near
+   (-x) side and up) -- light enters the hood only through the opening: the part of the head/hair BEHIND the opening's brim is
+   dark (sample: the dark triangle between the brim and the bright hair, in three shots). It turns together with the hood (pose)
+   and does not depend on the camera. If shadow is not given -- the world key light (previous). */
 const _sd = new THREE.Vector3(), _q4 = new THREE.Quaternion();
-function kapSoyaYo() {
-  const sy = KIYIM.kap.soya; if (!sy) return KOZ.nur;
+function hoodShadowOr() {
+  const sy = CLOTHES.hood.shadow; if (!sy) return EYE.light;
   const a = sy[0] * Math.PI / 180, e = sy[1] * Math.PI / 180;
-  _sd.set(-Math.cos(e) * Math.sin(a), Math.sin(e), Math.cos(e) * Math.cos(a));          // kapyushon ramkasida (+z old, -x yaqin)
-  P.kBosh.updateMatrixWorld(true); P.kBosh.getWorldQuaternion(_q4);
+  _sd.set(-Math.cos(e) * Math.sin(a), Math.sin(e), Math.cos(e) * Math.cos(a));          // in the hood frame (+z front, -x near)
+  P.kHead.updateMatrixWorld(true); P.kHead.getWorldQuaternion(_q4);
   return _sd.applyQuaternion(_q4).normalize();
 }
-function kapSoyaQoy() {
-  KAP_U.uKapBor.value = _soyaBor ? 1 : 0;
-  if (!_soyaBor) return;
-  P.bosh.getWorldPosition(_m);
-  soyaKam.position.copy(_m).addScaledVector(kapSoyaYo(), 12); soyaKam.lookAt(_m); soyaKam.updateMatrixWorld(true);
-  KAP_U.uSoyaM.value.multiplyMatrices(soyaKam.projectionMatrix, soyaKam.matrixWorldInverse);
-  const eskiBg = scene.background; scene.background = null;
-  renderer.setRenderTarget(soyaRT); renderer.clear(); renderer.render(scene, soyaKam); renderer.setRenderTarget(null);
-  scene.background = eskiBg;
+function setHoodShadow() {
+  HOOD_U.uHasHood.value = _hasShadow ? 1 : 0;
+  if (!_hasShadow) return;
+  P.head.getWorldPosition(_m);
+  shadowCam.position.copy(_m).addScaledVector(hoodShadowOr(), 12); shadowCam.lookAt(_m); shadowCam.updateMatrixWorld(true);
+  HOOD_U.uShadowM.value.multiplyMatrices(shadowCam.projectionMatrix, shadowCam.matrixWorldInverse);
+  const oldBg = scene.background; scene.background = null;
+  renderer.setRenderTarget(shadowRT); renderer.clear(); renderer.render(scene, shadowCam); renderer.setRenderTarget(null);
+  scene.background = oldBg;
 }
-/* 12-o'tish: KAPYUSHON ICHI QORONG'I (umumiy.js AO izohi) -- AO_N dunyo yo'nalishidan ortografik chuqurlik xaritalari, bitta
-   atlasda (AO_G x AO_G plitka); faqat 2-qatlam (kapyushon, plash). ?ao=0 -- o'chiq (tekshiruv). */
+/* pass 12: DARK INSIDE THE HOOD (the common.js AO comment) -- orthographic depth maps from AO_N world directions, in one
+   atlas (AO_G x AO_G tiles); only layer 2 (hood, cloak). ?ao=0 -- off (check). */
 const AO_S = 512, aoRT = new THREE.WebGLRenderTarget(AO_S * AO_G, AO_S * AO_G);
 aoRT.depthTexture = new THREE.DepthTexture(AO_S * AO_G, AO_S * AO_G);
-const aoKam = new THREE.OrthographicCamera(-4.5, 4.5, 4.5, -4.5, 0.1, 30); aoKam.layers.set(2);
-P.kap.layers.enable(2); P.plash.layers.enable(2);
+const aoCam = new THREE.OrthographicCamera(-4.5, 4.5, 4.5, -4.5, 0.1, 30); aoCam.layers.set(2);
+P.hood.layers.enable(2); P.cloak.layers.enable(2);
 AO_U.uAoMap.value = aoRT.depthTexture;
-for (let i = 0; i < AO_N; i++) {                        // Fibonachchi sfera -- dunyo yo'nalishlari (osmon ham, qor/yer ham)
+for (let i = 0; i < AO_N; i++) {                        // Fibonacci sphere -- world directions (the sky too, the snow/ground too)
   const y = 1 - 2 * (i + 0.5) / AO_N, r = Math.sqrt(1 - y * y), ph = i * Math.PI * (3 - Math.sqrt(5));
   AO_U.uAoD.value[i].set(r * Math.cos(ph), y, r * Math.sin(ph));
 }
-const _aoBor = q.get('ao') !== '0';
-function aoQoy() {
-  AO_U.uAoBor.value = _aoBor ? 1 : 0;
-  if (!_aoBor) return;
-  P.bosh.getWorldPosition(_m);
-  const eskiBg = scene.background; scene.background = null;
+const _hasAo = q.get('ao') !== '0';
+function setAo() {
+  AO_U.uAoExists.value = _hasAo ? 1 : 0;
+  if (!_hasAo) return;
+  P.head.getWorldPosition(_m);
+  const oldBg = scene.background; scene.background = null;
   for (let i = 0; i < AO_N; i++) {
     const d = AO_U.uAoD.value[i], gx = i % AO_G, gy = Math.floor(i / AO_G);
-    aoKam.up.set(Math.abs(d.y) > 0.9 ? 1 : 0, Math.abs(d.y) > 0.9 ? 0 : 1, 0);
-    aoKam.position.copy(_m).addScaledVector(d, 12); aoKam.lookAt(_m); aoKam.updateMatrixWorld(true);
-    AO_U.uAoM.value[i].multiplyMatrices(aoKam.projectionMatrix, aoKam.matrixWorldInverse);
+    aoCam.up.set(Math.abs(d.y) > 0.9 ? 1 : 0, Math.abs(d.y) > 0.9 ? 0 : 1, 0);
+    aoCam.position.copy(_m).addScaledVector(d, 12); aoCam.lookAt(_m); aoCam.updateMatrixWorld(true);
+    AO_U.uAoM.value[i].multiplyMatrices(aoCam.projectionMatrix, aoCam.matrixWorldInverse);
     aoRT.viewport.set(gx * AO_S, gy * AO_S, AO_S, AO_S); aoRT.scissor.set(gx * AO_S, gy * AO_S, AO_S, AO_S); aoRT.scissorTest = true;
-    renderer.setRenderTarget(aoRT); renderer.clear(); renderer.render(scene, aoKam);
+    renderer.setRenderTarget(aoRT); renderer.clear(); renderer.render(scene, aoCam);
   }
   renderer.setRenderTarget(null);
-  scene.background = eskiBg;
+  scene.background = oldBg;
 }
-/* ko'z yoshi izlari (film pozasidan): {A: {a:[x,y], b:[x,y], w, k}, B: {...}, C: {p:[x,y], r, k}} -- bosh fazosida */
-function yoshQoy(u, y) {
-  if (!u || !u.uYoshA) return;
+/* tear trails (from the film pose): {A: {a:[x,y], b:[x,y], w, k}, B: {...}, C: {p:[x,y], r, k}} -- in head space */
+function setTear(u, y) {
+  if (!u || !u.uTearA) return;
   const A = y && y.A, B = y && y.B, C = y && y.C;
-  u.uYoshK.value.set(A ? A.k : 0, B ? B.k : 0, C ? C.k : 0);
-  if (C) u.uYoshC.value.set(C.p[0], C.p[1], C.r);
-  if (A) { u.uYoshA.value.set(A.a[0], A.a[1], A.b[0], A.b[1]); u.uYoshW.value.x = A.w; }
-  if (B) { u.uYoshB.value.set(B.a[0], B.a[1], B.b[0], B.b[1]); u.uYoshW.value.y = B.w; }
+  u.uTearK.value.set(A ? A.k : 0, B ? B.k : 0, C ? C.k : 0);
+  if (C) u.uTearC.value.set(C.p[0], C.p[1], C.r);
+  if (A) { u.uTearA.value.set(A.a[0], A.a[1], A.b[0], A.b[1]); u.uTearW.value.x = A.w; }
+  if (B) { u.uTearB.value.set(B.a[0], B.a[1], B.b[0], B.b[1]); u.uTearW.value.y = B.w; }
 }
-function kozKartaQoy(w) {                                              // yaqin ko'z chizmasining sirtdagi kartasi (uniformlar umumiy)
-  const c = kozKarta(w);
-  KOZ_U.uKozO.value.set(...c.O); KOZ_U.uKozT.value.set(...c.T); KOZ_U.uKozU.value.set(...c.U);
-  KOZ_U.uKozN.value.set(...c.N); KOZ_U.uKozK.value.set(...c.k);
+function setEyeMap(w) {                                              // the map of the near-eye drawing on the surface (the uniforms are shared)
+  const c = eyeMap(w);
+  EYE_U.uEyeO.value.set(...c.O); EYE_U.uEyeT.value.set(...c.T); EYE_U.uEyeU.value.set(...c.U);
+  EYE_U.uEyeN.value.set(...c.N); EYE_U.uEyeK.value.set(...c.k);
 }
-/* 9-o'tish: FON VA QOR -- DUNYODA. 5-o'tishdagi fon "tepasi" (osmon gradienti va qor zichligi yo'nalishi kamera
-   egilishiga qarab og'ardi, 3-shotda 22 gr) va 8-o'tishdagi qor qatlami (qor 1-shot kamerasi fazosida, har shotga
-   ko'chirilardi: kamera sinovida yo'l oxirida 138 px, orbitada 398 px -- paralaks yo'q) olib tashlandi. Osmon -- dunyo
-   gradienti (uBgUp doimo dunyo tepasi), qor -- barcha kameralarni o'rab olgan hajm (sahna.js). Misolning fon plitasi uch
-   shotda bir xil (2D) -- dunyo osmoni bilan 3-shotda farq qoladi (qoldiq, README 9-o'tish). */
-/* 9-o'tish: kapyushon SHOT bo'yicha emas -- bitta kapyushon (KIYIM.kap), uch shotga birgalikda moslangan
-   (test/fit_kap9.mjs). 7-8-o'tishdagi shot.kap va window.__kapShot olib tashlandi (kamera sinovida kalit almashganda
-   114 / 159 px sakrash). */
-/* tekshiruv/moslash (8-o'tish): window.__kamShot[shot raqami] = {d, ekran, ...} -- shot kamerasi ustiga; ?kamShot={"1":{...}} */
-if (q.get('kamShot')) window.__kamShot = JSON.parse(q.get('kamShot'));
-/* tekshiruv/moslash (11-o'tish): window.__pozaShot[shot raqami] = {dEg, dBur, dYon} -- shot pozasi ustiga qo'shimcha
-   (test/fit_poza11b.mjs; kapyushon rigi va soch shu pozaga ergashadi -- xuddi film.js o'zgargandek) */
-function shotPoza(s, h) {
-  const idx = FILM.shotlar.indexOf(s), o = window.__pozaShot && window.__pozaShot[idx];
-  return o ? {...h, egilish: h.egilish + (o.dEg || 0), burilish: h.burilish + (o.dBur || 0), yonga: (h.yonga || 0) + (o.dYon || 0)} : h;
+/* pass 9: BACKGROUND AND SNOW -- IN THE WORLD. The background "top" of pass 5 (the sky gradient and the snow density direction
+   tilted with the camera tilt, 22 deg in shot 3) and the snow layer of pass 8 (the snow in the shot 1 camera space, carried over
+   to every shot: in the camera test 138 px at the end of the path, 398 px on the orbit -- no parallax) were removed. The sky is a world
+   gradient (uBgUp is always the world up), the snow a volume that surrounds all cameras (stage.js). The sample's background plate is
+   the same in all three shots (2D) -- with the world sky a difference remains in shot 3 (a residual, README pass 9). */
+/* pass 9: the hood is not PER SHOT -- a single hood (CLOTHES.hood), fitted to the three shots together
+   (test/fit_hood9.mjs). The shot.hood and window.__hoodShot of passes 7-8 were removed (in the camera test, a jump of
+   114 / 159 px when the key changed). */
+/* check/fit (pass 8): window.__camShot[shot number] = {d, screen, ...} -- on top of the shot camera; ?camShot={"1":{...}} */
+if (q.get('camShot')) window.__camShot = JSON.parse(q.get('camShot'));
+/* check/fit (pass 11): window.__poseShot[shot number] = {dPitch, dYaw, dSide} -- an offset on top of the shot pose
+   (test/fit_pose11b.mjs; the hood rig and the hair follow this pose -- just as if film.js had changed) */
+function shotPose(s, h) {
+  const idx = FILM.shotList.indexOf(s), o = window.__poseShot && window.__poseShot[idx];
+  return o ? {...h, tilt: h.tilt + (o.dPitch || 0), turn: h.turn + (o.dYaw || 0), sideways: (h.sideways || 0) + (o.dSide || 0)} : h;
 }
-function shotKamera(s) {
-  const idx = FILM.shotlar.indexOf(s), o = window.__kamShot && window.__kamShot[idx];
-  return o ? {...s.kamera, ...o} : s.kamera;
+function shotCamera(s) {
+  const idx = FILM.shotList.indexOf(s), o = window.__camShot && window.__camShot[idx];
+  return o ? {...s.camera, ...o} : s.camera;
 }
-/* 9-o'tish tekshiruvi (test/kamera_sinov9.mjs): ?vaqt=T -- vaqt ushlanadi (shamol, qor); ?yamoq=0 -- kalibr: kameraga
-   yoki shotga bog'liq HAR qiymat (fon tepasi, qor qatlami, shot kapyushoni, profil, soch vazni, surish) 0-tasvirda
-   hisoblanib muzlatiladi -- asbob hamma qismda 0 o'qishi kerak (o'qimasa -- biz bilmagan yamoq bor); ?suniy=N -- kalibr:
-   N-tasvirdan kapyushon dunyoda +0.1 x ga (ma'lum buzilish, asbob uni o'sha qiymatda ko'rishi kerak). */
-const VAQT = q.get('vaqt') !== null ? +q.get('vaqt') : null, YAMOQ0 = q.get('yamoq') === '0', SUNIY = q.get('suniy') !== null ? +q.get('suniy') : null;
-let muz = null, joriyYumuq = 0;
-function qadamFilm(f) {
-  if (f === 0) muz = null;
+/* pass 9 check (test/camera_test9.mjs): ?time=T -- time is held (wind, snow); ?patch=0 -- calibration: EVERY value tied to the
+   camera or the shot (background top, snow layer, shot hood, profile, hair weight, shift) is computed at frame 0
+   and frozen -- the tool must read 0 in every part (if it does not -- there is a patch we do not know of); ?synthetic=N -- calibration:
+   from frame N the hood moves +0.1 in x in the world (a known distortion, the tool must see it at that value). */
+const TIME = q.get('time') !== null ? +q.get('time') : null, PATCH0 = q.get('patch') === '0', SYNTHETIC = q.get('synthetic') !== null ? +q.get('synthetic') : null;
+let ice = null, currentClosed = 0;
+function stepFilm(f) {
+  if (f === 0) ice = null;
   const {s, i} = shotTop(FILM, f);
-  const ii = s.ushla && s.ushla.includes(i) ? s.ushla[0] : i;          // ushlangan tasvir -- bitta poza
-  /* 11-o'tish: poza to'liq -- shot pozasida yo'q maydonlar 0 (1- va 2-shotda chokish/orqaga yo'q; P.poza Object.assign
-     qiladi): tartibsiz baholashda (moslash: 3-shotdan keyin 0-tasvirdan qayta) 1-shot boshi 3-shotning chokish/orqaga
-     qiymatlarida qolardi (-0.02, ~1 px; kapF 0.030 -> 0.019). Ketma-ket renderda (render.mjs) hech narsa o'zgarmaydi. */
-  const h = shotPoza(s, {yonga: 0, chokish: 0, orqaga: 0, ...s.poza(ii)});
-  const kam = shotKamera(s);
-  kameraQoy(kam);
-  P.poza(h);
-  P.kapQadam(1 / TFPS, i === 0);       // 9-o'tish: bitta kapyushon, boshga vaqt bo'yicha ergashadi (shot boshida tinch)
-  /* 9-o'tish: ko'z kartasi (profil vazni), pastki yuz surishi va soch ko'rinish vazni olib tashlandi -- bitta bosh,
-     bitta soch dam shakli (kamera qayerda bo'lmasin) */
-  if (YAMOQ0 && !muz) muz = {};
-  if (SUNIY !== null) P.kap.position.set(f >= SUNIY ? 0.1 : 0, 0, 0).applyQuaternion(P.ildiz.quaternion.clone().invert());   // dunyoda +x (ildiz 90 gr burilgan)
-  const u = P.boshMesh.material.uniforms; if (u && u.uYumuq) u.uYumuq.value = h.yumuq;
-  joriyYumuq = h.yumuq || 0;                                          // qism nuqtalari uchun (rol style da uYumuq yo'q)
-  const hy = (ii === i ? h : s.poza(i)).yosh;        // ushlangan rasmda ham yosh siljiydi (misolda 1..6 da pastga oqadi)
-  yoshQoy(u, hy);
-  tomchi.visible = !!(hy && hy.tomchi); if (tomchi.visible) tomchi.position.set(...hy.tomchi);
-  /* har shot boshida soch shu shot pozasida oldindan aylantiriladi: kesishda poza sakraydi (kamera boshqa) va
-     tutamlar "alanga" bo'lib tepaga qamchilanardi (2-shot, 12-tasvir) */
-  const tt = VAQT !== null ? VAQT : f / TFPS;
-  P.fizika(1 / TFPS, shamol(tt), i === 0);
-  P.tutamGeometriya();                                                // soch ushlanganda ham qimirlaydi (misolda o'lchangan)
-  qor.qadam(tt);
+  const ii = s.hold && s.hold.includes(i) ? s.hold[0] : i;          // held frame -- a single pose
+  /* pass 11: the pose is complete -- fields missing from the shot pose are 0 (shots 1 and 2 have no sink/backward; P.pose does
+     Object.assign): in out-of-order evaluation (fitting: frame 0 again after shot 3) the shot 1 head stayed at shot 3's sink/backward
+     values (-0.02, ~1 px; hoodF 0.030 -> 0.019). In a sequential render (render.mjs) nothing changes. */
+  const h = shotPose(s, {sideways: 0, sink: 0, backward: 0, ...s.pose(ii)});
+  const cam = shotCamera(s);
+  setCamera(cam);
+  P.pose(h);
+  P.hoodStep(1 / TFPS, i === 0);       // pass 9: a single hood, it follows the head over time (still at the start of a shot)
+  /* pass 9: the eye map (profile weight), the lower-face shift and the hair view weight were removed -- a single head,
+     a single hair rest shape (wherever the camera is) */
+  if (PATCH0 && !ice) ice = {};
+  if (SYNTHETIC !== null) P.hood.position.set(f >= SYNTHETIC ? 0.1 : 0, 0, 0).applyQuaternion(P.root.quaternion.clone().invert());   // +x in the world (the root is turned 90 deg)
+  const u = P.headMesh.material.uniforms; if (u && u.uClosed) u.uClosed.value = h.closed;
+  currentClosed = h.closed || 0;                                          // for the part points (the role style has no uClosed)
+  const hy = (ii === i ? h : s.pose(i)).tear;        // the tear moves even on a held drawing (in the sample it flows down over 1..6)
+  setTear(u, hy);
+  droplet.visible = !!(hy && hy.droplet); if (droplet.visible) droplet.position.set(...hy.droplet);
+  /* at the start of every shot the hair is pre-run in that shot's pose: at a cut the pose jumps (the camera is different) and
+     the strands whipped upward like a "flame" (shot 2, frame 12) */
+  const tt = TIME !== null ? TIME : f / TFPS;
+  P.physics(1 / TFPS, wind(tt), i === 0);
+  P.strandGeometry();                                                // the hair moves even when held (measured in the sample)
+  snow.step(tt);
 }
-function qadam(f) {
-  if (FILM) return qadamFilm(f);
-  const ts = Math.floor(f / ADIM) * ADIM / FPS;
-  const h = jadval(ts);
-  P.poza(h);
-  const u = P.boshMesh.material.uniforms; if (u && u.uYumuq) u.uYumuq.value = h.yumuq;
-  P.fizika(1 / FPS, shamol(f / FPS), f === 0);
-  if (f % ADIM === 0 || f === 0) P.tutamGeometriya();
-  qor.qadam(f / FPS);
+function step(f) {
+  if (FILM) return stepFilm(f);
+  const ts = Math.floor(f / STRIDE) * STRIDE / FPS;
+  const h = table(ts);
+  P.pose(h);
+  const u = P.headMesh.material.uniforms; if (u && u.uClosed) u.uClosed.value = h.closed;
+  P.physics(1 / FPS, wind(f / FPS), f === 0);
+  if (f % STRIDE === 0 || f === 0) P.strandGeometry();
+  snow.step(f / FPS);
 }
-window.kadr = (n) => {
-  if (n <= oxirgi) oxirgi = -1;
-  for (let f = oxirgi + 1; f <= n; f++) qadam(f);
-  oxirgi = n;
-  if (composer.kadrUniform) composer.kadrUniform.value = n;
-  kapSoyaQoy(); aoQoy();
+window.frame = (n) => {
+  if (n <= last) last = -1;
+  for (let f = last + 1; f <= n; f++) step(f);
+  last = n;
+  if (composer.frameUniform) composer.frameUniform.value = n;
+  setHoodShadow(); setAo();
   composer.render();
   return true;
 };
-window.tasvir = () => renderer.domElement.toDataURL('image/png');
-window.malumot = {STYLE, KAM, W, H, FPS: TFPS, ADIM, izoh: S.izoh, film: q.get('film') || null};
-/* tekshiruv: mexanizmni o'lchash uchun (soch uchlari ekranda qayerda) -- har tutam oxirgi nuqtasi, piksel */
-/* moslash uchun: kiyimni qayta qurish va kadr niqobini (fon emas = 1) o'qish */
-window.kiyim = (p) => { P.kiyimQur(p); oxirgi = -1; return true; };
-window.__kiyimJoriy = () => KIYIM;
-/* moslash bahosi sahifa ichida: har shot uchun 10x10 blok qoplanishi (o'rtacha) va bosh (teri+soch) piksellari */
-window.fitBaho = (o, SHOT) => {
-  if (o) window.kiyim(o);
+window.image = () => renderer.domElement.toDataURL('image/png');
+window.info = {STYLE, CAM, W, H, FPS: TFPS, STRIDE, note: S.note, film: q.get('film') || null};
+/* check: for measuring the mechanism (where the hair tips are on screen) -- the last point of each strand, pixels */
+/* for fitting: rebuild the clothes and read the frame mask (not background = 1) */
+window.clothes = (p) => { P.buildClothes(p); last = -1; return true; };
+window.__clothesCurrent = () => CLOTHES;
+/* fit score inside the page: per shot the 10x10 block coverage (mean) and the head (skin+hair) pixels */
+window.fitScore = (o, SHOT) => {
+  if (o) window.clothes(o);
   const gl = renderer.getContext(), b = new Uint8Array(W * H * 4), BY = Math.floor(H / 10), BX = Math.floor(W / 10);
-  const out = {B: {}, yuz: [], boyin: []};
-  for (const [nom, fr] of Object.entries(SHOT)) {
+  const out = {B: {}, face: [], neck: []};
+  for (const [name, fr] of Object.entries(SHOT)) {
     const acc = new Float32Array(BY * BX);
     for (const f of fr) {
-      window.kadr(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
+      window.frame(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
       let yz = 0, by = 0;
       for (let y = 0; y < BY * 10; y++) for (let x = 0; x < BX * 10; x++) {
         const i = ((H - 1 - y) * W + x) * 4;
         if (b[i] + b[i + 1] + b[i + 2] > 30) acc[Math.floor(y / 10) * BX + Math.floor(x / 10)] += 1;
         if ((b[i] > 200 && b[i + 1] < 60 && b[i + 2] < 60) || (b[i + 1] > 200 && b[i] < 60 && b[i + 2] < 60)) yz++;
-        if (b[i] > 35 && b[i] < 80 && b[i + 1] < 20 && b[i + 2] < 20) by++;                  // bo'yin (rol: 55,0,0)
+        if (b[i] > 35 && b[i] < 80 && b[i + 1] < 20 && b[i + 2] < 20) by++;                  // neck (role: 55,0,0)
       }
-      out.yuz.push(yz); out.boyin.push(by);
+      out.face.push(yz); out.neck.push(by);
     }
-    out.B[nom] = Array.from(acc, v => v / (100 * fr.length));
+    out.B[name] = Array.from(acc, v => v / (100 * fr.length));
   }
   return out;
 };
-/* 6-o'tish (kapyushon moslash): misol niqoblari bir marta yuklanadi (window.__ref = {lit: [base64...], qora: [...]}),
-   har kadr rol renderida: misolning yorug' sochi bizda kapyushon ostida qolgani (A), bizning ko'rinadigan sochimiz
-   misol qorong'i (L<30) joyda (B), figura bloklari (fitBaho kabi), yuz (teri) piksellari */
-window.kapBaho = (o, SHOT) => {
-  if (o) window.kiyim(o);
+/* pass 6 (hood fit): the sample masks are loaded once (window.__ref = {lit: [base64...], black: [...]}),
+   per frame in the role render: the sample's bright hair that stays under the hood in ours (A), our visible hair
+   where the sample is dark (L<30) (B), figure blocks (like fitScore), face (skin) pixels */
+window.hoodScore = (o, SHOT) => {
+  if (o) window.clothes(o);
   const R = window.__ref, gl = renderer.getContext(), b = new Uint8Array(W * H * 4), BY = Math.floor(H / 10), BX = Math.floor(W / 10);
   if (!R.dec) { R.dec = {}; for (const k of Object.keys(R.m)) { const s = atob(R.m[k]), a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); R.dec[k] = a; } }
-  const out = {B: {}, A: {}, Bs: {}, yuz: [], soch: []};
-  for (const [nom, fr] of Object.entries(SHOT)) {
-    const acc = new Float32Array(BY * BX); let lit = 0, litKap = 0, soch = 0, sochQora = 0;
+  const out = {B: {}, A: {}, Bs: {}, face: [], hair: []};
+  for (const [name, fr] of Object.entries(SHOT)) {
+    const acc = new Float32Array(BY * BX); let lit = 0, litHood = 0, hair = 0, hairBlack = 0;
     for (const f of fr) {
-      window.kadr(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
+      window.frame(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
       const m = R.dec[f]; let yz = 0, sc = 0;
       for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
         const i = ((H - 1 - y) * W + x) * 4, r = b[i], g = b[i + 1], bl = b[i + 2], j = y * W + x;
-        const fonEmas = r + g + bl > 30;
-        if (fonEmas && y < BY * 10 && x < BX * 10) acc[Math.floor(y / 10) * BX + Math.floor(x / 10)] += 1;
-        const kap = bl > 30 && r < 30 && (g < 30 || g > 200);                 // (0,0,255) (0,255,255) (0,0,55)
-        const sochP = g > 30 && r < 30 && bl < 30;                             // (0,255,0) (0,55,0)
-        const teri = r > 200 && g < 60 && bl < 60;
-        if (teri) yz++;
-        if (m[j] & 1) { lit++; if (kap) litKap++; }
-        if (sochP) { sc++; soch++; if (m[j] & 2) sochQora++; }
+        const backgroundNot = r + g + bl > 30;
+        if (backgroundNot && y < BY * 10 && x < BX * 10) acc[Math.floor(y / 10) * BX + Math.floor(x / 10)] += 1;
+        const hood = bl > 30 && r < 30 && (g < 30 || g > 200);                 // (0,0,255) (0,255,255) (0,0,55)
+        const hairP = g > 30 && r < 30 && bl < 30;                             // (0,255,0) (0,55,0)
+        const skin = r > 200 && g < 60 && bl < 60;
+        if (skin) yz++;
+        if (m[j] & 1) { lit++; if (hood) litHood++; }
+        if (hairP) { sc++; hair++; if (m[j] & 2) hairBlack++; }
       }
-      out.yuz.push(yz); out.soch.push(sc);
+      out.face.push(yz); out.hair.push(sc);
     }
-    out.B[nom] = Array.from(acc, v => v / (100 * fr.length));
-    out.A[nom] = litKap / Math.max(1, lit); out.Bs[nom] = sochQora / Math.max(1, soch);
+    out.B[name] = Array.from(acc, v => v / (100 * fr.length));
+    out.A[name] = litHood / Math.max(1, lit); out.Bs[name] = hairBlack / Math.max(1, hair);
   }
   return out;
 };
-/* 9-o'tish (bitta kapyushon moslash): window.__ref7 = {m: {tasvir: base64 niqob}} -- misolning ko'rinadigan boshi
-   (test/audit_misol/bosh_niqob.py). o -- KIYIM.kap qiymatlari (HAMMA shot uchun bitta), kam -- window.__kamShot (shot
-   kamerasi: masofa va ekran). Rol renderida ko'rinadigan boshimiz: teri, soch, qopqoq, bo'yin, astar; 3-shotda ruxsat
-   qutisi. Qaytaradi: har tasvir IoU, shot bo'yicha figura bloklari. */
-window.kapBaho9 = (o, kam, fr) => {
-  if (o) P.kiyimQur(o.kap || o.kapPoza ? o : {kap: o});      // {kap: {...}, kapPoza: {...}} yoki faqat kap qiymatlari
-  window.__kamShot = kam || null; oxirgi = -1;
+/* pass 9 (single hood fit): window.__ref7 = {m: {frame: base64 mask}} -- the sample's visible head
+   (test/audit_sample/head_mask.py). o -- CLOTHES.hood values (one for ALL shots), cam -- window.__camShot (shot
+   camera: distance and screen). Our visible head in the role render: skin, hair, cap shell, neck, lining; in shot 3 the allowed
+   box. Returns: IoU per frame, figure blocks per shot. */
+window.hoodScore9 = (o, cam, fr) => {
+  if (o) P.buildClothes(o.hood || o.hoodPose ? o : {hood: o});      // {hood: {...}, hoodPose: {...}} or only the hood values
+  window.__camShot = cam || null; last = -1;
   const R = window.__ref7, gl = renderer.getContext(), b = new Uint8Array(W * H * 4), BY = Math.floor(H / 10), BX = Math.floor(W / 10);
   if (!R.dec) { R.dec = {}; for (const k of Object.keys(R.m)) { const s = atob(R.m[k]), a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); R.dec[k] = a; } }
-  /* 11-o'tish: window.__yuzKor = {m: {tasvir: base64}} bo'lsa (bit 1 -- misolning ko'rinadigan terisi, bit 2 -- yuz qutisida
-     teri ham soch ham emas) -- har tasvir: kapyushon/plash misol terisi ustida (kapF) va bizning teri misolning qorong'i
-     joyida (teriQ), misol terisi maydoniga nisbatan */
-  const YK = window.__yuzKor;
+  /* pass 11: if window.__viewFace = {m: {frame: base64}} is given (bit 1 -- the sample's visible skin, bit 2 -- inside the face box
+     neither skin nor hair) -- per frame: hood/cloak over the sample's skin (hoodF) and our skin where the sample is
+     dark (skinQ), relative to the sample's skin area */
+  const YK = window.__viewFace;
   if (YK && !YK.dec) { YK.dec = {}; for (const k of Object.keys(YK.m)) { const s = atob(YK.m[k]), a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); YK.dec[k] = a; } }
-  /* iou2 (11-o'tish): astarsiz -- faqat teri/bo'yin va soch. 3-shotda misolda astar ko'rinmaydi (yuz o'ngida soch massasi):
-     astar "bosh" deb sanalganda moslash yetishmagan sochni astar bilan to'ldirdi (bosh IoU o'zgarmadi, soch+teri 73% -> 54%) */
-  const out = {iou: {}, iou2: {}, biz: {}, misol: {}, B: {}, kapF: {}, teriQ: {}};
+  /* iou2 (pass 11): without the lining -- only skin/neck and hair. In shot 3 the sample shows no lining (a hair mass to the right of the face):
+     when the lining was counted as "head", the fit filled the missing hair with lining (head IoU unchanged, hair+skin 73% -> 54%) */
+  const out = {iou: {}, iou2: {}, ours: {}, sample: {}, B: {}, hoodF: {}, skinQ: {}};
   for (const f of fr) {
-    window.kadr(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
+    window.frame(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
     const sh = f <= 10 ? 0 : f <= 12 ? 1 : 2; if (!out.B[sh]) out.B[sh] = {acc: new Float32Array(BY * BX), n: 0};
     const m = R.dec[f], yk = YK && YK.dec[f]; let I = 0, U = 0, nb = 0, nm = 0, nF = 0, kF = 0, tQ = 0, I2 = 0, U2 = 0;
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
       const i = ((H - 1 - y) * W + x) * 4, r = b[i], g = b[i + 1], bl = b[i + 2], j = y * W + x;
       if (r + g + bl > 30 && y < BY * 10 && x < BX * 10) out.B[sh].acc[Math.floor(y / 10) * BX + Math.floor(x / 10)] += 1;
-      let bosh2 = (r > 30 && g < 30 && bl < 30) || (g > 30 && r < 30 && bl < 30), bosh = bosh2 || (g > 200 && bl > 200 && r < 30);   // teri/bo'yin, soch/qopqoq, astar
-      if (f >= 13 && !((x <= 218) && (y <= 162) && !((x > 185) && (y > 135)))) bosh = bosh2 = false;
+      let head2 = (r > 30 && g < 30 && bl < 30) || (g > 30 && r < 30 && bl < 30), head = head2 || (g > 200 && bl > 200 && r < 30);   // skin/neck, hair/cap shell, lining
+      if (f >= 13 && !((x <= 218) && (y <= 162) && !((x > 185) && (y > 135)))) head = head2 = false;
       const mm = m[j] & 1;
-      if (bosh) nb++; if (mm) nm++; if (bosh && mm) I++; if (bosh || mm) U++;
-      if (bosh2 && mm) I2++; if (bosh2 || mm) U2++;
+      if (head) nb++; if (mm) nm++; if (head && mm) I++; if (head || mm) U++;
+      if (head2 && mm) I2++; if (head2 || mm) U2++;
       if (yk) {
-        const kap = bl > 30 && g < 30 || (bl > 200 && g > 200 && r < 30);   // kapyushon (tashqi, ichi), plash (tashqi, ichi), astar
-        if (yk[j] & 1) { nF++; if (kap) kF++; }
+        const hood = bl > 30 && g < 30 || (bl > 200 && g > 200 && r < 30);   // hood (outer, inner), cloak (outer, inner), lining
+        if (yk[j] & 1) { nF++; if (hood) kF++; }
         else if ((yk[j] & 2) && r > 200 && g < 60 && bl < 60) tQ++;
       }
     }
-    out.iou[f] = I / Math.max(1, U); out.iou2[f] = I2 / Math.max(1, U2); out.biz[f] = nb; out.misol[f] = nm; out.B[sh].n++;
-    if (yk) { out.kapF[f] = kF / Math.max(1, nF); out.teriQ[f] = tQ / Math.max(1, nF); }
+    out.iou[f] = I / Math.max(1, U); out.iou2[f] = I2 / Math.max(1, U2); out.ours[f] = nb; out.sample[f] = nm; out.B[sh].n++;
+    if (yk) { out.hoodF[f] = kF / Math.max(1, nF); out.skinQ[f] = tQ / Math.max(1, nF); }
   }
   for (const sh in out.B) out.B[sh] = Array.from(out.B[sh].acc, v => v / (100 * out.B[sh].n));
   return out;
 };
-/* 12-o'tish (tuzilish): SINF BO'YICHA baho -- window.__qism = {m: {tasvir: base64}} (MAXFIY, test/qism/inson/qism_nishon.py):
-   bit 1 -- misolning ko'rinadigan boshi (yuz + soch, yorug' va soyada), bit 2 -- kapyushon ichi (misolda keng kapyushonning
-   qorong'i ichi soch va mato orasida), bit 4 -- figura. Bizda (rol): bosh = teri, bo'yin, soch, qopqoq (astar EMAS -- 11-o'tishda
-   astar yetishmagan sochni to'ldirgan edi); ich = kapyushon/plash ichki yuzi; figura = fon emas. Qaytaradi: har tasvir uch
-   IoU va astar piksellari. o -- kiyimQur qiymatlari ({kap, kapPoza, ...}), kam -- window.__kamShot. */
-window.kapBaho12 = (o, kam, fr) => {
-  if (o) P.kiyimQur(o);
-  window.__kamShot = kam || null; oxirgi = -1;
-  const R = window.__qism, gl = renderer.getContext(), b = new Uint8Array(W * H * 4);
+/* pass 12 (structure): score BY CLASS -- window.__part = {m: {frame: base64}} (PRIVATE, test/parts/human/part_target.py):
+   bit 1 -- the sample's visible head (face + hair, lit and in shadow), bit 2 -- inside the hood (in the sample the dark inside
+   of the wide hood between hair and cloth), bit 4 -- figure. Ours (role): head = skin, neck, hair, cap shell (NOT the lining -- in pass 11
+   the lining had filled in the missing hair); inner = the inner face of the hood/cloak; figure = not background. Returns: per frame three
+   IoUs and the lining pixels. o -- buildClothes values ({hood, hoodPose, ...}), cam -- window.__camShot. */
+window.hoodScore12 = (o, cam, fr) => {
+  if (o) P.buildClothes(o);
+  window.__camShot = cam || null; last = -1;
+  const R = window.__part, gl = renderer.getContext(), b = new Uint8Array(W * H * 4);
   if (!R.dec) { R.dec = {}; for (const k of Object.keys(R.m)) { const s = atob(R.m[k]), a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); R.dec[k] = a; } }
-  const out = {B: {}}, BY = Math.floor(H / 10), BX = Math.floor(W / 10);                 // B -- figura bloklari (shot bo'yicha, 8-o'tish usuli)
+  const out = {B: {}}, BY = Math.floor(H / 10), BX = Math.floor(W / 10);                 // B -- figure blocks (per shot, the pass 8 method)
   for (const f of fr) {
-    window.kadr(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
+    window.frame(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
     const sh = f <= 10 ? 0 : f <= 12 ? 1 : 2; if (!out.B[sh]) out.B[sh] = {acc: new Float32Array(BY * BX), n: 0};
-    const m = R.dec[f]; const c = {hI: 0, hU: 0, iI: 0, iU: 0, fI: 0, fU: 0, astar: 0, hBiz: 0, hMis: 0, iBiz: 0, iMis: 0};
+    const m = R.dec[f]; const c = {hI: 0, hU: 0, iI: 0, iU: 0, fI: 0, fU: 0, lining: 0, hOurs: 0, hSample: 0, iOurs: 0, iSample: 0};
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
       const i = ((H - 1 - y) * W + x) * 4, r = b[i], g = b[i + 1], bl = b[i + 2], j = y * W + x;
-      let bosh = (r > 30 && g < 30 && bl < 30) || (g > 30 && r < 30 && bl < 30);                 // teri/bo'yin, soch/qopqoq
-      if (f >= 13 && !((x <= 218) && (y <= 162) && !((x > 185) && (y > 135)))) bosh = false;    // 3-shot ruxsat qutisi (misol niqobidagidek)
-      const ich = (bl > 30 && bl < 90 && r < 30 && g < 30) || (bl > 30 && bl < 90 && r > 30 && r < 90 && g < 30);   // kapIch (0,0,55), plashIch (55,0,55)
-      const fig = r + g + bl > 30, astar = g > 200 && bl > 200 && r < 30;
+      let head = (r > 30 && g < 30 && bl < 30) || (g > 30 && r < 30 && bl < 30);                 // skin/neck, hair/cap shell
+      if (f >= 13 && !((x <= 218) && (y <= 162) && !((x > 185) && (y > 135)))) head = false;    // the shot 3 allowed box (as in the sample mask)
+      const inner = (bl > 30 && bl < 90 && r < 30 && g < 30) || (bl > 30 && bl < 90 && r > 30 && r < 90 && g < 30);   // hoodInner (0,0,55), cloakInner (55,0,55)
+      const fig = r + g + bl > 30, lining = g > 200 && bl > 200 && r < 30;
       const mb = m[j] & 1, mi = m[j] & 2, mf = m[j] & 4;
-      if (bosh && mb) c.hI++; if (bosh || mb) c.hU++; if (bosh) c.hBiz++; if (mb) c.hMis++;
-      if (ich && mi) c.iI++; if (ich || mi) c.iU++; if (ich) c.iBiz++; if (mi) c.iMis++;
+      if (head && mb) c.hI++; if (head || mb) c.hU++; if (head) c.hOurs++; if (mb) c.hSample++;
+      if (inner && mi) c.iI++; if (inner || mi) c.iU++; if (inner) c.iOurs++; if (mi) c.iSample++;
       if (fig && mf) c.fI++; if (fig || mf) c.fU++;
       if (fig && y < BY * 10 && x < BX * 10) out.B[sh].acc[Math.floor(y / 10) * BX + Math.floor(x / 10)] += 1;
-      if (astar) c.astar++;
+      if (lining) c.lining++;
     }
     out.B[sh].n++;
-    out[f] = {bosh: c.hI / Math.max(1, c.hU), ich: c.iI / Math.max(1, c.iU), figura: c.fI / Math.max(1, c.fU), astar: c.astar,
-              boshNisbat: c.hBiz / Math.max(1, c.hMis), ichBiz: c.iBiz, ichMisol: c.iMis};
+    out[f] = {head: c.hI / Math.max(1, c.hU), inner: c.iI / Math.max(1, c.iU), figure: c.fI / Math.max(1, c.fU), lining: c.lining,
+              headRatio: c.hOurs / Math.max(1, c.hSample), innerOurs: c.iOurs, innerSample: c.iSample};
   }
   for (const sh in out.B) out.B[sh] = Array.from(out.B[sh].acc, v => v / (100 * out.B[sh].n));
   return out;
 };
-/* 12-o'tish (soch): kapyushon va plash YASHIRIN (soch hajmi o'zi) -- misolning sochi (window.__qism bit 1 va 8 emas) bizda
-   soch bilan qoplanganmi (tiklash), misolning yorug' terisida (bit 8) bizning soch (yuzni yopish). o -- window.sochQur uchun
-   (bo'sh bo'lsa soch o'zgarmaydi). Kapyushon keyin ustidan yopadi -- bu yerda faqat sochning o'zi. */
-window.sochBaho12 = (o, fr) => {
-  if (o) window.sochQur(o);
-  oxirgi = -1;
-  const R = window.__qism, gl = renderer.getContext(), b = new Uint8Array(W * H * 4);
+/* pass 12 (hair): hood and cloak HIDDEN (the hair volume itself) -- is the sample's hair (window.__part bit 1 and not 8) covered
+   by hair in ours (recovery), our hair on the sample's bright skin (bit 8) (covering the face). o -- for window.buildHair
+   (if empty the hair does not change). The hood closes over it later -- here only the hair itself. */
+window.hairScore12 = (o, fr) => {
+  if (o) window.buildHair(o);
+  last = -1;
+  const R = window.__part, gl = renderer.getContext(), b = new Uint8Array(W * H * 4);
   if (!R.dec) { R.dec = {}; for (const k of Object.keys(R.m)) { const s = atob(R.m[k]), a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); R.dec[k] = a; } }
-  const yashir = [P.kap, P.plash], eski = yashir.map(m => m.visible); yashir.forEach(m => { m.visible = false; });
+  const hide = [P.hood, P.cloak], old = hide.map(m => m.visible); hide.forEach(m => { m.visible = false; });
   const out = {};
   for (const f of fr) {
-    window.kadr(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
+    window.frame(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
     const m = R.dec[f]; let nH = 0, hS = 0, hT = 0, nF = 0, fS = 0, sF = 0;
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
       const i = ((H - 1 - y) * W + x) * 4, r = b[i], g = b[i + 1], bl = b[i + 2], j = y * W + x;
-      const soch = g > 30 && r < 30 && bl < 30, teri = r > 30 && g < 30 && bl < 30;
+      const hair = g > 30 && r < 30 && bl < 30, skin = r > 30 && g < 30 && bl < 30;
       const mh = (m[j] & 1) && !(m[j] & 8), mf = m[j] & 8;
-      if (mh) { nH++; if (soch) hS++; else if (teri) hT++; }
-      if (mf) { nF++; if (soch) fS++; }
-      if (soch && !(m[j] & 4)) sF++;                        // bizning soch misolning FONIDA (osmon, qor) -- kapyushon ham yopmaydi
+      if (mh) { nH++; if (hair) hS++; else if (skin) hT++; }
+      if (mf) { nF++; if (hair) fS++; }
+      if (hair && !(m[j] & 4)) sF++;                        // our hair on the sample's BACKGROUND (sky, snow) -- the hood does not cover it either
     }
-    out[f] = {tiklash: hS / Math.max(1, nH), teriSochda: hT / Math.max(1, nH), yuzniYopish: fS / Math.max(1, nF), fonda: sF / Math.max(1, nH), nH, nF};
+    out[f] = {recovery: hS / Math.max(1, nH), skinInHair: hT / Math.max(1, nH), faceCover: fS / Math.max(1, nF), inBackground: sF / Math.max(1, nH), nH, nF};
   }
-  yashir.forEach((m, i) => { m.visible = eski[i]; });
+  hide.forEach((m, i) => { m.visible = old[i]; });
   return out;
 };
-/* 12-o'tish (tuzilish): KAPYUSHON TUZILISHI BAHOSI -- bosh qobig'i to'ri (test/sirt_proyeksiya.mjs, soch qalinligida) har kadrda
-   misolning qaysi qismiga tushadi (GR[f] = {px: piksel indekslari, c: misol sinfi 0 bosh, 1 ich, 2 tashqi, 3 fon -- MAXFIY
-   nishondan, test/fit_kap_tuz.mjs) va bizning rol renderimizda shu pikselda nima (bir xil 4 sinf; AO/kapyushon soyasi
-   qorong'isi -- ich). Qaytaradi: har kadr chalkashlik matritsasi (4x4, misol x biz), figura bloklari (32x18) va kapyushon
-   matosining soch qatlamiga kirishi (bosh fazosida, qobiqChuqurlik; yuqori qism v < 0.7). o = {kiyim, nur: [az, el]} */
-window.kapTuzBaho = (o, fr, GR) => {
-  GR = GR || window.__GR;                             // katta to'r bir marta yuklanadi (test/fit_kamera_tuz.mjs)
-  if (o.kiyim) P.kiyimQur(o.kiyim);
-  if (o.pozaShot !== undefined) window.__pozaShot = o.pozaShot;
-  if (o.kamShot !== undefined) window.__kamShot = o.kamShot;
-  if (o.nur) { const a = o.nur[0] * Math.PI / 180, e = o.nur[1] * Math.PI / 180; KOZ.nur.set(Math.cos(e) * Math.cos(a), Math.sin(e), Math.cos(e) * Math.sin(a)); KOZ.nurSoch.copy(KOZ.nur); }
-  if (o.ao) AO_U.uAoEsik.value.set(o.ao[0], o.ao[1] ?? AO_U.uAoEsik.value.y);
-  if (o.aoOsmon !== undefined) AO_U.uAoOsmon.value = o.aoOsmon;
-  if (o.aoTeri !== undefined) AO_U.uAoTeri.value = o.aoTeri;
-  if (o.soch) window.sochQur(o.soch);
-  oxirgi = -1;
+/* pass 12 (structure): HOOD STRUCTURE SCORE -- which part of the sample the head shell grid (test/surface_projection.mjs, at hair
+   thickness) lands on in every frame (GR[f] = {px: pixel indices, c: sample class 0 head, 1 inside, 2 outside, 3 background -- from the PRIVATE
+   target, test/fit_hood_structure.mjs) and what is at that pixel in our role render (the same 4 classes; AO/hood shadow
+   dark -- inside). Returns: per frame a confusion matrix (4x4, sample x ours), figure blocks (32x18) and the hood
+   cloth entering the hair layer (in head space, shellDepth; upper part v < 0.7). o = {clothes, light: [az, el]} */
+window.hoodStructureScore = (o, fr, GR) => {
+  GR = GR || window.__GR;                             // the large grid is loaded once (test/fit_camera_structure.mjs)
+  if (o.clothes) P.buildClothes(o.clothes);
+  if (o.poseShot !== undefined) window.__poseShot = o.poseShot;
+  if (o.camShot !== undefined) window.__camShot = o.camShot;
+  if (o.light) { const a = o.light[0] * Math.PI / 180, e = o.light[1] * Math.PI / 180; EYE.light.set(Math.cos(e) * Math.cos(a), Math.sin(e), Math.cos(e) * Math.sin(a)); EYE.lightHair.copy(EYE.light); }
+  if (o.ao) AO_U.uAoThreshold.value.set(o.ao[0], o.ao[1] ?? AO_U.uAoThreshold.value.y);
+  if (o.aoSky !== undefined) AO_U.uAoSky.value = o.aoSky;
+  if (o.aoSkin !== undefined) AO_U.uAoSkin.value = o.aoSkin;
+  if (o.hair) window.buildHair(o.hair);
+  last = -1;
   const gl = renderer.getContext(), b = new Uint8Array(W * H * 4), out = {};
-  const sinf = (r, g, bl) => {
+  const classify = (r, g, bl) => {
     if ((r > 30 && g < 30 && bl < 30) || (g > 30 && r < 30 && bl < 30)) return 0;
     if (bl > 30 && bl < 90 && g < 30 && (r < 30 || r < 90)) return 1;
     return r + g + bl > 30 ? 2 : 3;
   };
-  const uv = P.kap.geometry.attributes.uv, pa = P.kap.geometry.attributes.position, v3 = new THREE.Vector3(), inv = new THREE.Matrix4();
+  const uv = P.hood.geometry.attributes.uv, pa = P.hood.geometry.attributes.position, v3 = new THREE.Vector3(), inv = new THREE.Matrix4();
   for (const f of fr) {
-    window.kadr(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
+    window.frame(f); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
     const conf = new Array(16).fill(0), g = GR[f];
-    if (g) for (let i = 0; i < g.px.length; i++) { const j = g.px[i], x = j % W, y = (j / W) | 0, k = ((H - 1 - y) * W + x) * 4; conf[g.c[i] * 4 + sinf(b[k], b[k + 1], b[k + 2])]++; }
+    if (g) for (let i = 0; i < g.px.length; i++) { const j = g.px[i], x = j % W, y = (j / W) | 0, k = ((H - 1 - y) * W + x) * 4; conf[g.c[i] * 4 + classify(b[k], b[k + 1], b[k + 2])]++; }
     const BL = new Float32Array(32 * 18), bw = W / 32, bh = H / 18;
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const k = ((H - 1 - y) * W + x) * 4; if (b[k] + b[k + 1] + b[k + 2] > 30) BL[Math.floor(y / bh) * 32 + Math.floor(x / bw)] += 1 / (bw * bh); }
-    /* butun kadr bo'yicha (window.__qism -- misol bitlari, MAXFIY; bo'lsa): 4x4 chalkashlik, va kadr tepasi (0..tepaQ qator) alohida --
-       sochning tepadagi qismi (bosh qobig'i to'ri bosh ustidagi tutamlarni ko'rmaydi) */
-    let confF = null, confT = null, sochI = 0, sochU = 0, yuzS = 0, yuzN = 0;
-    const QM = window.__qism;
+    /* over the whole frame (window.__part -- the sample bits, PRIVATE; if present): 4x4 confusion, and the top of the frame (rows 0..topQ)
+       separately -- the top part of the hair (the head shell grid does not see the strands above the head) */
+    let confF = null, confT = null, hairI = 0, hairU = 0, faceS = 0, faceN = 0;
+    const QM = window.__part;
     if (QM) {
       if (!QM.dec) { QM.dec = {}; for (const kk of Object.keys(QM.m)) { const s = atob(QM.m[kk]), a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); QM.dec[kk] = a; } }
-      const m = QM.dec[f], tq = window.__tepaQ || 60;
+      const m = QM.dec[f], tq = window.__topQ || 60;
       if (m) { confF = new Array(16).fill(0); confT = new Array(16).fill(0);
-        for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const k = ((H - 1 - y) * W + x) * 4, bt = m[y * W + x], cm = bt & 1 ? 0 : bt & 2 ? 1 : bt & 4 ? 2 : 3, cb = sinf(b[k], b[k + 1], b[k + 2]);
+        for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const k = ((H - 1 - y) * W + x) * 4, bt = m[y * W + x], cm = bt & 1 ? 0 : bt & 2 ? 1 : bt & 4 ? 2 : 3, cb = classify(b[k], b[k + 1], b[k + 2]);
           confF[cm * 4 + cb]++; if (y < tq) confT[cm * 4 + cb]++;
-          /* 13-o'tish (6-ish): SOCH alohida -- misol bit16 (SAM 2 soch = bosh minus yuz, 5-yurish), biz: rol yashili (soch, sochIch; AO
-             qorong'isi emas). bit32 (SAM 2 yuz) hisobga olinmaydi: 3-shotda peshona tutamlari yuz ustida, SAM yuzi ularni ham oladi
-             (test/qism/inson/sam2_soch.py) */
+          /* pass 13 (item 6): HAIR separately -- sample bit16 (SAM 2 hair = head minus face, run 5), ours: the role green (hair, hairInner;
+             not the AO dark). bit32 (SAM 2 face) is not counted: in shot 3 the forehead strands lie over the face, and the SAM face takes them too
+             (test/parts/human/sam2_hair.py) */
           const hb = b[k + 1] > 30 && b[k] < 30 && b[k + 2] < 30;
-          if (!(bt & 32)) { const hm = (bt & 16) > 0; if (hm && hb) sochI++; if (hm || hb) sochU++; }
-          /* soch yuzni yopmasin: SAM yuzi (bit32) ichida, SAM sochi bo'lmagan joyda bizning soch -- yuz ulushi (1-2-shotda jarima;
-             3-shotda misolning o'zida peshona tutamlari yuz ustida -- fit_kap_tuz.mjs faqat s < 3 da qo'shadi) */
-          else { yuzN++; if (hb && !(bt & 16)) yuzS++; } } }
+          if (!(bt & 32)) { const hm = (bt & 16) > 0; if (hm && hb) hairI++; if (hm || hb) hairU++; }
+          /* the hair must not cover the face: inside the SAM face (bit32), where there is no SAM hair, our hair -- the face fraction (a penalty
+             in shots 1-2; in shot 3 the sample itself has forehead strands over the face -- fit_hood_structure.mjs adds it only for s < 3) */
+          else { faceN++; if (hb && !(bt & 16)) faceS++; } } }
     }
-    P.kap.updateMatrixWorld(true); P.bosh.updateMatrixWorld(true); inv.copy(P.bosh.matrixWorld).invert();
+    P.hood.updateMatrixWorld(true); P.head.updateMatrixWorld(true); inv.copy(P.head.matrixWorld).invert();
     let pen = 0, nPen = 0;
     for (let i = 0; i < pa.count; i += 3) {
       if (uv.getY(i) > 0.7) continue;
-      v3.fromBufferAttribute(pa, i).applyMatrix4(P.kap.matrixWorld).applyMatrix4(inv);
-      const d = qobiqChuqurlik([v3.x, v3.y, v3.z], 0.16);
+      v3.fromBufferAttribute(pa, i).applyMatrix4(P.hood.matrixWorld).applyMatrix4(inv);
+      const d = shellDepth([v3.x, v3.y, v3.z], 0.16);
       if (d > 0) { pen += d * d; nPen++; }
     }
-    out[f] = {conf, confF, confT, soch: [sochI, sochU], yuz: [yuzS, yuzN], B: Array.from(BL, v => +v.toFixed(3)), pen, nPen};
+    out[f] = {conf, confF, confT, hair: [hairI, hairU], face: [faceS, faceN], B: Array.from(BL, v => +v.toFixed(3)), pen, nPen};
   }
   return out;
 };
-/* 12-o'tish (tekshiruv): f-tasvirda soch zanjirlari (guruh bilan) va kapyushon qirrasi / o'rta chizig'i BOSH FAZOSIDA -- yon
-   kesim chizmasi uchun (test/qism/kesim.py) */
-window.tuzKesim = (f) => {
-  window.kadr(f); P.bosh.updateMatrixWorld(true); P.kap.updateMatrixWorld(true);
-  const inv = new THREE.Matrix4().copy(P.bosh.matrixWorld).invert(), v = new THREE.Vector3();
-  const soch = P.tutamlar.map(t => ({gr: t.gr, en: t.en, p: t.p.map(q => v.copy(q).applyMatrix4(inv).toArray().map(a => +a.toFixed(3)))}));
-  const pa = P.kap.geometry.attributes.position, uv = P.kap.geometry.attributes.uv, qirra = [], orta = [], yon = [];
+/* pass 12 (check): at frame f the hair chains (with group) and the hood brim / midline IN HEAD SPACE -- for a side
+   section drawing (test/parts/section.py) */
+window.structureSection = (f) => {
+  window.frame(f); P.head.updateMatrixWorld(true); P.hood.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().copy(P.head.matrixWorld).invert(), v = new THREE.Vector3();
+  const hair = P.strands.map(t => ({gr: t.gr, en: t.en, p: t.p.map(q => v.copy(q).applyMatrix4(inv).toArray().map(a => +a.toFixed(3)))}));
+  const pa = P.hood.geometry.attributes.position, uv = P.hood.geometry.attributes.uv, brim = [], mid = [], side = [];
   for (let i = 0; i < pa.count; i++) {
     const u = uv.getX(i), w = uv.getY(i); if (w > 0.8) continue;
-    v.fromBufferAttribute(pa, i).applyMatrix4(P.kap.matrixWorld).applyMatrix4(inv);
+    v.fromBufferAttribute(pa, i).applyMatrix4(P.hood.matrixWorld).applyMatrix4(inv);
     const t = [+v.x.toFixed(3), +v.y.toFixed(3), +v.z.toFixed(3), +w.toFixed(3)];
-    if (u < 1e-6 || u > 1 - 1e-6) qirra.push([...t, u < 0.5 ? 0 : 1]);
-    if (Math.abs(u - 0.5) < 0.006) orta.push(t);
-    if (Math.abs(u - 0.25) < 0.006 || Math.abs(u - 0.75) < 0.006) yon.push([...t, u < 0.5 ? 0 : 1]);
+    if (u < 1e-6 || u > 1 - 1e-6) brim.push([...t, u < 0.5 ? 0 : 1]);
+    if (Math.abs(u - 0.5) < 0.006) mid.push(t);
+    if (Math.abs(u - 0.25) < 0.006 || Math.abs(u - 0.75) < 0.006) side.push([...t, u < 0.5 ? 0 : 1]);
   }
-  return {soch, qirra, orta, yon};
+  return {hair, brim, mid, side};
 };
-/* 13-o'tish (tekshiruv): f-tasvirda soch zanjirlari DUNYO fazosida (y -- tepaga) va boshning dunyodagi tepa/old yo'nalishi */
-window.sochDunyo = (f) => {
-  window.kadr(f); P.bosh.updateMatrixWorld(true);
-  const e = P.bosh.matrixWorld.elements, up = [e[4], e[5], e[6]], old = [e[8], e[9], e[10]];
-  return {up, old, soch: P.tutamlar.map(t => ({gr: t.gr, p: t.p.map(v => v.toArray().map(a => +a.toFixed(3)))}))};
+/* pass 13 (check): at frame f the hair chains in WORLD space (y -- up) and the head's up/front directions in the world */
+window.hairWorld = (f) => {
+  window.frame(f); P.head.updateMatrixWorld(true);
+  const e = P.head.matrixWorld.elements, up = [e[4], e[5], e[6]], front = [e[8], e[9], e[10]];
+  return {up, front, hair: P.strands.map(t => ({gr: t.gr, p: t.p.map(v => v.toArray().map(a => +a.toFixed(3)))}))};
 };
-window.niqobOl = () => {
+window.getMask = () => {
   const gl = renderer.getContext(), b = new Uint8Array(W * H * 4); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, b);
-  const m = new Uint8Array(W * H), yuz = new Uint8Array(W * H);
+  const m = new Uint8Array(W * H), face = new Uint8Array(W * H);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const i = ((H - 1 - y) * W + x) * 4, j = y * W + x;
     m[j] = (b[i] + b[i + 1] + b[i + 2]) > 30 ? 1 : 0;
-    yuz[j] = (b[i] > 200 && b[i + 1] < 60 && b[i + 2] < 60) || (b[i + 1] > 200 && b[i] < 60 && b[i + 2] < 60) ? 1 : 0;   // teri yoki soch
+    face[j] = (b[i] > 200 && b[i + 1] < 60 && b[i + 2] < 60) || (b[i + 1] > 200 && b[i] < 60 && b[i + 2] < 60) ? 1 : 0;   // skin or hair
   }
-  return {m: Array.from(m), yuz: Array.from(yuz)};
+  return {m: Array.from(m), face: Array.from(face)};
 };
-/* kamera va pozani qo'yib, bosh fazosidagi nuqtalarning ekran o'rnini qaytaradi (render yo'q -- moslash uchun) */
-window.nuqtalar = (kam, poza, pts) => { kameraQoy(kam); kamera.updateMatrixWorld(); P.poza(poza); P.bosh.updateMatrixWorld(true); return pts.map(p => window.boshNuqta(p)); };
-/* yuz nuqtalari (moslash uchun): bosh/yuz parametrlari (vaqtincha), poza va kamera berilib -- ekran o'rinlari.
-   Bosh geometriyasi qayta qurilmaydi: nuqtalar boshShakli dan hisoblanadi (render yo'q). */
-window.yuzNuqtalar = (o) => {
-  const eB = {...BOSH}, eY = {...YUZ};
-  Object.assign(BOSH, o.bosh || {}); Object.assign(YUZ, o.yuz || {});
-  kameraQoy(o.kam); kamera.updateMatrixWorld(); P.poza(o.poza); P.bosh.updateMatrixWorld(true);
-  const L = {yaqin: yuzNuqta(-YUZ.kozX, YUZ.kozY), uzoq: yuzNuqta(YUZ.kozX, YUZ.kozY), ogiz: yuzNuqta(0, YUZ.ogizY), iyak: iyakNuqta(), burun: burunNuqta()};
-  const out = {}; for (const [k, p] of Object.entries(L)) out[k] = window.boshNuqta(p);
-  Object.assign(BOSH, eB); Object.assign(YUZ, eY);
+/* sets the camera and pose, returns the screen positions of points in head space (no render -- for fitting) */
+window.points = (cam, pose, pts) => { setCamera(cam); camera.updateMatrixWorld(); P.pose(pose); P.head.updateMatrixWorld(true); return pts.map(p => window.headPoint(p)); };
+/* face points (for fitting): given head/face parameters (temporary), pose and camera -- the screen positions.
+   The head geometry is not rebuilt: the points are computed from headShape (no render). */
+window.facePoints = (o) => {
+  const eB = {...HEAD}, eY = {...FACE};
+  Object.assign(HEAD, o.head || {}); Object.assign(FACE, o.face || {});
+  setCamera(o.cam); camera.updateMatrixWorld(); P.pose(o.pose); P.head.updateMatrixWorld(true);
+  const L = {near: facePoint(-FACE.eyeX, FACE.eyeY), far: facePoint(FACE.eyeX, FACE.eyeY), mouth: facePoint(0, FACE.mouthY), chin: chinPoint(), nose: nosePoint()};
+  const out = {}; for (const [k, p] of Object.entries(L)) out[k] = window.headPoint(p);
+  Object.assign(HEAD, eB); Object.assign(FACE, eY);
   return out;
 };
-window.boshNuqta = (p) => { const v = new THREE.Vector3(...p).applyMatrix4(P.bosh.matrixWorld).project(kamera); return [(v.x + 1) / 2 * W, (1 - v.y) / 2 * H]; };
-/* tekshiruv (7-o'tish): ekrandagi (X, Y) atrofida r px ichiga tushgan kapyushon uchlari -- [u, v, chuqurlik] */
-window.kapVnuqta = (X, Y, r = 3) => {
-  const g = P.kap.geometry, pa = g.attributes.position, uv = g.attributes.uv, v3 = new THREE.Vector3(), out = [];
-  P.kap.updateMatrixWorld(true);
+window.headPoint = (p) => { const v = new THREE.Vector3(...p).applyMatrix4(P.head.matrixWorld).project(camera); return [(v.x + 1) / 2 * W, (1 - v.y) / 2 * H]; };
+/* check (pass 7): the hood vertices that fall within r px around (X, Y) on screen -- [u, v, depth] */
+window.hoodVPoint = (X, Y, r = 3) => {
+  const g = P.hood.geometry, pa = g.attributes.position, uv = g.attributes.uv, v3 = new THREE.Vector3(), out = [];
+  P.hood.updateMatrixWorld(true);
   for (let i = 0; i < pa.count; i++) {
-    v3.fromBufferAttribute(pa, i).applyMatrix4(P.kap.matrixWorld).project(kamera);
+    v3.fromBufferAttribute(pa, i).applyMatrix4(P.hood.matrixWorld).project(camera);
     const x = (v3.x + 1) / 2 * W, y = (1 - v3.y) / 2 * H;
     if (Math.abs(x - X) < r && Math.abs(y - Y) < r) out.push([+uv.getX(i).toFixed(3), +uv.getY(i).toFixed(3), +v3.z.toFixed(4)]);
   }
   return out;
 };
-/* tekshiruv (8-o'tish): joriy tasvirda yaqin ko'z va iyak nuqtalarining ekrandagi o'rni (kamera moslashi uchun) */
-window.yuzEkran = () => ({koz: window.boshNuqta(yuzNuqta(-YUZ.kozX, YUZ.kozY)), iyak: window.boshNuqta(iyakNuqta()), burun: window.boshNuqta(burunNuqta())});
-window.tutamUchlari = () => P.tutamlar.map(t => { const v = t.p[t.p.length - 1].clone().project(kamera); return [(v.x + 1) / 2 * W, (1 - v.y) / 2 * H]; });
-/* 9-o'tish tekshiruvi (test/kamera_sinov9.mjs): obyekt holati -- har qismning namuna nuqtalari DUNYODA (bosh sirti, yaqin
-   ko'z chizmasi, soch, bo'yin, kapyushon, plash, qor) va fon "tepasi". Poza va vaqt ushlanganda 3D izchil dunyoda kamera
-   yurganda bular o'zgarmaydi; window.proj -- joriy kamera (linza siljishi bilan) proyeksiyasi, px. */
+/* check (pass 8): the screen positions of the near eye and chin points in the current frame (for the camera fit) */
+window.faceScreen = () => ({eye: window.headPoint(facePoint(-FACE.eyeX, FACE.eyeY)), chin: window.headPoint(chinPoint()), nose: window.headPoint(nosePoint())});
+window.strandTips = () => P.strands.map(t => { const v = t.p[t.p.length - 1].clone().project(camera); return [(v.x + 1) / 2 * W, (1 - v.y) / 2 * H]; });
+/* pass 9 check (test/camera_test9.mjs): object state -- sample points of every part IN THE WORLD (head surface, near
+   eye drawing, hair, neck, hood, cloak, snow) and the background "top". With pose and time held, in a 3D-consistent world these
+   do not change when the camera moves; window.proj -- the projection of the current camera (with the lens shift), px. */
 const _v = new THREE.Vector3();
-function namuna(mesh, nmax, out = []) {
+function specimen(mesh, nmax, out = []) {
   mesh.updateMatrixWorld(true);
   const p = mesh.geometry.attributes.position, qd = Math.max(1, Math.floor(p.count / nmax));
   for (let i = 0; i < p.count; i += qd) { _v.fromBufferAttribute(p, i).applyMatrix4(mesh.matrixWorld); out.push(_v.x, _v.y, _v.z); }
   return out;
 }
-window.obyekt = () => {
-  const o = {teri: [], sochIch: [], soch: [], boyin: [], kapyushon: [], plash: [], koz: [], qor: []};
-  for (const m of P.meshlar()) { const r = m.userData.rol; if (o[r]) namuna(m, r === 'soch' ? 19 : 400, o[r]); }   // soch: har tutamdan 19
-  const c = kozKarta(BOSH.profilW); P.boshMesh.updateMatrixWorld(true);
+window.objects = () => {
+  const o = {skin: [], hairInner: [], hair: [], neck: [], hood: [], cloak: [], eye: [], snow: []};
+  for (const m of P.meshes()) { const r = m.userData.role; if (o[r]) specimen(m, r === 'hair' ? 19 : 400, o[r]); }   // hair: 19 from each strand
+  const c = eyeMap(HEAD.profileW); P.headMesh.updateMatrixWorld(true);
   for (const [dx, dy] of [[0, 0], [0.12, 0], [-0.12, 0], [0, 0.06], [0, -0.06]]) {
-    _v.set(...c.O.map((a, i) => a + c.T[i] * dx / c.k[0] + c.U[i] * dy / c.k[1])).applyMatrix4(P.boshMesh.matrixWorld); o.koz.push(_v.x, _v.y, _v.z);
+    _v.set(...c.O.map((a, i) => a + c.T[i] * dx / c.k[0] + c.U[i] * dy / c.k[1])).applyMatrix4(P.headMesh.matrixWorld); o.eye.push(_v.x, _v.y, _v.z);
   }
-  qor.updateMatrixWorld(true); namuna(qor, 280, o.qor);
-  o.tepa = BG_U.uBgUp.value.toArray();
+  snow.updateMatrixWorld(true); specimen(snow, 280, o.snow);
+  o.top = BG_U.uBgUp.value.toArray();
   return o;
 };
 window.proj = (a) => {
-  kamera.updateMatrixWorld(true); const out = [];
-  for (let i = 0; i < a.length; i += 3) { _v.set(a[i], a[i + 1], a[i + 2]).project(kamera); out.push((_v.x + 1) / 2 * W, (1 - _v.y) / 2 * H, _v.z); }
+  camera.updateMatrixWorld(true); const out = [];
+  for (let i = 0; i < a.length; i += 3) { _v.set(a[i], a[i + 1], a[i + 2]).project(camera); out.push((_v.x + 1) / 2 * W, (1 - _v.y) / 2 * H, _v.z); }
   return out;
 };
-/* 10-o'tish (test/qism/): joriy tasvirda har qismning nomli nuqtalari ekranda -- [x, y (px, W x H), chuqurlik, ko'rinadimi
-   (tashqi normal kameraga qaraganmi; soch/kapyushon yopishi -- rol renderidan)]. Ko'z holati (ochiq/yumuq) -- joriy poza
-   (oldin material uYumuq dan o'qilardi -- rol style da u yo'q, yumuq kadrlarda ochiq ko'z nuqtalari chiqardi: node bilan 3.8 px). */
-window.qismNuqtalar = () => {
-  P.boshMesh.updateMatrixWorld(true); kamera.updateMatrixWorld(true);
-  const yum = joriyYumuq > 0.5;                                        // ko'z holati -- poza (film), style ga bog'liq emas
-  const M = P.boshMesh.matrixWorld, N3 = new THREE.Matrix3().getNormalMatrix(M), out = {};
-  for (const [k, [p, n]] of Object.entries(qismNuqtalari(yum))) {
+/* pass 10 (test/parts/): the named points of every part on screen in the current frame -- [x, y (px, W x H), depth, visible
+   (does the outer normal face the camera; hair/hood occlusion -- from the role render)]. The eye state (open/closed) -- the current pose
+   (before, it was read from the material's uClosed -- the role style has none, and on closed frames open-eye points came out: 3.8 px vs node). */
+window.framePartPoints = () => {
+  P.headMesh.updateMatrixWorld(true); camera.updateMatrixWorld(true);
+  const isClosed = currentClosed > 0.5;                                        // the eye state -- from the pose (film), does not depend on the style
+  const M = P.headMesh.matrixWorld, N3 = new THREE.Matrix3().getNormalMatrix(M), out = {};
+  for (const [k, [p, n]] of Object.entries(partPoints(isClosed))) {
     const v = new THREE.Vector3(...p).applyMatrix4(M), nw = new THREE.Vector3(...n).applyMatrix3(N3).normalize();
-    const kor = nw.dot(kamera.position.clone().sub(v)) > 0, s = v.clone().project(kamera);
-    out[k] = [(s.x + 1) / 2 * W, (1 - s.y) / 2 * H, s.z, kor];
+    const view = nw.dot(camera.position.clone().sub(v)) > 0, s = v.clone().project(camera);
+    out[k] = [(s.x + 1) / 2 * W, (1 - s.y) / 2 * H, s.z, view];
   }
   return out;
 };
-window.tayyor = true;
-if (q.get('jonli')) { let f = 0; const loop = () => { window.kadr(f++ % (5 * FPS)); setTimeout(loop, 1000 / FPS); }; loop(); }
+window.ready = true;
+if (q.get('live')) { let f = 0; const loop = () => { window.frame(f++ % (5 * FPS)); setTimeout(loop, 1000 / FPS); }; loop(); }

@@ -1,43 +1,43 @@
-/* FILMLAR -- shotlar ro'yxati (film = ma'lumot). Har shot: tasvir soni, kamera, ushlangan
-   tasvirlar, poza(i). Uzun film ham shu shaklda yoziladi: minglab tasvir emas, shotlar ro'yxati.
+/* FILMS -- shot lists (a film = data). Each shot: number of frames, camera, held
+   frames, pose(i). A long film is written in the same form: a list of shots, not thousands of frames.
 
-   misol22 -- misolning VAQTI va SAHNALASHTIRISHI (texnika; personaj, rasm -- bizniki). Qiymatlar
-   2D loyihada (personaj/varaq.mjs) misoldan o'lchanganlar:
-     3 shot: 11 + 2 + 9 tasvir, har biri 60 ms; kesishlar 11|12 va 13|14
-     1-shot: 1..6-tasvir bitta rasm (qattiq nishonlar 0.1 px gacha bir xil); burilish ulushi
-             [0,0,0,0,0,0,.03,.08,.15,.55,1] (10-11 da ikki tasvirlik tez burilish); tepaga qaraydi;
-             roll -12 -> +4 gradus; ko'z 10-11 da yumiladi
-     2-shot: profil, ko'z yumuq, eng tinch juftlik
-     3-shot: yon (az 80, el -5); bosh egiladi, sekinlashib (u^0.55); ko'z yarim ochiq (0.45)
-   Kamera personajning O'NG tomonida (ekranda o'ngga qaraydi). `ekran` va masofa YUZ nuqtalariga moslangan
-   (test/fit_kamera.mjs -> test/kamera_fit.json): 1-shot yaqin ko'z + iyak (8.7 px), 2- va 3-shot yaqin ko'z;
-   yuz o'lchovi (3-o'tish) uchun 1-shot yaqin ko'zga aniq surildi (x -8.6 px): zondlar misol ko'ziga bog'langan,
-   iyak farqi -- yuz nisbati farqi (kamera emas);
-   masshtab ko'z-iyak tik masofasidan. Avval yorug' massa (soch) bo'yicha moslangan edi -- yuz 1-shotda 45 px
-   o'ngda, 2-shotda 1.6 barobar katta chiqqan (audit 2).
-   3-shot el -12 da kadr tepaga qarab qor siyraklashardi (tepa tasmalar misolning yarmi) -- -5.
-   5-O'TISH -- SAHNA AUDITI (misol qayerga qaraydi, kamera qayerda; bitta ko'rinish faqat bosh va kamera orasidagi NISBIY
-   yo'nalishni beradi -- mutlaq qiymat "boshni burmasdan/yonga og'dirmasdan" tamoyili bilan tanlanadi):
-     1-shot: kamera o'ng-oldda (az 55), sal pastda; bosh ~17 gr tepaga, ko'z ochiq, oldinga-o'ngga qaraydi (o'zgarmadi;
-             el -30 bo'lsa bosh tekis, lekin 21 gr yonga og'ishi kerak -- test/sahna_fit.mjs --az 54,56).
-     2-shot: profil (az 84), bosh TEKIS (egilish -0.08), ko'z yumuq; oldin -0.10 + pastki yuz surishi yuzni ~20 gr tepaga
-             qaratgan edi (test/sahna2_fit.mjs: old kontur 21 qator + iyak osti, RMS 1.33 px).
-     3-shot: kamera PASTDA (el -30), o'ng-oldda (az 55, 1-shot bilan bir tomon), yaqin; bosh 39 gr EGILGAN, burilmagan,
-             yon og'maydi; ko'z yarim ochiq, pastga qaraydi (test/sahna3_fit.mjs: ko'z + iyak old cheti 7 qator + jag' osti,
-             RMS 0.88 px). Oldin: kamera yonda (az 80, el -5), bosh atigi 9..17 gr -- "yonga qaraydi". */
-/* kamera: {az, el, d, fov, ekran:[sx, sy], markaz} -- markaz (bosh markazi, dunyo) atrofida orbita:
-     az -- personaj oldidan (+x) uning O'NG tomoniga (+z) qarab gradus (0 -- to'g'ri old, 90 -- o'ng profil);
-     el -- gradus, musbat -- tepadan, manfiy -- pastdan; d -- masofa; ekran -- markaz kadrning qayerida
-     turadi (ulush, chap-tepadan) -- linza siljishi (setViewOffset), ko'rish burchagi o'zgarmaydi.
-   poza: egilish (+ -- bosh egiladi, - -- tepaga qaraydi), burilish (+ -- yuz kameradan uzoqlashadi, profilga;
-     - -- kameraga), yonga (roll), yumuq (0 ochiq, 0.5 yarim, 1 yumuq), chokish (bosh pastga, birlik). */
-/* KO'Z YOSHI (1-shot) -- har tasvir: A (ko'z ostidan tik iz), B (yonoq bo'ylab iz) -- bosh fazosida kesma a -> b,
-   w -- yarim eni, k -- kuchi; C -- jag' chetida osilgan tomchi (halqa, 7..9; jag' chetida -- sirt chegarasi, taxminiy
-   o'rin); tomchi -- tushayotgan tomchi (10, 11; dunyo fazosida, iyak chuqurligida). Qiymatlar test/yosh_olch.mjs
-   (misolning L>70 komponentlari va yosh_jag zondi bosh/dunyo fazosiga o'tkazilgan). 9-o'tish: bitta bosh shakli va yangi
-   pozalar bilan qayta o'tkazildi (C -- jag' chetida, qo'lda: teskari proyeksiya sirt chegarasida noaniq, 2.4..3.8 px).
-   10-o'tish: jag' qayta moslangach A va B yana o'tkazildi (test/yosh_olch.mjs; oldingisi test/yosh_fit_dunyo9b.json). */
-const YOSH1 = [
+   sample22 -- the sample's TIMING and STAGING (technique; the character and the drawing are ours). The values
+   were measured from the sample in the 2D project (personaj/sheet.mjs):
+     3 shots: 11 + 2 + 9 frames, 60 ms each; cuts at 11|12 and 13|14
+     shot 1: frames 1..6 are one drawing (rigid targets identical to within 0.1 px); turn fraction
+             [0,0,0,0,0,0,.03,.08,.15,.55,1] (a fast two-frame turn at 10-11); looks up;
+             roll -12 -> +4 degrees; the eyes close at 10-11
+     shot 2: profile, eyes closed, the calmest pair
+     shot 3: side (az 80, el -5); the head tilts down, slowing (u^0.55); eyes half open (0.45)
+   The camera is on the character's RIGHT side (it looks right on screen). `screen` and the distance are fitted to FACE points
+   (test/fit_camera.mjs -> test/camera_fit.json): shot 1 near eye + chin (8.7 px), shots 2 and 3 near eye;
+   for the face measurement (pass 3) shot 1 was shifted exactly onto the near eye (x -8.6 px): the probes are tied to the sample's eye,
+   the chin difference is a face-proportion difference (not the camera);
+   the scale comes from the vertical eye-chin distance. Before, it was fitted to the bright mass (hair) -- the face came out 45 px
+   to the right in shot 1 and 1.6 times larger in shot 2 (audit 2).
+   At shot 3 el -12 the snow thinned toward the top of the frame (the top bands half of the sample's) -- -5.
+   PASS 5 -- STAGING AUDIT (where the sample looks, where the camera is; a single view gives only the RELATIVE
+   orientation between head and camera -- the absolute value is chosen by the principle "without turning/rolling the head"):
+     shot 1: camera right-front (az 55), slightly low; head ~17 deg up, eyes open, looking forward-right (unchanged;
+             with el -30 the head is level, but it would need a 21 deg sideways roll -- test/stage_fit.mjs --az 54,56).
+     shot 2: profile (az 84), head LEVEL (tilt -0.08), eyes closed; before, -0.10 + the lower-face shift had turned the face
+             ~20 deg up (test/stage2_fit.mjs: front contour 21 rows + under the chin, RMS 1.33 px).
+     shot 3: camera LOW (el -30), right-front (az 55, the same side as shot 1), close; head TILTED 39 deg, not turned,
+             no sideways roll; eyes half open, looking down (test/stage3_fit.mjs: eye + front edge of the chin 7 rows + under the jaw,
+             RMS 0.88 px). Before: camera at the side (az 80, el -5), head only 9..17 deg -- "looks sideways". */
+/* camera: {az, el, d, fov, screen:[sx, sy], centre} -- an orbit around centre (the head centre, world):
+     az -- degrees from the character's front (+x) toward its RIGHT side (+z) (0 -- straight front, 90 -- right profile);
+     el -- degrees, positive -- from above, negative -- from below; d -- distance; screen -- where in the frame the centre
+     sits (fraction, from top-left) -- a lens shift (setViewOffset), the field of view does not change.
+   pose: tilt (+ -- the head tilts down, - -- looks up), turn (+ -- the face turns away from the camera, toward profile;
+     - -- toward the camera), sideways (roll), closed (0 open, 0.5 half, 1 closed), sink (head down, units). */
+/* TEARS (shot 1) -- per frame: A (vertical trail below the eye), B (trail along the cheek) -- a segment a -> b in head space,
+   w -- half width, k -- strength; C -- a drop hanging at the jaw edge (ring, 7..9; at the jaw edge -- the surface boundary, approximate
+   position); droplet -- a falling drop (10, 11; in world space, at the depth of the chin). Values from test/tear_measure.mjs
+   (the sample's L>70 components and the tear_jaw probe carried into head/world space). Pass 9: carried over again with a single head shape
+   and the new poses (C -- at the jaw edge, by hand: the back-projection is uncertain at the surface boundary, 2.4..3.8 px).
+   Pass 10: after the jaw was refitted, A and B were carried over again (test/tear_measure.mjs; the previous one test/tear_fit_world9b.json). */
+const TEAR1 = [
   {A: {a: [-0.45, -0.449], b: [-0.471, -0.549], w: 0.014, k: 0.9}},   // 1
   {A: {a: [-0.43, -0.415], b: [-0.461, -0.534], w: 0.014, k: 0.9}},   // 2
   {A: {a: [-0.395, -0.339], b: [-0.459, -0.518], w: 0.014, k: 0.9}},   // 3
@@ -47,183 +47,183 @@ const YOSH1 = [
   {B: {a: [-0.367, -0.547], b: [-0.35, -0.681], w: 0.016, k: 0.9}, C: {p: [-0.23, -1.10], r: 0.028, k: 0.85}},   // 7
   {B: {a: [-0.381, -0.607], b: [-0.352, -0.721], w: 0.016, k: 0.9}, C: {p: [-0.23, -1.10], r: 0.028, k: 0.85}},   // 8
   {B: {a: [-0.404, -0.61], b: [-0.368, -0.738], w: 0.016, k: 0.9}, C: {p: [-0.23, -1.10], r: 0.028, k: 0.85}},   // 9
-  {B: {a: [-0.521, -0.619], b: [-0.43, -0.8], w: 0.016, k: 0.9}, tomchi: [0.814, -1.338, -0.082]},   // 10
-  {B: {a: [-0.497, -0.709], b: [-0.386, -0.884], w: 0.016, k: 0.9}, tomchi: [0.721, -1.815, -0.182]},   // 11
+  {B: {a: [-0.521, -0.619], b: [-0.43, -0.8], w: 0.016, k: 0.9}, droplet: [0.814, -1.338, -0.082]},   // 10
+  {B: {a: [-0.497, -0.709], b: [-0.386, -0.884], w: 0.016, k: 0.9}, droplet: [0.721, -1.815, -0.182]},   // 11
 ];
-export const FILMLAR = {
-  misol22: {
+export const FILMS = {
+  sample22: {
     ms: 60,
-    shotlar: [
-      /* 7-O'TISH -- KAPYUSHON SHOT BO'YICHA (kap: KIYIM.kap ustiga; main.js kapShotQoy -- shot almashganda sirt qayta
-         quriladi, shot ichida o'zgarmas, boshga KF/KT ulushida ergashadi). Misolda kapyushon har shotda boshqacha yotadi
-         (audit 7: ko'rinadigan bosh misolda 3 shotda 6300-7400/6600/4100-5700 px, bizda 11800-12900/4000/13500-14100). Moslash
-         (test/fit_kapyushon7.mjs): misolning ko'rinadigan boshi (test/audit_misol/bosh_niqob.py, L>=40 -- yuz, soch, astar
-         tasmasi) <-> rol renderi, IoU; 1- va 3-shotda figura (yopilish xaritasi) topshirilgan darajadan tushmasligi sharti.
-         Natija (test/audit_misol/kap_olch.py, 960 -> 320): bosh IoU 0.41/0.49/0.23 -> 0.81/0.62/0.69, biz/misol maydoni
-         1.75/0.61/3.03 -> 1.05/0.65/1.09, figura 0.900/0.864 -> 0.928/0.884. Astar tasmasi (tasmaA, tasmaV): misolda
-         1-shotda yuz o'ngida ~14 px L 43-45 (40-95 qatorlar), jag' ostida L 7-10 -- tasma jag'da (v ~0.6) tugaydi. */
-      {nom: '1-kadr', n: 11,
-       /* 13-o'tish (5-ish): kamera va butun shot pozasi qo'shimchasi (egilish +0.0767, burilish -0.1135, yonga -0.0015) Alonurning
-          belgilari (R03, R10: ko'zlar, burun, og'iz, iyak -- test/yuz13_s1.mjs) + butun kadr sinflari + figura bilan birga
-          (test/fit_kamera_tuz.mjs --shot 1): yuz RMS 4.18 -> 2.94 px. Oldin: az 55, el -8, d 7.03, ekran [0.261, 0.310]. */
-       kamera: {az: 55.654, el: -9.09, d: 6.9767, fov: 27, ekran: [0.2615, 0.2953], markaz: [0, 0, 0]},
-       ushla: [0, 1, 2, 3, 4, 5],
-       poza(i) {
-         /* 4-o'tish: poza HAR TASVIRDA misolning yuz nuqtalariga moslandi (test/fit_poza1.mjs; bosh v3, kamera qat'iy):
-            yaqin ko'z (langar), uzoq ko'z, og'iz, lab soyasi; 10-11 da yumuq ko'z chizig'i va og'iz. Oldingi g jadvali
-            (0.23 .. 1.0, burilish amplitudasi 0.47) figura juft farqlaridan olingan edi -- yuzda 9-tasvirda yaqin ko'z
-            9.5 px, og'iz 7.6 px o'ngga ketardi: misolda yuz 7-9 da deyarli burilmaydi (langar +0.8..+3.3 px), 10-11 da
-            ko'z yumilib bosh burilib, yonga og'adi. Poza va profil birga (test/fit_poza1b.mjs; yonga qat'iy, yaqin ko'z
-            vazni 3): nuqtalar RMS 7-11: 2.2 2.7 2.7 2.1 1.4 px, old kontur <= 3.5 px (10-tasvirda iyak oldi 5 px).
-            yosh -- ko'z yoshi izlari (bosh fazosida, test/yosh_olch.mjs): YOSH jadvali. */
-         /* 5-o'tish: 7..11 qayta moslandi (test/fit_poza1c.mjs) -- pastki yuz surishi endi profil vazniga bog'liq emas (surish),
-            profil vazni faqat yaqin ko'z kartasini boshqaradi. Surish misol 7..11 rasmlarida old kontur ko'zdan uzoqroq
-            chizilganidan (chet ko'zdan oldin keladi): 7-9 da 0.15 (kontur -2.8/-3.6/-1.9 -> -0.9/-1.8/-1.0 px), 10-11 da 0.3
-            (iyak oldi -9.2 -> -4.8, -7.0 -> -1.6 px); ko'z kartasi 11 da 0.10. Nuqtalar RMS 2.0 2.5 2.5 2.1 1.9 px. */
-         /* 9-o'tish: ko'z kartasi (profil) va pastki yuz surishi (surish) olib tashlandi -- bitta bosh (personaj.js BOSH);
-            poza har kadrda shu boshga qayta moslandi (test/fit_bosh9.mjs; nuqtalar + old kontur qatorlari birga). */
-         /* 10-o'tish: bosh barcha qismlar bilan qayta moslangach (test/fit_bosh10.mjs) pozalar ham: 1-6 [-0.300, -0.158],
-            7 [-0.306, -0.129], 8 [-0.316, -0.101], 9 [-0.318, -0.055], 10 [-0.277, 0.137], 11 [-0.232, 0.214] edi */
-         /* moslash har kadrga alohida qo'shimcha berdi (1-6 +0.018, 7-9 +0.012..+0.016, 10 +0.043, 11 +0.031 egilish), lekin 10
-            va 11 niki bilan 9 -> 10 masshtab sakrashi qaytdi (1.005 -> 1.029: kapyushon rigi pozaga ergashadi). Butun 1-shotga
-            bitta qo'shimcha (+0.0184, -0.0078) -- harakat 9-o'tishdagidek qoladi. */
+    shotList: [
+      /* PASS 7 -- HOOD PER SHOT (hood: on top of CLOTHES.hood; main.js setShotHood -- when the shot changes the surface is
+         rebuilt, constant within a shot, follows the head by the KF/KT fraction). In the sample the hood lies differently in each shot
+         (audit 7: the visible head in the sample over the 3 shots 6300-7400/6600/4100-5700 px, ours 11800-12900/4000/13500-14100). Fit
+         (test/fit_hood7.mjs): the sample's visible head (test/audit_sample/head_mask.py, L>=40 -- face, hair, lining
+         band) <-> the role render, IoU; with the condition that in shots 1 and 3 the figure (occlusion map) does not drop below the delivered level.
+         Result (test/audit_sample/hood_measure.py, 960 -> 320): head IoU 0.41/0.49/0.23 -> 0.81/0.62/0.69, ours/sample area
+         1.75/0.61/3.03 -> 1.05/0.65/1.09, figure 0.900/0.864 -> 0.928/0.884. Lining band (bandA, bandV): in the sample
+         in shot 1 ~14 px to the right of the face at L 43-45 (rows 40-95), under the jaw L 7-10 -- the band ends at the jaw (v ~0.6). */
+      {name: 'shot-1', n: 11,
+       /* pass 13 (item 5): the camera and a pose offset for the whole shot (tilt +0.0767, turn -0.1135, sideways -0.0015), fitted to Alonur's
+          marks (R03, R10: eyes, nose, mouth, chin -- test/face13_s1.mjs) together with the whole-frame classes + figure
+          (test/fit_camera_structure.mjs --shot 1): face RMS 4.18 -> 2.94 px. Before: az 55, el -8, d 7.03, screen [0.261, 0.310]. */
+       camera: {az: 55.654, el: -9.09, d: 6.9767, fov: 27, screen: [0.2615, 0.2953], centre: [0, 0, 0]},
+       hold: [0, 1, 2, 3, 4, 5],
+       pose(i) {
+         /* pass 4: the pose was fitted ON EVERY FRAME to the sample's face points (test/fit_pose1.mjs; head v3, camera fixed):
+            near eye (anchor), far eye, mouth, lip shadow; at 10-11 the closed-eye line and the mouth. The previous g table
+            (0.23 .. 1.0, turn amplitude 0.47) had been taken from figure pair differences -- on the face at frame 9 the near eye
+            went 9.5 px and the mouth 7.6 px to the right: in the sample the face barely turns at 7-9 (anchor +0.8..+3.3 px), at 10-11
+            the eyes close, the head turns and rolls sideways. Pose and profile together (test/fit_pose1b.mjs; sideways fixed, near eye
+            weight 3): point RMS at 7-11: 2.2 2.7 2.7 2.1 1.4 px, front contour <= 3.5 px (at frame 10 the front of the chin 5 px).
+            tear -- the tear trails (in head space, test/tear_measure.mjs): the TEAR1 table. */
+         /* pass 5: 7..11 refitted (test/fit_pose1c.mjs) -- the lower-face shift no longer depends on the profile weight (shift),
+            the profile weight controls only the near-eye map. The shift comes from the sample's 7..11 drawings, where the front contour
+            is drawn farther from the eye (the edge comes before the eye): 0.15 at 7-9 (contour -2.8/-3.6/-1.9 -> -0.9/-1.8/-1.0 px), 0.3 at 10-11
+            (front of the chin -9.2 -> -4.8, -7.0 -> -1.6 px); eye map 0.10 at 11. Point RMS 2.0 2.5 2.5 2.1 1.9 px. */
+         /* pass 9: the eye map (profile) and the lower-face shift (shift) were removed -- a single head (personaj.js HEAD);
+            the pose was refitted on every frame to this head (test/fit_head9.mjs; points + front contour rows together). */
+         /* pass 10: after the head was refitted with all parts (test/fit_head10.mjs), so were the poses; they were 1-6 [-0.300, -0.158],
+            7 [-0.306, -0.129], 8 [-0.316, -0.101], 9 [-0.318, -0.055], 10 [-0.277, 0.137], 11 [-0.232, 0.214] */
+         /* the fit gave each frame its own offset (1-6 +0.018, 7-9 +0.012..+0.016, 10 +0.043, 11 +0.031 tilt), but with the ones for 10
+            and 11 the 9 -> 10 scale jump came back (1.005 -> 1.029: the hood rig follows the pose). One offset for the whole
+            of shot 1 (+0.0184, -0.0078) -- the motion stays as in pass 9. */
          const T = [[-0.2816, -0.1658, 0], [-0.2816, -0.1658, 0], [-0.2816, -0.1658, 0], [-0.2816, -0.1658, 0], [-0.2816, -0.1658, 0], [-0.2816, -0.1658, 0],
                     [-0.2876, -0.1368, -0.03], [-0.2976, -0.1088, -0.03], [-0.2996, -0.0628, -0.03], [-0.2586, 0.1292, 0.15], [-0.2136, 0.2062, 0.15]][i];
-         return {egilish: T[0] + 0.0767, burilish: T[1] - 0.1135, yonga: T[2] - 0.0015, yumuq: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1][i], yosh: YOSH1[i]};
+         return {tilt: T[0] + 0.0767, turn: T[1] - 0.1135, sideways: T[2] - 0.0015, closed: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1][i], tear: TEAR1[i]};
        }},
-      {nom: '2-kadr', n: 2,
-       /* 8-o'tish: kamera MASSHTABI figura va ko'rinadigan boshdan (test/fit_kamera8.mjs): d 12.88 -> 10.32, ekran
-          [0.411, 0.447] -> [0.422, 0.474]. 5-o'tishda d pastki yuz konturiga (burun..iyak, 21 qator) moslangan edi -- butun
-          bosh va kapyushon misoldan kichik chiqdi: figura maydoni 0.407 (misol 0.509), ko'rinadigan bosh 4 300 px (misol
-          6 620) -- 1-shotdan 2-shotga kesishda "kamera uzoqlashadi" (misolda figura 0.431 -> 0.509 o'sadi). Endi figura
-          IoU 0.738 -> 0.887, bosh IoU 0.62 -> 0.75, bosh maydoni 1.04. Yuz shu masshtabda misolnikidan ~1.25 barobar katta
-          (misolda profil yuzi boshiga nisbatan kichik chizilgan) -- yuz o'tishida. */
-       /* 9-o'tish: kapyushon bilan birga moslangan (test/fit_kapPoza9.mjs): masofa va ekran -- figura massasi va ko'rinadigan
-          bosh + yuz konturi (RMS 1.5 px dan oshsa jarima): d 10.32 -> 10.7994, ekran [0.3865, 0.4228] (yuz konturi RMS 2.17 px) */
-       /* 11-O'TISH (Alonur belgilari, test/fit_poza11.mjs + test/fit_poza11b.mjs): 8/9-o'tishdagi masofa (12.88 -> 10.32 ->
-          10.80) noto'g'ri "iyak"ka tortilgan edi -- detektor og'iz chizig'ini iyak deb olgan (24 px): misolda ko'z -> iyak 57 px,
-          bizda 36. Yuz (inson belgilari: ko'zlar, burun, og'iz, iyak, jag', old kontur), ko'rinadigan bosh va figura BIRGA,
-          kapyushon kaliti bilan: d 10.80 -> 7.39 (1-shotdagi 7.03 ga yaqin -- misolda kesishda masshtab deyarli o'zgarmaydi),
-          yuz RMS 15.2 -> 2.5 px, bosh IoU 0.661 -> 0.750 (maydon nisbati 0.71 -> 1.01), figura 0.914 -> 0.923. */
-       kamera: {az: 83.983, el: -3.052, d: 7.3931, fov: 27, ekran: [0.3315, 0.3924], markaz: [0, 0, 0]},
-       /* 5-o'tish (sahna auditi): kamera va poza misolning OLD KONTURIGA (21 qator, y 70..110) va iyak ostiga moslandi,
-          pastki yuz surishisiz, bosh burilmagan/og'magan (test/sahna2_fit.mjs --el -5 --yonS 0.01 --burS 0.02: RMS 1.33 px).
-          Bosh TEKIS (-0.08, ~5 gr tepaga). Ko'z moslashga kirmaydi: profilda misol ko'zi bizning 3/4 o'rnimizdan 17.5 px
-          orqada -- yaqin ko'z chizmasi karta bilan yon tomonga ko'chadi (profil 1, KOZ_PROFIL). Oldingi (4-o'tish):
-          d 11.0, egilish -0.10 + to'liq surish -- kontur shunga moslangan, yuz ~20 gr tepaga qaragan edi. */
-       /* 9-o'tish: bitta boshga qayta moslangan (test/fit_bosh9.mjs, kontur + iyak osti): egilish -0.081 -> -0.014; ko'z
-          kartasi (profil 1) olib tashlandi -- profil ko'zi misoldan 17.4 px oldinda (d 12.7 da): misolning 2D usuli, qoldiq */
-       /* 10-o'tish: bosh moslashi 2-shot pozasini -0.014 -> -0.0896 ga (burilish 0.008) surmoqchi edi (pastki yuz 4.78 ->
-          3.26 px), lekin kapyushon rigi kaliti bilan birga surilganda 1-shot 10 -> 11 da masshtab sakrashi qaytdi (1.008 ->
-          1.057: 2-shot kaliti 1-shot pozalariga yaqinlashib, 10-11 da ochiq kapyushonga og'irlik berdi). Poza, rig va 2-shot
-          kamerasi BIRGA moslanadi (keyingi qadam) -- hozircha oldingi poza. */
-       /* 11-o'tish: bosh kameraga 33 gr burilgan va 14 gr og'gan -- sof profil emas: misolda uzoq ko'zning kiprik uchi
-          old konturda ko'rinadi (157, 82), yaqin ko'z konturdan 24 px orqada; bizda ko'z konturda edi (17 px oldinda) */
-       poza(i) { return {egilish: -0.0646 + 0.004 * i, burilish: -0.5838, yonga: -0.2404, yumuq: 1}; }},
-      /* 5-o'tish (sahna auditi): kamera PASTDA va o'ng-oldda, bosh CHUQUR egilgan -- misolda yuz 3/4 ko'rinadi (ko'z yuz
-         sohasining tepa-o'rtasida, iyak ko'z ostida), kapyushon qirrasining OSTI (yorug' tasma) ko'rinadi. Tinch tasvirlar
-         20-22: ko'z (qovoq chizig'i) + iyak old cheti (7 qator) + jag' osti; bosh burilmagan va og'magan (test/sahna3_fit.mjs
-         --el -30 --az 55, zich silueta: RMS 0.88 px, egilish 0.68 = 39 gr; el -25..-35, az 55..60 da 39..43 gr). Oldingi:
-         az 80, el -5, d 8.10, egilish 0.15..0.30 -- bosh profilda deyarli tik, "yonga qaraydi". */
-      /* kap (7-o'tish): bosh 39 gr egilgan, kapyushon ramkasi KF ulushida atigi 14 gr -- bosh tepasi teshikdan oldinga
-         chiqardi; misolda bosh kapyushon ICHIDA (faqat pastki yuz va old tutamlar ko'rinadi). Yuqori qism oldinga egiladi
-         (eg), teshik uzoq tomonga buriladi (bur), astar tasmasi uzoq qirrada keng (misolda yuz o'ngida L 43-45) */
-      {nom: '3-kadr', n: 9,
-       /* 11-o'tish (Alonur belgilari): burun, og'iz, uzoq ko'z birinchi marta o'lchandi -- 9-14 px pastda-chapda edi; poza,
-          kamera va kapyushon kaliti BIRGA (test/fit_poza11b.mjs): yuz RMS 14.0 -> 4.5 px. O'shandagi bosh IoU (0.656 -> 0.658)
-          astarni "bosh" sanagan -- astar yetishmagan sochni to'ldirib, kapyushon misol yuzining 28 % ini yopgan edi; kalit
-          qayta moslangach (personaj.js kapPoza izohi): astarsiz bosh IoU 0.551 -> 0.458, figura 0.885 -> 0.885, kapyushon
-          misol yuzida 0.05 -> 0.14, bizning teri misolning qorong'isida 0.35 -> 0.11 (README 11-o'tish 2-ish) */
-       kamera: {az: 54.729, el: -30.209, d: 8.1442, fov: 29, ekran: [0.3709, 0.4876], markaz: [0, 0, 0]},
-       poza(i) {
-         /* harakat (test/sahna3_harakat.mjs): misol ko'zi 15 -> 18 da atigi 5.5 px pastga, keyin joyida -- bosh 15-tasvirda
-            allaqachon egilgan (yuz sohasi 15..22 deyarli bir xil); 14 -- harakatdagi oraliq rasm. Egilish 18 da oshib ketadi
-            (0.70) va 0.68 ga tinchiydi; chokish/orqaga -- ko'z izidan yechilgan kichik siljish (ko'z qoldig'i <= 0.2 px).
-            Yorug' soch massasining 32 px pastga tushishi (2.8 -> 1.0 %) asosan boshning tepasi kapyushon soyasiga kirishidan. */
-         /* 9-o'tish: bitta boshga qayta moslangan tinch poza 0.68 -> 0.66 (test/fit_bosh9.mjs); butun jadval shuncha */
-         /* 10-o'tish: bosh moslashi butun jadval egilishini -0.104 ga surmoqchi edi (iyak va jag' izi yaxshilanadi; misolda
-            ko'z -> iyak 45 px, bizda 61 -- yuz uzunligi egilishga sezgir), lekin ko'z (sahna_olch: bir xil qoida) 1 -> 6 px
-            ketdi. 3-shot pozasi va kamerasi (el) BIRGA, barcha qismlar va massa bilan qayta yechiladi -- hozircha oldingi poza. */
-         /* 11-o'tish: 14-tasvir (harakat oralig'i) alohida -- butun jadval siljishi (+0.0425) 15-22 ga moslandi, 14 da yuz
-            RMS 6.9 px (og'iz (4,-5.4), iyak (4.8,-5.9), jag' -8.0): bosh u yerda allaqachon ko'proq egilgan. Faqat egilish
-            0.41 -> 0.53 (inson belgilari R14 + jag' izi, test/yuz11.mjs): RMS 3.2 px (og'iz 1.5, iyak 2.8, jag' -1.7). */
+      {name: 'shot-2', n: 2,
+       /* pass 8: camera SCALE from the figure and the visible head (test/fit_camera8.mjs): d 12.88 -> 10.32, screen
+          [0.411, 0.447] -> [0.422, 0.474]. In pass 5, d had been fitted to the lower-face contour (nose..chin, 21 rows) -- the whole
+          head and hood came out smaller than in the sample: figure area 0.407 (sample 0.509), visible head 4 300 px (sample
+          6 620) -- at the cut from shot 1 to shot 2 "the camera pulls back" (in the sample the figure grows 0.431 -> 0.509). Now figure
+          IoU 0.738 -> 0.887, head IoU 0.62 -> 0.75, head area 1.04. At this scale the face is ~1.25 times larger than the sample's
+          (in the sample the profile face is drawn small relative to the head) -- for the face pass. */
+       /* pass 9: fitted together with the hood (test/fit_hoodPose9.mjs): distance and screen -- figure mass and visible
+          head + face contour (a penalty if RMS exceeds 1.5 px): d 10.32 -> 10.7994, screen [0.3865, 0.4228] (face contour RMS 2.17 px) */
+       /* PASS 11 (Alonur's marks, test/fit_pose11.mjs + test/fit_pose11b.mjs): the distance of passes 8/9 (12.88 -> 10.32 ->
+          10.80) had been pulled toward a wrong "chin" -- the detector took the mouth line for the chin (24 px): in the sample eye -> chin is 57 px,
+          ours 36. Face (human marks: eyes, nose, mouth, chin, jaw, front contour), visible head and figure TOGETHER,
+          with the hood key: d 10.80 -> 7.39 (close to the 7.03 of shot 1 -- in the sample the scale barely changes at the cut),
+          face RMS 15.2 -> 2.5 px, head IoU 0.661 -> 0.750 (area ratio 0.71 -> 1.01), figure 0.914 -> 0.923. */
+       camera: {az: 83.983, el: -3.052, d: 7.3931, fov: 27, screen: [0.3315, 0.3924], centre: [0, 0, 0]},
+       /* pass 5 (staging audit): camera and pose fitted to the sample's FRONT CONTOUR (21 rows, y 70..110) and under the chin,
+          without the lower-face shift, head not turned/rolled (test/stage2_fit.mjs --el -5 --sideS 0.01 --yawS 0.02: RMS 1.33 px).
+          Head LEVEL (-0.08, ~5 deg up). The eye is not in the fit: in profile the sample's eye is 17.5 px behind our 3/4
+          position -- the near-eye drawing moves sideways with the map (profile 1, EYE_PROFILE). Previous (pass 4):
+          d 11.0, tilt -0.10 + full shift -- the contour was fitted to that, the face looked ~20 deg up. */
+       /* pass 9: refitted to a single head (test/fit_head9.mjs, contour + under the chin): tilt -0.081 -> -0.014; the eye
+          map (profile 1) removed -- the profile eye is 17.4 px ahead of the sample's (at d 12.7): the sample's 2D trick, a residual */
+       /* pass 10: the head fit wanted to move the shot 2 pose from -0.014 to -0.0896 (turn 0.008) (lower face 4.78 ->
+          3.26 px), but when moved together with the hood rig key the scale jump at shot 1 10 -> 11 came back (1.008 ->
+          1.057: the shot 2 key came closer to the shot 1 poses and gave weight to the open hood at 10-11). Pose, rig and the shot 2
+          camera are fitted TOGETHER (next step) -- for now the previous pose. */
+       /* pass 11: the head is turned 33 deg toward the camera and rolled 14 deg -- not a pure profile: in the sample the lash tip of the
+          far eye shows on the front contour (157, 82), the near eye is 24 px behind the contour; ours had the eye on the contour (17 px ahead) */
+       pose(i) { return {tilt: -0.0646 + 0.004 * i, turn: -0.5838, sideways: -0.2404, closed: 1}; }},
+      /* pass 5 (staging audit): camera LOW and right-front, head tilted DEEP -- in the sample the face is seen 3/4 (the eye in the
+         top-middle of the face region, the chin below the eye), the UNDERSIDE of the hood brim (a bright band) is visible. Still frames
+         20-22: eye (eyelid line) + front edge of the chin (7 rows) + under the jaw; head not turned and not rolled (test/stage3_fit.mjs
+         --el -30 --az 55, dense silhouette: RMS 0.88 px, tilt 0.68 = 39 deg; at el -25..-35, az 55..60 39..43 deg). Previous:
+         az 80, el -5, d 8.10, tilt 0.15..0.30 -- the head almost upright in profile, "looks sideways". */
+      /* hood (pass 7): the head tilted 39 deg, the hood frame only 14 deg at the KF fraction -- the top of the head came out forward
+         through the opening; in the sample the head is INSIDE the hood (only the lower face and the front strands show). The upper part
+         leans forward (pitch), the opening turns to the far side (yaw), the lining band is wide on the far brim (in the sample L 43-45 to the right of the face) */
+      {name: 'shot-3', n: 9,
+       /* pass 11 (Alonur's marks): nose, mouth, far eye measured for the first time -- they were 9-14 px low-left; pose,
+          camera and hood key TOGETHER (test/fit_pose11b.mjs): face RMS 14.0 -> 4.5 px. The head IoU of that time (0.656 -> 0.658)
+          counted the lining as "head" -- the lining filled in the missing hair, and the hood covered 28 % of the sample's face; after the key
+          was refitted (the personaj.js hoodPose comment): head IoU without lining 0.551 -> 0.458, figure 0.885 -> 0.885, hood
+          on the sample's face 0.05 -> 0.14, our skin in the sample's dark 0.35 -> 0.11 (README pass 11 item 2) */
+       camera: {az: 54.729, el: -30.209, d: 8.1442, fov: 29, screen: [0.3709, 0.4876], centre: [0, 0, 0]},
+       pose(i) {
+         /* motion (test/stage3_motion.mjs): the sample's eye goes only 5.5 px down from 15 -> 18, then stays in place -- the head is
+            already tilted at frame 15 (the face region almost the same over 15..22); 14 is an in-between drawing of the motion. The tilt
+            overshoots at 18 (0.70) and settles to 0.68; sink/backward -- a small shift solved from the eye track (eye residual <= 0.2 px).
+            The bright hair mass dropping 32 px (2.8 -> 1.0 %) comes mainly from the top of the head entering the hood's shadow. */
+         /* pass 9: the still pose refitted to a single head 0.68 -> 0.66 (test/fit_head9.mjs); the whole table by the same amount */
+         /* pass 10: the head fit wanted to move the whole table's tilt by -0.104 (the chin and jaw track improve; in the sample
+            eye -> chin 45 px, ours 61 -- the face length is sensitive to tilt), but the eye (stage_measure: the same rule) went
+            1 -> 6 px. The shot 3 pose and camera (el) are solved again TOGETHER, with all parts and the mass -- for now the previous pose. */
+         /* pass 11: frame 14 (the in-between of the motion) separately -- the shift of the whole table (+0.0425) was fitted to 15-22, at 14
+            the face RMS was 6.9 px (mouth (4,-5.4), chin (4.8,-5.9), jaw -8.0): the head there is already tilted more. Only the tilt
+            0.41 -> 0.53 (human marks R14 + jaw track, test/face11.mjs): RMS 3.2 px (mouth 1.5, chin 2.8, jaw -1.7). */
          const E = [[0.53, 0.005, -0.07], [0.60, 0.005, -0.07], [0.64, 0.015, -0.06], [0.66, 0.0, -0.05], [0.68, -0.01, -0.065],
                     [0.67, -0.005, -0.02], [0.66, -0.02, -0.02], [0.66, -0.02, -0.025], [0.66, -0.02, -0.02]][i];
-         /* 11-o'tish: butun jadvalga egilish +0.0425, burilish 0.03 -> 0.1589, yonga -0.05 -> 0.1436 (2-shot kaliti yangilangach 3-shot yana bir bor, kapyushon kaliti bilan) */
-         return {egilish: E[0] + 0.0425, burilish: 0.1589, yonga: 0.1436, yumuq: 0.5, chokish: E[1], orqaga: E[2]};
+         /* pass 11: for the whole table tilt +0.0425, turn 0.03 -> 0.1589, sideways -0.05 -> 0.1436 (after the shot 2 key was updated, shot 3 once more, with the hood key) */
+         return {tilt: E[0] + 0.0425, turn: 0.1589, sideways: 0.1436, closed: 0.5, sink: E[1], backward: E[2]};
        }},
     ],
   },
-  /* tekshiruv: 1-shot kamerasida bosh burilishi x egilishi to'ri (yuz yo'nalishini misol bilan solishtirish) */
-  yuzTori: {
+  /* check: a grid of head turn x tilt in the shot 1 camera (to compare the face direction with the sample) */
+  faceGrid: {
     ms: 60,
-    shotlar: [[-0.15, -0.30], [0.10, -0.30], [0.35, -0.30], [-0.15, -0.55], [0.10, -0.55], [0.35, -0.55]].map(([b, e]) => ({
-      nom: 'b' + b + 'e' + e, n: 1, kamera: {az: 55, el: -8, d: 7.03, fov: 27, ekran: [0.261, 0.310], markaz: [0, 0, 0]},
-      poza() { return {egilish: e, burilish: b, yonga: 0, yumuq: 0}; }})),
+    shotList: [[-0.15, -0.30], [0.10, -0.30], [0.35, -0.30], [-0.15, -0.55], [0.10, -0.55], [0.35, -0.55]].map(([b, e]) => ({
+      name: 'b' + b + 'e' + e, n: 1, camera: {az: 55, el: -8, d: 7.03, fov: 27, screen: [0.261, 0.310], centre: [0, 0, 0]},
+      pose() { return {tilt: e, turn: b, sideways: 0, closed: 0}; }})),
   },
-  /* tekshiruv (12-o'tish, tuzilish): MAKET -- butun bosh + kapyushon + yelka, uzoqroqdan, bir poza (?maketPoza=0|1|2 --
-     tinch / 2-shot / 3-shot pozasi, standart tinch); oldi, 3/4, profil, orqa-yon, orqa, pastdan, tepadan */
-  maket: {
+  /* check (pass 12, structure): MOCK-UP -- the whole head + hood + shoulders, from farther away, one pose (?mockupPose=0|1|2 --
+     still / shot 2 / shot 3 pose, still by default); front, 3/4, profile, back-side, back, from below, from above */
+  mockup: {
     ms: 60,
-    shotlar: [[0, 0], [45, 0], [90, 0], [135, 0], [180, 0], [45, -40], [60, 55]].map(([az, el]) => ({
-      nom: 'az' + az + 'el' + el, n: 1, kamera: {az, el, d: 11, fov: 27, ekran: [0.5, 0.5], markaz: [0, -0.6, 0]},
-      poza() { return {egilish: 0, burilish: 0, yonga: 0, yumuq: 0}; }})),
+    shotList: [[0, 0], [45, 0], [90, 0], [135, 0], [180, 0], [45, -40], [60, 55]].map(([az, el]) => ({
+      name: 'az' + az + 'el' + el, n: 1, camera: {az, el, d: 11, fov: 27, screen: [0.5, 0.5], centre: [0, -0.6, 0]},
+      pose() { return {tilt: 0, turn: 0, sideways: 0, closed: 0}; }})),
   },
-  /* tekshiruv (12-o'tish, tuzilish): YAQIN MAKET -- bosh, soch va kapyushon yaqindan, 8 azimut + tepadan + pastdan
-     (bosh fazosi: az 0 -- yuz oldi, 90 -- o'ng yon (kamera tomoni misolda), 180 -- orqa) */
-  yaqinMaket: {
+  /* check (pass 12, structure): NEAR MOCK-UP -- head, hair and hood close up, 8 azimuths + from above + from below
+     (head space: az 0 -- front of the face, 90 -- right side (the camera side in the sample), 180 -- back) */
+  nearMockup: {
     ms: 60,
-    shotlar: [[0, 0], [45, 0], [90, 0], [135, 0], [180, 0], [225, 0], [270, 0], [315, 0], [45, 60], [45, -40]].map(([az, el]) => ({
-      nom: 'az' + az + 'el' + el, n: 1, kamera: {az, el, d: 6.2, fov: 27, ekran: [0.5, 0.5], markaz: [0, -0.15, 0]},
-      poza() { return {egilish: 0, burilish: 0, yonga: 0, yumuq: 0}; }})),
+    shotList: [[0, 0], [45, 0], [90, 0], [135, 0], [180, 0], [225, 0], [270, 0], [315, 0], [45, 60], [45, -40]].map(([az, el]) => ({
+      name: 'az' + az + 'el' + el, n: 1, camera: {az, el, d: 6.2, fov: 27, screen: [0.5, 0.5], centre: [0, -0.15, 0]},
+      pose() { return {tilt: 0, turn: 0, sideways: 0, closed: 0}; }})),
   },
-  /* tekshiruv: aylanma ko'rinish (har shot 1 tasvir) -- geometriyani har tomondan ko'rish uchun */
-  aylana: {
+  /* check: a circling view (1 frame per shot) -- to see the geometry from every side */
+  circle: {
     ms: 60,
-    shotlar: [0, 35, 55, 84, 150].map(az => ({nom: 'az' + az, n: 1, kamera: {az, el: 0, d: 5.2, fov: 27, ekran: [0.5, 0.5], markaz: [0, -0.2, 0]},
-      poza() { return {egilish: 0, burilish: 0, yonga: 0, yumuq: 0}; }})),
+    shotList: [0, 35, 55, 84, 150].map(az => ({name: 'az' + az, n: 1, camera: {az, el: 0, d: 5.2, fov: 27, screen: [0.5, 0.5], centre: [0, -0.2, 0]},
+      pose() { return {tilt: 0, turn: 0, sideways: 0, closed: 0}; }})),
   },
 };
 
-/* 9-O'TISH TEKSHIRUVI -- 3D IZCHILLIK (test/kamera_sinov9.mjs). Foydalanuvchi: "kamera o'sha misol pozitsiyasiga
-   kelganda 1:1 bo'lishi kerak ... 2D deb ishlov bersang kamera siljisa noto'g'ri joyi bo'lib qoladi". Poza va vaqt
-   ushlangan (?vaqt=), faqat kamera yuradi: 3D izchil dunyoda obyekt fazosida hech narsa o'zgarmaydi -- faqat proyeksiya.
-   kamYol: kamera misol22 ning 1 -> 2 -> 3 shot kameralari orasida uzluksiz (har oraliq 24 qadam). Shotga bog'liq qiymatlar
-   (kap, kfIch, profil, surish) faqat misol kameralarida aniqlangan -- oraliqda eng yaqin kalitdan (kalit -- kesish yonidagi
-   tasvir: 1-shot 11, 2-shot 12, 3-shot 14). orbita: bosh atrofida 360 gr (10 gr qadam), shu poza, 1-shot kapyushoni;
-   profil berilmagan -- kod uni kamera burchagidan oladi (main.js profilVazn). kamRef -- qor qatlami va fon "tepasi"
-   hisoblanadigan kamera (misol22 da 1-shot kamerasi). */
+/* PASS 9 CHECK -- 3D CONSISTENCY (test/camera_test9.mjs). The user: "when the camera comes to that sample position
+   it must be 1:1 ... if you treat it as 2D, when the camera moves it ends up in the wrong place". Pose and time
+   are held (?time=), only the camera moves: in a 3D-consistent world nothing changes in object space -- only the projection.
+   camPath: the camera moves continuously between the shot 1 -> 2 -> 3 cameras of sample22 (24 steps per interval). The shot-dependent
+   values (hood, kfIn, profile, shift) are defined only at the sample cameras -- in between, from the nearest key (key -- the frame
+   next to the cut: shot 1 11, shot 2 12, shot 3 14). orbit: 360 deg around the head (10 deg step), the same pose, the shot 1 hood;
+   profile is not given -- the code takes it from the camera angle (main.js profileWeight). camRef -- the camera from which the
+   snow layer and the background "top" are computed (in sample22 the shot 1 camera). */
 {
-  const M22 = FILMLAR.misol22.shotlar, h11 = M22[0].poza(10);
-  const USHLA = {egilish: h11.egilish, burilish: h11.burilish, yonga: h11.yonga, yumuq: h11.yumuq, yosh: h11.yosh};
-  const KALIT = [[M22[0], h11], [M22[1], M22[1].poza(0)], [M22[2], M22[2].poza(0)]].map(([s, h]) =>
-    ({kamera: s.kamera}));
+  const M22 = FILMS.sample22.shotList, h11 = M22[0].pose(10);
+  const HOLD = {tilt: h11.tilt, turn: h11.turn, sideways: h11.sideways, closed: h11.closed, tear: h11.tear};
+  const KEY = [[M22[0], h11], [M22[1], M22[1].pose(0)], [M22[2], M22[2].pose(0)]].map(([s, h]) =>
+    ({camera: s.camera}));
   const L = (a, b, t) => a + (b - a) * t;
-  const oraliq = (a, b, t) => ({az: L(a.az, b.az, t), el: L(a.el, b.el, t), d: L(a.d, b.d, t), fov: L(a.fov, b.fov, t),
-    ekran: [0, 1].map(i => L(a.ekran[i], b.ekran[i], t)), markaz: [0, 1, 2].map(i => L(a.markaz[i], b.markaz[i], t))});
-  const sinov = (nom, kamera) => ({nom, n: 1, kamera, poza() { return {...USHLA}; }});
-  const yol = [];
+  const span = (a, b, t) => ({az: L(a.az, b.az, t), el: L(a.el, b.el, t), d: L(a.d, b.d, t), fov: L(a.fov, b.fov, t),
+    screen: [0, 1].map(i => L(a.screen[i], b.screen[i], t)), centre: [0, 1, 2].map(i => L(a.centre[i], b.centre[i], t))});
+  const test = (name, camera) => ({name, n: 1, camera, pose() { return {...HOLD}; }});
+  const fpath = [];
   for (let seg = 0; seg < 2; seg++) for (let j = seg ? 1 : 0; j <= 24; j++) {
     const t = j / 24;
-    yol.push(sinov(`yol${seg + 1}${seg + 2}_${j}`, oraliq(KALIT[seg].kamera, KALIT[seg + 1].kamera, t)));
+    fpath.push(test(`fpath${seg + 1}${seg + 2}_${j}`, span(KEY[seg].camera, KEY[seg + 1].camera, t)));
   }
-  FILMLAR.kamYol = {ms: 60, kamRef: M22[0].kamera, shotlar: yol};
-  /* pozaYol (9-o'tish): KAMERA USHLANGAN (1-shot kamerasi), vaqt ushlangan, bosh pozasi uch shot pozasi orasida uzluksiz
-     (1-shot tinch -> 2-shot -> 3-shot tinch, har oraliq 24 qadam) -- pozaga bog'liq kapyushon silliq o'zgaradimi (sakrashsiz) */
-  const PZ = [M22[0].poza(0), M22[1].poza(0), M22[2].poza(6)].map(h => ({egilish: h.egilish, burilish: h.burilish, yonga: h.yonga || 0, chokish: h.chokish || 0, orqaga: h.orqaga || 0}));
-  const pyol = [];
+  FILMS.camPath = {ms: 60, camRef: M22[0].camera, shotList: fpath};
+  /* posePath (pass 9): CAMERA HELD (the shot 1 camera), time held, the head pose continuous between the three shot poses
+     (shot 1 still -> shot 2 -> shot 3 still, 24 steps per interval) -- does the pose-dependent hood change smoothly (without jumps) */
+  const PZ = [M22[0].pose(0), M22[1].pose(0), M22[2].pose(6)].map(h => ({tilt: h.tilt, turn: h.turn, sideways: h.sideways || 0, sink: h.sink || 0, backward: h.backward || 0}));
+  const posePathShots = [];
   for (let seg = 0; seg < 2; seg++) for (let j = seg ? 1 : 0; j <= 24; j++) {
     const t = j / 24, a = PZ[seg], b = PZ[seg + 1], h = Object.fromEntries(Object.keys(a).map(k => [k, L(a[k], b[k], t)]));
-    pyol.push({nom: `poza${seg + 1}${seg + 2}_${j}`, n: 1, kamera: M22[0].kamera, poza() { return {...h, yumuq: 1}; }});
+    posePathShots.push({name: `pose${seg + 1}${seg + 2}_${j}`, n: 1, camera: M22[0].camera, pose() { return {...h, closed: 1}; }});
   }
-  FILMLAR.pozaYol = {ms: 60, kamRef: M22[0].kamera, shotlar: pyol};
-  FILMLAR.orbita = {ms: 60, kamRef: M22[0].kamera, shotlar: Array.from({length: 37}, (_, j) =>
-    sinov('orb' + j * 10, {az: j * 10, el: -8, d: 7.03, fov: 27, ekran: [0.5, 0.5], markaz: [0, -0.1, 0]}))};
+  FILMS.posePath = {ms: 60, camRef: M22[0].camera, shotList: posePathShots};
+  FILMS.orbit = {ms: 60, camRef: M22[0].camera, shotList: Array.from({length: 37}, (_, j) =>
+    test('orb' + j * 10, {az: j * 10, el: -8, d: 7.03, fov: 27, screen: [0.5, 0.5], centre: [0, -0.1, 0]}))};
 }
 
 export function shotTop(film, f) {
   let a = 0;
-  for (const s of film.shotlar) { if (f < a + s.n) return {s, i: f - a}; a += s.n; }
-  const s = film.shotlar[film.shotlar.length - 1]; return {s, i: s.n - 1};
+  for (const s of film.shotList) { if (f < a + s.n) return {s, i: f - a}; a += s.n; }
+  const s = film.shotList[film.shotList.length - 1]; return {s, i: s.n - 1};
 }
-export const tasvirSoni = film => film.shotlar.reduce((a, s) => a + s.n, 0);
+export const imageCount = film => film.shotList.reduce((a, s) => a + s.n, 0);

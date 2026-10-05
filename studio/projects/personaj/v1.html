@@ -4,53 +4,53 @@ svg{background:#15132a;box-shadow:0 0 0 1px #333}
 </style></head><body>
 <svg id="s" width="540" height="304" viewBox="0 0 540 304" xmlns="http://www.w3.org/2000/svg">
 <defs>
- <!-- O'lchangan palitra: Oq Ko'cha kartasidan (bizning filmimizdan, misoldan emas) -->
+ <!-- Measured palette: from the Oq Ko'cha card (our own film, not the sample) -->
  <style>
-  .kap  { fill:#1e2028 }   /* kapyushon tashqi */
-  .kapi { fill:#15161d }   /* kapyushon ichi, qorong'iroq */
-  .soch { fill:#bec0c1 }
-  .sochq{ fill:#8f949e }   /* sochning soyali qismi */
-  .teri { fill:#d8d2cf }
-  .teriq{ fill:#a9a3a6 }   /* terining soyasi -- qattiq qadam, gradient emas */
-  .siyoh{ fill:none; stroke:#0d0e13; stroke-width:2.2; stroke-linejoin:round; stroke-linecap:round }
+  .hood  { fill:#1e2028 }   /* hood outer */
+  .hoodi { fill:#15161d }   /* hood inner, darker */
+  .hair { fill:#bec0c1 }
+  .hairq{ fill:#8f949e }   /* the shaded part of the hair */
+  .skin { fill:#d8d2cf }
+  .skinq{ fill:#a9a3a6 }   /* skin shadow -- a hard step, not a gradient */
+  .ink{ fill:none; stroke:#0d0e13; stroke-width:2.2; stroke-linejoin:round; stroke-linecap:round }
   .ing  { fill:none; stroke:#0d0e13; stroke-width:1.4; stroke-linecap:round }
  </style>
 </defs>
 
-<!-- KAPYUSHON ORQASI: yelkadan ko'tarilgan keng shakl -->
-<path class="kap" d="M 96 304 L 96 214 Q 100 150 138 116 Q 170 88 214 84 Q 252 82 268 104
+<!-- BACK OF THE HOOD: a wide shape rising from the shoulder -->
+<path class="hood" d="M 96 304 L 96 214 Q 100 150 138 116 Q 170 88 214 84 Q 252 82 268 104
                      L 276 140 Q 258 128 232 130 Q 196 134 176 162 Q 160 186 162 214 L 166 304 Z"/>
 
-<!-- YUZ: 3/4, yuqoriga qaragan. Iyak o'ng-yuqoriga qaraydi -->
-<path class="teri" d="M 186 196 Q 178 170 184 148 Q 190 124 212 114 Q 236 106 254 120
+<!-- FACE: 3/4, looking up. The chin points up and to the right -->
+<path class="skin" d="M 186 196 Q 178 170 184 148 Q 190 124 212 114 Q 236 106 254 120
                       Q 268 132 266 152 L 262 170 Q 258 182 246 190 L 226 202 Q 202 210 186 196 Z"/>
-<!-- terining soyasi: qattiq qadam, kapyushon tomonda -->
-<path class="teriq" d="M 186 196 Q 178 170 184 148 Q 190 124 212 114 L 218 118
+<!-- skin shadow: a hard step, on the hood side -->
+<path class="skinq" d="M 186 196 Q 178 170 184 148 Q 190 124 212 114 L 218 118
                        Q 198 132 194 156 Q 190 180 200 198 Z"/>
 
-<!-- SOCH: peshonaga tushgan tutamlar -->
-<path class="soch" d="M 180 152 Q 182 118 210 106 Q 242 94 264 116 Q 274 128 272 144
+<!-- HAIR: strands falling on the forehead -->
+<path class="hair" d="M 180 152 Q 182 118 210 106 Q 242 94 264 116 Q 274 128 272 144
                       L 262 138 Q 252 122 234 122 Q 214 122 204 138 L 196 158 Z"/>
-<path class="sochq" d="M 180 152 Q 182 118 210 106 L 216 110 Q 192 124 190 156 Z"/>
-<!-- tutamlar -->
-<path class="soch" d="M 232 118 L 224 146 L 236 140 L 240 116 Z"/>
-<path class="soch" d="M 248 120 L 246 148 L 258 138 L 258 122 Z"/>
+<path class="hairq" d="M 180 152 Q 182 118 210 106 L 216 110 Q 192 124 190 156 Z"/>
+<!-- strands -->
+<path class="hair" d="M 232 118 L 224 146 L 236 140 L 240 116 Z"/>
+<path class="hair" d="M 248 120 L 246 148 L 258 138 L 258 122 Z"/>
 
-<!-- KO'Z: yuqoriga qaragan, shuning uchun qorachiq yuqori chetga yaqin -->
+<!-- EYE: looking up, so the pupil is near the upper edge -->
 <path class="ing" d="M 206 166 Q 216 158 228 162"/>
 <ellipse cx="219" cy="168" rx="6" ry="7" fill="#2a2f45"/>
 <circle cx="221" cy="164" r="2" fill="#eef0f4"/>
-<!-- qosh -->
+<!-- brow -->
 <path class="ing" d="M 204 154 Q 214 148 226 152"/>
-<!-- burun va og'iz: minimal -->
+<!-- nose and mouth: minimal -->
 <path class="ing" d="M 252 158 L 256 166 L 250 168"/>
 <path class="ing" d="M 242 180 Q 248 178 252 180"/>
 
-<!-- KAPYUSHON OLDI: yuz ustidan tushgan chekka -->
-<path class="kapi" d="M 268 104 Q 284 122 280 146 Q 276 168 262 178 L 258 164
+<!-- FRONT OF THE HOOD: the edge falling over the face -->
+<path class="hoodi" d="M 268 104 Q 284 122 280 146 Q 276 168 262 178 L 258 164
                       Q 270 152 270 136 Q 270 118 260 108 Z"/>
-<!-- SIYOH: faqat yaqin chekkalarda -->
-<path class="siyoh" d="M 96 214 Q 100 150 138 116 Q 170 88 214 84 Q 252 82 268 104"/>
-<path class="siyoh" d="M 186 196 Q 178 170 184 148 Q 190 124 212 114"/>
+<!-- INK: only on the near edges -->
+<path class="ink" d="M 96 214 Q 100 150 138 116 Q 170 88 214 84 Q 252 82 268 104"/>
+<path class="ink" d="M 186 196 Q 178 170 184 148 Q 190 124 212 114"/>
 </svg>
 </body></html>

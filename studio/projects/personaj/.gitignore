@@ -1,2 +1,5 @@
-# renders: kor3.mjs and the test servers write ff*/ (made again from the code)
+# renders: view3.mjs and the test servers write ff*/ (made again from the code)
 ff*/
+# screenshots, sheets and GIFs the tools write (several show sample frames)
+*.png
+*.gif

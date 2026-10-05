@@ -1,0 +1,524 @@
+{
+ "name": "personaj3d -- pass 9 (face9b), face probes",
+ "sample": "../../private/sample/k%02d.png",
+ "sample_first": 1,
+ "ours": "../../frames-clean-face9b/%03d.png",
+ "ours_first": 0,
+ "before": "../../frames-clean-8/%03d.png",
+ "before_first": 0,
+ "before_note": "frames-clean-8",
+ "size": [
+  320,
+  180
+ ],
+ "frames": 22,
+ "groups": {
+  "shot-1": [
+   1,
+   11
+  ],
+  "shot-2": [
+   12,
+   13
+  ],
+  "shot-3": [
+   14,
+   22
+  ]
+ },
+ "transform": "../../../personaj/compare-transform.json",
+ "anchor": {
+  "name": "near_eye",
+  "kind": "component",
+  "polarity": "dark",
+  "threshold": 36,
+  "box": [
+   82,
+   36,
+   124,
+   60
+  ],
+  "seed": {
+   "1": [
+    97,
+    47
+   ],
+   "2": [
+    97,
+    47
+   ],
+   "3": [
+    97,
+    47
+   ],
+   "4": [
+    96,
+    47
+   ],
+   "5": [
+    96,
+    47
+   ],
+   "6": [
+    95,
+    47
+   ],
+   "7": [
+    97,
+    46
+   ],
+   "8": [
+    99,
+    45
+   ],
+   "9": [
+    101,
+    45
+   ],
+   "10": [
+    107,
+    52
+   ],
+   "11": [
+    111,
+    54
+   ]
+  }
+ },
+ "probes": [
+  {
+   "name": "far_eye",
+   "kind": "component",
+   "polarity": "dark",
+   "threshold": 22,
+   "darkest": true,
+   "box": [
+    16,
+    -4,
+    28,
+    10
+   ],
+   "relative": true,
+   "frames": "1-9",
+   "note": "iris core: at L<30 it merged with the temple stripe above and pulled the centre 3 px up"
+  },
+  {
+   "name": "mouth",
+   "kind": "component",
+   "polarity": "dark",
+   "threshold": 50,
+   "darkest": true,
+   "box": [
+    12,
+    33,
+    31,
+    42
+   ],
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "lip_shadow",
+   "kind": "component",
+   "polarity": "dark",
+   "threshold": 40,
+   "darkest": true,
+   "box": [
+    22,
+    42,
+    31,
+    49
+   ],
+   "relative": true,
+   "frames": "1-9"
+  },
+  {
+   "name": "jaw_under_x8",
+   "kind": "edge",
+   "start": [
+    8,
+    48
+   ],
+   "direction": [
+    0,
+    1
+   ],
+   "length": 30,
+   "condition": "<45",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "jaw_under_x20",
+   "kind": "edge",
+   "start": [
+    20,
+    48
+   ],
+   "direction": [
+    0,
+    1
+   ],
+   "length": 30,
+   "condition": "<45",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "jaw_under_x28",
+   "kind": "edge",
+   "start": [
+    28,
+    48
+   ],
+   "direction": [
+    0,
+    1
+   ],
+   "length": 30,
+   "condition": "<45",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "chin_front_y52",
+   "kind": "edge",
+   "start": [
+    15,
+    52
+   ],
+   "direction": [
+    1,
+    0
+   ],
+   "length": 25,
+   "condition": "<50",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "far_edge_y20",
+   "kind": "edge",
+   "start": [
+    15,
+    20
+   ],
+   "direction": [
+    1,
+    0
+   ],
+   "length": 25,
+   "condition": "<50",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "far_edge_y30",
+   "kind": "edge",
+   "start": [
+    15,
+    30
+   ],
+   "direction": [
+    1,
+    0
+   ],
+   "length": 25,
+   "condition": "<50",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "hair_left_y-6",
+   "kind": "edge",
+   "start": [
+    -45,
+    -6
+   ],
+   "direction": [
+    1,
+    0
+   ],
+   "length": 50,
+   "condition": ">75",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "hair_left_y4",
+   "kind": "edge",
+   "start": [
+    -45,
+    4
+   ],
+   "direction": [
+    1,
+    0
+   ],
+   "length": 50,
+   "condition": ">75",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "hair_left_y14",
+   "kind": "edge",
+   "start": [
+    -45,
+    14
+   ],
+   "direction": [
+    1,
+    0
+   ],
+   "length": 50,
+   "condition": ">75",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "hair_left_y24",
+   "kind": "edge",
+   "start": [
+    -45,
+    24
+   ],
+   "direction": [
+    1,
+    0
+   ],
+   "length": 50,
+   "condition": ">75",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "hair_left_y34",
+   "kind": "edge",
+   "start": [
+    -45,
+    34
+   ],
+   "direction": [
+    1,
+    0
+   ],
+   "length": 50,
+   "condition": ">75",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "hair_left_y44",
+   "kind": "edge",
+   "start": [
+    -45,
+    44
+   ],
+   "direction": [
+    1,
+    0
+   ],
+   "length": 50,
+   "condition": ">75",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "hair_right_y24",
+   "kind": "edge",
+   "start": [
+    -10,
+    24
+   ],
+   "direction": [
+    -1,
+    0
+   ],
+   "length": 30,
+   "condition": ">75",
+   "relative": true,
+   "frames": "1-11"
+  },
+  {
+   "name": "band",
+   "kind": "count",
+   "box": [
+    35,
+    16,
+    47,
+    50
+   ],
+   "L": [
+    30,
+    55
+   ],
+   "relative": true,
+   "frames": "1-11",
+   "tol": 25
+  },
+  {
+   "name": "face_toni",
+   "kind": "area",
+   "box": [
+    8,
+    18,
+    22,
+    34
+   ],
+   "relative": true,
+   "colour": true,
+   "frames": "1-11",
+   "tol": 3
+  },
+  {
+   "name": "tear_cheek",
+   "kind": "component",
+   "polarity": "light",
+   "threshold": 85,
+   "brightest": true,
+   "box": [
+    4,
+    12,
+    24,
+    44
+   ],
+   "relative": true,
+   "frames": "6-11",
+   "note": "pass 10: in the [-8,8,..] box, on the sample's frames 6-8 the brightest point was the lower eyelid (93,54) and the lit edge of the near hair strand (x~93, 7x36) -- not the tear; the box was moved right and down, away from the strand and the eye"
+  },
+  {
+   "name": "tear_jaw",
+   "kind": "component",
+   "polarity": "light",
+   "threshold": 45,
+   "brightest": true,
+   "box": {
+    "6": [
+     100,
+     103,
+     112,
+     115
+    ],
+    "10": [
+     117,
+     125,
+     131,
+     141
+    ],
+    "11": [
+     118,
+     150,
+     131,
+     165
+    ]
+   },
+   "frames": "6,10,11",
+   "note": "pass 10: the frame 11 box is x<=131 -- the background at x 129..139 (a snow particle, L 150) was brighter than the ring's glint"
+  },
+  {
+   "name": "hand_tip",
+   "kind": "tip",
+   "box": [
+    140,
+    118,
+    200,
+    180
+   ],
+   "condition": "<20",
+   "median": 5,
+   "seed": [
+    126,
+    150
+   ],
+   "extreme": "right",
+   "frames": "1-11",
+   "note": "pass 10: at <26, on the sample's frames 2,3,8 the mask leaked into the dark sky above (the tip at the box edge, 198,118) -- <20, and the seed in the darkest spot of the body"
+  }
+ ],
+ "silhouettes": [
+  {
+   "name": "body_right",
+   "box": [
+    100,
+    100,
+    215,
+    180
+   ],
+   "seed": [
+    126,
+    150
+   ],
+   "condition": "<20",
+   "median": 5,
+   "edge": "right",
+   "frames": "1-11",
+   "note": "the figure's right edge from below the chin downwards (body, hand, sickle). <26 leaks into the sky (at y<130 the sky is L 17..30)"
+  },
+  {
+   "name": "hair",
+   "box": [
+    55,
+    0,
+    180,
+    128
+   ],
+   "condition": ">85",
+   "median": 3,
+   "fill": false,
+   "min_area": 60,
+   "values": true,
+   "edge": "left",
+   "frames": "1-11",
+   "note": "pass 11: the bright hair mass. On the sample the hair is L 90..110 (after median 3 no pixel is above 110), skin 58..61, the bright line along the face edge is thin -- median 3 removes it. The gaps between strands are not filled. Left edge: the outer edge of the mass on the near side"
+  },
+  {
+   "name": "hair_under",
+   "box": [
+    85,
+    5,
+    140,
+    62
+   ],
+   "condition": ">85",
+   "median": 3,
+   "fill": false,
+   "min_area": 60,
+   "edge": "bottom",
+   "frames": "1-11",
+   "note": "the lower edge of the hair over the forehead, in every column -- do the forehead strands come down to the eye"
+  },
+  {
+   "name": "hair_right",
+   "box": [
+    100,
+    0,
+    180,
+    60
+   ],
+   "condition": ">85",
+   "median": 3,
+   "fill": false,
+   "min_area": 60,
+   "edge": "right",
+   "frames": "1-11",
+   "note": "how far to the right (the wind side) the strands reach, in every row"
+  },
+  {
+   "name": "hair_near_inner",
+   "box": [
+    55,
+    55,
+    112,
+    128
+   ],
+   "condition": ">85",
+   "median": 3,
+   "fill": false,
+   "min_area": 60,
+   "edge": "right",
+   "frames": "1-11",
+   "note": "the INNER (face-facing) edge of the near-side hair mass, below the eye line -- how far the '(' mass comes over the face"
+  }
+ ]
+}

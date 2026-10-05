@@ -1,0 +1,59 @@
+{
+ "shot1": {
+  "hood": {
+   "openness": 1.9345,
+   "openV0": -0.1802,
+   "openV1": 0.4473,
+   "pushZ": 0.8084,
+   "pushY": 0.6337,
+   "wholeZ": 0.1613,
+   "wholeY": -0.8902,
+   "r0": 1.2908,
+   "yaw": 0.1002,
+   "visor": 0.12,
+   "eg": 0,
+   "tipY": 1.186,
+   "dome": 0.5,
+   "openA": 1,
+   "openB": 1,
+   "bandA": 2.7805,
+   "bandB": 0.5525,
+   "bandAlt": 1,
+   "bandBlt": 1
+  },
+  "f": 0.3771840219663425,
+  "iou": 0.6228159780336575,
+  "iou_image": [
+   0.6215773809523809,
+   0.624054575114934
+  ],
+  "figure": null,
+  "initial": {
+   "f": 0.3771840219663425,
+   "iou": 0.6228159780336575,
+   "figure": null,
+   "hood": {
+    "openness": 1.9345,
+    "openV0": -0.1802,
+    "openV1": 0.4473,
+    "pushZ": 0.8084,
+    "pushY": 0.6337,
+    "wholeZ": 0.1613,
+    "wholeY": -0.8902,
+    "r0": 1.2908,
+    "yaw": 0.1002,
+    "visor": 0.12,
+    "eg": 0,
+    "tipY": 1.186,
+    "dome": 0.5,
+    "openA": 1,
+    "openB": 1,
+    "bandA": 2.7805,
+    "bandB": 0.5525,
+    "bandAlt": 1,
+    "bandBlt": 1
+   }
+  },
+  "scores": 66
+ }
+}

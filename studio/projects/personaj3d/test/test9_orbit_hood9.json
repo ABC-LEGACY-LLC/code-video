@@ -1,0 +1,5037 @@
+{
+ "film": "orbit",
+ "W": 640,
+ "H": 360,
+ "extra": "",
+ "result": [
+  {
+   "n": 0,
+   "name": "orb0",
+   "camera": {
+    "az": 0,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": null
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": null
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": null
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": null
+    },
+    "hood": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": null
+    },
+    "cloak": {
+     "relative": {
+      "n": 422,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": null
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": null
+    },
+    "snow": {
+     "relative": {
+      "n": 281,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": null
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 1,
+   "name": "orb10",
+   "camera": {
+    "az": 10,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 416,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 416,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 31,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 31,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 58,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 58,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 2,
+   "name": "orb20",
+   "camera": {
+    "az": 20,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 416,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 416,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 28,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 28,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 62,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 62,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 3,
+   "name": "orb30",
+   "camera": {
+    "az": 30,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 410,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 410,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 29,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 29,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 59,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 59,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 4,
+   "name": "orb40",
+   "camera": {
+    "az": 40,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 406,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 406,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 29,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 29,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 58,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 58,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 5,
+   "name": "orb50",
+   "camera": {
+    "az": 50,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 400,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 400,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 29,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 29,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 53,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 53,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 6,
+   "name": "orb60",
+   "camera": {
+    "az": 60,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 392,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 392,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 24,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 24,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 50,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 50,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 7,
+   "name": "orb70",
+   "camera": {
+    "az": 70,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 381,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 381,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 24,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 24,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 42,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 42,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 8,
+   "name": "orb80",
+   "camera": {
+    "az": 80,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 60,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 60,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 373,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 373,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 23,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 23,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 45,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 45,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 9,
+   "name": "orb90",
+   "camera": {
+    "az": 90,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 57,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 57,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 367,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 367,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 22,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 22,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 37,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 37,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 10,
+   "name": "orb100",
+   "camera": {
+    "az": 100,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 55,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 55,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 359,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 359,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 19,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 19,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 38,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 38,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 11,
+   "name": "orb110",
+   "camera": {
+    "az": 110,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 53,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 53,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 355,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 355,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 20,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 20,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 47,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 47,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 12,
+   "name": "orb120",
+   "camera": {
+    "az": 120,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 51,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 51,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 349,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 349,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 19,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 19,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 45,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 45,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 13,
+   "name": "orb130",
+   "camera": {
+    "az": 130,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 49,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 49,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 351,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 351,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 16,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 16,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 52,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 52,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 14,
+   "name": "orb140",
+   "camera": {
+    "az": 140,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 46,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 46,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 348,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 348,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 17,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 17,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 54,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 54,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 15,
+   "name": "orb150",
+   "camera": {
+    "az": 150,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 43,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 43,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 351,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 351,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 17,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 17,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 63,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 63,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 16,
+   "name": "orb160",
+   "camera": {
+    "az": 160,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 39,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 39,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 352,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 352,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 15,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 15,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 59,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 59,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 17,
+   "name": "orb170",
+   "camera": {
+    "az": 170,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 35,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 35,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 352,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 352,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 16,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 16,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 62,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 62,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 18,
+   "name": "orb180",
+   "camera": {
+    "az": 180,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 33,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 33,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 355,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 355,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 17,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 17,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 61,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 61,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 19,
+   "name": "orb190",
+   "camera": {
+    "az": 190,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 38,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 38,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 351,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 351,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 15,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 15,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 57,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 57,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 20,
+   "name": "orb200",
+   "camera": {
+    "az": 200,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 41,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 41,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 352,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 352,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 15,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 15,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 56,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 56,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 21,
+   "name": "orb210",
+   "camera": {
+    "az": 210,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 44,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 44,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 350,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 350,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 16,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 16,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 53,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 53,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 22,
+   "name": "orb220",
+   "camera": {
+    "az": 220,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 48,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 48,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 350,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 350,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 17,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 17,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 48,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 48,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 23,
+   "name": "orb230",
+   "camera": {
+    "az": 230,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 50,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 50,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 353,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 353,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 19,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 19,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 42,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 42,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 24,
+   "name": "orb240",
+   "camera": {
+    "az": 240,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 52,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 52,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 357,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 357,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 20,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 20,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 39,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 39,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 25,
+   "name": "orb250",
+   "camera": {
+    "az": 250,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 54,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 54,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 368,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 368,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 19,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 19,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 30,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 30,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 26,
+   "name": "orb260",
+   "camera": {
+    "az": 260,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 56,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 56,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 376,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 376,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 21,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 21,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 23,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 23,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 27,
+   "name": "orb270",
+   "camera": {
+    "az": 270,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 59,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 59,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 388,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 388,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 22,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 22,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 19,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 19,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 28,
+   "name": "orb280",
+   "camera": {
+    "az": 280,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 64,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 64,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 396,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 396,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 24,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 24,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 18,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 18,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 29,
+   "name": "orb290",
+   "camera": {
+    "az": 290,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 403,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 403,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 26,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 26,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 26,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 26,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 30,
+   "name": "orb300",
+   "camera": {
+    "az": 300,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 408,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 408,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 24,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 24,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 30,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 30,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 31,
+   "name": "orb310",
+   "camera": {
+    "az": 310,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 414,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 414,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 25,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 25,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 33,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 33,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 32,
+   "name": "orb320",
+   "camera": {
+    "az": 320,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 416,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 416,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 27,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 27,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 42,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 42,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 33,
+   "name": "orb330",
+   "camera": {
+    "az": 330,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 417,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 417,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 28,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 28,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 42,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 42,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 34,
+   "name": "orb340",
+   "camera": {
+    "az": 340,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 419,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 419,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 27,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 27,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 45,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 45,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 35,
+   "name": "orb350",
+   "camera": {
+    "az": 350,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 418,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 418,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 28,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 28,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 52,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 52,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  },
+  {
+   "n": 36,
+   "name": "orb360",
+   "camera": {
+    "az": 360,
+    "el": -8,
+    "d": 7.03,
+    "fov": 27,
+    "screen": [
+     0.5,
+     0.5
+    ],
+    "centre": [
+     0,
+     -0.1,
+     0
+    ]
+   },
+   "part": {
+    "skin": {
+     "relative": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 401,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hairInner": {
+     "relative": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 421,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hair": {
+     "relative": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 893,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "neck": {
+     "relative": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 66,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "hood": {
+     "relative": {
+      "n": 416,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 416,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "cloak": {
+     "relative": {
+      "n": 29,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 29,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "eye": {
+     "relative": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 5,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    },
+    "snow": {
+     "relative": {
+      "n": 54,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     },
+     "step": {
+      "n": 54,
+      "med": 0,
+      "p95": 0,
+      "max": 0
+     }
+    }
+   },
+   "top": {
+    "deviation": 0,
+    "step": 0
+   }
+  }
+ ]
+}
