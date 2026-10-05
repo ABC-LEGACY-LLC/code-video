@@ -420,6 +420,54 @@ await check({name:'studio/edit-in-timeline', unit:'faults: the row written, the 
  measure:()=>editOff(25), pass:v=>v===0, calibrate:()=>editOff(0),
  note:'a fake film whose table is in its own page; clip b 20 → 25 typed, undone, then dragged to 25'});
 
+/* AN EXPORT IS A VIDEO THAT PLAYS, MADE IN THE BROWSER. Twelve frames of zarra at half
+   size have to come back as an mp4 this browser can open: 270×152, half a second at 24
+   frames a second, and its last frame decodes to a picture. Nothing goes to the server:
+   the requests made during the export are counted. The broken case exports six frames,
+   which is not the length that was asked for. */
+async function exportOff(frames){
+ const p=await studio('#zarra'); await ready(p,'zarra');
+ const sent=[]; p.on('request',r=>{ if(r.method()!=='GET') sent.push(r.url()); });
+ const r=await p.evaluate(async frames=>{
+  const blob=await exportVideo({from:0,to:frames-1,width:270});
+  const v=document.createElement('video'); v.muted=true; v.src=URL.createObjectURL(blob);
+  await new Promise((ok,no)=>{ v.onloadedmetadata=ok; v.onerror=()=>no(new Error('the file does not open: '+(v.error&&v.error.message))); });
+  v.currentTime=Math.max(0,v.duration-0.02); await new Promise(ok=>{ v.onseeked=ok; });
+  const c=document.createElement('canvas'); c.width=v.videoWidth; c.height=v.videoHeight; const g=c.getContext('2d'); g.drawImage(v,0,0);
+  const d=g.getImageData(0,0,c.width,c.height).data; let lit=0; for(let i=0;i<d.length;i+=4) if(d[i]+d[i+1]+d[i+2]>60) lit++;
+  return {w:v.videoWidth,h:v.videoHeight,duration:v.duration,lit,size:blob.size,type:blob.type};
+ },frames).catch(e=>({error:e.message}));
+ await done(p);
+ if(r.error) throw new Error(r.error);
+ return (r.w===270&&r.h===152?0:1)+(Math.abs(r.duration-0.5)<0.03?0:1)+(r.lit>50?0:1)+(r.type==='video/mp4'?0:1)+sent.length;
+}
+await check({name:'studio/export-plays', unit:'faults: size, length, picture, type, things sent to the server',
+ measure:()=>exportOff(12), pass:v=>v===0, calibrate:()=>exportOff(6),
+ note:'zarra, frames 0–11 at 270 wide; encoded with WebCodecs, opened again in the same browser'});
+
+/* AN EXPORT CARRIES THE FILM'S SOUND. Whiteout renders its score offline; a second and a
+   half around the steel hit has to come out as an mp4 whose sound track decodes, runs as
+   long as the picture and is not silence -- and the picture must still open. The broken
+   case exports without sound: there is then no track to decode. */
+async function soundOff(sound){
+ const p=await studio('#whiteout'); await ready(p,'whiteout');
+ const r=await p.evaluate(async sound=>{
+  const blob=await exportVideo({from:216,to:251,width:480,sound});
+  const v=document.createElement('video'); v.muted=true; v.src=URL.createObjectURL(blob);
+  const opens=await new Promise(ok=>{ v.onloadedmetadata=()=>ok(true); v.onerror=()=>ok(false); });
+  let dur=0, rms=0;
+  try{ const ac=new OfflineAudioContext(2,48000,48000), b=await ac.decodeAudioData(await blob.arrayBuffer());
+   dur=b.duration; const d=b.getChannelData(0); let q=0; for(let i=0;i<d.length;i++) q+=d[i]*d[i]; rms=Math.sqrt(q/d.length); }catch(e){}
+  return {opens,w:v.videoWidth,vdur:v.duration,dur,rms};
+ },sound).catch(e=>({error:e.message}));
+ await done(p);
+ if(r.error) throw new Error(r.error);
+ return (r.opens&&r.w===480?0:1)+(Math.abs(r.dur-1.5)<0.12?0:1)+(r.rms>0.002?0:1);
+}
+await check({name:'studio/export-has-sound', unit:'faults: the picture opens, the sound is 1.5 s, it is not silence',
+ measure:()=>soundOff(true), pass:v=>v===0, calibrate:()=>soundOff(false),
+ note:'whiteout, frames 216–251: the score table and the footfalls, rendered offline and encoded in the browser'});
+
 /* THE LAYOUT HOLDS AT EVERY WIDTH. Under 700 px the list sat in a 70vh row of its own and
    the header broke in two; on a phone the shot names pushed the page sideways; on a
    desktop a long work name widened the list past its own edge instead of ending in "…".

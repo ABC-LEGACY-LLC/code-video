@@ -473,6 +473,7 @@ window.__depthFrame=(n,w,h)=>{DBG=6;const r=window.__frameTo(n,w,h);DBG=0;return
 window.__dbgFrame=(d,n,w,h)=>{DBG=d;const r=window.__frameTo(n,w,h);DBG=0;return r;};
 window.__opt=(o)=>{Object.assign(OPT,o);};
 window.__resetOpt=()=>{OPT.lines=1;OPT.nbr=1;OPT.cell=0;OPT.cam=null;OPT.bound=1;OPT.fog=1;OPT.snow=1;OPT.lfar=1;OPT.rimg=1;OPT.wmax=4096;OPT.wdir=1;OPT.style='oq-qalam';};
+window.__sizable=true;   // __frameTo(n,w,h) draws at any size: an export asks for its own
 window.__frameTo=(n,w,h)=>{
  playing=false; T=0;phA=0;phB=0.37;dist=0;acc=0;
  if(w){c.width=w;c.height=h;}

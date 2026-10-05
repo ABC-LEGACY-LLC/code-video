@@ -27,7 +27,7 @@ build. Only shared things stay at the root: `studio/`, `harness/`, `catalog/`, `
 | `studio/projects/not-a-measurement/` | 8 cuts, the whole film in 39 draw calls | card |
 | `studio/projects/zarra/` | A particle layer measured from a sample GIF: two layers at the GIF's speeds; the check measures the speed again from the screen | **4** |
 | `studio/projects/masofa-maydoni/` | An SDF sandbox — primitives, unions, marching | — |
-| `studio/` | A person and an AI on the same piece: live viewing, frame scrubbing, card and checks, notes on a frame and the AI's answers; a timeline of each film's own tables; what the AI changes shows at once | **30** |
+| `studio/` | A person and an AI on the same piece: live viewing, frame scrubbing, card and checks, notes on a frame and the AI's answers; a timeline of each film's own tables; what the AI changes shows at once; export to mp4 in the browser, with sound | **32** |
 | `catalog/` | The architecture: tools that count the source and measure frames, five cards, the catalog generator | **15** |
 | `skills/` | A record of the instructions this work was done under | — |
 
@@ -84,7 +84,7 @@ cd catalog && npm i && node test/run.mjs                                 # 15 ch
 cd catalog && node tools/card.mjs                                        # do the cards agree with their sources
 cd catalog && node tools/catalog.mjs out.html                            # the catalog page
 cd studio/projects/zarra && npm i && npm run audit                       # 4 checks
-cd studio && npm i && npm run audit && npm run audit:ui                  # 15 checks, then 15 in a browser
+cd studio && npm i && npm run audit && npm run audit:ui                  # 15 checks, then 17 in a browser
 node studio/server.mjs                                                   # the studio: http://127.0.0.1:4321/
 ```
 

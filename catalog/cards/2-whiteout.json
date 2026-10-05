@@ -25,7 +25,7 @@
    "evidence": "drawCallsTotal"
   },
   {
-   "text": "renderer canvas2d, 1185 lines, 41 functions.",
+   "text": "renderer canvas2d, 1198 lines, 41 functions.",
    "evidence": "lines"
   }
  ],
@@ -44,8 +44,8 @@
  },
  "count": {
   "files": 1,
-  "bytes": 56917,
-  "lines": 1185,
+  "bytes": 57754,
+  "lines": 1198,
   "renderer": "canvas2d",
   "functions": 41,
   "audio": true,

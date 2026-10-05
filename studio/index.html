@@ -147,6 +147,10 @@
  dialog{max-width:820px;width:calc(100% - 32px);border:1px solid var(--rule);border-radius:var(--r-3);background:var(--pa);color:var(--ink);padding:0}
  dialog::backdrop{background:var(--shade)}
  dialog .inner{padding:var(--s-4) var(--s-5);max-height:82vh;overflow:auto}
+ dialog.small{max-width:440px}
+ .form{display:grid;grid-template-columns:auto 1fr;gap:var(--s-2) var(--s-3);align-items:center;margin:var(--s-4) 0}
+ .form select{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--edge);border-radius:var(--r-2);padding:var(--s-1) var(--s-2)}
+ progress{width:100%;accent-color:var(--acc)}
  dialog h2{font:600 var(--fs-4)/1.2 var(--sans);margin:0}
  dialog h3{font:600 var(--fs-3)/1.2 var(--sans);margin:var(--s-5) 0 var(--s-2)}
  .md ol,.md ul{margin:0;padding-left:22px} .md li{margin-bottom:var(--s-2)} .md p{margin:0 0 var(--s-2)}
@@ -203,6 +207,7 @@
    <button class="btn" id="reloadBtn">Reload</button>
    <button class="btn" id="buildBtn">Rebuild</button>
    <div class="out"><span id="info"></span><span class="sp"></span>
+    <button class="btn" id="exportBtn" disabled>Export video</button>
     <span class="pending" id="pending" hidden><span id="pendingText">Updated — it reloads when you stop</span><button class="btn" id="pendingBtn">Reload now</button></span></div>
   </div>
   <section class="timeline" id="timeline" aria-label="Timeline" hidden>
@@ -225,6 +230,17 @@
   <div class="panel" id="panel" role="tabpanel" aria-labelledby="tab-card" tabindex="0"></div>
  </aside>
 </main>
+<dialog id="exportDlg" class="small" aria-labelledby="exportTitle"><div class="inner">
+ <h2 id="exportTitle">Export video</h2>
+ <p class="small mut" id="exportWhat"></p>
+ <div class="form" id="exportForm">
+  <label for="exSize">Size</label><select id="exSize"></select>
+  <label for="exRange">Range</label><select id="exRange"></select>
+  <label for="exSound">Sound</label><span><input type="checkbox" id="exSound"> <span id="exSoundText"></span></span>
+ </div>
+ <div id="exportRun" hidden><progress id="exBar" max="1" value="0"></progress><p class="small" id="exText" role="status"></p></div>
+ <div class="row"><span class="sp"></span><button class="btn" id="exCancel">Close</button><button class="btn primary" id="exStart">Export</button></div>
+</div></dialog>
 <dialog id="decisions" aria-labelledby="decisionsTitle"><div class="inner" id="decisionsInner"></div></dialog>
 <script>
 const $=s=>document.querySelector(s);
@@ -424,7 +440,7 @@ function renderShots(){
 function setTransport(){
  const w=current, can=scrubbable(), sl=$('#frame'), info=$('#info');
  sl.disabled=!can; sl.max=Math.max(0,S.total-1); if(document.activeElement!==sl||S.mode==='play') sl.value=S.frame;
- $('#backBtn').disabled=$('#fwdBtn').disabled=!can;
+ $('#backBtn').disabled=$('#fwdBtn').disabled=!can; $('#exportBtn').disabled=!can;
  const pb=$('#playBtn'); pb.disabled=!can||(S.mode==='play'?!(S.hooks.pause||S.hooks.frameTo):!S.hooks.play);
  pb.textContent=S.mode==='play'?'Pause':'Play';
  $('#buildBtn').style.visibility=w&&w.build?'visible':'hidden';
@@ -435,6 +451,7 @@ function setTransport(){
  else if(!S.ready) t=`Loading ${w.name}…`;
  else if(w.control==='sandbox') t='Sandbox — its own controls are on the stage.';
  else if(!can) t='Watch only — this work plays in its own time and does not report its frame.';
+ else if(exporting) t=`Exporting · frame <b>${S.frame}</b> / ${S.total}`;
  else {
   const at=`frame <b>${S.frame}</b> / ${S.total} · ${(S.frame/S.fps).toFixed(2)} s${S.shot?` · shot <b>${esc(S.shot)}</b>`:''}`;
   t=S.mode==='play'?(S.hooks.frame?`Playing · ${at}`:'Playing — this work does not report its frame while it plays'):`Paused at ${at}`;
@@ -447,6 +464,170 @@ function setTransport(){
  $('#pending').hidden=!S.pending;
  if(S.total) $('#tlBody').style.setProperty('--p',String(S.frame/S.total));
 }
+
+/* ===== EXPORT =====
+   The film becomes an mp4 in this browser and goes straight to the person's own disk:
+   every frame is drawn by the page (__frameTo / __seek), encoded here (WebCodecs) and
+   written into an MP4 by the few boxes below. Nothing is sent to the server and nothing
+   is kept there -- a person's video is theirs. What is exported is what is on the stage:
+   the style, the layers and the view chosen there. */
+const MP4=(()=>{
+ const u8=n=>[n&255], u16=n=>[(n>>8)&255,n&255], u32=n=>[(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255];
+ const str=t=>[...t].map(c=>c.charCodeAt(0)), zero=n=>new Array(n).fill(0);
+ const box=(type,...parts)=>{ const body=parts.flat(); return [...u32(body.length+8),...str(type),...body]; };
+ const full=(type,ver,flags,...parts)=>box(type,[ver,(flags>>16)&255,(flags>>8)&255,flags&255],...parts);
+ const MATRIX=[...u32(0x10000),...zero(12),...u32(0x10000),...zero(12),...u32(0x40000000)];
+ /* a video track and, when there is sound, an audio track; each track's samples in one
+    chunk (video, then audio), the index (moov) before the data */
+ function file({codec,description,width,height,fps,samples,audio}){
+  const T=Math.round(fps*1000), n=samples.length, vdur=n*1000, ms=Math.round(vdur/T*1000);
+  const visual=(type,cfg)=>box(type,zero(6),u16(1),zero(16),u16(width),u16(height),u32(0x480000),u32(0x480000),zero(4),u16(1),zero(32),u16(24),u16(0xffff),cfg);
+  const ventry=codec==='avc'?visual('avc1',box('avcC',[...description]))
+   :visual('vp09',full('vpcC',1,0,u8(0),u8(40),u8(0x82),u8(1),u8(1),u8(1),u16(0)));
+  const sound=(type,cfg)=>box(type,zero(6),u16(1),zero(8),u16(audio.channels),u16(16),zero(4),u32(audio.sr<<16>>>0),cfg);
+  const desc=(tag,...body)=>{ const d=body.flat(); return [tag,d.length,...d]; };       // every one here is under 128 bytes
+  const aentry=()=>audio.codec==='aac'
+   ?sound('mp4a',full('esds',0,0,desc(3,u16(0),u8(0),desc(4,u8(0x40),u8(0x15),zero(3),u32(audio.bitrate),u32(audio.bitrate),desc(5,[...audio.description])),desc(6,u8(2)))))
+   :(d=>sound('Opus',box('dOps',u8(0),u8(d[9]),u16(d[10]|d[11]<<8),u32((d[12]|d[13]<<8|d[14]<<16|d[15]<<24)>>>0),u16(d[16]|d[17]<<8),u8(0))))(audio.description);
+  const runs=L=>{ const o=[]; for(const s of L){ const p=o[o.length-1]; if(p&&p[1]===s.dur) p[0]++; else o.push([1,s.dur]); } return o; };
+  const trak=({id,kind,scale,dur,entry,L,stts,keys,off})=>box('trak',
+   full('tkhd',0,3,u32(0),u32(0),u32(id),zero(4),u32(Math.round(dur/scale*1000)),zero(8),u16(0),u16(kind==='soun'?1:0),u16(kind==='soun'?0x100:0),zero(2),MATRIX,
+    u32(kind==='vide'?width<<16:0),u32(kind==='vide'?height<<16:0)),
+   box('mdia',
+    full('mdhd',0,0,u32(0),u32(0),u32(scale),u32(dur),u16(0x55c4),u16(0)),
+    full('hdlr',0,0,u32(0),str(kind),zero(12),str(kind==='vide'?'VideoHandler':'SoundHandler'),[0]),
+    box('minf',
+     kind==='vide'?full('vmhd',0,1,zero(8)):full('smhd',0,0,zero(4)),
+     box('dinf',full('dref',0,0,u32(1),full('url ',0,1))),
+     box('stbl',
+      full('stsd',0,0,u32(1),entry),
+      full('stts',0,0,u32(stts.length),stts.flatMap(([c,d])=>[...u32(c),...u32(d)])),
+      keys?full('stss',0,0,u32(keys.length),keys.flatMap(u32)):[],
+      full('stsc',0,0,u32(1),u32(1),u32(L.length),u32(1)),
+      full('stsz',0,0,u32(0),u32(L.length),L.flatMap(s=>u32(s.data.byteLength))),
+      full('stco',0,0,u32(1),u32(off))))));
+  const bytes=L=>L.reduce((a,s)=>a+s.data.byteLength,0), vsize=bytes(samples), A=audio?audio.samples:[];
+  const moov=off=>box('moov',
+   full('mvhd',0,0,u32(0),u32(0),u32(1000),u32(ms),u32(0x10000),u16(0x100),zero(10),MATRIX,zero(24),u32(audio?3:2)),
+   trak({id:1,kind:'vide',scale:T,dur:vdur,entry:ventry,L:samples,stts:[[n,1000]],keys:samples.flatMap((s,i)=>s.key?[i+1]:[]),off}),
+   audio?trak({id:2,kind:'soun',scale:audio.sr,dur:A.reduce((a,s)=>a+s.dur,0),entry:aentry(),L:A,stts:runs(A),off:off+vsize}):[]);
+  const ftyp=box('ftyp',str('isom'),u32(0x200),str('isom'),str('iso2'),str(codec==='avc'?'avc1':'vp09'),str('mp41'));
+  const head=moov(ftyp.length+moov(0).length+8);
+  return new Blob([new Uint8Array(ftyp),new Uint8Array(head),new Uint8Array([...u32(vsize+bytes(A)+8),...str('mdat')]),...samples.map(s=>s.data),...A.map(s=>s.data)],{type:'video/mp4'});
+ }
+ return {file};
+})();
+/* which encoder this browser has: H.264 where it is there, VP9 (also in an mp4) where not */
+async function exportCodec(width,height,fps){
+ if(!('VideoEncoder' in window)) return null;
+ const big=width*height>1920*1088;
+ for(const c of [{codec:'avc',config:{codec:big?'avc1.640033':'avc1.640028',avc:{format:'avc'}}},{codec:'vp9',config:{codec:'vp09.00.40.08'}}]){
+  const config={...c.config,width,height,framerate:fps,bitrate:Math.round(Math.max(2e6,width*height*fps*0.18)),latencyMode:'quality'};
+  try{ if((await VideoEncoder.isConfigSupported(config)).supported) return {...c,config}; }catch(e){}
+ }
+ return null;
+}
+/* THE SOUND OF AN EXPORT. A work that can render its sound offline (__renderAudio) gives
+   the samples for the whole film; the part that belongs to the exported frames is cut out
+   and encoded here: AAC where the browser has it, Opus where not. */
+async function exportAudio(from,to,fps){
+ const W=win(); if(typeof W.__renderAudio!=='function'||!('AudioEncoder' in window)) return null;
+ const r=await W.__renderAudio(S.total/fps,48000), sr=r.sr;
+ const whole=r.channels?r.channels.map(c=>Float32Array.from(c)):[Float32Array.from(r.pcm)];
+ const a=Math.round(from/fps*sr), b=Math.min(whole[0].length,Math.round((to+1)/fps*sr)), n=b-a, ch=whole.length; if(n<=0) return null;
+ let cfg=null, codec=null;
+ for(const [k,c] of [['aac','mp4a.40.2'],['opus','opus']]){ const t={codec:c,sampleRate:sr,numberOfChannels:ch,bitrate:ch>1?160000:96000};
+  if(await AudioEncoder.isConfigSupported(t).then(x=>x.supported,()=>false)){ cfg=t; codec=k; break; } }
+ if(!cfg) return null;
+ const samples=[]; let description=null, failed=null;
+ const enc=new AudioEncoder({error:e=>{ failed=e; },output:(c,m)=>{ const d=new Uint8Array(c.byteLength); c.copyTo(d);
+  samples.push({data:d,dur:Math.round((c.duration||0)*sr/1e6)});
+  if(m&&m.decoderConfig&&m.decoderConfig.description) description=new Uint8Array(m.decoderConfig.description.buffer||m.decoderConfig.description); }});
+ enc.configure(cfg);
+ const STEP=sr;                                        // a second at a time
+ for(let i=0;i<n;i+=STEP){ const m=Math.min(STEP,n-i), d=new Float32Array(m*ch);
+  whole.forEach((c,k)=>d.set(c.subarray(a+i,a+i+m),k*m));
+  enc.encode(new AudioData({format:'f32-planar',sampleRate:sr,numberOfFrames:m,numberOfChannels:ch,timestamp:Math.round(i*1e6/sr),data:d})); }
+ await enc.flush(); enc.close(); if(failed) throw failed;
+ if(!description||!samples.length) return null;
+ return {codec,description,sr,channels:ch,bitrate:cfg.bitrate,samples};
+}
+const even=n=>Math.max(2,Math.round(n/2)*2);
+function stageCanvas(){ return [...win().document.querySelectorAll('canvas')].sort((a,b)=>b.width*b.height-a.width*a.height)[0]||null; }
+let exporting=null;
+/* frames from..to (inclusive) at `width`; returns the mp4 as a Blob. onStep(done,total) */
+/* a turn of the event loop that a background tab does not slow down (a timer there is
+   held to one a second) */
+const nextTurn=()=>new Promise(r=>{ const c=new MessageChannel(); c.port1.onmessage=()=>r(); c.port2.postMessage(0); });
+/* a tab in the background stops drawing frames, so an export waits there, and says so */
+const whileHidden=job=>!document.hidden?null:new Promise(r=>{ const f=()=>{ if(!document.hidden||job.cancel){ document.removeEventListener('visibilitychange',f); r(); } };
+ document.addEventListener('visibilitychange',f); });
+async function exportVideo({from=0,to=S.total-1,width=null,sound=true,onStep=()=>{},onPause=()=>{}}={}){
+ if(!scrubbable()) throw new Error('this work cannot be asked for a frame, so it cannot be exported');
+ const W=win(), fps=S.fps, src=stageCanvas(); if(!src) throw new Error('the work has no canvas');
+ const w=even(width||src.width), h=even(w*src.height/src.width);
+ const enc=await exportCodec(w,h,fps); if(!enc) throw new Error('this browser has no video encoder (WebCodecs); a current Chrome, Edge or Firefox has');
+ const job=exporting={cancel:false}, samples=[]; let description=null, failed=null;
+ const encoder=new VideoEncoder({error:e=>{ failed=e; },
+  output:(chunk,meta)=>{ const d=new Uint8Array(chunk.byteLength); chunk.copyTo(d); samples.push({data:d,key:chunk.type==='key'});
+   if(meta&&meta.decoderConfig&&meta.decoderConfig.description) description=new Uint8Array(meta.decoderConfig.description.buffer||meta.decoderConfig.description); }});
+ encoder.configure(enc.config);
+ const scaled=new OffscreenCanvas(w,h), g=scaled.getContext('2d'), turn=nextTurn;
+ const paint=()=>new Promise(r=>W.requestAnimationFrame(()=>W.requestAnimationFrame(r)));
+ try{
+  if(S.mode==='play'){ pauseStage(); setTransport(); }
+  const audio=sound?await exportAudio(from,to,fps):null;      // first, while the film is as it was
+  for(let n=from,i=0;n<=to;n++,i++){
+   if(document.hidden){ onPause(true); await whileHidden(job); onPause(false); }
+   if(job.cancel) throw new Error('cancelled');
+   if(failed) throw failed;
+   S.frame=n; if(i%6===0) setTransport();
+   if(S.hooks.frameTo){ W.__sizable?W.__frameTo(n,w,h):W.__frameTo(n); }
+   else { W.__seek(n/fps); await paint(); }             // a film on a clock draws on its own next frame
+   const c=stageCanvas(); g.drawImage(c,0,0,w,h);
+   const frame=new VideoFrame(scaled,{timestamp:Math.round(i*1e6/fps),duration:Math.round(1e6/fps)});
+   encoder.encode(frame,{keyFrame:i%48===0}); frame.close();
+   onStep(i+1,to-from+1);
+   while(encoder.encodeQueueSize>3) await turn();
+   await turn();                                        // the studio stays answerable, and Cancel is heard
+  }
+  await encoder.flush(); if(failed) throw failed;
+  if(enc.codec==='avc'&&!description) throw new Error('the encoder gave no stream description');
+  return MP4.file({codec:enc.codec,description,width:w,height:h,fps,samples,audio});
+ } finally { try{ encoder.close(); }catch(e){} exporting=null; }
+}
+function saveBlob(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
+ document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),60000); }
+$('#exportBtn').onclick=()=>{
+ if(!scrubbable()) return; const c=stageCanvas(), w=current;
+ const sizes=[['',`as drawn · ${c.width}×${c.height}`],...[1920,1280,854,640].filter(x=>x!==c.width&&(W=>W<=c.width||win().__sizable)(x)).map(x=>[x,`${x}×${even(x*c.height/c.width)}`])];
+ $('#exSize').innerHTML=sizes.map(([v,t])=>`<option value="${v}">${esc(t)}</option>`).join('');
+ const shot=S.shots.find(s=>S.frame>=s.f&&S.frame<s.f+s.n);
+ $('#exRange').innerHTML=`<option value="all">the whole film · ${S.total} frames</option>`+(shot?`<option value="shot">the shot on screen · ${esc(shot.k)} · ${shot.n} frames</option>`:'')
+  +`<option value="frame">from the frame on screen to the end</option>`;
+ $('#exportWhat').textContent=`${w.name}, as it is on the stage now. The video is made in this browser and saved to your computer; nothing is uploaded or kept on the server. Keep this tab in front while it works: in the background it waits.`;
+ const canSound=typeof win().__renderAudio==='function'&&'AudioEncoder' in window;
+ $('#exSound').disabled=!canSound; $('#exSound').checked=canSound;
+ $('#exSoundText').textContent=canSound?'with the film\'s sound':typeof win().__renderAudio==='function'?'this browser cannot encode sound':'this work cannot render its sound offline yet';
+ $('#exportForm').hidden=false; $('#exportRun').hidden=true; $('#exStart').hidden=false; $('#exCancel').textContent='Close';
+ $('#exportDlg').showModal();
+};
+$('#exStart').onclick=async()=>{
+ const w=current, width=+$('#exSize').value||null, r=$('#exRange').value, shot=S.shots.find(s=>S.frame>=s.f&&S.frame<s.f+s.n);
+ const from=r==='shot'?shot.f:r==='frame'?S.frame:0, to=r==='shot'?shot.f+shot.n-1:S.total-1;
+ $('#exportForm').hidden=true; $('#exportRun').hidden=false; $('#exStart').hidden=true; $('#exCancel').textContent='Cancel';
+ const t0=performance.now();
+ try{
+  const blob=await exportVideo({from,to,width,sound:$('#exSound').checked,onStep:(d,n)=>{ $('#exBar').value=d/n; $('#exText').textContent=`frame ${d} of ${n}`; busy(); },
+   onPause:on=>{ $('#exText').textContent=on?'Waiting: this tab is in the background. It goes on when you come back.':'Going on…'; }});
+  const name=`${w.id}${from||to!==S.total-1?`-${from}-${to}`:''}.mp4`; saveBlob(blob,name);
+  $('#exText').textContent=`Saved ${name} · ${(blob.size/1048576).toFixed(1)} MB`;
+  log(`${w.name}: exported ${to-from+1} frames in ${((performance.now()-t0)/1000).toFixed(0)} s · ${name} · ${(blob.size/1048576).toFixed(1)} MB, saved by the browser`);
+ }catch(e){ $('#exText').textContent=e.message==='cancelled'?'Cancelled.':`Not exported: ${e.message}`; if(e.message!=='cancelled') log(`${w.name}: not exported — ${e.message}`,{error:true}); }
+ $('#exCancel').textContent='Close'; reloadStage();          // the stage goes back to its own size and frame
+};
+$('#exCancel').onclick=()=>{ if(exporting) exporting.cancel=true; else $('#exportDlg').close(); };
+$('#exportDlg').addEventListener('cancel',e=>{ if(exporting){ e.preventDefault(); exporting.cancel=true; } });
 
 /* ===== THE TIMELINE ===== the tables the work runs on, as tracks. It is a view of the
    code, not a second copy: a clip goes to its frame and names the line that declares it.

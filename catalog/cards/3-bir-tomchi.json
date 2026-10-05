@@ -44,7 +44,7 @@
  },
  "count": {
   "files": 1,
-  "bytes": 70674,
+  "bytes": 70679,
   "lines": 1175,
   "renderer": "canvas2d",
   "functions": 29,
@@ -74,7 +74,7 @@
    "SC": 9
   },
   "durations": [
-   9,
+   5.75,
    9,
    9,
    9,
