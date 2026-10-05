@@ -1,0 +1,18 @@
+  1: f 0.9128 (1-shot 0.198, 2-shot 0.349, 3-shot 0.126; yuzda soch 0.125/0.114/0.034) {"yaqin.x0":-0.45,"yaqin.yIldiz":0.5,"yaqin.phU":-2.2,"yaqin.pk":0.5,"yaqin.en0":0.3,"yaqin.off":0.08,"qisqa.yUchYon":0.05}
+  5: f 1.0562 (1-shot 0.198, 2-shot 0.328, 3-shot 0.126; yuzda soch 0.258/0.254/0.034) {"yaqin.x0":-0.45,"yaqin.yIldiz":0.5,"yaqin.phU":-2.2,"yaqin.pk":1.02,"yaqin.en0":0.3,"yaqin.off":0.08,"qisqa.yUchYon":0.05}
+  10: f 0.9241 (1-shot 0.192, 2-shot 0.318, 3-shot 0.117; yuzda soch 0.123/0.111/0.032) {"yaqin.x0":-0.4904,"yaqin.yIldiz":0.4522,"yaqin.phU":-2.4,"yaqin.pk":0.4714,"yaqin.en0":0.3198,"yaqin.off":0.102,"qisqa.yUchYon":0.1088}
+  15: f 0.8494 (1-shot 0.190, 2-shot 0.370, 3-shot 0.111; yuzda soch 0.065/0.053/0.028) {"yaqin.x0":-0.5388,"yaqin.yIldiz":0.6056,"yaqin.phU":-2.0976,"yaqin.pk":0.4372,"yaqin.en0":0.3083,"yaqin.off":0.0513,"qisqa.yUchYon":0.1791}
+  20: f 0.8080 (1-shot 0.180, 2-shot 0.394, 3-shot 0.089; yuzda soch 0.024/0.014/0.020) {"yaqin.x0":-0.4577,"yaqin.yIldiz":0.75,"yaqin.phU":-1.9669,"yaqin.pk":0.4036,"yaqin.en0":0.31,"yaqin.off":0.0842,"qisqa.yUchYon":0.4498}
+  25: f 0.8187 (1-shot 0.180, 2-shot 0.358, 3-shot 0.089; yuzda soch 0.023/0.012/0.020) {"yaqin.x0":-0.5399,"yaqin.yIldiz":0.6934,"yaqin.phU":-2.1532,"yaqin.pk":0.4612,"yaqin.en0":0.3068,"yaqin.off":0.0135,"qisqa.yUchYon":0.45}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at baho (/home/claude/work/personaj3d/test/fit_soch9b.mjs:47:97)
+    at async f (/home/claude/work/personaj3d/test/fit_soch9b.mjs:68:47)
+    at async file:///home/claude/work/personaj3d/test/fit_soch9b.mjs:76:82 {
+  log: []
+}
+
+Node.js v22.22.2

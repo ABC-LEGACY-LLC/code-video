@@ -1,0 +1,21 @@
+  0: F 4.907 | yuz 4.03 px | bosh 0.504 ich 0.096 tashqi 0.774 fig 0.809 | dEg 0.000 dBur 0.000 dYon 0.000 dD 0.000 dSx 0.000 dSy 0.000 dAz 0.000 dEl 0.000
+  26: F 4.906 | yuz 4.05 px | bosh 0.506 ich 0.096 tashqi 0.776 fig 0.809 | dEg 0.001 dBur 0.001 dYon 0.000 dD 0.002 dSx 0.000 dSy 0.000 dAz 0.378 dEl 0.050
+  45: F 4.892 | yuz 4.02 px | bosh 0.508 ich 0.095 tashqi 0.776 fig 0.809 | dEg 0.001 dBur 0.000 dYon 0.001 dD 0.003 dSx 0.001 dSy 0.000 dAz 0.206 dEl 0.058
+  52: F 4.889 | yuz 4.01 px | bosh 0.508 ich 0.096 tashqi 0.776 fig 0.809 | dEg 0.002 dBur -0.003 dYon -0.001 dD 0.004 dSx 0.001 dSy 0.000 dAz 0.343 dEl -0.060
+  54: F 4.883 | yuz 3.99 px | bosh 0.507 ich 0.095 tashqi 0.776 fig 0.810 | dEg 0.001 dBur 0.003 dYon 0.001 dD -0.002 dSx 0.000 dSy -0.000 dAz 0.315 dEl -0.213
+  60: F 4.882 | yuz 3.99 px | bosh 0.508 ich 0.096 tashqi 0.776 fig 0.809 | dEg 0.002 dBur -0.002 dYon 0.002 dD 0.002 dSx 0.001 dSy -0.000 dAz 0.335 dEl -0.135
+  73: F 4.880 | yuz 3.97 px | bosh 0.506 ich 0.095 tashqi 0.776 fig 0.810 | dEg 0.002 dBur -0.000 dYon -0.000 dD 0.008 dSx 0.001 dSy -0.001 dAz 0.426 dEl -0.261
+  74: F 4.880 | yuz 3.97 px | bosh 0.505 ich 0.096 tashqi 0.776 fig 0.810 | dEg 0.003 dBur -0.000 dYon -0.000 dD 0.011 dSx 0.000 dSy -0.001 dAz 0.536 dEl -0.420
+  88: F 4.873 | yuz 3.97 px | bosh 0.507 ich 0.095 tashqi 0.776 fig 0.811 | dEg 0.003 dBur -0.000 dYon 0.001 dD -0.001 dSx 0.001 dSy -0.001 dAz 0.445 dEl -0.324
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at baho (/home/claude/work/personaj3d/test/fit_kamera_tuz.mjs:39:22)
+    at f (/home/claude/work/personaj3d/test/fit_kamera_tuz.mjs:56:42)
+    at /home/claude/work/personaj3d/test/fit_kamera_tuz.mjs:68:80 {
+  log: []
+}
+
+Node.js v22.22.2

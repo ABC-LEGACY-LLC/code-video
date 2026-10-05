@@ -1,0 +1,1 @@
+{"name":"personaj","type":"module","private":true,"scripts":{"audit":"node test/run.mjs"},"devDependencies":{"playwright":"^1.63.0"}}

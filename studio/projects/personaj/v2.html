@@ -1,0 +1,67 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;height:100%;background:#111;display:grid;place-items:center}
+svg{background:#15132a}
+</style></head><body>
+<svg id="s" width="540" height="304" viewBox="0 0 540 304" xmlns="http://www.w3.org/2000/svg">
+<style>
+ .hoodT{fill:#1c1e27} .hoodI{fill:#101119} .hoodS{fill:#282b36}
+ .hair{fill:#c7c9cc} .hairQ{fill:#8d929c}
+ .skin{fill:#ded6d0} .skinQ{fill:#ab a3a6}
+ .scarf{fill:#4d4e54} .scarfQ{fill:#3a3b41}
+ .ing{fill:none;stroke:#0c0d12;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+</style>
+
+<!-- SHOULDER and HOOD: one large shape. The hood rises from BEHIND the head
+     and its front edge cuts across the forehead. -->
+<path class="hoodT" d="M 20 304 L 26 262 Q 40 232 78 218 Q 106 208 126 196
+                      Q 112 168 116 138 Q 122 100 154 80 Q 186 60 222 70
+                      Q 254 78 266 106 Q 276 130 268 154 L 258 150
+                      Q 262 124 248 106 Q 232 86 204 86 Q 172 88 158 114
+                      Q 146 138 152 166 Q 158 190 176 204
+                      L 214 224 Q 252 244 262 276 L 268 304 Z"/>
+<!-- the hood's inner shadow: a dark ring around the face -->
+<path class="hoodI" d="M 126 196 Q 112 168 116 138 Q 122 100 154 80 L 162 92
+                      Q 138 110 134 142 Q 130 174 146 196 Z"/>
+
+<!-- NECK and SCARF -->
+<path class="scarf" d="M 168 206 L 212 224 L 224 250 Q 196 262 168 252 L 156 224 Z"/>
+<path class="scarfQ" d="M 168 206 L 180 212 L 170 246 L 156 224 Z"/>
+
+<!-- HEAD: 3/4, tilted back -- the chin points up and to the right -->
+<path class="skin" d="M 166 156 Q 158 128 168 108 Q 180 88 206 86 Q 232 86 244 106
+                      Q 254 124 250 144 L 246 162 Q 240 180 222 190 Q 200 200 184 188
+                      Q 170 176 166 156 Z"/>
+<!-- skin shadow: the hood side. A HARD edge, not a gradient -->
+<path class="skinQ" d="M 166 156 Q 158 128 168 108 Q 180 88 206 86 L 208 96
+                       Q 184 102 178 130 Q 172 160 186 186 L 184 188 Q 170 176 166 156 Z"/>
+
+<!-- HAIR: short, straight-cut strands on the forehead -->
+<path class="hair" d="M 162 122 Q 164 92 192 82 Q 224 72 246 96 Q 258 110 256 132
+                      L 248 128 Q 246 106 230 100 Q 208 94 192 106 L 178 128 Z"/>
+<path class="hairQ" d="M 162 122 Q 164 92 192 82 L 198 88 Q 174 98 172 128 Z"/>
+<path class="hair" d="M 214 96 L 204 128 L 218 122 L 224 96 Z"/>
+<path class="hair" d="M 232 100 L 228 130 L 242 122 L 244 104 Z"/>
+<path class="hair" d="M 246 106 L 246 132 L 256 126 L 256 112 Z"/>
+
+<!-- EYE: looking up -->
+<path class="ing" d="M 192 152 Q 202 143 216 147"/>
+<ellipse cx="205" cy="153" rx="6.5" ry="7.5" fill="#20243a"/>
+<circle cx="207" cy="149" r="2.2" fill="#f2f4f8"/>
+<path class="ing" d="M 190 137 Q 201 131 214 135"/>
+<!-- far eye, partly visible -->
+<path class="ing" d="M 232 146 Q 240 141 246 145"/>
+<ellipse cx="239" cy="150" rx="4.5" ry="6" fill="#20243a"/>
+<!-- nose and mouth -->
+<path class="ing" d="M 240 162 L 245 170 L 238 172"/>
+<path class="ing" d="M 222 183 Q 229 181 234 183"/>
+<!-- the line under the chin: visible when looking up -->
+<path class="ing" d="M 190 186 Q 206 196 222 190"/>
+
+<!-- FRONT EDGE OF THE HOOD: over the face -->
+<path class="hoodS" d="M 266 106 Q 278 130 270 156 Q 262 178 244 188 L 240 176
+                      Q 256 166 260 146 Q 264 124 256 110 Z"/>
+<path class="ing" d="M 266 106 Q 278 130 270 156 Q 262 178 244 188"/>
+<path class="ing" d="M 116 138 Q 122 100 154 80 Q 186 60 222 70 Q 254 78 266 106"/>
+<path class="ing" d="M 166 156 Q 158 128 168 108 Q 180 88 206 86"/>
+</svg>
+</body></html>

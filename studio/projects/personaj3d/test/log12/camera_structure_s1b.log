@@ -1,0 +1,17 @@
+  0: F 3.555 | yuz 2.94 px | bosh 0.726 ich 0.137 tashqi 0.817 fig 0.908 | dEg 0.000 dBur 0.000 dYon 0.000 dD 0.000 dSx 0.000 dSy 0.000 dAz 0.000 dEl 0.000
+  56: F 3.545 | yuz 2.92 px | bosh 0.728 ich 0.136 tashqi 0.815 fig 0.908 | dEg 0.001 dBur -0.005 dYon 0.009 dD -0.016 dSx 0.000 dSy -0.001 dAz -0.108 dEl 0.061
+  68: F 3.541 | yuz 2.94 px | bosh 0.731 ich 0.136 tashqi 0.816 fig 0.909 | dEg 0.003 dBur -0.003 dYon 0.005 dD -0.017 dSx -0.000 dSy 0.001 dAz 0.146 dEl -0.128
+  74: F 3.540 | yuz 2.92 px | bosh 0.730 ich 0.137 tashqi 0.816 fig 0.908 | dEg 0.002 dBur -0.004 dYon 0.007 dD -0.016 dSx -0.000 dSy 0.000 dAz 0.019 dEl -0.033
+  88: F 3.539 | yuz 2.93 px | bosh 0.731 ich 0.136 tashqi 0.815 fig 0.908 | dEg 0.003 dBur -0.004 dYon 0.006 dD -0.017 dSx -0.000 dSy 0.000 dAz 0.083 dEl -0.081
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at baho (/home/claude/work/personaj3d/test/fit_kamera_tuz.mjs:39:22)
+    at f (/home/claude/work/personaj3d/test/fit_kamera_tuz.mjs:56:42)
+    at /home/claude/work/personaj3d/test/fit_kamera_tuz.mjs:65:67 {
+  log: []
+}
+
+Node.js v22.22.2

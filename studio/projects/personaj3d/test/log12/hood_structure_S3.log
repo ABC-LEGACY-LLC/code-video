@@ -1,0 +1,22 @@
+  0: F 5.590 | 3: mos 0.738 bosh 0.562 ich 0.070 tashqi 0.849 fig 0.845 pen 0.000 boshF 0.481 tepa 0.113 ichF 0.088
+  2: F 5.577 | 3: mos 0.739 bosh 0.559 ich 0.080 tashqi 0.837 fig 0.848 pen 0.000 boshF 0.483 tepa 0.106 ichF 0.093
+  14: F 5.566 | 3: mos 0.737 bosh 0.561 ich 0.073 tashqi 0.841 fig 0.847 pen 0.000 boshF 0.489 tepa 0.112 ichF 0.094
+  15: F 5.562 | 3: mos 0.737 bosh 0.559 ich 0.078 tashqi 0.835 fig 0.848 pen 0.000 boshF 0.488 tepa 0.106 ichF 0.098
+  27: F 5.539 | 3: mos 0.740 bosh 0.573 ich 0.071 tashqi 0.843 fig 0.849 pen 0.000 boshF 0.494 tepa 0.116 ichF 0.089
+  28: F 5.523 | 3: mos 0.739 bosh 0.582 ich 0.070 tashqi 0.840 fig 0.849 pen 0.000 boshF 0.499 tepa 0.127 ichF 0.086
+  52: F 5.522 | 3: mos 0.739 bosh 0.577 ich 0.071 tashqi 0.837 fig 0.851 pen 0.000 boshF 0.500 tepa 0.125 ichF 0.089
+  59: F 5.521 | 3: mos 0.738 bosh 0.580 ich 0.071 tashqi 0.839 fig 0.851 pen 0.000 boshF 0.499 tepa 0.127 ichF 0.086
+  61: F 5.515 | 3: mos 0.736 bosh 0.578 ich 0.070 tashqi 0.834 fig 0.851 pen 0.000 boshF 0.503 tepa 0.130 ichF 0.090
+  65: F 5.509 | 3: mos 0.738 bosh 0.586 ich 0.069 tashqi 0.836 fig 0.851 pen 0.000 boshF 0.503 tepa 0.137 ichF 0.086
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at baho (/home/claude/work/personaj3d/test/fit_kap_tuz.mjs:56:22)
+    at f (/home/claude/work/personaj3d/test/fit_kap_tuz.mjs:100:42)
+    at /home/claude/work/personaj3d/test/fit_kap_tuz.mjs:109:67 {
+  log: []
+}
+
+Node.js v22.22.2

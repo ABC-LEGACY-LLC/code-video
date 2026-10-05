@@ -1,0 +1,22 @@
+BOSHLANG'ICH (hozirgi): yuz 15.22 px | bosh IoU 0.661 (nisbat 0.71) | figura 0.914 | 1-shot 10-11 bosh 0.816,0.820 figura 0.921
+  0: F 24.122 | yuz 9.27 | bosh 0.662 (1.05) | figura 0.925 | qor 18.098 | dEg 0.261 dBur -0.700 dYon 0.133 dD 0.000 dSx 0.000 dSy 0.000 dAz 0.000 dEl 0.000
+  2: F 24.072 | yuz 9.50 | bosh 0.666 (1.05) | figura 0.926 | qor 18.012 | dEg 0.261 dBur -0.650 dYon 0.133 dD 0.000 dSx 0.000 dSy 0.000 dAz 0.000 dEl 0.000
+  6: F 23.918 | yuz 9.27 | bosh 0.687 (1.05) | figura 0.925 | qor 18.098 | dEg 0.261 dBur -0.700 dYon 0.133 dD 0.000 dSx 0.000 dSy 0.010 dAz 0.000 dEl 0.000
+  25: F 22.755 | yuz 9.37 | bosh 0.643 (1.05) | figura 0.922 | qor 16.540 | dEg 0.221 dBur -0.696 dYon 0.135 dD 0.025 dSx 0.001 dSy 0.001 dAz 0.250 dEl 0.250
+  26: F 20.693 | yuz 9.61 | bosh 0.620 (1.04) | figura 0.918 | qor 14.204 | dEg 0.181 dBur -0.694 dYon 0.136 dD 0.037 dSx 0.001 dSy 0.001 dAz 0.375 dEl 0.375
+  68: F 20.651 | yuz 9.24 | bosh 0.671 (1.00) | figura 0.921 | qor 14.699 | dEg 0.188 dBur -0.699 dYon 0.128 dD -0.093 dSx 0.002 dSy 0.004 dAz 0.021 dEl 0.279
+  69: F 19.133 | yuz 9.31 | bosh 0.668 (0.94) | figura 0.917 | qor 13.124 | dEg 0.163 dBur -0.707 dYon 0.128 dD -0.105 dSx 0.003 dSy 0.005 dAz 0.048 dEl -0.058
+  76: F 18.947 | yuz 9.47 | bosh 0.621 (1.07) | figura 0.920 | qor 12.512 | dEg 0.170 dBur -0.690 dYon 0.133 dD -0.044 dSx 0.002 dSy 0.003 dAz 0.073 dEl 0.756
+  77: F 15.790 | yuz 9.97 | bosh 0.597 (1.07) | figura 0.914 | qor 8.983 | dEg 0.143 dBur -0.691 dYon 0.136 dD -0.012 dSx 0.004 dSy 0.001 dAz 0.137 dEl 0.695
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at baholash (/home/claude/work/personaj3d/test/fit_poza11b.mjs:76:24)
+    at async f (/home/claude/work/personaj3d/test/fit_poza11b.mjs:87:15)
+    at async file:///home/claude/work/personaj3d/test/fit_poza11b.mjs:103:61 {
+  log: []
+}
+
+Node.js v22.22.2

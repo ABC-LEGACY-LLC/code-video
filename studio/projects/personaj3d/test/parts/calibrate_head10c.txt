@@ -1,0 +1,44 @@
+koz_yaqin   ko'rinadi 15, topildi  8 | o'rtacha farq (-1.3, -3.77) | eng katta |farq| 3.95 | ko'rinmaydigan kadrda topgan: []
+     k01 topilgan [97.67, 46.34] aniq [98.8, 50.1] farq (-1.1, -3.8)
+     k02 topilgan [97.71, 46.39] aniq [98.8, 50.1] farq (-1.1, -3.7)
+     k03 topilgan [97.48, 46.26] aniq [98.8, 50.1] farq (-1.3, -3.9)
+     k04 topilgan [97.22, 46.17] aniq [98.8, 50.1] farq (-1.6, -3.9)
+     k05 topilgan [97.21, 46.19] aniq [98.8, 50.1] farq (-1.6, -3.9)
+     k06 topilgan [97.31, 46.18] aniq [98.8, 50.1] farq (-1.5, -3.9)
+     k07 topilgan [99.46, 45.95] aniq [100.6, 49.4] farq (-1.1, -3.4)
+     k08 topilgan [100.43, 45.48] aniq [101.5, 49.0] farq (-1.0, -3.5)
+koz_uzoq    ko'rinadi 20, topildi  7 | o'rtacha farq (-1.86, -3.52) | eng katta |farq| 4.12 | ko'rinmaydigan kadrda topgan: []
+     k01 topilgan [120.34, 48.94] aniq [122.6, 52.5] farq (-2.2, -3.5)
+     k02 topilgan [120.31, 48.9] aniq [122.6, 52.5] farq (-2.3, -3.6)
+     k03 topilgan [120.32, 48.92] aniq [122.6, 52.5] farq (-2.3, -3.5)
+     k04 topilgan [120.67, 49.3] aniq [122.6, 52.5] farq (-1.9, -3.2)
+     k05 topilgan [120.3, 48.93] aniq [122.6, 52.5] farq (-2.3, -3.5)
+     k06 topilgan [120.57, 49.16] aniq [122.6, 52.5] farq (-2.0, -3.3)
+     k10 topilgan [124.12, 49.72] aniq [124.1, 53.8] farq (-0.0, -4.1)
+qosh_yaqin  ko'rinadi  8, topildi  0 | o'rtacha farq (None, None) | eng katta |farq| None | ko'rinmaydigan kadrda topgan: []
+qosh_uzoq   ko'rinadi 12, topildi  0 | o'rtacha farq (None, None) | eng katta |farq| None | ko'rinmaydigan kadrda topgan: []
+ogiz        ko'rinadi 18, topildi  9 | o'rtacha farq (-3.19, -0.33) | eng katta |farq| 4.5 | ko'rinmaydigan kadrda topgan: [10, 11, 12]
+     k01 topilgan [124.35, 84.5] aniq [127.6, 84.6] farq (-3.2, -0.1)
+     k02 topilgan [124.35, 84.5] aniq [127.6, 84.6] farq (-3.2, -0.1)
+     k03 topilgan [124.35, 84.5] aniq [127.6, 84.6] farq (-3.2, -0.1)
+     k04 topilgan [124.35, 84.5] aniq [127.6, 84.6] farq (-3.2, -0.1)
+     k05 topilgan [124.35, 84.5] aniq [127.6, 84.6] farq (-3.2, -0.1)
+     k06 topilgan [124.35, 84.5] aniq [127.6, 84.6] farq (-3.2, -0.1)
+     k09 topilgan [126.5, 82.5] aniq [131, 83.7] farq (-4.5, -1.2)
+lab         ko'rinadi  9, topildi  7 | o'rtacha farq (-1.93, -0.26) | eng katta |farq| 2.14 | ko'rinmaydigan kadrda topgan: []
+burun_uchi  ko'rinadi  3, topildi  3 | o'rtacha farq (-1.24, -1.22) | eng katta |farq| 1.4 | ko'rinmaydigan kadrda topgan: [10]
+iyak_uchi   ko'rinadi 14, topildi 14 | o'rtacha farq (-3.64, 8.48) | eng katta |farq| 39.13 | ko'rinmaydigan kadrda topgan: [15, 16, 17, 18, 19, 20, 21, 22]
+     k01 topilgan [127.0, 108.0] aniq [130.6, 104.3] farq (-3.6, 3.7)
+     k02 topilgan [127.0, 108.0] aniq [130.6, 104.3] farq (-3.6, 3.7)
+     k03 topilgan [127.0, 108.0] aniq [130.6, 104.3] farq (-3.6, 3.7)
+     k04 topilgan [127.5, 108.33] aniq [130.6, 104.3] farq (-3.1, 4.0)
+     k05 topilgan [127.0, 108.0] aniq [130.6, 104.3] farq (-3.6, 3.7)
+     k06 topilgan [127.0, 108.0] aniq [130.6, 104.3] farq (-3.6, 3.7)
+     k07 topilgan [127.0, 108.14] aniq [131.2, 103.9] farq (-4.2, 4.2)
+     k08 topilgan [128.0, 107.4] aniq [132.3, 103.2] farq (-4.3, 4.2)
+     k09 topilgan [127.6, 107.8] aniq [133.8, 103.0] farq (-6.2, 4.8)
+     k10 topilgan [135.5, 109.33] aniq [140.0, 105.8] farq (-4.5, 3.6)
+     k11 topilgan [135.0, 111.82] aniq [140.9, 108.8] farq (-5.9, 3.1)
+     k12 topilgan [158.5, 154.0] aniq [159.7, 117.7] farq (-1.2, 36.3)
+     k13 topilgan [160.0, 157.0] aniq [159.6, 117.9] farq (0.4, 39.1)
+     k14 topilgan [146.8, 157.4] aniq [150.9, 156.2] farq (-4.1, 1.2)

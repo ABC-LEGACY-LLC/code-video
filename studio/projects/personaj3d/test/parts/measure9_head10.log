@@ -1,0 +1,9 @@
+== bosh10
+  1-shot  bosh IoU 0.686 nisbat 1.25 | figura IoU 0.922 maydon 0.426
+  2-shot  bosh IoU 0.546 nisbat 0.56 | figura IoU 0.898 maydon 0.495
+  3-shot  bosh IoU 0.584 nisbat 1.33 | figura IoU 0.901 maydon 0.624
+  2-shot old kontur |farq| 1.52 px   3-shot iyak kontur |farq| 2.17 px, ko'z [[-2.0, -6.0], [0.0, -6.0], [1.0, -6.0]]
+  masshtab 9->10, 10->11: [0.998, 1.057]   qor soni [267, 371, 209]   kesish r [0.11, 0.11]
+  1-shot zondlar (o'rtacha |farq|): LANGAR.x 0.69  LANGAR.y 0.38  uzoq_koz.x 1.19  uzoq_koz.y 2.96  ogiz.x 0.82  ogiz.y 0.41  lab_soyasi.x 0.66  lab_soyasi.y 0.55  jag_osti_x8.t 3.83  jag_osti_x20.t 0.70  jag_osti_x28.t 0.47  iyak_oldi_y52.t 3.46  uzoq_chet_y20.t 2.18  uzoq_chet_y30.t 1.63  soch_chap_y-6.t 12.39  soch_chap_y4.t 7.79  soch_chap_y14.t 5.07  soch_chap_y24.t 7.37  soch_chap_y34.t 6.84  soch_chap_y44.t 4.80  soch_ong_y24.t 2.12  tasma.n% 18.96  yuz_toni.v 1.09  yosh_yonoq.x 2.18  yosh_yonoq.y 1.20  yosh_jag.x 1.02  yosh_jag.y 1.05
+  kamera kamYol: teri 0.0/0.0  sochIch 0.0/0.0  soch 0.0/0.0  boyin 0.0/0.0  kapyushon 0.0/0.0  plash 0.0/0.0  koz 0.0/0.0  qor 0.0/0.0  tepa 0.0 gr
+  kamera orbita: teri 0.0/0.0  sochIch 0.0/0.0  soch 0.0/0.0  boyin 0.0/0.0  kapyushon 0.0/0.0  plash 0.0/0.0  koz 0.0/0.0  qor 0.0/0.0  tepa 0.0 gr

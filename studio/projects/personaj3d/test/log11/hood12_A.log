@@ -1,0 +1,28 @@
+  0: F 14.235 | 1: bosh 0.638 (0.87) ich 0.074 fig 0.903 astar 351 | 2: bosh 0.356 (0.45) ich 0.000 fig 0.930 astar 150 | 3: bosh 0.279 (1.61) ich 0.000 fig 0.901 astar 176
+  1: F 13.883 | 1: bosh 0.603 (1.06) ich 0.083 fig 0.900 astar 388 | 2: bosh 0.499 (0.62) ich 0.000 fig 0.926 astar 102 | 3: bosh 0.252 (1.84) ich 0.000 fig 0.898 astar 151
+  15: F 13.680 | 1: bosh 0.632 (0.98) ich 0.086 fig 0.907 astar 314 | 2: bosh 0.472 (0.60) ich 0.000 fig 0.925 astar 67 | 3: bosh 0.262 (1.76) ich 0.000 fig 0.897 astar 119
+  38: F 13.641 | 1: bosh 0.601 (1.09) ich 0.082 fig 0.907 astar 315 | 2: bosh 0.538 (0.68) ich 0.000 fig 0.928 astar 93 | 3: bosh 0.248 (1.91) ich 0.000 fig 0.900 astar 150
+  39: F 13.486 | 1: bosh 0.558 (1.19) ich 0.086 fig 0.911 astar 286 | 2: bosh 0.614 (0.80) ich 0.000 fig 0.928 astar 88 | 3: bosh 0.235 (2.05) ich 0.000 fig 0.900 astar 127
+  49: F 13.478 | 1: bosh 0.584 (1.13) ich 0.089 fig 0.907 astar 307 | 2: bosh 0.580 (0.74) ich 0.000 fig 0.925 astar 64 | 3: bosh 0.245 (1.95) ich 0.000 fig 0.895 astar 105
+  50: F 13.440 | 1: bosh 0.562 (1.18) ich 0.089 fig 0.908 astar 271 | 2: bosh 0.599 (0.81) ich 0.000 fig 0.923 astar 55 | 3: bosh 0.242 (2.03) ich 0.000 fig 0.893 astar 78
+  53: F 13.366 | 1: bosh 0.590 (1.11) ich 0.084 fig 0.912 astar 281 | 2: bosh 0.596 (0.76) ich 0.000 fig 0.925 astar 51 | 3: bosh 0.242 (1.97) ich 0.000 fig 0.895 astar 113
+  54: F 13.129 | 1: bosh 0.590 (1.11) ich 0.081 fig 0.916 astar 208 | 2: bosh 0.628 (0.81) ich 0.000 fig 0.924 astar 39 | 3: bosh 0.240 (2.00) ich 0.000 fig 0.893 astar 75
+  77: F 13.102 | 1: bosh 0.520 (1.29) ich 0.103 fig 0.914 astar 255 | 2: bosh 0.712 (1.02) ich 0.000 fig 0.921 astar 7 | 3: bosh 0.221 (2.26) ich 0.000 fig 0.890 astar 32
+  79: F 13.070 | 1: bosh 0.526 (1.28) ich 0.105 fig 0.915 astar 215 | 2: bosh 0.695 (1.00) ich 0.000 fig 0.920 astar 7 | 3: bosh 0.228 (2.22) ich 0.000 fig 0.889 astar 28
+  80: F 12.998 | 1: bosh 0.518 (1.30) ich 0.113 fig 0.915 astar 168 | 2: bosh 0.706 (1.07) ich 0.000 fig 0.920 astar 8 | 3: bosh 0.226 (2.27) ich 0.000 fig 0.889 astar 18
+  85: F 12.993 | 1: bosh 0.539 (1.24) ich 0.104 fig 0.914 astar 212 | 2: bosh 0.693 (0.97) ich 0.000 fig 0.922 astar 0 | 3: bosh 0.233 (2.18) ich 0.000 fig 0.890 astar 24
+  86: F 12.847 | 1: bosh 0.540 (1.24) ich 0.108 fig 0.913 astar 163 | 2: bosh 0.709 (1.00) ich 0.000 fig 0.922 astar 0 | 3: bosh 0.234 (2.20) ich 0.000 fig 0.890 astar 8
+  95: F 12.775 | 1: bosh 0.579 (1.14) ich 0.103 fig 0.916 astar 188 | 2: bosh 0.692 (0.90) ich 0.000 fig 0.922 astar 0 | 3: bosh 0.242 (2.07) ich 0.000 fig 0.888 astar 24
+  96: F 12.615 | 1: bosh 0.610 (1.07) ich 0.106 fig 0.915 astar 133 | 2: bosh 0.679 (0.87) ich 0.000 fig 0.923 astar 0 | 3: bosh 0.249 (2.01) ich 0.000 fig 0.887 astar 17
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at baho (/home/claude/work/personaj3d/test/fit_kap12.mjs:31:22)
+    at f (/home/claude/work/personaj3d/test/fit_kap12.mjs:60:42)
+    at /home/claude/work/personaj3d/test/fit_kap12.mjs:69:67 {
+  log: []
+}
+
+Node.js v22.22.2

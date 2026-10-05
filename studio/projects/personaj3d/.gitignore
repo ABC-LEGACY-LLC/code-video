@@ -1,0 +1,8 @@
+# the run logs are the record of the passes (the root ignores *.log)
+!*.log
+# renders: node render.mjs writes frames*/ (hundreds of MB, made again from the code)
+frames*/
+# sheets and GIFs the tools write show sample frames: only the model-only mock-ups are kept
+out/*
+!out/mockup-*.png
+*.gif
