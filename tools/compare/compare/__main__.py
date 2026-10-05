@@ -1,108 +1,108 @@
-"""python3 -m taqqos <buyruq> [loyiha.json] [...]
+"""python3 -m compare <command> [project.json] [...]
 
-  kalibr                                   har o'lchovning buzilgan-holat sinovi
-  zond     LOY --kadrlar 1-11 [--json F]   har kadrda zondlar, farq jadvali
-  varaq    LOY --kadrlar 1-11 --quti x0,y0,x1,y1 [--zoom 4] [--langarli]
-           [--qatorlar misol,biz,ustma,eski] [--chozish 35,120] [--ustun 6] --chiq F
-  setka    LOY --kadr 5 --quti ... [--zoom 8] [--kontrast 1.6] --chiq F
-  jadval   LOY --kadr 5 --quti x0,x1,y0,y1 [--tomon biz] [--qadam 1]
-  harakat  LOY --kadrlar 1-11 --quti x0,y0,x1,y1[;...]
-  ritm     LOY --kadrlar 1-11                kesish, tendensiya, juftlar MAE
-  xarita   LOY --juftlar 1-2,6-7 --chiq F     farq xaritalari
-  yopilish LOY --kadrlar 1-11                 figura xaritasi IoU
-  yoyish   LOY --kadr 1 [--chiq F] [--jadval x0,x1,dx:y0,y1,dy] [--tomon misol]
-  siluet   LOY --nom tana_ong [--kadrlar 1-11] [--chiq F] [--qator 5]
-           [--ketma]  (bir tomonda k va k+1 -- ushlangan tasvirlarda nima qimirlaydi)
-           (yoki --quti ... --bog x,y [--shart <26] [--median 5] [--yon ong])
-  gif      LOY --chiq F"""
+  calibrate                                    the broken-case test of every measurement
+  probe      PRJ --frames 1-11 [--json F]      probes in every frame, the difference table
+  sheet      PRJ --frames 1-11 --box x0,y0,x1,y1 [--zoom 4] [--anchored]
+             [--rows sample,ours,overlay,before] [--stretch 35,120] [--columns 6] --out F
+  grid       PRJ --frame 5 --box ... [--zoom 8] [--contrast 1.6] --out F
+  table      PRJ --frame 5 --box x0,x1,y0,y1 [--side ours]
+  motion     PRJ --frames 1-11 --box x0,y0,x1,y1[;...]
+  rhythm     PRJ --frames 1-11                  cuts, trend, pairs MAE
+  diffmap    PRJ --pairs 1-2,6-7 --out F        difference maps
+  occlusion  PRJ --frames 1-11                  figure map IoU
+  unwarp     PRJ --frame 1 [--out F] [--table x0,x1,dx:y0,y1,dy] [--side sample]
+  silhouette PRJ --name body_right [--frames 1-11] [--out F] [--row 5]
+             [--consecutive]  (k and k+1 on one side -- what moves in the held images)
+             (or --box ... --seed x,y [--condition <26] [--median 5] [--edge right])
+  gif        PRJ --out F"""
 import argparse, json, sys
 import numpy as np
-from . import loyiha, zond, varaq, harakat, farq, yopilish, yoyish, kalibr, tasvir, siluet
+from . import project, probe, sheet, motion, diff, occlusion, unwarp, calibrate, image, silhouette
 
 
-def _q(s):
+def _floats(s):
     return [float(v) for v in s.split(',')]
 
 
 def main(argv=None):
-    p = argparse.ArgumentParser(prog='taqqos', description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument('buyruq')
-    p.add_argument('loyiha', nargs='?')
-    for a in ('--kadrlar', '--quti', '--chiq', '--json', '--qatorlar', '--chozish', '--juftlar', '--jadval', '--tomon',
-              '--nom', '--bog', '--shart', '--yon'):
+    p = argparse.ArgumentParser(prog='compare', description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument('command')
+    p.add_argument('project', nargs='?')
+    for a in ('--frames', '--box', '--out', '--json', '--rows', '--stretch', '--pairs', '--table', '--side',
+              '--name', '--seed', '--condition', '--edge'):
         p.add_argument(a)
-    p.add_argument('--kadr', type=int)
-    p.add_argument('--qator', type=int)
+    p.add_argument('--frame', type=int)
+    p.add_argument('--row', type=int)
     p.add_argument('--median', type=int, default=5)
     p.add_argument('--zoom', type=int, default=4)
-    p.add_argument('--ustun', type=int, default=6)
-    p.add_argument('--kontrast', type=float, default=1.0)
-    p.add_argument('--langarli', action='store_true')
-    p.add_argument('--ketma', action='store_true')
+    p.add_argument('--columns', type=int, default=6)
+    p.add_argument('--contrast', type=float, default=1.0)
+    p.add_argument('--anchored', action='store_true')
+    p.add_argument('--consecutive', action='store_true')
     a = p.parse_args(argv)
-    if a.buyruq == 'kalibr':
-        t, yiq = kalibr.hammasi(); print(t); return 1 if yiq else 0
-    loy = loyiha.Loyiha(a.loyiha)
-    K = loy.guruh(a.kadrlar) if a.kadrlar else list(range(1, loy.n + 1))
-    if a.buyruq == 'zond':
-        n = zond.yugur(loy, K)
-        print(zond.jadval(loy, n, K))
+    if a.command == 'calibrate':
+        t, failed = calibrate.run_all(); print(t); return 1 if failed else 0
+    prj = project.Project(a.project)
+    K = prj.group(a.frames) if a.frames else list(range(1, prj.n + 1))
+    if a.command == 'probe':
+        r = probe.run(prj, K)
+        print(probe.table(prj, r, K))
         if a.json:
-            json.dump(n, open(a.json, 'w'), indent=1)
-    elif a.buyruq == 'varaq':
-        q = [int(v) for v in _q(a.quti)]
-        qat = tuple(a.qatorlar.split(',')) if a.qatorlar else ('misol', 'biz')
-        cho = tuple(_q(a.chozish)) if a.chozish else None
-        varaq.kadr_varaq(loy, K, q, a.zoom, qat, a.langarli, cho, a.ustun, a.chiq,
-                         sarlavha='%s | kadrlar %s | %s' % (loy.nom, a.kadrlar, 'langarga bog\'langan' if a.langarli else 'qat\'iy quti'))
-        print(a.chiq)
-    elif a.buyruq == 'setka':
-        varaq.setka(loy, a.kadr, [int(v) for v in _q(a.quti)], a.zoom, a.kontrast, a.chiq); print(a.chiq)
-    elif a.buyruq == 'jadval':
-        x0, x1, y0, y1 = [int(v) for v in _q(a.quti)]
-        L = tasvir.ol(loy.fayl(a.tomon or 'misol', a.kadr), loy.olcham)
+            json.dump(r, open(a.json, 'w'), indent=1)
+    elif a.command == 'sheet':
+        q = [int(v) for v in _floats(a.box)]
+        rows = tuple(a.rows.split(',')) if a.rows else ('sample', 'ours')
+        levels = tuple(_floats(a.stretch)) if a.stretch else None
+        sheet.frame_sheet(prj, K, q, a.zoom, rows, a.anchored, levels, a.columns, a.out,
+                          title='%s | frames %s | %s' % (prj.name, a.frames, 'anchored' if a.anchored else 'fixed box'))
+        print(a.out)
+    elif a.command == 'grid':
+        sheet.grid(prj, a.frame, [int(v) for v in _floats(a.box)], a.zoom, a.contrast, a.out); print(a.out)
+    elif a.command == 'table':
+        x0, x1, y0, y1 = [int(v) for v in _floats(a.box)]
+        L = image.load(prj.file(a.side or 'sample', a.frame), prj.size)
         print('    ' + ''.join('%4d' % x for x in range(x0, x1)))
         for y in range(y0, y1):
             print('%3d ' % y + ''.join('%4d' % L[y, x] for x in range(x0, x1)))
-    elif a.buyruq == 'harakat':
-        m = harakat.quti_niqob(loy.olcham, [_q(s) for s in a.quti.split(';')])
-        t, _ = harakat.jadval(loy, K, m); print(t)
-    elif a.buyruq == 'ritm':
-        print(farq.ritm(loy, K))
-    elif a.buyruq == 'xarita':
-        j = [tuple(int(v) for v in s.split('-')) for s in a.juftlar.split(',')]
-        farq.xarita(loy, j, a.chiq); print(a.chiq)
-    elif a.buyruq == 'yopilish':
-        xm, xb, i = yopilish.taqqos(loy, K)
-        print('misol\n' + yopilish.chiz(xm)); print('biz\n' + yopilish.chiz(xb))
-        print('qamrov misol %.1f%%  biz %.1f%%  IoU %.2f' % (xm.mean() * 100, xb.mean() * 100, i))
-    elif a.buyruq == 'yoyish':
-        T = yoyish.transformlar(loy.transform_yol())[a.kadr]
-        if a.chiq:
-            yoyish.varaq(loy, a.kadr, T, a.chiq); print(a.chiq)
-        if a.jadval:
-            xs, ys = a.jadval.split(':')
-            print(yoyish.jadval(loy, a.kadr, T, _q(xs), _q(ys), a.tomon or 'misol'))
-    elif a.buyruq == 'siluet':
-        if a.nom:
-            spec = next(s for s in loy.siluetlar if s['nom'] == a.nom)
+    elif a.command == 'motion':
+        m = motion.box_mask(prj.size, [_floats(s) for s in a.box.split(';')])
+        t, _ = motion.table(prj, K, m); print(t)
+    elif a.command == 'rhythm':
+        print(diff.rhythm(prj, K))
+    elif a.command == 'diffmap':
+        j = [tuple(int(v) for v in s.split('-')) for s in a.pairs.split(',')]
+        diff.diffmap(prj, j, a.out); print(a.out)
+    elif a.command == 'occlusion':
+        ms, mo, i = occlusion.compare(prj, K)
+        print('sample\n' + occlusion.draw(ms)); print('ours\n' + occlusion.draw(mo))
+        print('coverage sample %.1f%%  ours %.1f%%  IoU %.2f' % (ms.mean() * 100, mo.mean() * 100, i))
+    elif a.command == 'unwarp':
+        T = unwarp.transforms(prj.transform_path())[a.frame]
+        if a.out:
+            unwarp.sheet(prj, a.frame, T, a.out); print(a.out)
+        if a.table:
+            xs, ys = a.table.split(':')
+            print(unwarp.table(prj, a.frame, T, _floats(xs), _floats(ys), a.side or 'sample'))
+    elif a.command == 'silhouette':
+        if a.name:
+            spec = next(s for s in prj.silhouettes if s['name'] == a.name)
         else:
-            spec = {'nom': 'ad-hoc', 'quti': [int(v) for v in _q(a.quti)], 'bog': _q(a.bog),
-                    'shart': a.shart or '<26', 'median': a.median, 'yon': a.yon or 'ong'}
-        if a.ketma:
-            KK, o = siluet.ketma(loy, spec, K if a.kadrlar else None)
-            print(siluet.ketma_jadval(spec, KK, o))
+            spec = {'name': 'ad-hoc', 'box': [int(v) for v in _floats(a.box)], 'seed': _floats(a.seed),
+                    'condition': a.condition or '<26', 'median': a.median, 'edge': a.edge or 'right'}
+        if a.consecutive:
+            KK, o = silhouette.consecutive(prj, spec, K if a.frames else None)
+            print(silhouette.consecutive_table(spec, KK, o))
             return 0
-        r = siluet.yugur(loy, spec, K if a.kadrlar else None)
-        print(siluet.jadval(spec, r))
-        if a.qator:
-            print(siluet.qator_jadval(r, a.qator))
-        if a.chiq:
-            siluet.varaq(loy, spec, r, a.chiq, zoom=a.zoom if a.zoom != 4 else 3, ustun=a.ustun); print(a.chiq)
-    elif a.buyruq == 'gif':
-        print(varaq.gif(loy, a.chiq), 'tasvir ->', a.chiq)
+        r = silhouette.run(prj, spec, K if a.frames else None)
+        print(silhouette.table(spec, r))
+        if a.row:
+            print(silhouette.row_table(r, a.row))
+        if a.out:
+            silhouette.sheet(prj, spec, r, a.out, zoom=a.zoom if a.zoom != 4 else 3, columns=a.columns); print(a.out)
+    elif a.command == 'gif':
+        print(sheet.gif(prj, a.out), 'images ->', a.out)
     else:
-        p.error('nomalum buyruq: ' + a.buyruq)
+        p.error('unknown command: ' + a.command)
     return 0
 
 

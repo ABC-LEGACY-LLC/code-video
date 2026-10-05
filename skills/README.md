@@ -8,7 +8,7 @@ source.
 |---|---|---|
 | [`media-audit-reality`](../.claude/skills/media-audit-reality/SKILL.md) | 1.3.0 | checks a produced film, picture or sound against reality by measurement, not by eye and ear. Oq Ko'cha's checks and the catalog's grew out of it: every check carries its own deliberately broken case, and if it cannot prove itself it is `UNPROVEN` |
 | [`code-audit-structure-scale`](../.claude/skills/code-audit-structure-scale/SKILL.md) | 1.0.1 | whether a grown source should be restructured: blast radius, a synthetic scale test, the cost to the machine and to the author |
-| [`media-match-reference`](../.claude/skills/media-match-reference/SKILL.md) | 1.4.0 | brings a code-drawn animation toward a sample clip frame by frame, by measurement; its tool is [`taqqos/`](../taqqos/), the method and findings [`taqqos/METOD.md`](../taqqos/METOD.md) |
+| [`media-match-reference`](../.claude/skills/media-match-reference/SKILL.md) | 1.4.1 | brings a code-drawn animation toward a sample clip frame by frame, by measurement; its tool is [`tools/compare/`](../tools/compare/), the method and findings [`tools/compare/METHOD.md`](../tools/compare/METHOD.md) |
 | [`media-staging-audit`](../.claude/skills/media-staging-audit/SKILL.md) | 1.1.0 | the staging before the details: what each shot does, where it looks, where the camera is (in 3D; one view gives only the relative direction), contour rows, checked on the render |
 | [`media-sound-check`](../.claude/skills/media-sound-check/SKILL.md) | 1.0.0 | builds a film's synthesized soundtrack from the picture's own state and checks it with calibrated tools (sync, beat fold, motor, an AudioSet tagger, mix, cuts), with an A/B page and marks; made on Tong kaptar |
 | [`media-3d-consistency-audit`](../.claude/skills/media-3d-consistency-audit/SKILL.md) | 1.0.0 | finds "2D thinking inside 3D" when a 3D model is fitted to a drawn sample: shape, place or background tied to a shot, a view angle or a frame; a calibrated test where only the camera moves; one world fitted to all shots together instead of a patch per shot |
@@ -25,6 +25,9 @@ read them as right and change their own right facts into wrong ones.
 
 ## Versions
 
+- `media-match-reference` 1.4.1 — content unchanged; its tool moved to `tools/compare/` and speaks
+  English now: `calibrate`, `probe`, `sheet --rows sample,before,ours,overlay`, the `note` field, and
+  the method in `METHOD.md`.
 - `media-sound-check` 1.0.0 — new. `media-match-reference` 1.4.0 gains "When the drawings differ".
 - `media-3d-consistency-audit` 1.0.0 — new (personaj3d pass 9, step 1). Six patches gathered over
   eight passes (eye card, lower-face shift, hair blend, per-shot hood, snow stuck to the camera,

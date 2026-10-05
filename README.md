@@ -15,7 +15,7 @@ check proves itself against its broken case; if it cannot, it is `UNPROVEN` and 
 ## What is here
 
 Every work sits in its own folder, `studio/projects/<work>/`, with its page, source, tests and
-build. Only shared things stay at the root: `studio/`, `harness/`, `catalog/`, `taqqos/`,
+build. Only shared things stay at the root: `studio/`, `harness/`, `catalog/`, `tools/`,
 `skills/`, `abc-labs/`.
 
 | folder | what | checks |
@@ -30,7 +30,7 @@ build. Only shared things stay at the root: `studio/`, `harness/`, `catalog/`, `
 | `studio/projects/masofa-maydoni/` | An SDF sandbox — primitives, unions, marching | — |
 | `studio/` | A person and an AI on the same piece: live viewing, frame scrubbing, card and checks, notes on a frame and the AI's answers; a timeline of each film's own tables; what the AI changes shows at once; export to mp4 in the browser, with sound | **33** |
 | `catalog/` | The architecture: tools that count the source and measure frames, six cards, the catalog generator | **15** |
-| `taqqos/` | Code-drawn frames compared with a sample clip **frame by frame, with the same code on both sides**: probes, silhouettes, motion and boil, difference maps, rhythm, occlusion. `METOD.md` is the method and its findings | **10** (`kalibr`) |
+| `tools/compare/` | Code-drawn frames compared with a sample clip **frame by frame, with the same code on both sides**: probes, silhouettes, motion and boil, difference maps, rhythm, occlusion. `METHOD.md` is the method and its findings | **13** (`calibrate`) |
 | `skills/` → `.claude/skills/` | The instructions this work was done under: project skills, for this repository only (not part of the abc UX-audit family) | — |
 
 ## Why this is research
@@ -62,7 +62,7 @@ itself:
   is in the count and the line is bound to it.
 - Six held images **shared one clip id**; `url(#id)` bound to the first one, in a hidden frame,
   and in five of them the shadows were drawn unclipped. Clean console, clean sketch — only the
-  per-frame silhouette measurement showed a bulge in images 2 to 6 (`taqqos/METOD.md`, rule 10).
+  per-frame silhouette measurement showed a bulge in images 2 to 6 (`tools/compare/METHOD.md`, rule 10).
 - Three large "differences" in the closeness-to-the-sample table were errors of the **probe**, not
   of the drawing: the hand-tip probe leaked into the dark sky, the tear probe took the hair's
   highlight, the ring probe a snowflake. The fourth — the mouth "1.7 px to the left" — was not a
@@ -93,7 +93,7 @@ cd catalog && npm i && node test/run.mjs                                 # 15 ch
 cd catalog && node tools/card.mjs                                        # do the cards agree with their sources
 cd catalog && node tools/catalog.mjs out.html                            # the catalog page
 cd studio/projects/zarra && npm i && npm run audit                       # 4 checks
-cd taqqos && python3 -m taqqos kalibr                                    # 10 proofs of the measurements
+cd tools/compare && python3 -m compare calibrate                         # 13 proofs of the measurements
 cd studio/projects/tong-kaptar && npm i && npm run audit                 # 3 checks
 cd studio && npm i && npm run audit && npm run audit:ui                  # 15 checks, then 18 in a browser
 node studio/server.mjs                                                   # the studio: http://127.0.0.1:4321/

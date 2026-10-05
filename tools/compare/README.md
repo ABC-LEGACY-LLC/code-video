@@ -1,105 +1,104 @@
-# taqqos — misolga kadrma-kadr taqqoslash to'plami
+# compare — a frame-by-frame comparison kit against a sample
 
-Kod bilan chizilgan kadrlarni (biz) namuna klipga (misol) **bir xil kod bilan, har
-kadrda** solishtiradi va farqlarni raqam bilan, eng kattasidan boshlab beradi.
-Usul, nima uchun aynan shunday qilingani va qaysi xatolar qayerdan topilgani —
-[`METOD.md`](METOD.md) da.
+Compares the frames drawn with code (ours) with a sample clip (the sample) **with the same code,
+in every frame**, and gives the differences as numbers, the largest first. The method, why it is
+done exactly this way, and which errors were found where — in [`METHOD.md`](METHOD.md).
 
-> Misol — o'lchov manbai, asar emas. Undan **texnika** o'lchanadi (vaqt, joylashuv,
-> harakat, ton); personaji va rasmi takrorlanmaydi. Shakllar bizning modelimizdan
-> chiziladi va o'lchovga *moslanadi*, misoldan kuzatib chizilmaydi.
+> The sample is a measurement source, not a work. **Technique** is measured from it (timing,
+> placement, motion, tone); its character and drawing are not reproduced. Shapes are drawn from
+> our own models and *fitted* to the measurement, not traced from the sample.
 
-## O'rnatish
+## Install
 
-Python 3.10+, `numpy`, `scipy`, `Pillow`. Tarmoq kerak emas.
+Python 3.10+, `numpy`, `scipy`, `Pillow`. No network needed.
 
 ```bash
 pip install numpy scipy pillow
-cd taqqos
-python3 -m taqqos kalibr          # birinchi ish: har o'lchov isbotlanganmi
+cd tools/compare
+python3 -m compare calibrate      # the first job: is every measurement proven
 ```
 
-`kalibr` har o'lchovni javobi oldindan ma'lum sintetik tasvirda sinaydi: yaxshi
-holat va ataylab buzilgan holat. Ajrata olmagan o'lchov `UNPROVEN` — uning
-raqamlariga ishonilmaydi va buyruq 1 bilan tugaydi. Hozir 10/10 `PROVEN`.
+`calibrate` tests every measurement on a synthetic image whose answer is known in advance: the
+good case and a deliberately broken case. A measurement that cannot tell them apart is
+`UNPROVEN` — its numbers are not trusted and the command ends with 1. Today 13/13 `PROVEN`.
 
-## Sozlama (loyiha JSON)
+## Config (the project JSON)
 
-Kodda yo'l, o'lcham yoki kadr soni yo'q — hammasi loyiha faylida. Nisbiy yo'llar
-sozlama joylashgan papkaga nisbatan. To'liq namuna: [`sozlama-namuna.json`](sozlama-namuna.json).
+There is no path, size or frame count in the code — everything is in the project file. Relative
+paths are relative to the folder the config is in. A full example: [`example-config.json`](example-config.json).
 
-| kalit | ma'nosi |
+| key | meaning |
 |---|---|
-| `misol`, `biz` | kadr yo'li naqshi (`k%02d.png`), `*_boshi` — 1-kadr qaysi raqamda |
-| `eski` | ixtiyoriy: oldingi holat (oldin/keyin varaqalari uchun) — topshirilgan faylning o'zi, eski manbalardan qayta render emas ([METOD 11](METOD.md)) |
-| `olcham` | IKKALA tomon shu o'lchamga keltiriladi (LANCZOS, keyin L) |
-| `kadrlar`, `guruhlar` | kadr soni; kadr (shot) guruhlari `{"1-kadr":[1,11]}` |
-| `langar` | har kadrda MISOLDA o'lchanadigan tayanch nuqta (qattiq nishon) |
-| `zondlar` | nomlangan o'lchovlar (quyida) |
-| `siluetlar` | figura niqobining qatorma-qator profili |
-| `transform` | ixtiyoriy: sub'ekt fazosiga yoyish uchun har kadr markazi/rol/masshtab |
+| `sample`, `ours` | the frame path pattern (`k%02d.png`), `*_first` — the number that holds frame 1 |
+| `before` | optional: the previous state (for before/after sheets) — the delivered file itself, not a re-render from the old sources ([METHOD 11](METHOD.md)) |
+| `size` | BOTH sides are brought to this size (LANCZOS, then L) |
+| `frames`, `groups` | the frame count; groups of frames by shot `{"shot-1":[1,11]}` |
+| `anchor` | a reference point measured on the SAMPLE in every frame (a rigid landmark) |
+| `probes` | named measurements (below) |
+| `silhouettes` | the row-by-row profile of the figure mask |
+| `transform` | optional: every frame's centre/roll/scale, for unwarping into the subject's space |
 
-Har zond va siluetda `"izoh"` yozing: zond nega shu joyda, oldin nima bo'lgani.
-Zond tuzatilganda sababi shu yerda qoladi (qarang: METOD.md, «Zond xatosi»).
+Write a `"note"` in every probe and silhouette: why the probe is in this place, what was there
+before. When a probe is fixed, the reason stays here (see METHOD.md, «A probe error»).
 
-### Zond turlari (`zond.py`)
+### Probe kinds (`probe.py`)
 
-| tur | nima o'lchaydi | asosiy qiymat |
+| kind | what it measures | primary value |
 |---|---|---|
-| `komponent` | qorong'i/yorug' bog'langan soha (urug'dan yoki qutidagi eng qorong'i/yorug' nuqtadan) | markaz `x y`, `w h n` |
-| `chet` | chiziq bo'ylab birinchi o'tish (subpiksel) | masofa `t` |
-| `soha` | qutidagi median L (va rang) | `v` |
-| `hisob` | qutida L oralig'idagi piksellar soni | `n` (farq — foiz) |
-| `uch` | qorong'i niqobning bog' nuqtasiga ulangan qismining chekka nuqtasi | `x y` |
+| `component` | a connected dark/light area (from a seed, or from the darkest/brightest point in the box) | centre `x y`, `w h n` |
+| `edge` | the first crossing along a line (subpixel) | distance `t` |
+| `area` | the median L in the box (and the colour) | `v` |
+| `count` | the number of pixels in an L range in the box | `n` (the difference — in percent) |
+| `tip` | the extreme point of the part of the dark mask connected to the seed point | `x y` |
 
-`"nisbiy": true` — geometriya langardan hisoblanadi va ikkala tomonga AYNAN
-o'sha joyda qo'llanadi: bosh qimirlasa ham zond o'sha yuz nuqtasini o'lchaydi,
-farq esa shakl xatosini ko'rsatadi. `"quti"` lug'at bo'lishi mumkin — har kadrga
-o'z qutisi. `"kadrlar": "6-11"`, `"tol"` — bayroq chegarasi (px; `hisob` da %).
+`"relative": true` — the geometry is computed from the anchor and applied to both sides in
+EXACTLY that place: even when the head moves, the probe measures the same point of the face, and
+the difference shows a shape error. `"box"` may be a dict — each frame its own box.
+`"frames": "6-11"`, `"tol"` — the flag threshold (px; in `count`, %).
 
-## Buyruqlar
+## Commands
 
 ```bash
-python3 -m taqqos <buyruq> LOYIHA.json [...]
+python3 -m compare <command> PROJECT.json [...]
 ```
 
-| buyruq | nima beradi |
+| command | what it gives |
 |---|---|
-| `kalibr` | har o'lchovning buzilgan-holat sinovi |
-| `zond --kadrlar 1-kadr [--json F]` | har kadrda har zond farqi (biz − misol), `*` bayroq, oxirida **eng katta farqlar** ro'yxati |
-| `varaq --kadrlar 1-11 --quti=x0,y0,x1,y1 [--zoom 4] [--qatorlar misol,eski,biz,ustma] [--langarli] [--chozish 0,70]` | kadrma-kadr ko'rish varaqasi; `ustma`: magenta = faqat misolda yorug', yashil = faqat bizda yorug', kulrang = mos |
-| `setka --kadr 5 --quti=... [--zoom 8]` | to'rli kattalashtirish, piksel koordinatalari bilan |
-| `jadval --kadr 5 --quti=x0,x1,y0,y1 [--tomon biz]` | L qiymatlari jadvali (raqam bilan o'qish) |
-| `siluet --nom tana_ong` yoki `--quti=... --bog x,y [--shart "<20"] [--yon ong] [--chiq F] [--qator 5]` | figura cheti har qatorda: IoU, maydon %, qaysi qatorlarda qancha farq |
-| `harakat --kadrlar 1-11 --quti=...` | juftma-juft blok siljishi: harakat (median) va qaynash (tarqoqlik) |
-| `ritm --kadrlar 1-kadr` | kesishlar, tendensiya, har juft farqi va juftlar MAE |
-| `xarita --juftlar 1-2,6-7 --chiq F` | tasvirlararo farq xaritalari, chap/o'ng energiya ulushi bilan |
-| `yopilish --kadrlar 1-kadr` | zarralar (qor) yopgan joydan figura xaritasi va IoU |
-| `yoyish --kadr 1 [--chiq F] [--jadval ...]` | sub'ekt fazosiga yoyilgan varaq/jadval |
-| `gif --chiq F` | yonma-yon GIF |
+| `calibrate` | the broken-case test of every measurement |
+| `probe --frames shot-1 [--json F]` | every probe's difference in every frame (ours − sample), the `*` flag, at the end the list of the **largest differences** |
+| `sheet --frames 1-11 --box=x0,y0,x1,y1 [--zoom 4] [--rows sample,before,ours,overlay] [--anchored] [--stretch 0,70]` | a frame-by-frame viewing sheet; `overlay`: magenta = light only in the sample, green = light only in ours, grey = a match |
+| `grid --frame 5 --box=... [--zoom 8]` | a gridded zoom, with pixel coordinates |
+| `table --frame 5 --box=x0,x1,y0,y1 [--side ours]` | a table of L values (reading by number) |
+| `silhouette --name body_right` or `--box=... --seed x,y [--condition "<20"] [--edge right] [--out F] [--row 5]` | the figure edge in every row: IoU, area %, in which rows and by how much it differs |
+| `motion --frames 1-11 --box=...` | pair-by-pair block shift: motion (median) and boil (scatter) |
+| `rhythm --frames shot-1` | cuts, trend, every pair's difference and the pairs MAE |
+| `diffmap --pairs 1-2,6-7 --out F` | difference maps between images, with the left/right energy share |
+| `occlusion --frames shot-1` | the figure map from where particles (snow) are hidden, and its IoU |
+| `unwarp --frame 1 [--out F] [--table ...]` | a sheet/table unwarped into the subject's space |
+| `gif --out F` | a side-by-side GIF |
 
-Manfiy son bilan boshlanadigan qiymatni `=` bilan bering: `--quti=-40,-34,52,66`.
+Give a value that starts with a minus with `=`: `--box=-40,-34,52,66`.
 
-## Bir o'tish (tartib)
+## One pass (the order)
 
-1. `kalibr` — hammasi `PROVEN`.
-2. `zond` — **hamma** kadrlar, ranglangan jadval; eng katta farqlardan boshlang.
-3. Har katta farq uchun `varaq`/`setka`/`jadval` — raqam nimaga tegdi, ko'z bilan.
-   Zond boshqa narsaga tegsa — bu chizma xatosi emas, **zond xatosi**: zondni
-   tuzating, `izoh` ga sababini yozing.
-4. Tuzatish modelning o'z parametrlarida (kalit, jadval), o'lchangan son bilan.
-5. Qayta o'lchash: o'sha zond + qo'shnilari + `siluet`/`harakat`/`ritm`.
-6. `varaq --qatorlar misol,eski,biz` — oldin/keyin (`eski` — topshirilgan fayl; u GIF
-   bo'lsa, `biz` ni ham xuddi shu GIF yo'lidan o'tkazing).
-7. Topilmalarni loyiha kartasiga yozing: nima o'lchandi, oldin/keyin raqami.
+1. `calibrate` — all `PROVEN`.
+2. `probe` — **all** the frames, the flagged table; start from the largest differences.
+3. For every large difference `sheet`/`grid`/`table` — what the number touched, by eye.
+   If the probe touched something else — that is not a drawing error but a **probe error**: fix
+   the probe, write the reason in its `note`.
+4. The fix goes into the model's own parameters (a key, a table), with a measured number.
+5. Measure again: that probe + its neighbours + `silhouette`/`motion`/`rhythm`.
+6. `sheet --rows sample,before,ours` — before/after (`before` — the delivered file; if it is a GIF,
+   send `ours` through exactly the same GIF path too).
+7. Write the findings into the project card: what was measured, the before/after number.
 
-## Fayllar
+## Files
 
 ```
-taqqos/
-  loyiha.py    sozlama                 zond.py     zondlar va farq jadvali
-  tasvir.py    yuklash, bir o'lcham    varaq.py    ko'rish varaqalari
-  harakat.py   harakat/qaynash         farq.py     ritm, farq xaritalari
-  yopilish.py  zarra -> figura         yoyish.py   sub'ekt fazosi
-  siluet.py    siluet profili          kalibr.py   buzilgan-holat sinovlari
+compare/
+  project.py     config                  probe.py      probes and the difference table
+  image.py       loading, one size       sheet.py      viewing sheets
+  motion.py      motion/boil             diff.py       rhythm, difference maps
+  occlusion.py   particle -> figure      unwarp.py     subject space
+  silhouette.py  silhouette profile      calibrate.py  broken-case tests
 ```

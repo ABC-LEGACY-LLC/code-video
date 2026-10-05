@@ -1,22 +1,22 @@
-"""taqqos -- misol (maqsad klip) va biz (kod bilan chizilgan kadrlar) ni BIR XIL
-kod bilan, har kadrda, har belgi bo'yicha solishtirish.
+"""compare -- the sample (the target clip) and ours (the frames drawn with code) measured
+with THE SAME code, in every frame, feature by feature.
 
-Asosiy qoida: har o'lchov o'zining ataylab buzilgan holatini olib yuradi
-(taqqos/kalibr.py). Buzilgan holatni ajrata olmaydigan o'lchov -- UNPROVEN.
+The ground rule: every measurement carries its own deliberately broken case
+(compare/calibrate.py). A measurement that cannot tell the broken case apart -- UNPROVEN.
 
-Modullar:
-  loyiha    -- JSON sozlama: yo'llar, o'lcham, guruhlar, langar, zondlar
-  tasvir    -- kadrni ishchi o'lchamga keltirib yuklash (L yoki RGB)
-  zond      -- har kadrda nomlangan o'lchovlar (komponent, chet, soha, hisob, uch)
-  varaq     -- ko'z bilan tekshirish varaqalari (kadrma-kadr, langarga bog'langan,
-               magenta/yashil ustma-ust, to'rli kattalashtirish)
-  harakat   -- juftma-juft blok siljishi: harakat (median) va qaynash (tarqoqlik)
-  farq      -- tasvirlararo farq xaritalari, ritm (kesish, tendensiya)
-  yopilish  -- zarralar (qor, yomg'ir) yopilgan joy -> figura xaritasi
-  yoyish    -- sub'ekt fazosiga yoyish (markaz, rol, masshtab qaytariladi)
-  siluet    -- figura niqobining qatorma-qator chekkasi: IoU, maydon, farqli qatorlar
-  kalibr    -- har o'lchovning buzilgan-holat sinovi
+Modules:
+  project     -- the JSON config: paths, size, groups, anchor, probes
+  image       -- load a frame brought to the working size (L or RGB)
+  probe       -- named measurements in every frame (component, edge, area, count, tip)
+  sheet       -- sheets for checking by eye (frame by frame, tied to the anchor,
+                 magenta/green overlay, gridded zoom)
+  motion      -- pair-by-pair block shift: motion (median) and boil (scatter)
+  diff        -- difference maps between images, rhythm (cuts, trend)
+  occlusion   -- where particles (snow, rain) are hidden -> the figure map
+  unwarp      -- unwarp into the subject's space (centre, roll, scale are undone)
+  silhouette  -- the edge of the figure mask row by row: IoU, area, the rows that differ
+  calibrate   -- the broken-case test of every measurement
 
-Qo'llanma: README.md (buyruqlar, sozlama); usul va o'rganilganlar: METOD.md.
+Manual: README.md (commands, config); the method and what was learned: METHOD.md.
 """
-__version__ = "1.1.0"
+__version__ = "2.0.0"
