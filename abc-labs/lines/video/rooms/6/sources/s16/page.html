@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <link rel="preload" href="../../lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="../../lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="../../lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="../../lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> TIGSource - November 2017 (28 posts) | Development Logs by Lucas Pope</title>
+  <link rel = 'canonical' href = 'https://dukope.com/devlogs/obra-dinn/tig-32/'>
+  <meta name="description" content="[Games](https://dukope.com) / [@dukope](https://dukope.com/social)">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  
+  <meta property="og:url" content="https://dukope.com/devlogs/obra-dinn/tig-32/">
+  <meta property="og:title" content="TIGSource - November 2017 (28 posts)" />
+<meta property="og:description" content="#767 November 23, 2017 05:53 AM Fullscreen, Round 3 Thanks everybody for all the suggestions. I tried everything, literally, and concluded that the best way to maintain the game&rsquo;s style and fix the fullscreen discomfort was to stabilize the swimming dither and subdue the flickering dots. I got there in the end, with a few compromises. This is the 3rd full devlog post I&rsquo;ve written on this. For each previous version I&rsquo;d get an idea or find something else to try while checking over it." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/obra-dinn/tig-32/" /><meta property="article:section" content="obra-dinn" />
+<meta property="article:published_time" content="2017-11-23T00:00:00+00:00" />
+<meta property="article:modified_time" content="2017-11-23T00:00:00+00:00" />
+
+  <meta property="og:url" content="https://dukope.com/devlogs/obra-dinn/tig-32/">
+
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="TIGSource - November 2017 (28 posts)"/>
+<meta name="twitter:description" content="#767 November 23, 2017 05:53 AM Fullscreen, Round 3 Thanks everybody for all the suggestions. I tried everything, literally, and concluded that the best way to maintain the game&rsquo;s style and fix the fullscreen discomfort was to stabilize the swimming dither and subdue the flickering dots. I got there in the end, with a few compromises. This is the 3rd full devlog post I&rsquo;ve written on this. For each previous version I&rsquo;d get an idea or find something else to try while checking over it."/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="../../css/styles.94f653e9e151e28067a7c5dbbc4600cbd5a3c721e79faaf971e523c40f3b249b8e4f20bb57810dfffa8d559ca5c140fd56eb4cd9c0853113ad08e66afdb08bdd.css" integrity="sha512-lPZT6eFR4oBnp8XbvEYAy9WjxyHnn6r5ceUjxA87JJuOTyC7V4EN//qNVZylwUD9VutM2cCFMROtCOZq/bCL3Q=="> 
+
+  
+   <link rel="stylesheet" href="../../css/custom-style.css"> 
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+    <header id="header">
+  <a href="">
+  
+    
+  
+  <div id="title">
+    <h1>Development Logs by Lucas Pope</h1>
+  </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#" aria-label="Menu"><i class="fas fa-bars fa-2x" aria-hidden="true"></i></a>
+      </li>
+      
+        <li><a href="../../">All</a></li>
+      
+        <li><a href="../../obra-dinn">Return of the Obra Dinn</a></li>
+      
+        <li><a href="../../papers-please">Papers, Please</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+
+
+    
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <div class="content" itemprop="articleBody">
+  
+    <h1>TIGSource - November 2017 (28 posts)</h1>
+    
+      <div class="original_host">
+        <div class="og_url">This post was originally hosted on <a href="https://forums.tigsource.com/index.php?topic=40832">TIGSource</a></div>
+        <div class="og_date">Nov 23, 2017</div>
+      </div>
+       
+    <hr>
+
+    <h1 id="767-november-23-2017-0553-am">#767 November 23, 2017 05:53 AM</h1>
+<h3 id="fullscreen-round-3">Fullscreen, Round 3</h3>
+<p>Thanks everybody for all the suggestions. I tried everything, literally, and concluded that the best way to maintain the game&rsquo;s style and fix the fullscreen discomfort was to stabilize the swimming dither and subdue the flickering dots. I got there in the end, with a few compromises. This is the 3rd full devlog post I&rsquo;ve written on this. For each previous version I&rsquo;d get an idea or find something else to try while checking over it. At this point, don&rsquo;t even care.</p>
+<h3 id="dithering-process">Dithering Process</h3>
+<p>First, a quick explanation. Obra Dinn renders everything internally in 8-bit grayscale then converts the final output to 1-bit in a post-processing pass. The conversion from 8-bit to 1-bit is handled by comparing each source image&rsquo;s pixel to the corresponding dot in a tiling dither pattern. If the image pixel value is greater than the dither pattern dot value, the output bit is set to 1. Otherwise it&rsquo;s 0. The output gets reduced to 1-bit and the viewer&rsquo;s eye will merge the pixels back together to approximate more bits.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-Exp.png" alt=""><div style="font-style:italic; text-align:center">Thresholding a source image by a dither pattern</div>
+</p>
+<p>The two components of this process are the source image and the dither pattern. Obra Dinn uses two distinct patterns for different cases: an 8x8 bayer matrix for a smoother range of shades, and a 128x128 blue noise field for a less ordered output.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-ExpPatterns.png" alt=""><div style="font-style:italic; text-align:center">bayer / blue noise</div>
+</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-Exp2.png" alt=""><div style="font-style:italic; text-align:center">In-engine result without wireframe lines. Bayer on the sphere, blue noise everywhere else.</div>
+</p>
+<h3 id="hold-still-please">Hold Still Please</h3>
+<p>The basic dithering process works great for static images and much less great for moving or animated images. When the source image changes from frame-to-frame the static dither pattern and low resolution output become a major problem. What should be solid shapes and shades now read as a wiggling mess of pixels.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-ExpMoving.gif" alt=""><div style="font-style:italic; text-align:center">Moving the sphere</div>
+</p>
+<p>These days, dithering is mostly used when the source image is either static or the output has a high resolution. The first thought when seeing this low-res swimming dither effect is not &ldquo;yeah that&rsquo;s how dither works&rdquo; but &ldquo;what is this warping shaking effect and how can I turn it off.&rdquo;</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-Original.gif" alt=""><div style="font-style:italic; text-align:center">Exhibit A. Reduced contrast for your comfort.</div>
+</p>
+<p>Try to focus on something here when it moves and behold the crinkled heart of Obra Dinn&rsquo;s fullscreen problems. There are ways to fix this that mostly boiling down to &ldquo;this style doesn&rsquo;t work, change it.&rdquo; I went pretty far down that path, experimenting with different styles, before swinging back and wondering if maybe I shouldn&rsquo;t let these bullshit little pixels push me around.</p>
+<h3 id="stabilizing-the-dither">Stabilizing The Dither</h3>
+<p>To give your eyes the best chance at recombining everything, dithering works best when the dither pattern dots have a 1:1 correlation with the output pixels. But, correlating only with the output means that as a scene post effect there&rsquo;s no connection between the geometry being rendered and the pattern that thresholds it. Each frame, moving scene elements threshold against different values. What I want instead is for the dither pattern to be &ldquo;pinned&rdquo; to the geometry and to appear stable as it moves with the rest of the scene.</p>
+<p>The core of this is a mapping problem. As told by the length of this post, there&rsquo;s a conflict between the ideal dither pattern mapping (1:1 with the screen) and the ideal scene mapping (x:1 with the geometry) so get ready for some compromises. Most of my work was focused on mapping the input dither pattern into different spaces that better correlate the pattern with the scene geometry. Everything here is done at the pre-thresholding stage.</p>
+<p>Texel Space</p>
+<p>My first try was to map the dither pattern in texel space. This is equivalent to dithering the object textures during scene rendering instead of in a post-processing pass on the 8-bit output. I didn&rsquo;t expect this to work well but wanted to see what a perfectly scene-matched mapping looked like anyways.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-TexelMap.png" alt=""><div style="font-style:italic; text-align:center">Dither pattern in texel space</div>
+</p>
+<p>Ok well, expectations solidly met. The objects are all mapped differently so their pattern scales don&rsquo;t match. Those could be unified. The real problem is the aliasing. Any resampling from one space to another like this will result in aliasing, and dither patterns can&rsquo;t be easily mipped or filtered like traditional textures. Still, to carry it through:</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Stable-Texel.gif" alt=""><div style="font-style:italic; text-align:center">Applied to the moving scene</div>
+</p>
+<p>This isn&rsquo;t a total loss - the pattern is nicely pinned to geometry. The aliasing produces its own swimming effect and unifying or scaling the mappings won&rsquo;t help with that. Texels change size with distance from the camera so there will always be dither pattern pixels that alias badly when resampled to the screen.</p>
+<p>Motion Warping</p>
+<p>If I want the dither pattern to track the moving geometry beneath it, why not just warp the pattern using the change in position of each rendered pixel in the scene? Indeed why not. This is a bit like a motion blur, where each pixel tracks its movement from the previous frame. In this case, I update the dither texture to keep its pattern moving with the scene. If a scene pixel was not represented in the previous frame, the dither pattern is reloaded there. This technique is made much simpler by the game&rsquo;s static-ness - I only need to worry about the movement of the camera, not individual objects.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Stable-Warp.gif" alt=""><div style="font-style:italic; text-align:center">Warping the dither pattern to maintain frame-to-frame coherence with the scene</div>
+</p>
+<p>This was a pretty quick &amp; dirty try but a few things are clear. First, it kinda works. Second, a dither pattern needs a neighborhood - it can&rsquo;t be individual pixels. If you consider each pixel individually, as this method does, then you&rsquo;ll get breaks and discontinuities in the pattern which are obvious. I shifted the camera in this test scene to highlight those on the chest here. Viewing the warped dither pattern itself makes this a little easier to see.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Stable-WarpMapping.gif" alt=""><div style="font-style:italic; text-align:center">Thresholding solid gray with the warping dither pattern</div>
+</p>
+<p>These discontinuities are down to the differing pixel depths and thresholds that I chose. I reasoned an elaborate fix based on tracking regions, averaging their depth and shifting all dither pattern dots in that region by the same amount. A discontinuity along a region boundary could be hidden by sharp lighting changes or a wireframe line. This would&rsquo;ve been enabled by the game&rsquo;s existing setup of colored regions for the wireframe generation. When I sat down to implement all that, the depth term dropped out of the first equation I came up with and gave me a much simpler alternative:</p>
+<p>Screen-mapping With Offset</p>
+<p>When putting together the equations for the warping dither, a very simple transform fell out:</p>
+<pre tabindex="0"><code>DitherOffset = ScreenSize \* CameraRotation / CameraFov
+</code></pre><p>
+  <img src="http://3909.co/dev/od/img/Dither2-ShiftingExp.gif" alt=""><div style="font-style:italic; text-align:center">Shifting the screen-mapped dither pattern based on camera rotation</div>
+</p>
+<p>Basically, this expresses that I want the screen-mapped dither pattern to shift by exactly one screen when the camera rotates through one field of view. That maintains a 1:1 mapping with the screen while also considering a simplified transform of the scene geometry in view. This really only matches the movement at the center of the screen but bless this fucked up world because it&rsquo;s nearly good enough.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-Shifting.gif" alt=""><div style="font-style:italic; text-align:center">Offsetting the dither pattern to track one screen per camera fov rotation</div>
+</p>
+<p>Note how the dithered pixels on the chair appear to mostly move with the geometry. Likewise for the sphere. Planes more perpendicular to the view don&rsquo;t match very well; the floor is still a mess.</p>
+<p>So while not being perfect, simply shifting the screen-mapped dither keeps the overall pattern and scene movement close enough that the eyes can better track them together. I was pretty happy with this. While cleaning up the code and committing everything, maybe writing a devlog post or two, the idea of a perfectly-pinned dither kept nagging at me:</p>
+<p>World Space - Cube Mapping</p>
+<p>The experiments so far suggest that any correlation between the dither pattern and scene geometry would have to ignore depth information from the scene. What this means practically is that the dither can be pinned to the geometry during camera rotation but not during camera translation. This isn&rsquo;t such a bad thing for Obra Dinn considering the slow pace of the game and the observational role of the player. You&rsquo;re normally walking around, stopping, and looking at things. When walking, so many things are changing onscreen that the swimming dither isn&rsquo;t as obvious.</p>
+<p>With that in mind, my next attempt was mapping the dither pattern to the geometry indirectly by pre-rendering it onto the sides of a cube centered around the camera. The cube translates with the camera but stays oriented to the world. In the mix: little bit of screen, little bit of scene.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraCube.png" alt=""><div style="font-style:italic; text-align:center">Dither pattern mapped to a cube centered around the camera</div>
+</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraCubeMap.png" alt=""><div style="font-style:italic; text-align:center">Camera&#39;s view looking up into a corner. Mapping scaled up for clarity.</div>
+</p>
+<p>The cube&rsquo;s mapping works well when looking directly into the sides, and not so well when aimed into a corner. Still, the dither pattern stays perfectly fixed in 3D space as the camera rotates. Even rough, the result is promising.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraCube.gif" alt=""><div style="font-style:italic; text-align:center">Thresholding scene with the cube-mapped dither pattern</div>
+</p>
+<p>Now we&rsquo;re talking. Being a post-processing pass makes this more general than texel-space mapping, which is good. The problem is now down to the particular cube mapping. An ideal mapping would have one texel on the cube always resolve to exactly one pixel on the screen, regardless of the camera rotation. That&rsquo;s not possible with a cube&hellip;</p>
+<p>World Space - Sphere Mapping</p>
+<p>&hellip;but I got pretty close with a sphere.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraSphereMap.png" alt=""><div style="font-style:italic; text-align:center">Mapping the dither pattern onto the inside of a sphere</div>
+</p>
+<p>Finding this particular spherical mapping took some time. There&rsquo;s no way to perfectly tile a square texture onto a sphere. It would&rsquo;ve been possible to redefine the dither matrices in terms of a hexagon grid or something else that does tile on a sphere. Possible maybe, I didn&rsquo;t try. Instead, I just hacked on the square tiling until this carefully tweaked &ldquo;rings&rdquo; mapping of the original dither pattern gave good results.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraSphere.gif" alt=""><div style="font-style:italic; text-align:center">Applied to the scene</div>
+</p>
+<p>Better than the cube. Still lots of aliasing. The spherically-mapped dot size is very similar to the screen pixel size - off just enough to cause moire patterns. I could feel the closeness, and a very simple fix for this kind of aliasing is to supersample: apply the dither thresholding at a higher resolution and downsample.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraSphereMap2.png" alt=""><div style="font-style:italic; text-align:center">Spherically-mapped dither pattern at 2x and downsampled to 1x</div>
+</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraSphere2.gif" alt=""><div style="font-style:italic; text-align:center">Thresholding at 2x, then downsampling to 1x</div>
+</p>
+<p>This is the best I got. There are a few compromises:</p>
+<p>    <strong>1</strong> The dither pattern dots get larger and less effective at the edges of the screen<br>
+    <strong>2</strong> The pattern isn&rsquo;t aligned up-down-left-right for most camera rotations<br>
+    <strong>3</strong> The output is no longer 1-bit due to the final box-downsample</p>
+<p>But the upside is pretty lofty:</p>
+<p>    <strong>1</strong> The dithering is perfectly pinned for all camera rotations. This feels slightly uncanny in-game.<br>
+    <strong>2</strong> Discomfort from swimming dither is totally gone, even at fullscreen<br>
+    <strong>3</strong> The pixellated style of the game is preserved</p>
+<p>It&rsquo;s possible eliminate compromise #3 by reducing the output back to 1-bit with a simple 50% threshold. The result is still better than without supersampling (the triple comparison directly below is thresholded).</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-FinalCompare.gif" alt=""><div style="font-style:italic; text-align:center">Side by side, by side</div>
+</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-SplitCompare.gif" alt=""><div style="font-style:italic; text-align:center">In the game&#39;s default palette</div>
+</p>
+<h3 id="wrapup">Wrapup</h3>
+<p>It feels a little weird to put 100 hours into something that won&rsquo;t be noticed by its absence. Exactly no one will think, &ldquo;man this dithering is stable as shit. total magic going on here.&rdquo; I don&rsquo;t want to give people problems they didn&rsquo;t know they should have though so it was worth fixing.</p>
+<p>The screenspace mapping with offset works best at 1x and the sphere mapping works best at 2x. All scene rendering is at 800x450 now (up from 640x360), which helps legibility without sacrificing the low-res style. The final game will have two display modes: </p>
+<h3 id="digital">DIGITAL</h3>
+<p>Border-boxed, screenspace offset dither, 1-bit output</p>
+<h3 id="analog">ANALOG</h3>
+<p>Fullscreen, sphere-mapped dither, softened output</p>
+<h2 id="replies">Replies</h2>
+<blockquote>
+<p>#768 <strong>Schrompf</strong> (November 23, 2017 06:23 AM)</p>
+<p>Well, if you wouldn&rsquo;t have invested these 100h, everybody would notice. Good work, and thanks for documenting your path!</p>
+<p>#769 <strong>Cranktrain</strong> (November 23, 2017 06:32 AM)</p>
+<p>The discomfort from the swimming pixels is pretty much entirely gone. 100 hours it might have taken, but I think it&rsquo;s seriously been worth it. Well done!</p>
+<p>#770 <strong>bombjack</strong> (November 23, 2017 06:37 AM)</p>
+<p>It&rsquo;s really amazing and very interesting as usual.</p>
+<p>#771 <strong>Bennett</strong> (November 23, 2017 06:39 AM)</p>
+<p>So much better. Well done!</p>
+<p>#772 <strong>gprosser</strong> (November 23, 2017 07:11 AM)</p>
+<p>This is impressive work. It&rsquo;s almost a shame there aren&rsquo;t more games using this visual style that could benefit from your technique!</p>
+<p>You should post about this somewhere else, so that it&rsquo;s easier to find.</p>
+<p>#773 <strong>Citsua</strong> (November 23, 2017 08:12 AM)</p>
+<p>This is incredible. I can&rsquo;t imagine how much work you must have put into this. Regardless, it was worth it.</p>
+<p>#774 <strong>Kyace</strong> (November 23, 2017 08:46 AM)</p>
+<p>Well done on the solution and nice write up on the post.</p>
+<p>#775 <strong>Thaumaturge</strong> (November 23, 2017 10:11 AM)</p>
+<p>That&rsquo;s a really impressive effect&ndash;well done! I&rsquo;m sorry to read that it took so much time and effort to achieve, but hopefully it proves worth it!</p>
+<p>The journey to it described in this blog-post was interesting to read&ndash;thank you for sharing it. ^_^</p>
+<p>#776 <strong>marcgfx</strong> (November 23, 2017 10:36 AM)</p>
+<p>It looks a lot better than before. You created a new problem and solved it, one of the things I love about gamedev. You create a problem that has never existed before and must find a solution because of your own stubbornness.<br>
+I do notice about the new solution, that the outlines are now noticeably wobbly compared to the rest. What I personally would like is clean aliased lines and it might work well with the new pixel style.</p>
+<p>#777 <strong>tobru</strong> (November 23, 2017 11:45 AM)</p>
+<p>Fantastic, such a big improvement.</p>
+<p>I have to say motion warping stands out to me as by far the best one of the examples. I wonder if you could get rid of the stretching artefacts by lightly dithering the depth map itself before applying the motion warp, so you get a little bit of randomness into the seams that the stretching appears to originate from.</p>
+<p>The almost-but-not-quite 1 bit one seems unfortunate, I&rsquo;d suggest doing that final thresholding even if it brings back a little bit of the aliasing.</p>
+<p>#778 <strong>agersant</strong> (November 23, 2017 12:30 PM)</p>
+<p>Great writeup, thanks for sharing!</p>
+<p>#779 <strong>JobLeonard</strong> (November 23, 2017 12:38 PM)</p>
+<p>It&rsquo;s fantastic.</p>
+<p>I guess the non-square pixels in the final output are also an inevitable compromise? It kind of breaks the suspension of disbelief.</p>
+<p>#780 <strong>Tizzdogg</strong> (November 23, 2017 01:05 PM)</p>
+<p>I wonder if it would work to map the dither pattern in texture space, like you tried, but instead use a mipmapped dither texture with different resolutions of dithering depending on the mip level. Kind of like this cross hatching paper:<br>
+<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.28.8017&amp;rep=rep1&amp;type=pdf">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.28.8017&amp;rep=rep1&amp;type=pdf</a></p>
+<p>#781 <strong>eigenbom</strong> (November 23, 2017 01:24 PM)</p>
+<p>Brilliant, thx for sharing!</p>
+<p>#782 <strong>DireLogomachist</strong> (November 23, 2017 01:32 PM)</p>
+<p>Great work, man! I really do appreciate the work here and I&rsquo;m sure others working on lo-fi games will benefit from this.</p>
+<p>#783 <strong>JobLeonard</strong> (November 23, 2017 04:24 PM)</p>
+<blockquote>
+<p><a href="https://forums.tigsource.com/index.php?topic=40832.msg1363742#msg1363742">Quote from: dukope on November 23, 2017, 05:53:02 AM</a></p>
+<p><strong>Fullscreen, Round 3</strong></p>
+<p>Thanks everybody for all the suggestions. I tried everything, literally, and concluded that the best way to maintain the game&rsquo;s style and fix the fullscreen discomfort was to stabilize the swimming dither and subdue the flickering dots. I got there in the end, with a few compromises. This is the 3rd full devlog post I&rsquo;ve written on this. For each previous version I&rsquo;d get an idea or find something else to try while checking over it. At this point, don&rsquo;t even care.</p>
+<p><strong>Dithering Process</strong></p>
+<p>First, a quick explanation. Obra Dinn renders everything internally in 8-bit grayscale then converts the final output to 1-bit in a post-processing pass. The conversion from 8-bit to 1-bit is handled by comparing each source image&rsquo;s pixel to the corresponding dot in a tiling dither pattern. If the image pixel value is greater than the dither pattern dot value, the output bit is set to 1. Otherwise it&rsquo;s 0. The output gets reduced to 1-bit and the viewer&rsquo;s eye will merge the pixels back together to approximate more bits.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-Exp.png" alt="">
+</p>
+<p>Thresholding a source image by a dither pattern</p>
+<p>The two components of this process are the source image and the dither pattern. Obra Dinn uses two distinct patterns for different cases: an 8x8 bayer matrix for a smoother range of shades, and a 128x128 blue noise field for a less ordered output.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-ExpPatterns.png" alt="">
+</p>
+<p>bayer / blue noise</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-Exp2.png" alt="">
+</p>
+<p>In-engine result without wireframe lines. Bayer on the sphere, blue noise everywhere else.</p>
+<p><strong>Hold Still Please</strong></p>
+<p>The basic dithering process works great for static images and much less great for moving or animated images. When the source image changes from frame-to-frame the static dither pattern and low resolution output become a major problem. What should be solid shapes and shades now read as a wiggling mess of pixels.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-ExpMoving.gif" alt="">
+</p>
+<p>Moving the sphere</p>
+<p>These days, dithering is mostly used when the source image is either static or the output has a high resolution. The first thought when seeing this low-res swimming dither effect is not &ldquo;yeah that&rsquo;s how dither works&rdquo; but &ldquo;what is this warping shaking effect and how can I turn it off.&rdquo;</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-Original.gif" alt="">
+</p>
+<p>Exhibit A. Reduced contrast for your comfort.</p>
+<p>Try to focus on something here when it moves and behold the crinkled heart of Obra Dinn&rsquo;s fullscreen problems. There are ways to fix this that mostly boiling down to &ldquo;this style doesn&rsquo;t work, change it.&rdquo; I went pretty far down that path, experimenting with different styles, before swinging back and wondering if maybe I shouldn&rsquo;t let these bullshit little pixels push me around.</p>
+<p><strong>Stabilizing The Dither</strong></p>
+<p>To give your eyes the best chance at recombining everything, dithering works best when the dither pattern dots have a 1:1 correlation with the output pixels. But, correlating only with the output means that as a scene post effect there&rsquo;s no connection between the geometry being rendered and the pattern that thresholds it. Each frame, moving scene elements threshold against different values. What I want instead is for the dither pattern to be &ldquo;pinned&rdquo; to the geometry and to appear stable as it moves with the rest of the scene.</p>
+<p>The core of this is a mapping problem. As told by the length of this post, there&rsquo;s a conflict between the ideal dither pattern mapping (1:1 with the screen) and the ideal scene mapping (x:1 with the geometry) so get ready for some compromises. Most of my work was focused on mapping the input dither pattern into different spaces that better correlate the pattern with the scene geometry. Everything here is done at the pre-thresholding stage.</p>
+<p>Texel Space</p>
+<p>My first try was to map the dither pattern in texel space. This is equivalent to dithering the object textures during scene rendering instead of in a post-processing pass on the 8-bit output. I didn&rsquo;t expect this to work well but wanted to see what a perfectly scene-matched mapping looked like anyways.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-TexelMap.png" alt="">
+</p>
+<p>Dither pattern in texel space</p>
+<p>Ok well, expectations solidly met. The objects are all mapped differently so their pattern scales don&rsquo;t match. Those could be unified. The real problem is the aliasing. Any resampling from one space to another like this will result in aliasing, and dither patterns can&rsquo;t be easily mipped or filtered like traditional textures. Still, to carry it through:</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Stable-Texel.gif" alt="">
+</p>
+<p>Applied to the moving scene</p>
+<p>This isn&rsquo;t a total loss - the pattern is nicely pinned to geometry. The aliasing produces its own swimming effect and unifying or scaling the mappings won&rsquo;t help with that. Texels change size with distance from the camera so there will always be dither pattern pixels that alias badly when resampled to the screen.</p>
+<p>Motion Warping</p>
+<p>If I want the dither pattern to track the moving geometry beneath it, why not just warp the pattern using the change in position of each rendered pixel in the scene? Indeed why not. This is a bit like a motion blur, where each pixel tracks its movement from the previous frame. In this case, I update the dither texture to keep its pattern moving with the scene. If a scene pixel was not represented in the previous frame, the dither pattern is reloaded there. This technique is made much simpler by the game&rsquo;s static-ness - I only need to worry about the movement of the camera, not individual objects.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Stable-Warp.gif" alt="">
+</p>
+<p>Warping the dither pattern to maintain frame-to-frame coherence with the scene</p>
+<p>This was a pretty quick &amp; dirty try but a few things are clear. First, it kinda works. Second, a dither pattern needs a neighborhood - it can&rsquo;t be individual pixels. If you consider each pixel individually, as this method does, then you&rsquo;ll get breaks and discontinuities in the pattern which are obvious. I shifted the camera in this test scene to highlight those on the chest here. Viewing the warped dither pattern itself makes this a little easier to see.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Stable-WarpMapping.gif" alt="">
+</p>
+<p>Thresholding solid gray with the warping dither pattern</p>
+<p>These discontinuities are down to the differing pixel depths and thresholds that I chose. I reasoned an elaborate fix based on tracking regions, averaging their depth and shifting all dither pattern dots in that region by the same amount. A discontinuity along a region boundary could be hidden by sharp lighting changes or a wireframe line. This would&rsquo;ve been enabled by the game&rsquo;s existing setup of colored regions for the wireframe generation. When I sat down to implement all that, the depth term dropped out of the first equation I came up with and gave me a much simpler alternative:</p>
+<p>Screen-mapping With Offset</p>
+<p>When putting together the equations for the warping dither, a very simple transform fell out:</p>
+<p>Code:</p>
+<p>DitherOffset = ScreenSize * CameraRotation / CameraFov</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-ShiftingExp.gif" alt="">
+</p>
+<p>Shifting the screen-mapped dither pattern based on camera rotation</p>
+<p>Basically, this expresses that I want the screen-mapped dither pattern to shift by exactly one screen when the camera rotates through one field of view. That maintains a 1:1 mapping with the screen while also considering a simplified transform of the scene geometry in view. This really only matches the movement at the center of the screen but bless this fucked up world because it&rsquo;s nearly good enough.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-Shifting.gif" alt="">
+</p>
+<p>Offsetting the dither pattern to track one screen per camera fov rotation</p>
+<p>Note how the dithered pixels on the chair appear to mostly move with the geometry. Likewise for the sphere. Planes more perpendicular to the view don&rsquo;t match very well; the floor is still a mess.</p>
+<p>So while not being perfect, simply shifting the screen-mapped dither keeps the overall pattern and scene movement close enough that the eyes can better track them together. I was pretty happy with this. While cleaning up the code and committing everything, maybe writing a devlog post or two, the idea of a perfectly-pinned dither kept nagging at me:</p>
+<p>World Space - Cube Mapping</p>
+<p>The experiments so far suggest that any correlation between the dither pattern and scene geometry would have to ignore depth information from the scene. What this means practically is that the dither can be pinned to the geometry during camera rotation but not during camera translation. This isn&rsquo;t such a bad thing for Obra Dinn considering the slow pace of the game and the observational role of the player. You&rsquo;re normally walking around, stopping, and looking at things. When walking, so many things are changing onscreen that the swimming dither isn&rsquo;t as obvious.</p>
+<p>With that in mind, my next attempt was mapping the dither pattern to the geometry indirectly by pre-rendering it onto the sides of a cube centered around the camera. The cube translates with the camera but stays oriented to the world. In the mix: little bit of screen, little bit of scene.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraCube.png" alt="">
+</p>
+<p>Dither pattern mapped to a cube centered around the camera</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraCubeMap.png" alt="">
+</p>
+<p>Camera&rsquo;s view looking up into a corner. Mapping scaled up for clarity.</p>
+<p>The cube&rsquo;s mapping works well when looking directly into the sides, and not so well when aimed into a corner. Still, the dither pattern stays perfectly fixed in 3D space as the camera rotates. Even rough, the result is promising.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraCube.gif" alt="">
+</p>
+<p>Thresholding scene with the cube-mapped dither pattern</p>
+<p>Now we&rsquo;re talking. Being a post-processing pass makes this more general than texel-space mapping, which is good. The problem is now down to the particular cube mapping. An ideal mapping would have one texel on the cube always resolve to exactly one pixel on the screen, regardless of the camera rotation. That&rsquo;s not possible with a cube&hellip;</p>
+<p>World Space - Sphere Mapping</p>
+<p>&hellip;but I got pretty close with a sphere.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraSphereMap.png" alt="">
+</p>
+<p>Mapping the dither pattern onto the inside of a sphere</p>
+<p>Finding this particular spherical mapping took some time. There&rsquo;s no way to perfectly tile a square texture onto a sphere. It would&rsquo;ve been possible to redefine the dither matrices in terms of a hexagon grid or something else that does tile on a sphere. Possible maybe, I didn&rsquo;t try. Instead, I just hacked on the square tiling until this carefully tweaked &ldquo;rings&rdquo; mapping of the original dither pattern gave good results.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraSphere.gif" alt="">
+</p>
+<p>Applied to the scene</p>
+<p>Better than the cube. Still lots of aliasing. The spherically-mapped dot size is very similar to the screen pixel size - off just enough to cause moire patterns. I could feel the closeness, and a very simple fix for this kind of aliasing is to supersample: apply the dither thresholding at a higher resolution and downsample.</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraSphereMap2.png" alt="">
+</p>
+<p>Spherically-mapped dither pattern at 2x and downsampled to 1x</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-CameraSphere2.gif" alt="">
+</p>
+<p>Thresholding at 2x, then downsampling to 1x</p>
+<p>This is the best I got. There are a few compromises:</p>
+<p>    <strong>1</strong> The dither pattern dots get larger and less effective at the edges of the screen<br>
+    <strong>2</strong> The pattern isn&rsquo;t aligned up-down-left-right for most camera rotations<br>
+    <strong>3</strong> The output is no longer 1-bit due to the final box-downsample</p>
+<p>But the upside is pretty lofty:</p>
+<p>    <strong>1</strong> The dithering is perfectly pinned for all camera rotations. This feels slightly uncanny in-game.<br>
+    <strong>2</strong> Discomfort from swimming dither is totally gone, even at fullscreen<br>
+    <strong>3</strong> The pixellated style of the game is preserved</p>
+<p>It&rsquo;s possible eliminate compromise #3 by reducing the output back to 1-bit with a simple 50% threshold. The result is still better than without supersampling (the triple comparison directly below is thresholded).</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-FinalCompare.gif" alt="">
+</p>
+<p>Side by side, by side</p>
+<p>
+  <img src="http://3909.co/dev/od/img/Dither2-SplitCompare.gif" alt="">
+</p>
+<p>In the game&rsquo;s default palette</p>
+<p><strong>Wrapup</strong></p>
+<p>It feels a little weird to put 100 hours into something that won&rsquo;t be noticed by its absence. Exactly no one will think, &ldquo;man this dithering is stable as shit. total magic going on here.&rdquo; I don&rsquo;t want to give people problems they didn&rsquo;t know they should have though so it was worth fixing.</p>
+<p>The screenspace mapping with offset works best at 1x and the sphere mapping works best at 2x. All scene rendering is at 800x450 now (up from 640x360), which helps legibility without sacrificing the low-res style. The final game will have two display modes: </p>
+<p><strong>DIGITAL</strong><br>
+Border-boxed, screenspace offset dither, 1-bit output</p>
+<p><strong>ANALOG</strong><br>
+Fullscreen, sphere-mapped dither, softened output</p>
+</blockquote>
+<p>Quoting because pagination, and I&rsquo;m sure there will be some useful discussion. For starters:</p>
+<blockquote>
+<p><a href="https://forums.tigsource.com/index.php?topic=40832.msg1363794#msg1363794">Quote from: JobLeonard on November 23, 2017, 12:38:35 PM</a></p>
+<p>I guess the non-square pixels in the final output are also an inevitable compromise? It kind of breaks the suspension of disbelief.</p>
+</blockquote>
+<p>I just realized that this compromise may not need to be inevitable, if you apply the treshold at the original pixel resolution (instead of this 2x blow-up). Of course, <em>that</em> would re-introduce the aliasing on the sphere, but if you only apply &ldquo;lower-res tresholding&rdquo; to the non-Bayer parts you would avoid that.</p>
+<p>#784 <strong>Aiden (Canned Turkey)</strong> (November 23, 2017 09:45 PM)</p>
+<p>Once again proving yourself as probably the most inventive developer alive. Wonderful work  :)</p>
+<p>#785 <strong>jg.camarasa</strong> (November 24, 2017 02:27 AM)</p>
+<p>Amazing writeup!</p>
+<p>#786 <strong>agingminotaur</strong> (November 24, 2017 05:19 AM)</p>
+<p>Extremely fascinating project. I remember reading about it when it started some years ago. Glad to see you&rsquo;re still in the saddle. (Not much more to add, just wanted to cheer you on and to follow this thread) :gentleman:</p>
+<p>As always,<br>
+Minotauros</p>
+<p>#787 <strong>Sporkaganza</strong> (November 29, 2017 02:16 PM)</p>
+<p>Well done with the &ldquo;screen-mapping with offset&rdquo; solution. It honestly looks indistinguishable from the original dithering, but is already a lot easier on the eyes.</p>
+<p>However, the shape-mapping stuff looks wrong to me. It&rsquo;s still way better than what you had though, and maybe at a larger screen resolution and with a little bit of softening, it doesn&rsquo;t break the illusion?</p>
+<p>#788 <strong>Lllorrr</strong> (December 02, 2017 02:14 AM)</p>
+<p>Hi!</p>
+<p>If there will be no lateral camera movement, only rotation, then you can render whole scene as spherical panorama and then show only needed part. This will guarantee that all pixels will stay in place.</p>
+<p>#789 <strong>ceztko</strong> (December 03, 2017 10:39 AM)</p>
+<blockquote>
+<p><a href="https://forums.tigsource.com/index.php?topic=40832.msg1363742#msg1363742">Quote from: dukope on November 23, 2017, 05:53:02 AM</a></p>
+<p><strong>Fullscreen, Round 3</strong><br>
+Thanks everybody for all the suggestions. [&hellip;]</p>
+</blockquote>
+<p>Thanks Lucas for all the work! Would you get some celebration time and show us a short video with the title screen and some already disclosed views within the ship? I&rsquo;m very curious about seeing the new dither-like effect in more frames :well, hello there!:</p>
+<p>#790 <strong>jsmars</strong> (December 21, 2017 07:25 AM)</p>
+<p>Thanks for sharing all those details about your process! I think those 100 hours will be repaid tenfold in playtime thanks to the improvement. It would be interesting to know if anyone / any game has done anything similar in the past to achieve this or if you are the first.</p>
+<p>#791 <strong>luru</strong> (December 26, 2017 05:53 AM)</p>
+<p>Just played the demo, and I have to say it does feel magic being able to play 1bit game on a retina screen and it feels awesome, so totally worth it :) (try and do that with non-optimised 1bit games!) But all that apart, and god is in the details for sure, the gameplay and camera and story feels really compelling, really want to discover more about what happened to Obra Dinn. Can&rsquo;t wait for the next release. Thanks for sharing!</p>
+<p>#792 <strong>tankorsmash</strong> (April 17, 2018 05:23 AM)</p>
+<p>How&rsquo;s this coming dude?</p>
+<p>#793 <strong>SamLouix</strong> (April 19, 2018 04:47 PM)</p>
+<p>Yes I am also very eager to know that. I have been following along with this game since the start!</p>
+<p>#794 <strong>registradus</strong> (May 03, 2018 05:51 PM)</p>
+<p>I can&rsquo;t wait for this game to be released</p>
+</blockquote>
+
+  
+  </div>
+</article>
+
+
+  
+
+
+
+
+
+
+
+<div class="footer-nav">
+  
+    <div class="footer-nav-prev">
+        <a href='../tig-31'>« TIGSource - October 2017 (24 posts)</a>
+    </div>
+  
+
+  
+    <div class="footer-nav-next">
+        <a href='../tig-33'>TIGSource - May 2018 (5 posts) »</a>
+    </div>
+  
+
+</div>
+
+
+
+
+
+
+
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2026  Lucas Pope 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="../../">All</a></li>
+         
+        <li><a href="../../obra-dinn">Return of the Obra Dinn</a></li>
+         
+        <li><a href="../../papers-please">Papers, Please</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=../../lib/font-awesome/css/all.min.css>
+<script src=../../lib/jquery/jquery.min.js></script>
+<script src=../../js/main.js></script>
+</html>

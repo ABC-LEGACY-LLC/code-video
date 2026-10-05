@@ -1,11 +1,11 @@
 {
   "room": 2,
   "title": "Open Edit",
-  "state": "verdict",
+  "state": "building",
   "opened": "2026-09-29",
   "owner": "alonur",
   "purpose": "Open Edit, VEED's open-source agent that turns a video into an editable browser project",
-  "updated": "2026-09-30T08:25:03.787Z",
-  "lines": 50,
-  "pulled": "2026-09-30T08:32:13.228Z"
+  "updated": "2026-10-01T07:27:21.442Z",
+  "lines": 362,
+  "pulled": "2026-10-01T10:06:36.389Z"
 }

@@ -1,0 +1,678 @@
+Jump to content
+
+Main menu
+
+ Main menu
+
+ move to sidebar
+ hide
+
+ Navigation
+
+ Main page
+Contents
+Current events
+Random article
+About Wikipedia
+Contact us
+
+ Contribute
+
+ Help
+Learn to edit
+Community portal
+Recent changes
+Upload file
+Special pages
+
+Search
+
+ Search
+
+Appearance
+
+ Donate
+
+Create account
+
+Log in
+
+Personal tools
+
+Donate
+
+Create account
+
+Log in
+
+ Contents
+
+ move to sidebar
+ hide
+
+ (Top)
+
+ 1
+ Definition
+
+ Toggle Definition subsection
+
+ 1.1
+ Marshall-Palmer distribution
+
+ 1.2
+ Ulbrich distribution
+
+ 2
+ Measurement
+
+ 3
+ Drop size versus radar reflectivity
+
+ 4
+ References
+
+ 5
+ See also
+
+Toggle the table of contents
+
+ Raindrop size distribution
+
+4 languages
+
+ فارسی
+Français
+Português
+中文
+
+ Edit links
+
+ Article
+
+Talk
+
+ English
+
+ Read
+
+Edit
+
+View history
+
+Tools
+
+ Tools
+
+ move to sidebar
+ hide
+
+ Actions
+
+Read
+
+Edit
+
+View history
+
+ General
+
+ What links here
+Related changes
+Upload file
+Permanent link
+Page information
+Cite this page
+Get shortened URL
+Switch to legacy parser
+
+ Print/export
+
+ Download as PDF
+Printable version
+
+ In other projects
+
+ Wikimedia Commons
+Wikidata item
+
+ Appearance
+
+ move to sidebar
+ hide
+
+ From Wikipedia, the free encyclopedia
+
+ Measurement system to quantify intensity of rainfall
+
+The raindrop size distribution (DSD), or granulometry of rain, is the distribution of the number of raindrops according to their diameter (D). Three processes account for the formation of drops: water vapor condensation, accumulation of small drops on large drops and collisions between sizes. According to the time spent in the cloud, the vertical movement in it and the ambient temperature, drops have a very varied history and a distribution of diameters from a few micrometers to a few millimeters.
+
+Definition
+[edit]
+
+Two average real distributions where the linear slope can be adjusted to the Marshal-Palmer equation.
+Example of distributions in convective rain in Florida with different rates of precipitation: logarithmic scale of number (N) versus linear scale of diameters (D)[1]
+
+In general, the drop size distribution is represented as a truncated gamma function for diameter zero to the maximum possible size of rain droplets.[2][3] The number of drop with diameter 
+
+ D
+
+ {\displaystyle D}
+
+ is therefore :
+
+ N
+ (
+ D
+ )
+ =
+
+ N
+
+ 0
+
+ D
+
+ μ
+
+ e
+
+ −
+ Λ
+ D
+
+ {\displaystyle N(D)=N_{0}D^{\mu }e^{-\Lambda D}}
+
+with 
+
+ N
+
+ 0
+
+ {\displaystyle N_{0}}
+
+, 
+
+ μ
+
+ {\displaystyle \mu }
+
+ and 
+
+ Λ
+
+ {\displaystyle \Lambda }
+
+ as constants.
+
+Marshall-Palmer distribution
+[edit]
+
+The most well-known study about raindrop size distribution is from Marshall and Palmer done at McGill University in Montréal in 1948.[4] They used stratiform rain with 
+
+ μ
+ =
+ 0
+
+ {\displaystyle \mu =0}
+
+ and concluded to an exponential drop size distribution. This Marshall-Palmer distribution is expressed as:
+
+ N
+ (
+ D
+
+ )
+
+ M
+ P
+
+ =
+
+ N
+
+ 0
+
+ e
+
+ −
+ Λ
+ D
+
+ {\displaystyle N(D)_{MP}=N_{0}e^{-\Lambda D}}
+
+Where 
+
+N0 = 8000 m−3mm−1 ;
+
+ Λ
+
+ {\displaystyle \scriptstyle \Lambda }
+
+ = 4.1 R−0.21mm−1 (equivalent to 41 R−0.21cm−1 in the reference[4]), R being the rainrate in stratiform precipitation in millimeters per hour;
+
+D = raindrop diameter in mm
+
+The units of N0 are sometimes simplified to cm −4 but this removes the information that this value is calculated per cubic meter of air.
+
+As the different precipitations (rain, snow, sleet, etc...), and the different types of clouds that produce them vary in time and space, the coefficients of the drop distribution function will vary with each situation. The Marshall-Palmer relationship is still the most quoted but it must be remembered that it is an average of many stratiform rain events in mid-latitudes.[4] The upper figure shows mean distributions of stratiform and convective rainfall. The linear part of the distributions can be adjusted with particular 
+
+ Λ
+
+ {\displaystyle \scriptstyle \Lambda }
+
+ of the Marshall-Palmer distribution. The bottom one is a series of drop diameter distributions at several convective events in Florida with different precipitation rates. We can see that the experimental curves are more complex than the average ones, but the general appearance is the same.
+
+Many other forms of distribution functions are therefore found in the meteorological literature to more precisely adjust the particle size to particular events. Over time researchers have realized that the distribution of drops is more of a problem of probability of producing drops of different diameters depending on the type of precipitation than a deterministic relationship. So there is a continuum of families of curves for stratiform rain, and another for convective rain.[4]
+
+Ulbrich distribution
+[edit]
+
+The Marshall and Palmer distribution uses an exponential function that does not simulate properly drops of very small diameters (the curve in the top figure). Several experiments have shown that the actual number of these droplets is less than the theoretical curve. Carlton W. Ulbrich developed a more general formula in 1983 taking into account that a drop is spherical if D <1 mm and an ellipsoid whose horizontal axis gets flattened as D gets larger. It is mechanically impossible to exceed D = 10 mm as the drop breaks at large diameters. From the general distribution, the diameter spectrum changes, μ = 0 inside the cloud, where the evaporation of small drops is negligible due to saturation conditions and μ = 2 out of the cloud, where the small drops evaporate because they are in drier air. With the same notation as before, we have for the drizzle the distribution of Ulbrich:[3]
+
+ N
+
+ 0
+
+ (
+ c
+
+ m
+
+ −
+ 4
+ −
+ μ
+
+ )
+
+ =
+
+ [
+
+ 6
+
+ π
+ (
+ μ
+ +
+ 3
+ )
+ !
+
+ ]
+
+ (
+
+ M
+
+ l
+
+ 10
+
+ −
+ 3
+
+ ρ
+
+ e
+
+ )
+
+ Λ
+
+ μ
+ +
+ 4
+
+ {\displaystyle N_{0}\mathrm {(cm^{-4-\mu })} =\left[{\frac {6}{\pi (\mu +3)!}}\right]\left({\frac {M_{l}}{10^{-3}\rho _{e}}}\right)\Lambda ^{\mu +4}}
+
+ and 
+
+ Λ
+
+ (
+ c
+
+ m
+
+ −
+ 1
+
+ )
+
+ =
+
+ 3.67
+ +
+ μ
+
+ D
+
+ 0
+
+ {\displaystyle \Lambda \mathrm {(cm^{-1})} ={\frac {3.67+\mu }{D_{0}}}}
+
+Where 
+
+ M
+
+ l
+
+ {\displaystyle M_{l}}
+
+ is the liquid water content, 
+
+ ρ
+
+ e
+
+ {\displaystyle \rho _{e}}
+
+ water density, and 
+
+ D
+
+ 0
+
+ ≈
+
+ {\displaystyle \scriptstyle D_{0}\approx }
+
+ 0.2 is an average value of the diameter in drizzle. For rain, introducing rainrate R (mm/h), the amount of rain per hour over a standard surface:[3]
+
+ D
+
+ 0
+
+ (
+ c
+ m
+ )
+
+ ≈
+ 0.13
+
+ R
+
+ 0.14
+
+ {\displaystyle D_{0}{(cm)}\approx 0.13R^{0.14}}
+
+ and 
+
+ N
+
+ 0
+
+ (
+ c
+
+ m
+
+ −
+ 4
+ −
+ μ
+
+ )
+
+ ≈
+ 6
+ ×
+
+ 10
+
+ −
+ 2
+
+ exp
+ ⁡
+ (
+ 3.2
+ ×
+ μ
+ )
+
+ {\displaystyle N_{0}\mathrm {(cm^{-4-\mu })} \approx 6\times 10^{-2}\exp(3.2\times \mu )}
+
+Measurement
+[edit]
+
+The first measurements of this distribution were made by rather rudimentary tool by Palmer, Marshall's student, exposing a cardboard covered with flour to the rain for a short time. The mark left by each drop being proportional to its diameter, he could determine the distribution by counting the number of marks corresponding to each droplet size. This was immediately after the Second World War.
+
+Different devices have been developed to get this distribution more accurately:
+
+Disdrometer
+
+Modified wind profiler
+
+Drop size versus radar reflectivity
+[edit]
+
+Knowledge of the distribution of raindrops in a cloud can be used to relate what is recorded by a weather radar to what is obtained on the ground as the amount of precipitation. We can find the relation between the reflectivity of the radar echoes and what we measure with a device like the disdrometer.
+
+The rainrate (R) is equal to number of particles (
+
+ N
+ (
+ D
+ )
+
+ {\displaystyle \scriptstyle N(D)}
+
+), their volume (
+
+ π
+
+ D
+
+ 3
+
+ /
+
+ 6
+
+ {\displaystyle \scriptstyle \pi D^{3}/6}
+
+) and their falling speed (
+
+ v
+ (
+ D
+ )
+
+ {\displaystyle \scriptstyle v(D)}
+
+):
+
+ R
+ =
+
+ ∫
+
+ 0
+
+ D
+ m
+ a
+ x
+
+ N
+ (
+ D
+ )
+ (
+ π
+
+ D
+
+ 3
+
+ /
+
+ 6
+ )
+ v
+ (
+ D
+ )
+ d
+ D
+
+ {\displaystyle R=\int _{0}^{Dmax}N(D)(\pi D^{3}/6)v(D)dD}
+
+The radar reflectivity Z is:
+
+ Z
+
+ r
+ a
+ i
+ n
+
+ =
+
+ |
+
+ K
+
+ r
+ a
+ i
+ n
+
+ |
+
+ 2
+
+ ∫
+
+ 0
+
+ D
+ m
+ a
+ x
+
+ N
+ (
+ D
+ )
+
+ D
+
+ 6
+
+ d
+ D
+
+ {\displaystyle Z_{rain}=|K_{rain}|^{2}\int _{0}^{Dmax}N(D)D^{6}dD\qquad }
+
+ where K is the Permittivity of water
+
+Z and R having similar formulation, one can solve the equations to have a Z-R of the type:[5]
+
+ Z
+
+ r
+ a
+ i
+ n
+
+ =
+ a
+
+ R
+
+ b
+
+ {\displaystyle \,Z_{rain}=aR^{b}}
+
+Where a and b are related to the type of precipitation (rain, snow, convective (like in thunderstorms) or stratiform (like from nimbostratus clouds) which have different 
+
+ Λ
+
+ {\displaystyle \Lambda }
+
+, K, N0 and 
+
+ v
+
+ {\displaystyle \scriptstyle v}
+
+.
+
+The best known of this relation is the Marshall-Palmer Z-R relationship which gives a = 200 and b = 1.6.[6] It is still one of the most used because it is valid for synoptic rain in mid-latitudes, a very common case. Other relationships were found for snow, rainstorm, tropical rain, etc.[6]
+
+References
+[edit]
+
+↑ Paul T. Willis; Frank Marks; John Gottschalck (2006). "Rain Drop Size Distributions and Radar Rain Measurements in South Florida".
+
+↑ Williams, Christopher R.; al. (May 2014). "Describing the Shape of Raindrop Size Distributions Using Uncorrelated Raindrop Mass Spectrum Parameters". Journal of Applied Meteorology and Climatology. 53 (5): 1282–1296. Bibcode:2014JApMC..53.1282W. doi:10.1175/JAMC-D-13-076.1. ISSN 1558-8424.
+
+1 2 3 2.0.CO;2"},"issn":{"wt":"0733-3021"},"bibcode":{"wt":"1983JApMe..22.1764U"},"doi-access":{"wt":"free"}},"i":0}}]}'/>Ulbrich, Carlton W. (1983). "Natural variation in the analytical form of the raindrop size distribution". Journal of Climate and Applied Meteorology. 22 (10): 1764–1775. Bibcode:1983JApMe..22.1764U. doi:10.1175/1520-0450(1983)022<1764:NVITAF>2.0.CO;2. ISSN 0733-3021.
+
+1 2 3 4 2.0.CO;2"},"volume":{"wt":"5"},"issue":{"wt":"4"},"pages":{"wt":"165–166"},"bibcode":{"wt":"1948JAtS....5..165M"},"issn":{"wt":"1520-0469"},"doi-access":{"wt":"free"}},"i":0}}]}'/>Marshall, J. S.; Palmer, W. M. (1948). "The distribution of raindrops with size". Journal of Meteorology. 5 (4): 165–166. Bibcode:1948JAtS....5..165M. doi:10.1175/1520-0469(1948)005<0165:TDORWS>2.0.CO;2. ISSN 1520-0469.
+
+↑ "La mesure de la hauteur de précipitation grâce à la réflectivité radar". Glossaire météorologique (in French). Météo-France. Retrieved 2009-03-12.
+
+1 2 National Weather Service. "Recommended Parameter Changes to Improve WSR-88D Rainfall Estimates During Cool Season Stratiform Rain Events". NOAA. Archived from the original on 2008-07-04. Retrieved 2009-03-12.
+
+See also
+[edit]
+
+Cloud drop effective radius
+
+Liquid water content
+
+Particle-size distribution
+
+Retrieved from "https://en.wikipedia.org/w/index.php?title=Raindrop_size_distribution&oldid=1326951623"
+
+ Categories: Cloud and fog physics
+Radar meteorology
+
+Hidden categories: Articles with short description
+Short description matches Wikidata
+CS1 French-language sources (fr)
+
+ This page was last edited on 11 December 2025, at 20:37 (UTC).
+
+ Page was rendered with Parsoid.
+
+ Text is available under the Creative Commons Attribution-ShareAlike 4.0 License;
+additional terms may apply. By using this site, you agree to the Terms of Use and Privacy Policy. Wikipedia® is a registered trademark of the Wikimedia Foundation, Inc., a non-profit organization.
+
+ Privacy policy
+
+ About Wikipedia
+
+ Disclaimers
+
+ Contact Wikipedia
+
+ Legal & safety contacts
+
+ Code of Conduct
+
+ Developers
+
+ Statistics
+
+ Cookie statement
+
+ Mobile view
+
+Search
+
+ Search
+
+Toggle the table of contents
+
+ Raindrop size distribution
+
+4 languages
+
+Add topic

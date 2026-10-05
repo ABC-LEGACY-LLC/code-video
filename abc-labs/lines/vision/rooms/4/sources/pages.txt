@@ -1,0 +1,11 @@
+s8 https://blog.roboflow.com/gpt6-astra-video-understanding/
+s9 https://docs.roboflow.com/deployment/roboflow-cloud/serverless-api/model-pricing
+s10 https://docs.roboflow.com/workflows/blocks/blocks/video-processing/sam3-video-tracker.md
+s11 https://roboflow.com/credits
+s12 https://www.assaia.com/solutions/apron-ai
+s13 https://searidgetech.com/smart-stand/
+s14 https://pmc.ncbi.nlm.nih.gov/articles/PMC13363769/
+s15 https://ai.google.dev/gemini-api/docs/generate-content/video-understanding
+s16 https://raw.githubusercontent.com/facebookresearch/sam3/main/README.md
+s17 https://raw.githubusercontent.com/roboflow/trackers/main/README.md
+s18 https://ai.google.dev/gemini-api/docs/pricing

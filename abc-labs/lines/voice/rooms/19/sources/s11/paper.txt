@@ -1,0 +1,1056 @@
+=== page 1
+Audio Engineering Society
+Convention Paper
+Presented at the 133rd Convention
+2012 October 26–29 San Francisco, USA
+This paper was peer-reviewed as a complete manuscript for presentation at this Convention. Additional papers may
+be obtained by sending request and remittance to Audio Engineering Society, 60 East 42 nd Street, New York, New
+York 10165-2520, USA; also see www.aes.org. All rights reserved. Reproduction of this paper, or any portion thereof,
+is not permitted without direct permission from the Journal of the Audio Engineering Society .
+Procedural audio modeling for particle-based
+environmental eﬀects
+Charles Verron1, George Drettakis 1
+1REVES-INRIA, Sophia-Antipolis, France
+Correspondence should be addressed to Charles Verron ( charles.verron@inria.fr)
+ABSTRACT
+We present a sound synthesizer dedicated to particle-based environmental eﬀects, for use in interactive
+virtual environments. The synthesis engine is based on ﬁve physically-inspired basic elements which we
+call sound atoms, that can be parameterized and stochastically distributed in time and space. Based on
+this set of atomic elements, models are presented for reproducing several environmental sound sources.
+Compared to pre-recorded sound samples, procedural synthesis provides extra ﬂexibility to manipulate and
+control the sound source properties with physically-inspired parameters. In this paper, the controls are
+used to simultaneously modify particle-based graphical models, resulting in synchronous audio/graphics
+environmental eﬀects. The approach is illustrated with three models, that are commonly used in video
+games: ﬁre, wind, and rain. The physically-inspired controls simultaneously drive graphical parameters
+(e.g., distribution of particles, average particles velocity) and sound parameters (e.g., distribution of sound
+atoms, spectral modiﬁcations). The joint audio/graphics control results in a tightly-coupled interaction
+between the two modalities that enhances the naturalness of the scene.
+1. INTRODUCTION
+In the last two decades advances in all ﬁelds of com-
+puter graphics (i.e., modeling, animation, rendering
+and more recently imaging) has resulted in impres-
+sive advances in realism, even for real-time virtual
+environments. Paradoxically, sound in virtual envi-
+ronments is still usually based on pre-recorded sound
+samples. Procedural sound synthesis is an attractive
+alternative to increase the sense of realism in interac-
+tive scenes [1]. Compared to pre-recorded sounds, it
+allows interactive manipulations that would be dif-
+ﬁcult (if not impossible) otherwise. In particular,
+procedural audio parameters can be linked to mo-
+tion parameters of graphics objects [2, 3] to enhance
+the sound/graphics interactions. Nevertheless, the
+use of sound synthesis is still limited in current video
+games, probably because of three major challenges
+that are diﬃcult to fulﬁll simultaneously: synthesis
+quality should be equivalent to pre-recorded sounds,
+synthesis should oﬀer ﬂexible controls to sound de-
+
+=== page 2
+Verron AND Drettakis Procedural audio modeling for particle systems
+Interactive 
+multimodal 
+3D scene
+Image 
+rendering
+Sound 
+rendering
+Mapping
+High-level 
+designer 
+controls
+Synthesis
+parameters
+Particle Rate
+Velocity
+Trajectory
+...
+ Synthesis
+parameters
+ Atom Rate
+Gain
+Frequency
+...
+Sound modeling
+Graphics modeling
+Fig. 1: Environmental sound synthesis for particle-based
+environmental eﬀects. A mapping between graphics and
+sound parameters allows tightly-coupled audio/graphics in-
+teractions.
+signers, and its computational cost should satisfy
+real-time constraints.
+Parametric sound synthesis techniques can be de-
+composed into two main families: physical models,
+aiming at simulating the physics of sound sources,
+and signal models aiming at reproducing perceptual
+eﬀects independently of the source [4]. For environ-
+mental sounds, physical approaches are of great in-
+terest. Some authors have successfully used physical
+models to reproduce speciﬁc environmental sounds
+such as wind [5] ﬁre [6] rolling [7] or liquids [8]. Nev-
+ertheless, the physics of these phenomena is often
+complicated. It requires the knowledge of various
+objects’ characteristics and their possible interac-
+tions with surrounding gases, liquids and solids. A
+purely physical approach for sound synthesis is cur-
+rently impossible in video games, due to the diﬃ-
+culty of designing a general physical model for a wide
+variety of environmental sounds, in addition to the
+high computational cost. On the other hand, studies
+on environmental sounds [9] suggest that synthetic
+signals matching relatively simple properties could
+give good results in terms of perceived realism.
+In the computer graphics community, many models
+have been proposed for generating environmental ef-
+fects (deformable objects, liquids, smoke, etc.) lead-
+ing to impressive results (see e.g., [10] for a review).
+Depending on the approach, the computation cost is
+sometimes too high to satisfy real-time constraints.
+An eﬃcient technique was introduced in [11] to sim-
+ulate “fuzzy” phenomena like ﬁre and smoke, by us-
+ing dynamic collections of particles. The designer
+has access to meaningful parameters (e.g., number
+of particles, mean velocity) to control stochastic pro-
+cesses that deﬁne the evolution of particles over time.
+Recent eﬃcient GPU and parallel implementations
+allow the generation of up to millions of particles
+in real time [12, 13]. Physical information is also in-
+cluded to model realistic movements of particles, and
+particle interactions [10]. The approach has been
+successfully applied for a wide range of phenomena
+[14, 15, 16, 17] (e.g., water, clouds, smoke, electricity,
+explosions, crowds, magic etc.) and is still very pop-
+ular in current video games [18, 19]. Curtis Roads
+noticed that particle systems share many similarities
+with granular sound synthesis, which models a sound
+as a collection of short audio grains distributed in
+time and space [20]. To our knowledge this similar-
+ity has not yet been exploited to propose a sound
+synthesizer dedicated to particle-based environmen-
+tal eﬀects.
+In this paper we propose a signal-based synthesis ap-
+proach, and focus on the perceptual control of the
+generated sounds. Since most particle systems in
+games are based on simple stochastic laws, the as-
+sociated sound models should not rely on physical
+solvers delivering collision detection, ﬂuid dynam-
+ics, etc. Instead, we follow a “physically informed”
+synthesis approach [21, 1] and propose an eﬃcient
+implementation, based on an atomic representation,
+suitable for several types of phenomena and in par-
+ticular rain, ﬁre and wind. This approach results in
+plausible sound quality and has the advantage of ful-
+ﬁlling real-time constraints. Furthermore, the sound
+models oﬀer intuitive controls to sound designers,
+making the synthesizer suitable for practical artistic
+scenarios. A mapping is described to connect the
+sound synthesis parameters to particle systems and
+produce relevant audio/graphics interactions. The
+approach is illustrated in ﬁgure 1. It has been val-
+idated with several examples (see the online videos
+accompanying this paper [22]) in a realtime imple-
+mentation.
+The paper is divided into three parts. First we pro-
+pose sound synthesis models based on ﬁve classes of
+atoms, and their parameterization to simulate rain,
+ﬁre and wind eﬀects. Then the real-time synthesis
+and spatialization pipeline is described. In the third
+AES 133 rd Convention, San Francisco, USA, 2012 October 26–29
+Page 2 of 12
+
+=== page 3
+Verron AND Drettakis Procedural audio modeling for particle systems
+part, we show how the sound models are connected
+to particles systems for producing multimodal envi-
+ronmental eﬀects.
+2. SYNTHESIS MODELS
+In his pioneering work on synthesis and classiﬁca-
+tion of environmental sounds [23] Gaver proposed
+three main categories depending on the physics of
+the source: vibrating solids, gasses and liquids. Even
+if these sounds refer to a wide range of physical phe-
+nomena, their acoustic morphology calls for com-
+mon signal characteristics, allowing for a granular-
+like synthesis approach. Five “sound atoms” were
+deﬁned in [24] as primitives to reproduce a variety
+of environmental sounds in the three categories de-
+ﬁned by Gaver. In this paper, we rely on this set of
+atoms to reproduce the micro structure of rain, ﬁre
+and wind sounds.
+2.1. Rain sound model
+Rain sounds result from drops falling on diﬀerent
+surfaces (leaves, solid ﬂoor, water...) producing a
+wide variety of impact sounds [1]. Depending on the
+surface hit by the drops, three main types of impacts
+may be distinguished. Drops falling on water pro-
+duce bubble sounds [25] that can be simulated by
+a chirped sinusoid (the chirped impact atom) with
+amplitude a and exponential decay α:
+x1(t) =a sin
+(
+2π
+∫ t
+0
+f(ν)dν
+)
+e−αt
+where the instantaneous frequency f varies linearly
+over time.
+Alternatively, drops falling on resonant surfaces
+(e.g., plates, windows...) trigger an oscillating sys-
+tem with ﬁxed resonant frequencies. The result-
+ing harmonic impact sounds can be simulated by
+a modal impact atom
+x2(t) =
+M∑
+m=1
+am sin
+(
+2πfmt
+)
+e−αmt
+wherefm are the modal frequencies of the impacted
+object and M is the number of simulated compo-
+nents. The amplitudes am depend on the excitation
+point, and the decay factorsαm are characteristic of
+the material [26].
+Drops falling on rigid or deformable objects (e.g.,
+stone, leaves) that exhibit a noisy response (high
+modal density) tend to produce a brief noisy sound
+which is perceptually diﬀerent from bubbles and si-
+nusoidal impacts. Such sounds are eﬃciently repro-
+duced by a noisy impact atom, which is a sum of 8
+contiguous subbands of noisesi(t), evenly spaced on
+the Equivalent Rectangular Bandwidth (ERB) scale,
+with amplitude ai and exponential decay αi:
+x3(t) =
+8∑
+i=1
+aisi(t)e−αit
+Additionally, an equalized noise atom is used to cre-
+ate a rain background noise
+x4(t) =
+32∑
+i=1
+ai(t)si(t)
+where si(t) are 32 contiguous subbands of noise
+evenly spaced on the ERB scale, with amplitudes
+ai(t). This allows the simulation of a huge number of
+simultaneous drops with a low computational cost.
+The 32-subband amplitudes are extracted from rain
+sound samples with the method described in [27].
+The rain sample is passed through a 32 ERB sub-
+band ﬁlterbank, then ai is set as the time average
+energy in subband i.
+Atoms x1,x 2, x3 and x4 produce the basic mi-
+crostructure of the rain sound model. They are
+distributed over time and space to simulate a wide
+diversity of rain situations. Three user controls
+GainWater , GainSolids and GainLeaves spec-
+ify the maximum level of drops falling on water,
+solids and leaves respectively. SimilarlyRateWater ,
+RateSolids and RateLeaves set the probability of
+falling drops per unit-time (i.e., per frame). An
+additional user control GainBackground sets the
+global gain of the rain background noise.
+For real-time synthesis, the synthesis parameters are
+initialized for a population of 100 chirped impacts
+with diﬀerent frequencies and amplitude, following
+the laws proposed in [25]. Similarly, the initial pa-
+rameters of 100 noisy and/or modal impacts are set
+to precomputed values, previously extracted from
+rain sound samples so as to reproduce “plausible”
+drop sounds. At run-time, impacts are synthesized
+in real time from their initial synthesis parameters.
+Integration of the rain user controls within the
+synthesis process is illustrated by the following
+AES 133 rd Convention, San Francisco, USA, 2012 October 26–29
+Page 3 of 12
+
+=== page 4
+Verron AND Drettakis Procedural audio modeling for particle systems
+pseudo-code:
+1: function processRain
+2: for each frame l do
+3:
+4: // Drops
+5: if rand()<RateWater then
+6: triggerOneChirpedImpact(rand(). GainWater )
+7: if rand()<RateSolids then
+8: triggerOneModalImpact(rand(). GainSolids)
+9: if rand()<RateLeaves then
+10: triggerOneNoisyImpact(rand(). GainLeaves)
+11:
+12: // Background noise
+13: for subband i = 1→ 32 do
+14: a =ai . GainBackground
+15: setEqualizedNoise subband(i,a )
+16: end for
+17:
+18: end for
+19: end function
+where rand() is a random number uniformly dis-
+tributed between 0 and 1, the three trigger func-
+tions synthesize impacts with the given amplitude,
+and setEqualizedNoise subband(i,a ) synthesizes the
+ith subband of the equalized noise atom with ampli-
+tude a.
+2.2. Fire sound model
+The ﬁre sound is synthesized as a combination of
+noisy impact atoms to simulate crackling, and equal-
+ized noise to simulate the combustion (ﬂames) noise.
+Noisy impact parameters (i.e., subband amplitudes
+and decays) were deﬁned to approximate real crack-
+ling sounds. Due to the complexity of these signals
+which are noisy and non-stationary, manual inter-
+vention was required to set the range of plausible
+parameters (as for noisy raindrop sounds). Five pro-
+totype spectral envelopes with eight ERB subbands
+were extracted from real-world crackling sound ex-
+amples, along with three amplitude decays repre-
+senting three categories of crack sizes: big, medium
+and small. For simplicity, a single decay is used in
+the eight subbands of each noisy impact.
+To reproduce combustion noise, the 32 subband am-
+plitudesai of the equalized noise are extracted from
+a ﬁre sound sample (as described in [27]) and aver-
+aged over time to get a constant spectral envelope.
+For real-time synthesis, 100 noisy impacts are
+initialized with one of the precomputed parameter
+sets. Then the user controls GainCrackling and
+RateCrackling to set respectively the maximum
+gain and the probability of crackling per unit-time.
+The user-control GainCombustion sets the gain of
+the combustion noise. A low frequency noise b(t)
+is also introduced to modulate the energy in the
+ﬁrst four subbands, to increase the variations of the
+sound and continuously reproduce changing ﬂame
+sizes. This modulation can be eﬃciently achieved
+by ﬁltering a white noise by a low-pass ﬁlter with a
+very low cutoﬀ frequency (around 1Hz) as suggested
+in [1]. The following pseudo-code illustrates the ﬁre
+synthesis process:
+1: function processFire
+2: for each frame l do
+3:
+4: // Crackling
+5: if rand()<RateCrackling then
+6: triggerOneNoisyImpact(rand(). GainCrackling )
+7:
+8: // Combustion noise
+9: b(l) =lowPass(rand()) // random modulation
+10: for subband i = 1→ 4 do
+11: a =ai . GainCombustion .(1 +b(l))
+12: setEqualizedNoise subband(i,a )
+13: end for
+14: for subband i = 5→ 32 do
+15: a =ai . GainCombustion
+16: setEqualizedNoise subband(i,a )
+17: end for
+18:
+19: end for
+20: end function
+2.3. Wind sound model
+A signal model based on time-varying bandpass
+ﬁlters for simulating wind sounds was proposed in
+[1]. We adapted this model to our architecture,
+producing a wind sound by the addition of several
+band-limited noises that simulate wind resonances.
+Each band-limited noise atom is deﬁned by its time-
+varying spectral envelope:
+X5(f)=
+{
+A(t) if|f−F (t)|<B(t)
+2
+A(t)e−α(t)
+(
+|f−F(t)|− B(t)
+2
+)
+otherwise
+where F (t) is the center frequency, A(t) the gain,
+B(t) the bandwidth and α(t) the ﬁlter slope.
+The amplitude A and center frequency F of each
+atom are set in real time by a single user control
+WindSpeed as follows:
+A(t) =Ai . WindSpeed .
+(
+1 +b(t−τi)
+)
+AES 133 rd Convention, San Francisco, USA, 2012 October 26–29
+Page 4 of 12
+
+=== page 5
+Verron AND Drettakis Procedural audio modeling for particle systems
+where Ai and τi are constant values (diﬀerent for
+each atom i) that represent the relative amplitude
+and propagation time to the listener, and
+F (t) =Ci . A(t) +Fi
+where Fi and Ci are respectively the frequency oﬀ-
+set and deviation constants. This way, the center
+frequency and amplitude of the band-limited compo-
+nents are proportional to the WindSpeed user con-
+trol. The modulation b(t) is a low frequency noise
+with a cutoﬀ frequency around 1 Hz, that introduces
+plausible variations in the wind sound, as described
+for the ﬁre combustion noise.
+To reproduce diﬀerent types of wind sounds, from
+broadband (e.g., wind in the trees) to narrowband
+phenomena (e.g., wind whistling in a window) the
+bandwidth and slope of each atom can be adapted
+intuitively by the sound designer via the WindType
+user control. This control linearly interpolates be-
+tween several preset values previously created for
+[αi,Bi,Ai,τi,Ci,Fi].
+The sound of rustling leaves in the trees is also
+simulated, as a combination of noisy impacts and
+equalized noise (to simulate a huge number of
+leaves) parameterized with the method described
+above for rain background noise. By default
+RateWindLeaves and GainWindLeaves (i.e., rate
+and gain of noisy impacts and equalized noise)
+are set proportionally to WindSpeed . The general
+synthesis process is illustrated by the following
+pseudo-code:
+1: function processWind
+2: for each frame l do
+3:
+4: // Wind band-limited noises
+5: b(l) =lowPass(rand()) // random modulation
+6: for each noise i do
+7: [ αi,B i,A i,τ i,C i,F i] =
+8: interpolatePresets(i, WindType )
+9: A =Ai . WindSpeed .(1 +b(l−τi))
+10: F =Ci . A+Fi
+11: setBandlimitedNoise( A,F,α i,B i)
+12: end for
+13:
+14: // Rustling leaves
+15: if rand()<RateWindLeaves then
+16: triggerOneNoisyImpact(rand(). GainWindLeaves )
+17: for subband i = 1→ 32 do
+18: a =ai . GainWindLeaves
+19: setEqualizedNoise subband(i,a )
+20: end for
+21:
+22: end for
+23: end function
+In summary the rain, ﬁre and wind models require
+ﬁve classes of sound atoms, whose low-level param-
+eters are listed in table 1. These atoms are the core
+components of the environmental sound synthesizer.
+Atom Parameters
+Modal impact
+am initial amplitudes
+αm decays
+fm frequencies
+Noisy impact [a1...a8] subband amplitudes
+[α1...α8] subband decays
+Chirped impact
+f0 initial frequency
+σ linear frequency shift
+α decay
+Band-limited noise
+F (t) center frequency
+B(t) bandwidth
+α(t) ﬁlter slope
+A(t) amplitude
+Equalized noise [a1(t)...a32(t)] amplitudes
+T able 1: The ﬁve classes of atoms used for the sound syn-
+thesis models, with their respective parameters.
+3. SPATIALIZED SYNTHESIS ENGINE
+Rain, ﬁre and wind sounds are created as a com-
+bination of time-frequency atoms x(t). Each atom
+is modeled as a sum of sinusoidal and noisy com-
+ponents, noted respectively sD(t) and sS(t). This
+allows the use of eﬃcient synthesis algorithms based
+on the inverse fast Fourier transform (IFFT) to gen-
+erate the atoms. Additionally, IFFT synthesis is
+combined with 3D audio modules in the frequency
+domain, following the eﬃcient approach described in
+[28]. The complete synthesis/spatialization pipeline
+is depicted in ﬁgure 2 and each part of the process
+is described in more detail below.
+Time-frequency synthesis The synthesis of
+each source is realized by blocks in the frequency
+domain. At each block l, an approximation of the
+short-time Fourier transform of the atoms is built
+by summing the deterministic Sl
+D or stochastic Sl
+S
+contributions. Real and imaginary parts of the de-
+terministic short-time spectrum (STS) are computed
+AES 133 rd Convention, San Francisco, USA, 2012 October 26–29
+Page 5 of 12
+
+=== page 6
+Verron AND Drettakis Procedural audio modeling for particle systems
+Fig. 2: Architecture of the synthesis/spatialization engine. Deterministic and stochastic components of the atoms are added
+in the frequency domain to form a collection of spectra (STS) that are spatialized around the listener (spatial encoding/decoding
+with C intermediate channels). Inverse fast Fourier transform (IFFT) and overlap-add (OLA) are performed to get the mul-
+tichannel signal for an arbitrary setup of P loudspeakers (or headphones). A supplementary short-time spectrum is dedicated
+to the reverberation, common for all sources in the scene and implemented by a Feedback Delay Network (FDN) in the time
+domain (1 input channel, P output channels).
+by convolving the theoretical ray spectrum formed
+by the M sinusoidal components of amplitude al
+m,
+frequencyfl
+m and phase Φl
+m, with the “spectral mo-
+tif” W which is the Fourier transform of the synthe-
+sis window w[n] as described in [29]:
+Sl
+D[k] =
+M∑
+m=1
+al
+mejΦl
+mW (k
+N−fl
+m) (1)
+N being the number of frequency bins (i.e., the syn-
+thesis window size) and k the discrete frequency in-
+dex (i.e., W [k] = W (k
+N )). We use two synthesis
+window sizes N in parallel to produce the impul-
+sive impacts (N = 128) and the continuous atoms
+(N = 1024). The real and imaginary parts of the
+stochastic STS are computed by summing the sub-
+band spectral envelopes of the atoms, multiplying
+by two noise sequences, and circularly convolving
+the result with the spectral motif W . The ﬁnal STS
+Xl[k] is obtained for each source by summing the
+deterministic and stochastic contributions in the fre-
+quency domain.
+Integrated spatialization The architecture of
+the synthesizer is designed for easily extending the
+perceived width of sound sources. Rain, ﬁre and
+wind sounds are formed by a collection of sec-
+ondary sources spatialized around the listener. Two
+approaches are used to distribute the synthesized
+atoms into secondary sources STS. Impulsive atoms
+(i.e., chirped, modal and noisy impacts) correspond
+to phenomena typically localized in space (i.e., rain-
+drop sounds and ﬁre crackling). For this reason,
+each of them is integrated into one single STS. On
+the other hand, continuous noisy atoms (i.e., band-
+limited and equalized noises) correspond to natu-
+rally diﬀuse phenomena (i.e., rain background noise,
+ﬁre combustion noise and wind band-limited noises).
+Consequently, decorrelated copies of these atoms
+are integrated into all the secondary sources STS,
+AES 133 rd Convention, San Francisco, USA, 2012 October 26–29
+Page 6 of 12
+
+=== page 7
+Verron AND Drettakis Procedural audio modeling for particle systems
+producing a diﬀuse noise around the listener. The
+decorrelation is achieved by using diﬀerent sequences
+of noise when building the stochastic component of
+each atom.
+A supplementary STS, common for all sources is pro-
+vided for the reverberation, which is eﬃciently im-
+plemented by a multichannel Feedback Delay Net-
+work [30]. Spatialization of each secondary source is
+based on a multichannel encoding/decoding scheme
+(see [28] for more details). The C-channel encod-
+ing consists in applying real-valued spatial gains
+(g1, . . .,gC) to the STSXl
+i[k], simulating the position
+(θl
+i, Ψl
+i) of the ith point source. The gains are com-
+puted with an amplitude-based panning approach
+such as VBAP [31] or Ambisonics [32, 33]. The en-
+coded multichannel STS are then summed together,
+channel by channel, producing a single blockYl with
+C channels:
+Yl
+c [k] =
+I∑
+i=1
+gc(θl
+i, Ψl
+i)Xl
+i[k]
+where gc is the cth position-dependent gain and I
+is the total number of sources. Spatial decoding
+performs linear combinations of the channels of Yl
+to get the signals for the P loudspeakers. It de-
+pends on the chosen panning method and on the
+loudspeaker setup. Finally, the decoded channels are
+inverse fast Fourier transformed and overlap-added
+to reconstruct the synthetic signals xp[n] for the P
+output channels:
+xp[n] =
+∞∑
+l=−∞
+gp(θl
+i, Ψl
+i)w[n−lL]
+(
+sl
+D[n−lL]+sl
+S[n−lL]
+)
+where sl
+D and sl
+S are the sum of all atomic compo-
+nents (deterministic and stochastic) at block l and
+L is the synthesis hop size. For rendering over head-
+phones (P = 2) we use Head Related Transfer Func-
+tions (HRTF) from the Listen1 database to simulate
+C = 18 virtual loudspeakers in the spatial decoding
+stage.
+4. COUPLING WITH PARTICLE SYSTEMS
+The advantage of sound modeling compared to
+sample-based approaches lies in the ﬂexibility of
+transformations oﬀered by the synthesis parameters.
+1http://www.ircam.fr/equipes/salles/listen
+Stochastic control of sound atoms were deﬁned in
+section 2 to provide high-level physically-inspired
+manipulation of the rain, ﬁre and wind phenomena.
+Here we present the mapping of audio and graphics
+parameters for particle-based eﬀects.
+4.1. Principles of particle systems
+At each frame of the animation sequence, the basic
+steps of a particle system are as follows [11]: new
+particles are generated with a set of attributes, par-
+ticles that have existed for a certain amount of time
+are destroyed, and remaining particles are trans-
+formed and moved according to their dynamic at-
+tributes. Initial attributes of particles are their posi-
+tion, velocity and acceleration, along with their size,
+color, transparency, shape and lifetime. To change
+the dynamics and appearance of the particle system,
+the designer has access to a set of controls that af-
+fect the mean m and maximum deviationδ of parti-
+cle initial attributes. Typically, a particle attribute
+p∈ RN is deﬁned as:
+p =m +rand().δ
+where m and δ ∈ RN (respectively the mean and
+maximum deviation) are the designer controls, while
+rand() is a random number uniformly distributed be-
+tween -1 and 1. Simple uniform stochastic processes
+have the advantage of being intuitive to manipulate.
+As an example, if the designer setsm = [10, 0, 0] and
+δ = [0.5, 0.5, 0.5] for the initial position parameter,
+then the particles are randomly created inside a unit
+cube centered at [10, 0, 0].
+With these simple principles, particle systems are
+used as real-time building components for a wide
+range of environmental phenomena. The size and
+shape of each particle can be designed to approxi-
+mate individual raindrops to simulate complex rain
+environments [34, 35, 36, 37, 38]. Similarly, ﬂame
+and smoke particles are used to simulate ﬁre [39, 40,
+41] and leaf-like particles to simulate wind [42].
+4.2. Audio/graphics controls
+To decrease computational cost, particle systems of-
+ten do not provide collision detection for individual
+particles. For this reason we do not use such in-
+formation for coupling audio and graphics, and fo-
+cus on high-level manipulations of sound and graph-
+ics components. This approach leads to ﬂexible au-
+dio/graphics controls that are suitable for practical
+artistic scenarios.
+AES 133 rd Convention, San Francisco, USA, 2012 October 26–29
+Page 7 of 12
+
+=== page 8
+Verron AND Drettakis Procedural audio modeling for particle systems
+Rain Intensity In our implementation, rain is
+produced by particles with initial positions ran-
+domly distributed at the top of the virtual world
+(concentric circles around the player) with vertical
+initial velocities. The RainIntensity parameter dy-
+namically controls the number of graphics particles
+(raindrops) emitted by the particle system per unit-
+time (particle spawn rate). A linear mapping be-
+tweenRainIntensity and the rain sound parameters
+provides a simple way to match graphics and sound
+rendering. Speciﬁcally, RainIntensity is linked
+to the raindrop rate via RateWater , RateSolids
+andRateLeaves, along with their gain GainWater ,
+GainSolids and GainLeaves. It also controls the
+background noise level via GainBackground (see
+section 2.1). For more ﬂexibility the mapping can
+be edited by the sound designer to achieve the de-
+sired result (piece-wise linear mapping, exponential,
+etc.). The expected number of drops falling on wa-
+ter, leaves or solids can be set separately, which al-
+lows the speciﬁcation of zones with diﬀerent charac-
+teristics (e.g., more water or more foliage).
+Fire Intensity For the ﬁre simulation, a bunch
+of ﬂame-like and smoke-like particles are projected
+above the ﬁreplace, with varying initial positions and
+velocities. FireIntensity controls the spawn rate of
+these particles (i.e., the expected number of parti-
+cles per unit-time). Simultaneously, we map this
+parameter to control in real time the rate and gain
+of crackling viaRateCrackling andGainCrackling
+and the gain of ﬂame noise viaGainCombustion (see
+section 2.2). As for the rain, the mapping can be
+edited by the designer to adjust the desired behav-
+ior. The joint audio/graphics control is illustrated
+in ﬁgure 3.
+Wind Speed In our system, wind is simulated by
+leaf-like particles moving around the player. The
+parameter WindSpeed controls the spawn rate and
+velocity over the lifetime of the particles. Addition-
+ally, it controls the wind sound model by changing
+the resonance frequency and amplitude of the band-
+limited noise atoms (see section 2.3). To improve
+the simulation, the trees in the scene are also slightly
+moved with the same average wind speed.
+4.3. Implementation
+An interactive scene with rain, ﬁre and wind was de-
+signed to illustrate the audio/graphics interactions
+t im e (s)
+freq (Hz)
+0 0.5 1 1.5 2 2.5 3 3.5 4 4.5
+20
+500
+2k
+6k
+20k
+− 80
+− 60
+− 40
+− 20
+0dB
+Intensity IntensityIntensity
+signal
+Fig. 3: Audio/graphics high-level control of a ﬁre. The
+control Intensity changes the rate and gain of noisy impacts,
+and the combustion noise of the ﬁre sound model. Simulta-
+neously, it controls the ﬂame/smoke particle spawn rate for
+the graphics simulation.
+Fig. 4: Interactive scene with ﬁre, wind and rain. Graph-
+ics are generated with UDK 2 and audio with custom exter-
+nal libraries implemented for Max 3. Bidirectional commu-
+nication between the audio and graphics engines is set with
+UDKOSC4.
+(see ﬁgure 4). We used the UDK 2 game engine for
+graphics rendering, while sound rendering was per-
+formed with our custom synthesis/spatialization en-
+gine (see section 3) implemented as a Max 3 exter-
+nal library. Network communication between the
+graphics and sound engines was realized with the
+UDKOSC4 library [43, 44], allowing the two en-
+gines to run on separate machines. High-level au-
+dio/graphics controls were edited by the designer
+and saved as automation parameters in the game
+2www.UDK.com
+3www.cycling74.com
+4https://ccrma.stanford.edu/wiki/UDKOSC
+AES 133 rd Convention, San Francisco, USA, 2012 October 26–29
+Page 8 of 12
+
+=== page 9
+Verron AND Drettakis Procedural audio modeling for particle systems
+Graphics
+Engine
+ Sound
+Engine
+High-level controls
+Modulations
+Fr ~ 30 Hz  Fr ~ 170 Hz
+Fig. 5: Audio/graphics interactions. The graphics engine
+sends high-level designer controls (e.g., ﬁre intensity and po-
+sition) at the frame rate Fr = 30 Hz. For speciﬁc eﬀects, the
+audio engine may also compute modulation parameters (e.g.,
+ﬂame energy) that are sent back to update the graphics.
+engine. At run-time, these controls and the position
+of sound sources relative to the player are sent in real
+time (via UDKOSC functions) to the sound engine
+(see ﬁgure 5).
+4.4. Spatial sound distribution
+We use two approaches for simulating spatial prop-
+erties of sound sources in the virtual environment:
+localized volumetric sound sources, such as ﬁre or
+wind in the trees are simulated as collections of
+point-like sources while completely diﬀuse sources
+like background wind and rain are created as collec-
+tions of plane waves attached to the listener. These
+two strategies are illustrated in ﬁgure 6. Point-like
+sources and plane waves are both simulated with the
+technique described in section 3.
+To compose a scene, the sound designer attaches lo-
+calized sources to objects in the virtual environment.
+Several point-like sources can be attached together
+to form a volumetric source (e.g., a ﬁre, wind in
+a tree). The location of each point-like source is
+continuously updated according to the listener posi-
+tion and orientation. The source-player distance d
+is simulated by a gain 1
+d that attenuates the direct
+sound (not the reverberation). On the other hand,
+diﬀused sources (surrounding sounds) are simulated
+as a sum of eight plane waves, automatically dis-
+tributed around the player. The plane wave analogy
+comes from the fact that surrounding sounds are vir-
+tually at an inﬁnite distance from the listener and
+thus have no distance attenuation. The eight plane
+waves incident directions are evenly positioned on
+a horizontal circle, and their gain is weighted ac-
+cording to the desired source width as proposed in
+[28]. Surrounding sounds are attached to the player,
+i.e., they follow the player’s position and orienta-
+tion (all plane waves have a ﬁxed orientation in the
+Fig. 6: Spatial distribution of sound sources in the virtual
+environment. Left: localized sounds (e.g., ﬁre) are produced
+as a collection of point sources (spherical waves) represented
+as white circles. Right: diﬀuse sounds (e.g, rain and wind
+backgrounds) are simulated by plane waves with ﬁxed incom-
+ing directions surrounding the player.
+player’s coordinate system). Consequently their po-
+sition (orientation and distance) does not need to be
+updated in real time, saving some computation time
+compared to volumetric sources.
+Several controls allow the sound designer to adjust
+the perceived width of volumetric and surrounding
+sounds (please see [28] for more details on the width
+gain computation). RainWidth sets the angular dis-
+tribution of rain components around the listener: in-
+dividual raindrops are randomly distributed in the
+plane waves, while background noise is duplicated.
+FireWidth sets the spatial distribution of crack-
+ling and combustion noise among their point-like
+sources. Finally WindWidth sets the spreading of
+band-limited noises in the wind plane waves.
+5. CONCLUSION AND FUTURE WORK
+Atomic signal modeling of environmental sounds has
+been presented for the generation of audio in inter-
+active applications. The proposed synthesizer is able
+to generate realistic sounds evoking a wide variety of
+phenomena existing in our natural environment. It
+provides an accurate tool to sonify complex scenes
+composed of several sound sources in 3D space. The
+position and the spatial extension of each source are
+dynamically controllable. High-level intuitive con-
+trols have been presented for simultaneous transfor-
+mations of sound and graphics in interactive appli-
+cations. Our approach results in a strong interac-
+tion between graphics and sound which increases the
+immersion in the scene. Demonstration videos are
+available online [22].
+AES 133 rd Convention, San Francisco, USA, 2012 October 26–29
+Page 9 of 12
+
+=== page 10
+Verron AND Drettakis Procedural audio modeling for particle systems
+The main limitation of this study is the absence of a
+fully automatic analysis method to extract the syn-
+thesis parameters from recorded sounds. Currently
+the sound designer can modify the parameters of the
+sound models to approximate target sounds. Fur-
+ther research is needed to automatically decompose
+a given sound sample (provided by the sound de-
+signer) as a set of atomic elements. This decom-
+position would allow independent control of atom
+distribution in time and space, for high-level trans-
+formation of the original sound.
+Automatic generation of soundscapes is another in-
+teresting research direction. For the moment, syn-
+thesis parameters (i.e., RainIntensity, FireIntensity
+and WindSpeed) are manually controlled by the de-
+signer, which allows him to produce the desired be-
+havior. It would be interesting to provide a fully
+automatic weather system, where the correlation
+between each element could be speciﬁed by simple
+rules. As an example, the wind speed would inﬂu-
+ence ﬁre intensity, rain intensity would be inversely
+proportional to ﬁre intensity, etc. The synthesizer
+proposed in this paper is a good starting point for
+such research.
+ACKNOWLEDGEMENTS
+This work was partially funded by the EU IP project
+VERVE (www.verveconsortium.org). Part of this
+work has been done during the ﬁrst author’s Ph.D.
+[45] at Orange Labs and CNRS-LMA. We thank G.
+Pallone, M. Aramaki, R. Kronland-Martinet and C.
+Gondre for fruitful contributions to this work, and
+the anonymous reviewers for helpful comments.
+6. REFERENCES
+[1] A. Farnell, Designing sound, MIT Press, 2010.
+[2] J .K. Hahn, H. Fouad, L. Gritz, and J. W. Lee,
+“Integrating sounds and motions in virtual en-
+vironments,” Presence: Teleoperators and Vir-
+tual Environments , vol. 7, no. 1, pp. 67–77,
+1998.
+[3] C. Picard Limpens, Expressive Sound Synthe-
+sis for Animations , Ph.D. thesis, Universit´ e de
+Nice, Sophia Antipolis, 2009.
+[4] D. Schwarz, “Corpus-based concatenative syn-
+thesis,” Signal Processing Magazine, IEEE, vol.
+24, no. 2, pp. 92–104, 2007.
+[5] Y. Dobashi, T. Yamamoto, and T. Nishita,
+“Real-time rendering of aerodynamic sound us-
+ing sound textures based on computational ﬂuid
+dynamics,” ACM Transactions on Graphics
+(Proc. SIGGRAPH 2003) , vol. 22, no. 3, pp.
+732–740, 2003.
+[6] J. N. Chadwick and D. L. James, “Animating
+ﬁre with sound,” ACM Transactions on Graph-
+ics (Proc. SIGGRAPH 2011) , vol. 30, no. 4,
+2011.
+[7] C. Stoelinga and A. Chaigne, “Time-domain
+modeling and simulation of rolling objects,”
+Acustica united with Acta Acustica, vol. 93, no.
+2, pp. 290–304, 2007.
+[8] C. Zheng and D. L. James, “Harmonic ﬂu-
+ids,” ACM Transaction on Graphics (Proc.
+SIGGRAPH 2009) , vol. 28, no. 3, pp. 37:1–
+37:12, 2009.
+[9] J. H. McDermott and E. P. Simoncelli, “Sound
+Texture Perception via Statistics of the Audi-
+tory Periphery: Evidence from Sound Synthe-
+sis,” Neuron, vol. 71, no. 5, pp. 926–940, 2011.
+[10] A. Nealen, M. M¨ uller, R. Keiser, E. Boxer-
+man, and M. Carlson, “Physically based de-
+formable models in computer graphics,” Com-
+puter Graphics Forum, vol. 25, no. 4, pp. 809–
+836, 2006.
+[11] W. T. Reeves, “Particle Systems - a Technique
+for Modeling a Class of Fuzzy Objects,” ACM
+Trans. Graph., vol. 2, pp. 91–108, April 1983.
+[12] A. Kolb, L. Latta, and C. Rezk-Salama,
+“Hardware-based simulation and col-
+lision detection for large particle sys-
+tems,” in Proceedings of the ACM SIG-
+GRAPH/EUROGRAPHICS conference on
+Graphics hardware, 2004, pp. 123–131.
+[13] C. Reynolds, “Big fast crowds on PS3,” in Pro-
+ceedings of the 2006 ACM SIGGRAPH sympo-
+sium on Videogames, 2006, pp. 113–121.
+[14] K. Sims, “Particle animation and rendering
+using data parallel computation,” Computer
+Graphics (Siggraph 90 proceedings), vol. 24, pp.
+405–413, September 1990.
+AES 133 rd Convention, San Francisco, USA, 2012 October 26–29
+Page 10 of 12
+
+=== page 11
+Verron AND Drettakis Procedural audio modeling for particle systems
+[15] M. Muller, D. Charypar, and M. Gross,
+“Particle-based ﬂuid simulation for interac-
+tive applications,” in Proceedings of the
+2003 ACM SIGGRAPH/Eurographics Sympo-
+sium on Computer Animation , 2003.
+[16] N. Bell, Y. Yu, and P. J. Mucha, “Particle-
+based simulation of granular materials,” in Eu-
+rographics/ACM SIGGRAPH Symposium on
+Computer Animation, 2005.
+[17] S. Clavet, P. Beaudoin, and P. Poulin,
+“Particle-based viscoelastic ﬂuid simulation,”
+in Proceedings of the 2005 ACM SIG-
+GRAPH/Eurographics symposium on Com-
+puter animation, 2005.
+[18] J. Lander, “The ocean spray in your face,”
+Game Developer Magazine , July 1998.
+[19] J. V. der Berg, “Building an advanced parti-
+cle system,” Game Developer Magazine, March
+2000.
+[20] C. Roads, “Introduction to granular synthesis,”
+Computer Music Journal, vol. 12, no. 2, pp. 11–
+13, 1988.
+[21] P. R. Cook, Real Sound Synthesis for Interac-
+tive Applications, A. K Peters Ltd., 2002.
+[22] http://www-sop.inria.fr/reves/Basilic/
+2012/VD12/.
+[23] W. W. Gaver, “What in the world do we hear?
+an ecological approach to auditory event per-
+ception,” Ecological Psychology, vol. 5(1), pp.
+1–29, 1993.
+[24] C. Verron, M. Aramaki, R. Kronland-Martinet,
+and G. Pallone, “Controlling a spatialized en-
+vironmental sound synthesizer,” in Proceedings
+of the 2009 IEEE Workshop on Applications of
+Signal Processing to Audio and Acoustics, 2009.
+[25] K. van den Doel, “Physically-based models for
+liquid sounds,” in Proceedings of ICAD 04-
+Tenth Meeting of the International Conference
+on Auditory Display , 2004.
+[26] M. Aramaki, M. Besson, R. Kronland-Martinet,
+and S. Ystad, “Controlling the perceived ma-
+terial in an impact sound synthesizer,” IEEE
+Transactions on Audio, Speech, and Language
+Processing, vol. 19, no. 2, pp. 301–314, 2011.
+[27] C. Verron, M. Aramaki, R. Kronland-Martinet,
+and G. Pallone, “Analysis/synthesis and spa-
+tialization of noisy environmental sounds,” in
+Proceedings of ICAD 09 - 15th International
+Conference on Auditory Display , 2009.
+[28] C. Verron, M. Aramaki, R. Kronland-Martinet,
+and G. Pallone, “A 3D Immersive Synthesizer
+for Environmental Sounds,” IEEE Transac-
+tions on Audio, Speech, and Language Process-
+ing, vol. 18, no. 6, pp. 1550–1561, 2010.
+[29] X. Rodet and P. Depalle, “Spectral envelopes
+and inverse ﬀt synthesis,” in Proceedings of the
+93rd AES Convention , 1992.
+[30] J.-M. Jot and A. Chaigne, “Digital delay net-
+works for designing artiﬁcial reverberators,” in
+Proceedings of the 90th AES Convention , 1991.
+[31] V. Pulkki, “Virtual sound source positioning
+using vector base amplitude panning,” JAES,
+vol. 45(6), pp. 456–466, 1997.
+[32] D.G. Malham and A. Myatt, “3-d sound spa-
+tialization using ambisonic techniques,” Comp.
+Music Jour., vol. 19(4), pp. 58–70, 1995.
+[33] J. Daniel, Repr´ esentation de Champs Acous-
+tiques, Application ` a la Transmission et ` a la Re-
+production de Sc` enes Sonores Complexes dans
+un Contexte Multim´ edia, Ph.D. thesis, Univer-
+sit´ e Paris 6, 2000.
+[34] K. Garg and S. K. Nayar, “Photorealistic ren-
+dering of rain streaks,” ACM Transactions on
+Graphics (Proc. SIGGRAPH 2006), vol. 25, no.
+3, pp. 996–1002, 2006.
+[35] L. Wang, Z. Lin, T. Fang, X. Yang, X. Yu, and
+S. B. Kang, “Real-time rendering of realistic
+rain (msr-tr-2006-102),” Tech. Rep., Microsoft
+Research, 2006.
+[36] N. Tatarchuk and J. Isidoro, “Artist-directable
+real-time rain rendering in city environments,”
+in Proceedings of the Eurographics Workshop on
+Natural Phenomena, 2006.
+[37] S. Tariq, “Rain,” NVIDIA Whitepaper, 2007.
+AES 133 rd Convention, San Francisco, USA, 2012 October 26–29
+Page 11 of 12
+
+=== page 12
+Verron AND Drettakis Procedural audio modeling for particle systems
+[38] A. Puig-Centelles, O. Ripolles, and M. Chover,
+“Creation and control of rain in virtual envi-
+ronments,” The Visual Computer , vol. 25, pp.
+1037–1052, 2009.
+[39] O. E. Gundersen and L. Tangvald, “Level of
+Detail for Physically Based Fire ,” in Theory
+and Practice of Computer Graphics , 2007, pp.
+213–220.
+[40] C. Horvath and W. Geiger, “Directable, high-
+resolution simulation of ﬁre on the GPU,” in
+ACM SIGGRAPH 2009 papers , 2009.
+[41] W. Zhaohui, Z. Zhong, and W. Wei, “Real-
+istic ﬁre simulation: A survey,” in 12th In-
+ternational Conference on Computer-Aided De-
+sign and Computer Graphics (CAD/Graphics) ,
+2011.
+[42] M. Yi and Q. Froemke, “Ticker Tape: A Scal-
+able 3D Particle System with Wind and Air Re-
+sistance,” 2010.
+[43] R. Hamilton, “UDKOSC : An Immersive Musi-
+cal Environment,” in Proceedings of the Inter-
+national Computer Music Conference , 2011.
+[44] R. Hamilton, J.-P. Caceres, C. Nanou, and
+C. Platz, “Multi-modal musical environments
+for mixed-reality performance,” Journal on
+Multimodal User Interfaces, vol. 4, pp. 147–156,
+2011.
+[45] C. Verron, Synth` ese Immersive de Sons
+d’Environnement, Ph.D. thesis, Universit´ e de
+Provence, 2010.
+AES 133 rd Convention, San Francisco, USA, 2012 October 26–29
+Page 12 of 12

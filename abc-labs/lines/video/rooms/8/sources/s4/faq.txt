@@ -1,0 +1,23 @@
+{id:"cancel",q:"Can I cancel anytime?",a:"Yes. Cancel from your account settings and keep access until the end of your billing period."}
+{id:"credit-types",q:"What are usage credits and generative credits?",a:"Usage credits pay for the agent: analysis, edits, captions and voiceover. Generative credits pay for AI video and image generation. Starter, Creator and Pro include both every month; Lite includes a one-time allowance of usage credits."}
+{id:"credits",q:"What happens if I run out of credits?",a:"Monthly credits renew at the start of each billing month. Need more sooner? Upgrade to a bigger plan and the new allowance applies right away."}
+{id:"change-plan",q:"Can I change my plan later?",a:"Yes. Upgrades apply right away. Downgrades start with your next billing cycle."}
+{id:"payment",q:"What payment methods do you accept?",a:"All major credit and debit cards, billed in your local currency."}
+{id:"video-types",q:"What kind of videos can Cardboard create?",a:"Social clips, YouTube videos, podcasts, interviews, product videos, talking heads and more."}
+{id:"projects",q:"What happens to my projects if I cancel?",a:"They stay saved for up to a year, so you can pick up where you left off."}
+{id:"team-discounts",q:"Do you offer discounts for teams or high-volume usage?",a:"Yes. If you're making video at scale, get in touch and we'll find the right plan."}
+{id:"free-mac-editor",q:"Is there a free AI video editor for Mac?",a:"Yes. Cardboard for Mac is free to download and the Lite plan is free in the app."}
+{id:"intel",q:"Does Cardboard work on Intel Macs?",a:"Not yet. Cardboard for Mac needs Apple Silicon (M1 or later). On an Intel Mac, use Cardboard in your browser."}
+{id:"own-agent",q:"Can I edit videos with Claude or Codex?",a:"Yes. In the Mac app, go to Settings → Agents, sign in with Claude or ChatGPT and pick it in the chat. You need a paid Claude or ChatGPT plan, which pays for the model."}
+{id:"agent-required",q:"Do I need Claude or Codex?",a:"No. The Director works out of the box."}
+{id:"windows",q:"Is Cardboard on Windows?",a:"Use Cardboard in your browser. The Windows app is coming."}
+{id:"descript-capcut",q:"How is Cardboard different from Descript or CapCut?",a:"Descript has an AI agent too, built around the transcript. Cardboard’s Director edits on a full timeline, matches a whole reference video and checks its own work on the frames. CapCut gives you AI tools you use one at a time."}
+{id:"imovie",q:"Is it better than iMovie?",a:"Different job. iMovie gives you the tools, Cardboard does the edit and you steer it. You can still edit by hand."}
+{id:"nle-export",q:"Can I export to Final Cut or Premiere?",a:"Yes, on Starter and up."}
+{id:"web-projects",q:"Do my web projects show up on the Mac?",a:"Yes, same account, same projects."}
+{id:"footage",q:"Where does my footage go?",a:"Your footage stays on your Mac. Only what the AI needs to make your edit (frames and the transcript) is sent to process it, and to your own agent if you connect one."}
+{id:"devices",q:"Which devices does Cardboard work on?",a:"Any computer with Chrome, plus a Mac app for Apple Silicon. Phones and tablets aren't supported yet."}
+{id:"local-cloud",q:"What's the difference between local and cloud processing?",a:"The Mac app edits and exports on your Mac; in the browser, that happens in the cloud. AI features like transcription and generation use the cloud either way."}
+{id:"own-agent",q:"Can I use my own AI agent?",a:"Yes. The Mac app works with Claude Code and Codex, and any agent can drive Cardboard through its CLI or MCP server."}
+{id:"privacy",q:"Is my footage private?",a:"Yes. Your footage is yours, and nothing is shared until you create a link. In the Mac app, your projects stay on your Mac."}
+{id:"share-export",q:"How do I share or export my video?",a:"Share a link people can watch and comment on, or export an MP4, MOV and more at up to 4K. You can also send the timeline to Premiere Pro, Final Cut Pro or DaVinci Resolve."}

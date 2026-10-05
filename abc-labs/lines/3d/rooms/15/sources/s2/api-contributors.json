@@ -1,0 +1,24 @@
+[
+  {
+    "login": "Bingeljell",
+    "id": 2819267,
+    "node_id": "MDQ6VXNlcjI4MTkyNjc=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/2819267?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/Bingeljell",
+    "html_url": "https://github.com/Bingeljell",
+    "followers_url": "https://api.github.com/users/Bingeljell/followers",
+    "following_url": "https://api.github.com/users/Bingeljell/following{/other_user}",
+    "gists_url": "https://api.github.com/users/Bingeljell/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/Bingeljell/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/Bingeljell/subscriptions",
+    "organizations_url": "https://api.github.com/users/Bingeljell/orgs",
+    "repos_url": "https://api.github.com/users/Bingeljell/repos",
+    "events_url": "https://api.github.com/users/Bingeljell/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/Bingeljell/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false,
+    "contributions": 509
+  }
+]

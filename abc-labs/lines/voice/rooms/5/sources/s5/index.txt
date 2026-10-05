@@ -1,0 +1,98 @@
+Cuelume. Interaction sounds for the web cuelume v0.2.4 Docs agents.md
+Used by Vercel in fx → Interfaces that sound as good as they feel .
+Fourteen interaction sounds for the web, synthesized live. Nothing to download, nothing to configure.
+Get started GitHub
+btw we're using cuelume for a new project Guillermo Rauch Vercel yo! you totally cooked with cuelume Esteban Suarez Vercel Seriously cool. Des Traynor Intercom this is insanely good Pieter Beulque Polar love them! James McDonald Lovable Love your sounds package Yo Puaa PostHog You cooked well, tried your library on blog, feels good Jiachi Liu Vercel your work is great Jordi Enric Supabase Featured on Best Designs On It really looks great and feels great, I'm impressed by all your tools Charles Vinette App & Flow Super easy to ask Codex to add UI sounds into success, error, and loading states … Also only 2kb. Meng To Design+Code Keep up the great work Sébastien Chopin Nuxt I bookmarked your sound library, definitely using it in some future projects David Haz React Bits Love your work, especially cuelume — the sounds are incredible Gurvinder Singh Skiper UI
+btw we're using cuelume for a new project Guillermo Rauch Vercel yo! you totally cooked with cuelume Esteban Suarez Vercel Seriously cool. Des Traynor Intercom this is insanely good Pieter Beulque Polar love them! James McDonald Lovable Love your sounds package Yo Puaa PostHog You cooked well, tried your library on blog, feels good Jiachi Liu Vercel your work is great Jordi Enric Supabase Featured on Best Designs On It really looks great and feels great, I'm impressed by all your tools Charles Vinette App & Flow Super easy to ask Codex to add UI sounds into success, error, and loading states … Also only 2kb. Meng To Design+Code Keep up the great work Sébastien Chopin Nuxt I bookmarked your sound library, definitely using it in some future projects David Haz React Bits Love your work, especially cuelume — the sounds are incredible Gurvinder Singh Skiper UI
+Keyboard cues on the top row
+Waveform type anywhere
+tap Small glassy tap
+Inspector
+Emphasis
+normal
+Theme default mech bubble press
+Volume 70 Play on hover
+One attribute per behavior.
+Call bind()
+once and cuelume wires every element it finds: taps, typing, selection, toggles, opening, closing, and navigation. The three tiles below are live.
+data-cuelume-type A keystroke for every letter. Type fast and it lightens, Space lands bigger, and a held Backspace keeps going.
+data-cuelume-select A crisp detent when a choice is made, in native selects and custom menus alike.
+Day
+Week
+Month
+data-cuelume-tap A small glassy tap on click, then the outcome from code: play("success") or play("error") .
+Save Saved
+Sync Offline
+Delete Failed
+Same cue, played the way you played it.
+Cuelume reads how each interaction happens and bends the cue to match, within limits that keep it recognisable. You add emphasis for what matters. It all stays on the page; nothing is stored or sent.
+Direction select
+A later option rises and an earlier one falls, by a few percent. Enough to feel which way you moved, never enough to become a melody.
+M
+T
+W
+T
+F
+S
+S
+Input tap
+The glass answers to what touched it. A fingertip lands softer than a mouse, a key press shorter, a pen crisper.
+Tap the glass
+Emphasis data-cuelume-emphasis
+The one thing Cuelume can't infer: how much the action matters. Each level is its own arrangement of the cue, not just a volume.
+Draft Saved
+Save Saved
+Publish Live
+Small enough to forget, considered enough to notice.
+Every card here plays the cue that tells its own story. Press one.
+6.4 kB Tiny No audio files, no dependencies. All fourteen cues in 6.4 kB.
+Live Every cue is synthesized with Web Audio the moment it plays. There are no recordings to load.
+Declarative One attribute per behavior. Add it to your markup and bind() does the rest.
+Curated Fourteen cues, one for each interface job, each with its own shape. Clicks, keystrokes, air, and soft mallets, not fourteen tweaks of one click.
+Two lines from silent to alive.
+1. Install the package
+$ npm install cuelume
+Click the command to switch package manager.
+2. Mark up and bind
+Add an attribute to anything that should make a sound, then call bind()
+once at startup.
+index.html
+app.ts
+1
+2
+3
+4 <!-- one attribute per behavior -->
+<button data-cuelume-tap >Save</button>
+<input data-cuelume-type />
+<select data-cuelume-select >…</select>
+1
+2
+3
+4
+5
+6
+7
+8
+9 import &lbrace; bind, play, setTheme, setVolume &rbrace; from "cuelume" ;
+bind(); // wires every data-cuelume-* attribute
+setVolume(0.7); // global loudness, from 0 to 1
+setTheme( "mech" ); // dry, precise, mechanical
+play( "success" ); // inherits the global volume
+play( "success" , &lbrace; volume: 0.4 &rbrace;); // quieter for this play only
+play( "success" , &lbrace; emphasis: "strong" &rbrace;); // weightier when it matters
+MIT licensed. Built by Daniel White. Docs npm GitHub agents.md
+
+## links
+/favicon.svg
+https://fonts.googleapis.com
+https://fonts.gstatic.com
+https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap
+/_astro/index.DHmWVtx6.css
+/_astro/global.DLQgwO74.css
+/
+/docs
+https://github.com/danielwh2/cuelume
+https://github.com/vercel-labs/fx
+#start
+https://www.npmjs.com/package/cuelume
+/agents.md

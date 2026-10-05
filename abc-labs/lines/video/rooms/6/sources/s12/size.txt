@@ -1,0 +1,4 @@
+what                                                   raw B  gzip-9 B    KiB  brotli-11 B    KiB
+gist dithered-koi.html (whole file)                    37518     15223  14.87        13600  13.28
+gist dithered-koi.html, the inline <script> only       37024     14938  14.59        13456  13.14
+cyze.dev page bundle koi-dither-pond.*.js (s13)        37945     15410  15.05        13838  13.51

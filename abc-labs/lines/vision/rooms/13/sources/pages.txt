@@ -1,0 +1,26 @@
+# <id> <name> <url> — read by fetch.py; the id is the registered source, the name the file under sources/<id>/
+s5 page https://developers.openai.com/api/docs/pricing
+s6 page https://developers.openai.com/api/docs/models
+s6 astra https://developers.openai.com/api/docs/models/gpt-6-astra
+s7 page https://developers.openai.com/api/docs/guides/images-vision
+s8 README https://raw.githubusercontent.com/facebookresearch/sam3/main/README.md
+s8 LICENSE https://raw.githubusercontent.com/facebookresearch/sam3/main/LICENSE
+s9 page https://arxiv.org/abs/2511.16719
+s9 paper https://arxiv.org/pdf/2511.16719
+s10 README https://raw.githubusercontent.com/roboflow/rf-detr/develop/README.md
+s10 LICENSE https://raw.githubusercontent.com/roboflow/rf-detr/develop/LICENSE
+s11 page https://docs.roboflow.com/datasets/annotate/annotate/ai-labeling/auto-label
+s12 page https://blog.roboflow.com/multi-model-auto-labeling-for-segmentation/
+s13 page https://roboflow.com/credits
+s14 README https://raw.githubusercontent.com/autodistill/autodistill/main/README.md
+s14 LICENSE https://raw.githubusercontent.com/autodistill/autodistill/main/LICENSE
+s15 README https://raw.githubusercontent.com/IDEA-Research/Grounded-SAM-2/main/README.md
+s15 LICENSE https://raw.githubusercontent.com/IDEA-Research/Grounded-SAM-2/main/LICENSE
+s16 page https://arxiv.org/abs/2506.02359
+s16 paper https://arxiv.org/pdf/2506.02359
+s17 page https://arxiv.org/abs/1405.0312
+s17 paper https://arxiv.org/pdf/1405.0312
+s18 page https://arxiv.org/abs/2304.02643
+s18 paper https://arxiv.org/pdf/2304.02643
+s19 README https://raw.githubusercontent.com/CVHub520/X-AnyLabeling/main/README.md
+s19 LICENSE https://raw.githubusercontent.com/CVHub520/X-AnyLabeling/main/LICENSE

@@ -1,0 +1,306 @@
+Roboflow Credits: Understanding Usage Based Pricing
+Visual Intelligence Summit: Oct 22 in San Francisco Learn More
+Products
+Platform
+Deploy
+Run models on device, at the edge, in your VPC, or via API
+Workflows
+Low-code interface to build pipelines and applications
+Train
+Hosted model training infrastructure and GPU access
+Annotate
+Label images fast with AI-assisted data annotation
+Universe
+Open source computer vision datasets and pre-trained models
+Solutions
+By Industry
+Explore all industry solutions
+Aerospace & Defense
+Automotive
+Consumer Goods
+Energy & Utilities
+Healthcare & Medicine
+Industrial Manufacturing
+Logistics
+Manufacturing
+Media & Entertainment
+Retail & Service
+Robotics
+Warehousing
+Transportation
+Explore customer
+stories and ebooks ->
+See case studies, comprehensive guides, and insights from thousands of real-world AI projects.
+Resources
+Resources
+Customer Stories
+Weekly Product Webinar
+User Forum
+Templates
+Model Playground
+Convert Annotation Formats
+MCP Server
+PricingDocsBlog
+Sign InBook a demoGet Started
+Sign inBook a demoGet Started
+Usage Based Pricing & Credits
+The Roboflow platform uses credits to give you access to powerful features across Data, Training, and Deployment. You’re always in control and only pay for what you use, when you use it.
+Data
+Images or video that you upload, store, label, and augment on the Roboflow platform.
+Training
+Computer vision models that you train on your data in the Roboflow platform.
+Deployment
+Inference performed on images or videos using trained models that you run on-prem or on the Roboflow Cloud
+Features that Use Credits
+Each feature consumes a different amount of credits based on the resources used, like storage or compute, helping prices stay fair and predictable.
+Data
+Value of 1 Credit
+Storage
+5,000 Images Stored*
+Video Storage
+10 GB Stored
+Uploads
+10,000 Images Uploaded
+Versions
+20,000 Images Created
+Auto Labeling
+1000 AI-Labeled Images
+Interactive AI labeling
+100 AI-Labeled images
+Training
+Value of 1 Credit
+Model Training (GPU)
+30 Minutes of Training
+Deployment (Roboflow Cloud)
+Value of 1 Credit
+Dedicated Deployment (CPU)
+4 Hours of Compute
+Dedicated Deployment (GPU)
+1 Hour of Compute
+Batch Processing (CPU)
+1 Hour of Compute
+Batch Processing (GPU)
+15 Minutes of Compute
+Serverless Video Streams (CPU)
+10 Hours of Video
+Serverless Video Streams (GPU)
+80 Minutes of Video (Small GPU)
+60 Minutes of Video (Medium GPU)
+30 Minutes of Video (Large GPU)
+Serverless Hosted API
+See our Model Pricing page
+Deployment (Self-Hosted)
+Images
+Free
+Videos
+Free
+Analytics
+Value of 1 Credit
+Vision Events
+10,000 Vision Events Uploaded
+Third Party Models (Agent and Workflows)
+OpenAI Models
+Value of 1 Credit
+GPT-5.4
+800,000 Input Tokens
+133,333 Output Tokens
+GPT-5.2
+1,142,857 Input Tokens
+142,857 Output Tokens
+GPT-5.1
+1,600,000 Input Tokens
+200,000 Output Tokens
+GPT-5
+1,600,000 Input Tokens
+200,000 Output Tokens
+GPT-5 mini
+8,000,000 Input Tokens
+1,000,000 Output Tokens
+GPT-5 nano
+40,000,000 Input Tokens
+5,000,000 Output Tokens
+GPT-4.1
+1,000,000 Input Tokens
+250,000 Output Tokens
+GPT-4.1 mini
+5,000,000 Input Tokens
+1,250,000 Output Tokens
+GPT-4.1 nano
+20,000,000 Input Tokens
+5,000,000 Output Tokens
+GPT-4o
+800,000 Input Tokens
+200,000 Output Tokens
+GPT-4o mini
+13,333,333 Input Tokens
+3,333,333 Output Tokens
+o3
+1,000,000 Input Tokens
+250,000 Output Tokens
+o4-mini
+1,818,182 Input Tokens
+454,545 Output Tokens
+Anthropic Claude Models
+Value of 1 Credit
+Claude Opus 4.6
+400,000 Input Tokens
+80,000 Output Tokens
+Claude Opus 4.5
+400,000 Input Tokens
+80,000 Output Tokens
+Claude Opus 4.1
+133,333 Input Tokens
+26,667 Output Tokens
+Claude Opus 4
+133,333 Input Tokens
+26,667 Output Tokens
+Claude Sonnet 4.6
+666,667 Input Tokens
+133,333 Output Tokens
+Claude Sonnet 4.5
+666,667 Input Tokens
+133,333 Output Tokens
+Claude Sonnet 4
+666,667 Input Tokens
+133,333 Output Tokens
+Claude Haiku 4.5
+2,500,000 Input Tokens
+500,000 Output Tokens
+Google Gemini Models
+Value of 1 Credit
+Gemini 3.1 Pro Preview
+1,000,000 Input Tokens
+166,667 Output Tokens
+Gemini 3 Pro Preview
+1,000,000 Input Tokens
+166,667 Output Tokens
+Gemini 3 Flash Preview
+4,000,000 Input Tokens
+666,667 Output Tokens
+Gemini 2.5 Pro
+1,600,000 Input Tokens
+200,000 Output Tokens
+Gemini 2.5 Flash
+6,666,667 Input Tokens
+800,000 Output Tokens
+Gemini 2.5 Flash-Lite
+20,000,000 Input Tokens
+5,000,000 Output Tokens
+Gemini 2.0 Flash
+20,000,000 Input Tokens
+5,000,000 Output Tokens
+Gemini 2.0 Flash-Lite
+26,666,667 Input Tokens
+6,666,667 Output Tokens
+Google Vision
+Value of 1 Credit
+Google Vision OCR
+1,000 Images
+Notification Blocks
+Value of 1 Credit
+Email Notification
+100 emails
+Twilio SMS/MMS (US & Canada)
+30 messages
+Twilio SMS/MMS (International***)
+10 messages
+Value of 1 Credit
+Open Router Models
+$2.00 OpenRouter usage
+Roboflow Agent
+The Roboflow Agent intelligently combines multiple models to optimize for both cost-effectiveness and performance. All credit rates listed above apply, and usage is billed based on the individual models the Agent selects during execution.
+* Assessed on a monthly basis regardless of plan length
+** Capped at 20 credits per camera per month
+*** Twilio not available for certain high-cost countries (Russia, Tunisia, Bosnia and Herzegovina, Madagascar, Papua New Guinea)
+Last updated on 3/30/2026.
+Pricing is subject to change. Enterprise credit pricing may differ from posted rates. Contact us for bulk discounts.
+Frequently Asked Questions
+What are included credits?
+Included credits come with your Roboflow subscription, don’t cost anything additional beyond your subscription fee, and reset either monthly or annually, depending on your subscription cycle.
+What if I don’t want to use every feature?
+Credits give you the flexibility to use the features that matter most to your business and your current projects. You can always pick and choose how you want to use your credits.
+I haven’t used all of my included credits. Will they roll over?
+Customers on our annual plans will receive all of their included credits upfront and can use them at any point throughout the 12 months of their plan. Any remaining included credits not used at the end of the annual plan will expire.
+Customers on our monthly plans will receive included credits at the start of every month. These included credits are “use it or lose it” and never roll over between months or between plan changes.
+We always suggest taking advantage of the full potential of your included credits while you have them!
+What are prepaid credits?
+Prepaid credits can be purchased in any quantity. They never expire and are always consumed after your workspace runs out of included credits. They are a great way to hedge against forecasted spikes in demand to avoid surprise bills.
+What happens when I run out of all my included and prepaid credits? (Flex Credits)
+If you are on our free plan, running out of included and prepaid credits means you will no longer be able to use many features of the application until your included credits reset or until you buy more prepaid credits.
+If you are on our paid plans, when your workspace runs out of both included and prepaid credits, Flex credits are consumed. Whether you’re on a monthly or annual plan, Flex credits are billed on a monthly basis for the amount of extra credits your workspace consumed in the previous month.
+Can I avoid extra charges for anything beyond my included and prepaid credits?
+You can! Every workspace has the option to disable Flex billing. Please note that if you choose this option, your account will not be able perform any actions that require credits until you buy more prepaid credits or until next month’s included credits are added to your workspace.
+Do you bill for fractional credits?
+We don’t! Whenever your account is charged for Flex credits, we add up all the credit usage for the previous month and round down. So if you used 77.7 credits in May, you would only be charged for 77 credits.
+What happens to my credits if I cancel my subscription?
+On the date that your paid subscription ends, you will receive a final invoice containing the Flex credits used in the final month of your subscription. All remaining included credits will be forfeit.
+If you bought prepaid credits and have any leftover, they will remain attached to your account and can be used in the future if you ever resume your work on Roboflow.
+Why does Roboflow use a credit system?
+Every company’s computer vision journey is unique and we wanted to create a system that accurately reflects different journeys of maturity and usage. Our goal is to align our success with your company’s success as your computer vision needs grow.
+Additionally, credits allow us to quickly release new features that can be used without any hurdles.
+What are 3rd Party Blocks?
+Roboflow offers the ability to use other company's AI models directly in workflows without needing to have your own API key. This makes it easier to work with other models without having to worry about managing billing and usage across multiple tools.
+Since many of these 3rd party AI models already charge based on usage, we convert their usage model to Roboflow credits for simplicity.
+Does running models locally use credits?
+Yes! Running models that live on the Roboflow platform, whether run locally (self-hosted) or in the Roboflow Cloud, will consume credits.
+Product
+Deploy
+Workflows
+Train
+Annotate
+Universe
+Cloud Hosting
+Pricing
+Talk to Sales
+Enterprise
+Ecosystem
+Notebooks
+Autodistill
+Supervision
+Inference
+Roboflow 100
+Open Source
+Hardware
+Templates
+Developers
+Documentation
+User Forum
+Changelog
+What is computer vision?
+Weekly Product Webinar
+Convert Annotation Formats
+Computer Vision Models
+Model Playground
+MCP Server
+Industries
+Customer Stories
+Aerospace & Defense
+Automotive
+Consumer Goods
+Energy & Utilities
+Healthcare & Medicine
+Industrial Manufacturing
+Logistics
+Manufacturing
+Media & Entertainment
+Retail & Service
+Transportation
+Warehousing
+Models
+RF-DETR
+SAM 3
+YOLO26
+YOLO11
+YOLOv8
+YOLOv5
+Multimodal Models
+Explore All Models
+Company
+About Us
+Blog
+Careers
+Press
+Contact
+Service Status
+Terms of ServiceEnterprise TermsPrivacy PolicySitemap
+© Roboflow, Inc. All rights reserved.

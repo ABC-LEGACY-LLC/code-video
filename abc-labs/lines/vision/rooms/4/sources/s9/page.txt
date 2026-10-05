@@ -1,0 +1,684 @@
+ @font-face {
+ font-family: "Noto Color Emoji";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/noto-color-emoji/Yq6P-KqIXTD0t4D9z1ESnKM3-HpFabts6diysYTngZPnMC1MfLd4gw.0.woff2) format("woff2");
+ unicode-range: u+1f1e6-1f1ff;
+}
+@font-face {
+ font-family: "Noto Color Emoji";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/noto-color-emoji/Yq6P-KqIXTD0t4D9z1ESnKM3-HpFabts6diysYTngZPnMC1MfLd4gw.1.woff2) format("woff2");
+ unicode-range: u+200d, u+2620, u+26a7, u+fe0f, u+1f308, u+1f38c, u+1f3c1, u+1f3f3-1f3f4, u+1f6a9, u+e0062-e0063, u+e0065, u+e0067, u+e006c, u+e006e, u+e0073-e0074, u+e0077, u+e007f;
+}
+@font-face {
+ font-family: "Noto Color Emoji";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/noto-color-emoji/Yq6P-KqIXTD0t4D9z1ESnKM3-HpFabts6diysYTngZPnMC1MfLd4gw.2.woff2) format("woff2");
+ unicode-range: u+23, u+2a, u+30-39, u+a9, u+ae, u+200d, u+203c, u+2049, u+20e3, u+2122, u+2139, u+2194-2199, u+21a9-21aa, u+23cf, u+23e9-23ef, u+23f8-23fa, u+24c2, u+25aa-25ab, u+25b6, u+25c0, u+25fb-25fe, u+2611, u+2622-2623, u+2626, u+262a, u+262e-262f, u+2638, u+2640, u+2642, u+2648-2653, u+2660, u+2663, u+2665-2666, u+2668, u+267b, u+267e-267f, u+2695, u+269b-269c, u+26a0, u+26a7, u+26aa-26ab, u+26ce, u+26d4, u+2705, u+2714, u+2716, u+271d, u+2721, u+2733-2734, u+2747, u+274c, u+274e, u+2753-2755, u+2757, u+2764, u+2795-2797, u+27a1, u+27b0, u+27bf, u+2934-2935, u+2b05-2b07, u+2b1b-2b1c, u+2b55, u+3030, u+303d, u+3297, u+3299, u+fe0f, u+1f170-1f171, u+1f17e-1f17f, u+1f18e, u+1f191-1f19a, u+1f201-1f202, u+1f21a, u+1f22f, u+1f232-1f23a, u+1f250-1f251, u+1f310, u+1f3a6, u+1f3b5-1f3b6, u+1f3bc, u+1f3e7, u+1f441, u+1f499-1f49c, u+1f49f-1f4a0, u+1f4ac-1f4ad, u+1f4b1-1f4b2, u+1f4b9, u+1f4db, u+1f4f2-1f4f6, u+1f500-1f507, u+1f515, u+1f518-1f524, u+1f52f-1f53d, u+1f549, u+1f54e, u+1f5a4, u+1f5e8, u+1f5ef, u+1f6ab, u+1f6ad-1f6b1, u+1f6b3, u+1f6b7-1f6bc, u+1f6be, u+1f6c2-1f6c5, u+1f6d0-1f6d1, u+1f6d7, u+1f6dc, u+1f7e0-1f7eb, u+1f7f0, u+1f90d-1f90e, u+1f9d1-1f9d2, u+1f9e1, u+1fa75-1fa77, u+1faaf;
+}
+@font-face {
+ font-family: "Noto Color Emoji";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/noto-color-emoji/Yq6P-KqIXTD0t4D9z1ESnKM3-HpFabts6diysYTngZPnMC1MfLd4gw.3.woff2) format("woff2");
+ unicode-range: u+200d, u+231a-231b, u+2328, u+23f0-23f3, u+2602, u+260e, u+2692, u+2694, u+2696-2697, u+2699, u+26b0-26b1, u+26cf, u+26d1, u+26d3, u+2702, u+2709, u+270f, u+2712, u+fe0f, u+1f302, u+1f321, u+1f392-1f393, u+1f3a9, u+1f3bd, u+1f3ee, u+1f3f7, u+1f3fa, u+1f451-1f462, u+1f484, u+1f489-1f48a, u+1f48c-1f48e, u+1f4a1, u+1f4a3, u+1f4a5, u+1f4b0, u+1f4b3-1f4b8, u+1f4bb-1f4da, u+1f4dc-1f4f1, u+1f4ff, u+1f508-1f514, u+1f516-1f517, u+1f526-1f529, u+1f52c-1f52e, u+1f550-1f567, u+1f56f-1f570, u+1f576, u+1f587, u+1f58a-1f58d, u+1f5a5, u+1f5a8, u+1f5b1-1f5b2, u+1f5c2-1f5c4, u+1f5d1-1f5d3, u+1f5dc-1f5de, u+1f5e1, u+1f5f3, u+1f6aa, u+1f6ac, u+1f6bd, u+1f6bf, u+1f6c1, u+1f6cb, u+1f6cd-1f6cf, u+1f6d2, u+1f6e0-1f6e1, u+1f6f0, u+1f97b-1f97f, u+1f9af, u+1f9ba, u+1f9e2-1f9e6, u+1f9ea-1f9ec, u+1f9ee-1f9f4, u+1f9f7-1f9ff, u+1fa71-1fa74, u+1fa79-1fa7b, u+1fa86, u+1fa8e-1fa8f, u+1fa91-1fa93, u+1fa96, u+1fa99-1faa0, u+1faa2-1faa7, u+1faaa-1faae;
+}
+@font-face {
+ font-family: "Noto Color Emoji";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/noto-color-emoji/Yq6P-KqIXTD0t4D9z1ESnKM3-HpFabts6diysYTngZPnMC1MfLd4gw.4.woff2) format("woff2");
+ unicode-range: u+265f, u+26bd-26be, u+26f3, u+26f8, u+fe0f, u+1f004, u+1f0cf, u+1f380-1f384, u+1f386-1f38b, u+1f38d-1f391, u+1f396-1f397, u+1f399-1f39b, u+1f39e-1f39f, u+1f3a3-1f3a5, u+1f3a7-1f3a9, u+1f3ab-1f3b4, u+1f3b7-1f3bb, u+1f3bd-1f3c0, u+1f3c5-1f3c6, u+1f3c8-1f3c9, u+1f3cf-1f3d3, u+1f3f8-1f3f9, u+1f47e, u+1f4e2, u+1f4f7-1f4fd, u+1f52b, u+1f579, u+1f58c-1f58d, u+1f5bc, u+1f6f7, u+1f6f9, u+1f6fc, u+1f93f, u+1f941, u+1f945, u+1f947-1f94f, u+1f9e7-1f9e9, u+1f9f5-1f9f6, u+1fa70-1fa71, u+1fa80-1fa81, u+1fa83-1fa85, u+1fa87-1fa8a, u+1fa94-1fa95, u+1fa97-1fa98, u+1faa1, u+1faa9, u+1fadf;
+}
+@font-face {
+ font-family: "Noto Color Emoji";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/noto-color-emoji/Yq6P-KqIXTD0t4D9z1ESnKM3-HpFabts6diysYTngZPnMC1MfLd4gw.5.woff2) format("woff2");
+ unicode-range: u+2693, u+26e9-26ea, u+26f1-26f2, u+26f4-26f5, u+26fa, u+26fd, u+2708, u+fe0f, u+1f301, u+1f303, u+1f306-1f307, u+1f309, u+1f310, u+1f3a0-1f3a2, u+1f3aa, u+1f3cd-1f3ce, u+1f3d5, u+1f3d7-1f3db, u+1f3df-1f3e6, u+1f3e8-1f3ed, u+1f3ef-1f3f0, u+1f488, u+1f492, u+1f4ba, u+1f54b-1f54d, u+1f5fa-1f5ff, u+1f680-1f6a2, u+1f6a4-1f6a8, u+1f6b2, u+1f6d1, u+1f6d5-1f6d6, u+1f6dd-1f6df, u+1f6e2-1f6e5, u+1f6e9, u+1f6eb-1f6ec, u+1f6f3-1f6f6, u+1f6f8, u+1f6fa-1f6fb, u+1f9bc-1f9bd, u+1f9ed, u+1f9f3, u+1fa7c;
+}
+@font-face {
+ font-family: "Noto Color Emoji";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/noto-color-emoji/Yq6P-KqIXTD0t4D9z1ESnKM3-HpFabts6diysYTngZPnMC1MfLd4gw.6.woff2) format("woff2");
+ unicode-range: u+200d, u+2615, u+fe0f, u+1f32d-1f330, u+1f336, u+1f33d, u+1f344-1f37f, u+1f382, u+1f52a, u+1f7e9, u+1f7eb, u+1f942-1f944, u+1f950-1f96f, u+1f99e, u+1f9aa, u+1f9c0-1f9cb, u+1fad0-1fadc;
+}
+@font-face {
+ font-family: "Noto Color Emoji";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/noto-color-emoji/Yq6P-KqIXTD0t4D9z1ESnKM3-HpFabts6diysYTngZPnMC1MfLd4gw.7.woff2) format("woff2");
+ unicode-range: u+200d, u+2600-2601, u+2603-2604, u+2614, u+2618, u+26a1, u+26c4-26c5, u+26c8, u+26f0, u+2728, u+2744, u+2b1b, u+2b50, u+fe0f, u+1f300, u+1f304-1f305, u+1f308, u+1f30a-1f30f, u+1f311-1f321, u+1f324-1f32c, u+1f331-1f335, u+1f337-1f33c, u+1f33e-1f344, u+1f3d4, u+1f3d6, u+1f3dc-1f3de, u+1f3f5, u+1f400-1f43f, u+1f490, u+1f4a7, u+1f4ae, u+1f525, u+1f54a, u+1f573, u+1f577-1f578, u+1f648-1f64a, u+1f6d8, u+1f940, u+1f980-1f9ae, u+1f9ba, u+1fa90, u+1faa8, u+1fab0-1fabf, u+1facd-1facf, u+1fae7;
+}
+@font-face {
+ font-family: "Noto Color Emoji";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/noto-color-emoji/Yq6P-KqIXTD0t4D9z1ESnKM3-HpFabts6diysYTngZPnMC1MfLd4gw.8.woff2) format("woff2");
+ unicode-range: u+200d, u+2640, u+2642, u+2695-2696, u+26f7, u+26f9, u+2708, u+2764, u+27a1, u+fe0f, u+1f33e, u+1f373, u+1f37c, u+1f384-1f385, u+1f393, u+1f3a4, u+1f3a8, u+1f3c2-1f3c4, u+1f3c7, u+1f3ca-1f3cc, u+1f3eb, u+1f3ed, u+1f3fb-1f3ff, u+1f430, u+1f466-1f469, u+1f46b-1f478, u+1f47c, u+1f481-1f483, u+1f486-1f487, u+1f48b, u+1f48f, u+1f491, u+1f4bb-1f4bc, u+1f527, u+1f52c, u+1f574-1f575, u+1f57a, u+1f645-1f647, u+1f64b, u+1f64d-1f64e, u+1f680, u+1f692, u+1f6a3, u+1f6b4-1f6b6, u+1f6c0, u+1f6cc, u+1f91d, u+1f926, u+1f930-1f931, u+1f934-1f93a, u+1f93c-1f93e, u+1f977, u+1f9af-1f9b3, u+1f9b8-1f9b9, u+1f9bc-1f9bd, u+1f9cc-1f9cf, u+1f9d1-1f9df, u+1fa70, u+1fa82, u+1fac3-1fac5, u+1fac8, u+1faef;
+}
+@font-face {
+ font-family: "Noto Color Emoji";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/noto-color-emoji/Yq6P-KqIXTD0t4D9z1ESnKM3-HpFabts6diysYTngZPnMC1MfLd4gw.9.woff2) format("woff2");
+ unicode-range: u+200d, u+2194-2195, u+2603, u+261d, u+2620, u+2639-263a, u+2665, u+26a1, u+26c4, u+270a-270d, u+2728, u+2763-2764, u+2b50, u+fe0f, u+1f31a-1f31f, u+1f32b, u+1f389-1f38a, u+1f3fb-1f3ff, u+1f440-1f450, u+1f463-1f465, u+1f479-1f47b, u+1f47d-1f480, u+1f485, u+1f48b-1f48c, u+1f493-1f49f, u+1f4a2, u+1f4a4-1f4a6, u+1f4a8-1f4ab, u+1f4af, u+1f525, u+1f573, u+1f590, u+1f595-1f596, u+1f5a4, u+1f5e3, u+1f600-1f644, u+1f648-1f64a, u+1f64c, u+1f64f, u+1f90c-1f925, u+1f927-1f92f, u+1f932-1f933, u+1f970-1f976, u+1f978-1f97a, u+1f9a0, u+1f9b4-1f9b7, u+1f9bb, u+1f9be-1f9bf, u+1f9d0, u+1f9e0-1f9e1, u+1fa75-1fa79, u+1fac0-1fac2, u+1fac6, u+1fae0-1fae6, u+1fae8-1faea, u+1faef-1faf8;
+}
+@font-face {
+ font-family: "Noto Color Emoji Fallback";
+ src: local("Arial");
+ ascent-override: 33.22%;
+ descent-override: 8.74%;
+ line-gap-override: 0.00%;
+ size-adjust: 279.30%;
+}
+:root { --font-noto-color-emoji: "Noto Color Emoji","Noto Color Emoji Fallback"; } @font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0460-052f, u+1c80-1c8a, u+20b4, u+2de0-2dff, u+a640-a69f, u+fe2e-fe2f;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0301, u+0400-045f, u+0490-0491, u+04b0-04b1, u+2116;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+1f00-1fff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0370-0377, u+037a-037f, u+0384-038a, u+038c, u+038e-03a1, u+03a3-03ff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0102-0103, u+0110-0111, u+0128-0129, u+0168-0169, u+01a0-01a1, u+01af-01b0, u+0300-0301, u+0303-0304, u+0308-0309, u+0323, u+0329, u+1ea0-1ef9, u+20ab;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0100-02ba, u+02bd-02c5, u+02c7-02cc, u+02ce-02d7, u+02dd-02ff, u+0304, u+0308, u+0329, u+1d00-1dbf, u+1e00-1e9f, u+1ef2-1eff, u+2020, u+20a0-20ab, u+20ad-20c0, u+2113, u+2c60-2c7f, u+a720-a7ff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2) format("woff2");
+ unicode-range: u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0460-052f, u+1c80-1c8a, u+20b4, u+2de0-2dff, u+a640-a69f, u+fe2e-fe2f;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0301, u+0400-045f, u+0490-0491, u+04b0-04b1, u+2116;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+1f00-1fff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0370-0377, u+037a-037f, u+0384-038a, u+038c, u+038e-03a1, u+03a3-03ff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0102-0103, u+0110-0111, u+0128-0129, u+0168-0169, u+01a0-01a1, u+01af-01b0, u+0300-0301, u+0303-0304, u+0308-0309, u+0323, u+0329, u+1ea0-1ef9, u+20ab;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0100-02ba, u+02bd-02c5, u+02c7-02cc, u+02ce-02d7, u+02dd-02ff, u+0304, u+0308, u+0329, u+1d00-1dbf, u+1e00-1e9f, u+1ef2-1eff, u+2020, u+20a0-20ab, u+20ad-20c0, u+2113, u+2c60-2c7f, u+a720-a7ff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2) format("woff2");
+ unicode-range: u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0460-052f, u+1c80-1c8a, u+20b4, u+2de0-2dff, u+a640-a69f, u+fe2e-fe2f;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0301, u+0400-045f, u+0490-0491, u+04b0-04b1, u+2116;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+1f00-1fff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0370-0377, u+037a-037f, u+0384-038a, u+038c, u+038e-03a1, u+03a3-03ff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0102-0103, u+0110-0111, u+0128-0129, u+0168-0169, u+01a0-01a1, u+01af-01b0, u+0300-0301, u+0303-0304, u+0308-0309, u+0323, u+0329, u+1ea0-1ef9, u+20ab;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0100-02ba, u+02bd-02c5, u+02c7-02cc, u+02ce-02d7, u+02dd-02ff, u+0304, u+0308, u+0329, u+1d00-1dbf, u+1e00-1e9f, u+1ef2-1eff, u+2020, u+20a0-20ab, u+20ad-20c0, u+2113, u+2c60-2c7f, u+a720-a7ff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2) format("woff2");
+ unicode-range: u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0460-052f, u+1c80-1c8a, u+20b4, u+2de0-2dff, u+a640-a69f, u+fe2e-fe2f;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0301, u+0400-045f, u+0490-0491, u+04b0-04b1, u+2116;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+1f00-1fff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0370-0377, u+037a-037f, u+0384-038a, u+038c, u+038e-03a1, u+03a3-03ff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0102-0103, u+0110-0111, u+0128-0129, u+0168-0169, u+01a0-01a1, u+01af-01b0, u+0300-0301, u+0303-0304, u+0308-0309, u+0323, u+0329, u+1ea0-1ef9, u+20ab;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2) format("woff2");
+ unicode-range: u+0100-02ba, u+02bd-02c5, u+02c7-02cc, u+02ce-02d7, u+02dd-02ff, u+0304, u+0308, u+0329, u+1d00-1dbf, u+1e00-1e9f, u+1ef2-1eff, u+2020, u+20a0-20ab, u+20ad-20c0, u+2113, u+2c60-2c7f, u+a720-a7ff;
+}
+@font-face {
+ font-family: "Inter";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2) format("woff2");
+ unicode-range: u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+@font-face {
+ font-family: "Inter Fallback";
+ src: local("Arial");
+ ascent-override: 90.44%;
+ descent-override: 22.52%;
+ line-gap-override: 0.00%;
+ size-adjust: 107.12%;
+}
+:root { --font-content: "Inter","Inter Fallback",system-ui,arial; } @font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F63fjptAgt5VM-kVkqdyU8n1iIq131nj-otFQ.woff2) format("woff2");
+ unicode-range: u+0460-052f, u+1c80-1c8a, u+20b4, u+2de0-2dff, u+a640-a69f, u+fe2e-fe2f;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F63fjptAgt5VM-kVkqdyU8n1isq131nj-otFQ.woff2) format("woff2");
+ unicode-range: u+0301, u+0400-045f, u+0490-0491, u+04b0-04b1, u+2116;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F63fjptAgt5VM-kVkqdyU8n1iAq131nj-otFQ.woff2) format("woff2");
+ unicode-range: u+0102-0103, u+0110-0111, u+0128-0129, u+0168-0169, u+01a0-01a1, u+01af-01b0, u+0300-0301, u+0303-0304, u+0308-0309, u+0323, u+0329, u+1ea0-1ef9, u+20ab;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F63fjptAgt5VM-kVkqdyU8n1iEq131nj-otFQ.woff2) format("woff2");
+ unicode-range: u+0100-02ba, u+02bd-02c5, u+02c7-02cc, u+02ce-02d7, u+02dd-02ff, u+0304, u+0308, u+0329, u+1d00-1dbf, u+1e00-1e9f, u+1ef2-1eff, u+2020, u+20a0-20ab, u+20ad-20c0, u+2113, u+2c60-2c7f, u+a720-a7ff;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 400;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F63fjptAgt5VM-kVkqdyU8n1i8q131nj-o.woff2) format("woff2");
+ unicode-range: u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3twJwl1FgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0460-052f, u+1c80-1c8a, u+20b4, u+2de0-2dff, u+a640-a69f, u+fe2e-fe2f;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3twJwlRFgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0301, u+0400-045f, u+0490-0491, u+04b0-04b1, u+2116;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3twJwl9FgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0102-0103, u+0110-0111, u+0128-0129, u+0168-0169, u+01a0-01a1, u+01af-01b0, u+0300-0301, u+0303-0304, u+0308-0309, u+0323, u+0329, u+1ea0-1ef9, u+20ab;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3twJwl5FgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0100-02ba, u+02bd-02c5, u+02c7-02cc, u+02ce-02d7, u+02dd-02ff, u+0304, u+0308, u+0329, u+1d00-1dbf, u+1e00-1e9f, u+1ef2-1eff, u+2020, u+20a0-20ab, u+20ad-20c0, u+2113, u+2c60-2c7f, u+a720-a7ff;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 500;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3twJwlBFgsAXHNk.woff2) format("woff2");
+ unicode-range: u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3vAOwl1FgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0460-052f, u+1c80-1c8a, u+20b4, u+2de0-2dff, u+a640-a69f, u+fe2e-fe2f;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3vAOwlRFgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0301, u+0400-045f, u+0490-0491, u+04b0-04b1, u+2116;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3vAOwl9FgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0102-0103, u+0110-0111, u+0128-0129, u+0168-0169, u+01a0-01a1, u+01af-01b0, u+0300-0301, u+0303-0304, u+0308-0309, u+0323, u+0329, u+1ea0-1ef9, u+20ab;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3vAOwl5FgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0100-02ba, u+02bd-02c5, u+02c7-02cc, u+02ce-02d7, u+02dd-02ff, u+0304, u+0308, u+0329, u+1d00-1dbf, u+1e00-1e9f, u+1ef2-1eff, u+2020, u+20a0-20ab, u+20ad-20c0, u+2113, u+2c60-2c7f, u+a720-a7ff;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 600;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3vAOwlBFgsAXHNk.woff2) format("woff2");
+ unicode-range: u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3pQPwl1FgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0460-052f, u+1c80-1c8a, u+20b4, u+2de0-2dff, u+a640-a69f, u+fe2e-fe2f;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3pQPwlRFgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0301, u+0400-045f, u+0490-0491, u+04b0-04b1, u+2116;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3pQPwl9FgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0102-0103, u+0110-0111, u+0128-0129, u+0168-0169, u+01a0-01a1, u+01af-01b0, u+0300-0301, u+0303-0304, u+0308-0309, u+0323, u+0329, u+1ea0-1ef9, u+20ab;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3pQPwl5FgsAXHNlYzg.woff2) format("woff2");
+ unicode-range: u+0100-02ba, u+02bd-02c5, u+02c7-02cc, u+02ce-02d7, u+02dd-02ff, u+0304, u+0308, u+0329, u+1d00-1dbf, u+1e00-1e9f, u+1ef2-1eff, u+2020, u+20a0-20ab, u+20ad-20c0, u+2113, u+2c60-2c7f, u+a720-a7ff;
+}
+@font-face {
+ font-family: "IBM Plex Mono";
+ font-style: normal;
+ font-weight: 700;
+ font-display: swap;
+ src: url(https://static-2v.gitbook.com/~gitbook/static/fonts/ibm-plex-mono/-F6qfjptAgt5VM-kVkqdyU8n3pQPwlBFgsAXHNk.woff2) format("woff2");
+ unicode-range: u+0000-00ff, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+:root { --font-mono: "IBM Plex Mono",monospace; } 
+ :root, .light, .dark [data-color-scheme$="light"], .dark [data-follow-color-scheme="true"]:has([data-color-scheme$="light"]) {
+ --primary-1: 255 255 255; --contrast-primary-1: 29 29 29;
+--primary-2: 250 249 255; --contrast-primary-2: 29 29 29;
+--primary-3: 248 245 255; --contrast-primary-3: 29 29 29;
+--primary-4: 243 238 255; --contrast-primary-4: 29 29 29;
+--primary-5: 238 232 255; --contrast-primary-5: 29 29 29;
+--primary-6: 231 222 255; --contrast-primary-6: 29 29 29;
+--primary-7: 219 208 255; --contrast-primary-7: 29 29 29;
+--primary-8: 207 194 255; --contrast-primary-8: 29 29 29;
+--primary-9: 103 6 206; --contrast-primary-9: 255 255 255;
+--primary-10: 136 70 249; --contrast-primary-10: 255 255 255;
+--primary-11: 114 98 162; --contrast-primary-11: 255 255 255;
+--primary-12: 30 27 40; --contrast-primary-12: 255 255 255;
+--primary-original: 103 6 206; --contrast-primary-original: 255 255 255;
+ --tint-1: 255 255 255; --contrast-tint-1: 29 29 29;
+--tint-2: 250 250 251; --contrast-tint-2: 29 29 29;
+--tint-3: 247 247 250; --contrast-tint-3: 29 29 29;
+--tint-4: 242 241 247; --contrast-tint-4: 29 29 29;
+--tint-5: 237 236 243; --contrast-tint-5: 29 29 29;
+--tint-6: 230 228 237; --contrast-tint-6: 29 29 29;
+--tint-7: 217 215 226; --contrast-tint-7: 29 29 29;
+--tint-8: 205 203 215; --contrast-tint-8: 29 29 29;
+--tint-9: 134 127 160; --contrast-tint-9: 255 255 255;
+--tint-10: 123 116 148; --contrast-tint-10: 255 255 255;
+--tint-11: 111 108 121; --contrast-tint-11: 255 255 255;
+--tint-12: 29 29 31; --contrast-tint-12: 255 255 255;
+--tint-original: 120 120 120; --contrast-tint-original: 255 255 255;
+ --neutral-1: 255 255 255; --contrast-neutral-1: 29 29 29;
+--neutral-2: 250 250 250; --contrast-neutral-2: 29 29 29;
+--neutral-3: 247 247 247; --contrast-neutral-3: 29 29 29;
+--neutral-4: 242 242 242; --contrast-neutral-4: 29 29 29;
+--neutral-5: 237 237 237; --contrast-neutral-5: 29 29 29;
+--neutral-6: 229 229 229; --contrast-neutral-6: 29 29 29;
+--neutral-7: 217 217 217; --contrast-neutral-7: 29 29 29;
+--neutral-8: 204 204 204; --contrast-neutral-8: 29 29 29;
+--neutral-9: 120 120 120; --contrast-neutral-9: 255 255 255;
+--neutral-10: 121 121 121; --contrast-neutral-10: 255 255 255;
+--neutral-11: 110 110 110; --contrast-neutral-11: 255 255 255;
+--neutral-12: 29 29 29; --contrast-neutral-12: 255 255 255;
+--neutral-original: 120 120 120; --contrast-neutral-original: 255 255 255;
+ --header-background: 103 6 206;
+ --header-link: 255 255 255;
+ --info-1: 255 255 255; --contrast-info-1: 29 29 29;
+--info-2: 250 250 250; --contrast-info-2: 29 29 29;
+--info-3: 247 247 247; --contrast-info-3: 29 29 29;
+--info-4: 242 242 242; --contrast-info-4: 29 29 29;
+--info-5: 237 237 237; --contrast-info-5: 29 29 29;
+--info-6: 229 229 229; --contrast-info-6: 29 29 29;
+--info-7: 217 217 217; --contrast-info-7: 29 29 29;
+--info-8: 204 204 204; --contrast-info-8: 29 29 29;
+--info-9: 120 120 120; --contrast-info-9: 255 255 255;
+--info-10: 121 121 121; --contrast-info-10: 255 255 255;
+--info-11: 110 110 110; --contrast-info-11: 255 255 255;
+--info-12: 29 29 29; --contrast-info-12: 255 255 255;
+--info-original: 120 120 120; --contrast-info-original: 255 255 255;
+ --warning-1: 255 255 255; --contrast-warning-1: 29 29 29;
+--warning-2: 254 249 244; --contrast-warning-2: 29 29 29;
+--warning-3: 255 245 236; --contrast-warning-3: 29 29 29;
+--warning-4: 255 239 225; --contrast-warning-4: 29 29 29;
+--warning-5: 254 233 214; --contrast-warning-5: 29 29 29;
+--warning-6: 250 224 200; --contrast-warning-6: 29 29 29;
+--warning-7: 242 211 182; --contrast-warning-7: 29 29 29;
+--warning-8: 233 197 164; --contrast-warning-8: 29 29 29;
+--warning-9: 254 154 0; --contrast-warning-9: 29 29 29;
+--warning-10: 187 92 0; --contrast-warning-10: 255 255 255;
+--warning-11: 138 102 66; --contrast-warning-11: 255 255 255;
+--warning-12: 35 28 21; --contrast-warning-12: 255 255 255;
+--warning-original: 254 154 0; --contrast-warning-original: 29 29 29;
+ --danger-1: 255 255 255; --contrast-danger-1: 29 29 29;
+--danger-2: 255 247 246; --contrast-danger-2: 29 29 29;
+--danger-3: 255 242 239; --contrast-danger-3: 29 29 29;
+--danger-4: 255 234 230; --contrast-danger-4: 29 29 29;
+--danger-5: 255 226 221; --contrast-danger-5: 29 29 29;
+--danger-6: 255 215 210; --contrast-danger-6: 29 29 29;
+--danger-7: 255 200 193; --contrast-danger-7: 29 29 29;
+--danger-8: 254 184 177; --contrast-danger-8: 29 29 29;
+--danger-9: 251 44 54; --contrast-danger-9: 255 255 255;
+--danger-10: 228 0 33; --contrast-danger-10: 255 255 255;
+--danger-11: 158 87 81; --contrast-danger-11: 255 255 255;
+--danger-12: 39 25 23; --contrast-danger-12: 255 255 255;
+--danger-original: 251 44 54; --contrast-danger-original: 255 255 255;
+ --success-1: 255 255 255; --contrast-success-1: 29 29 29;
+--success-2: 245 252 246; --contrast-success-2: 29 29 29;
+--success-3: 238 252 240; --contrast-success-3: 29 29 29;
+--success-4: 229 249 231; --contrast-success-4: 29 29 29;
+--success-5: 219 246 222; --contrast-success-5: 29 29 29;
+--success-6: 207 240 210; --contrast-success-6: 29 29 29;
+--success-7: 190 229 194; --contrast-success-7: 29 29 29;
+--success-8: 172 218 177; --contrast-success-8: 29 29 29;
+--success-9: 0 201 80; --contrast-success-9: 29 29 29;
+--success-10: 0 152 23; --contrast-success-10: 255 255 255;
+--success-11: 74 124 82; --contrast-success-11: 255 255 255;
+--success-12: 22 32 23; --contrast-success-12: 255 255 255;
+--success-original: 0 201 80; --contrast-success-original: 29 29 29;
+ }
+ .dark, :root:not(.dark) [data-color-scheme^="dark"], :root:not(.dark) [data-follow-color-scheme="true"]:has([data-color-scheme^="dark"]) {
+ --primary-1: 29 29 29; --contrast-primary-1: 255 255 255;
+--primary-2: 34 34 34; --contrast-primary-2: 255 255 255;
+--primary-3: 44 44 44; --contrast-primary-3: 255 255 255;
+--primary-4: 48 48 48; --contrast-primary-4: 255 255 255;
+--primary-5: 53 53 53; --contrast-primary-5: 255 255 255;
+--primary-6: 57 57 57; --contrast-primary-6: 255 255 255;
+--primary-7: 67 67 67; --contrast-primary-7: 255 255 255;
+--primary-8: 78 78 78; --contrast-primary-8: 255 255 255;
+--primary-9: 133 133 133; --contrast-primary-9: 255 255 255;
+--primary-10: 144 144 144; --contrast-primary-10: 255 255 255;
+--primary-11: 192 192 192; --contrast-primary-11: 29 29 29;
+--primary-12: 255 255 255; --contrast-primary-12: 29 29 29;
+--primary-original: 51 51 51; --contrast-primary-original: 255 255 255;
+ --tint-1: 29 29 29; --contrast-tint-1: 255 255 255;
+--tint-2: 34 34 34; --contrast-tint-2: 255 255 255;
+--tint-3: 44 44 44; --contrast-tint-3: 255 255 255;
+--tint-4: 48 48 48; --contrast-tint-4: 255 255 255;
+--tint-5: 53 53 53; --contrast-tint-5: 255 255 255;
+--tint-6: 57 57 57; --contrast-tint-6: 255 255 255;
+--tint-7: 67 67 67; --contrast-tint-7: 255 255 255;
+--tint-8: 78 78 78; --contrast-tint-8: 255 255 255;
+--tint-9: 133 133 133; --contrast-tint-9: 255 255 255;
+--tint-10: 144 144 144; --contrast-tint-10: 255 255 255;
+--tint-11: 192 192 192; --contrast-tint-11: 29 29 29;
+--tint-12: 255 255 255; --contrast-tint-12: 29 29 29;
+--tint-original: 120 120 120; --contrast-tint-original: 255 255 255;
+ --neutral-1: 29 29 29; --contrast-neutral-1: 255 255 255;
+--neutral-2: 34 34 34; --contrast-neutral-2: 255 255 255;
+--neutral-3: 44 44 44; --contrast-neutral-3: 255 255 255;
+--neutral-4: 48 48 48; --contrast-neutral-4: 255 255 255;
+--neutral-5: 53 53 53; --contrast-neutral-5: 255 255 255;
+--neutral-6: 57 57 57; --contrast-neutral-6: 255 255 255;
+--neutral-7: 67 67 67; --contrast-neutral-7: 255 255 255;
+--neutral-8: 78 78 78; --contrast-neutral-8: 255 255 255;
+--neutral-9: 120 120 120; --contrast-neutral-9: 255 255 255;
+--neutral-10: 144 144 144; --contrast-neutral-10: 255 255 255;
+--neutral-11: 192 192 192; --contrast-neutral-11: 29 29 29;
+--neutral-12: 255 255 255; --contrast-neutral-12: 29 29 29;
+--neutral-original: 120 120 120; --contrast-neutral-original: 255 255 255;
+ --header-background: 51 51 51;
+ --header-link: 255 255 255;
+ --info-1: 29 29 29; --contrast-info-1: 255 255 255;
+--info-2: 34 34 34; --contrast-info-2: 255 255 255;
+--info-3: 44 44 44; --contrast-info-3: 255 255 255;
+--info-4: 48 48 48; --contrast-info-4: 255 255 255;
+--info-5: 53 53 53; --contrast-info-5: 255 255 255;
+--info-6: 57 57 57; --contrast-info-6: 255 255 255;
+--info-7: 67 67 67; --contrast-info-7: 255 255 255;
+--info-8: 78 78 78; --contrast-info-8: 255 255 255;
+--info-9: 120 120 120; --contrast-info-9: 255 255 255;
+--info-10: 144 144 144; --contrast-info-10: 255 255 255;
+--info-11: 192 192 192; --contrast-info-11: 29 29 29;
+--info-12: 255 255 255; --contrast-info-12: 29 29 29;
+--info-original: 120 120 120; --contrast-info-original: 255 255 255;
+ --warning-1: 29 29 29; --contrast-warning-1: 255 255 255;
+--warning-2: 38 34 30; --contrast-warning-2: 255 255 255;
+--warning-3: 50 42 35; --contrast-warning-3: 255 255 255;
+--warning-4: 57 45 34; --contrast-warning-4: 255 255 255;
+--warning-5: 66 50 34; --contrast-warning-5: 255 255 255;
+--warning-6: 73 53 33; --contrast-warning-6: 255 255 255;
+--warning-7: 87 62 37; --contrast-warning-7: 255 255 255;
+--warning-8: 101 71 41; --contrast-warning-8: 255 255 255;
+--warning-9: 254 154 0; --contrast-warning-9: 29 29 29;
+--warning-10: 213 116 0; --contrast-warning-10: 255 255 255;
+--warning-11: 224 184 145; --contrast-warning-11: 29 29 29;
+--warning-12: 255 253 243; --contrast-warning-12: 29 29 29;
+--warning-original: 254 154 0; --contrast-warning-original: 29 29 29;
+ --danger-1: 29 29 29; --contrast-danger-1: 255 255 255;
+--danger-2: 40 32 32; --contrast-danger-2: 255 255 255;
+--danger-3: 55 39 38; --contrast-danger-3: 255 255 255;
+--danger-4: 64 41 38; --contrast-danger-4: 255 255 255;
+--danger-5: 75 44 41; --contrast-danger-5: 255 255 255;
+--danger-6: 84 45 41; --contrast-danger-6: 255 255 255;
+--danger-7: 100 51 48; --contrast-danger-7: 255 255 255;
+--danger-8: 117 58 54; --contrast-danger-8: 255 255 255;
+--danger-9: 251 44 54; --contrast-danger-9: 255 255 255;
+--danger-10: 255 52 59; --contrast-danger-10: 255 255 255;
+--danger-11: 248 168 161; --contrast-danger-11: 29 29 29;
+--danger-12: 255 249 247; --contrast-danger-12: 29 29 29;
+--danger-original: 251 44 54; --contrast-danger-original: 255 255 255;
+ --success-1: 29 29 29; --contrast-success-1: 255 255 255;
+--success-2: 31 36 32; --contrast-success-2: 255 255 255;
+--success-3: 37 47 38; --contrast-success-3: 255 255 255;
+--success-4: 37 52 39; --contrast-success-4: 255 255 255;
+--success-5: 38 60 41; --contrast-success-5: 255 255 255;
+--success-6: 38 65 41; --contrast-success-6: 255 255 255;
+--success-7: 42 77 48; --contrast-success-7: 255 255 255;
+--success-8: 47 89 54; --contrast-success-8: 255 255 255;
+--success-9: 0 201 80; --contrast-success-9: 29 29 29;
+--success-10: 0 176 54; --contrast-success-10: 255 255 255;
+--success-11: 155 208 161; --contrast-success-11: 29 29 29;
+--success-12: 246 255 247; --contrast-success-12: 29 29 29;
+--success-original: 0 201 80; --contrast-success-original: 29 29 29;
+ }
+ Roboflow Docs ⌘ Ctrl k Resources Docs Sign In Book a Demo Get Started More Get Started Deployment Workflows Models Datasets Reference English 🇺🇸 Roboflow Docs English 🇺🇸 Deploy a Model or Workflow Choosing a Deployment Option Production Readiness Checklist Roboflow Cloud Serverless Cloud API Pricing Model pricing Serverless Video Streaming Use in a Workflow Batch Processing Dedicated Deployments Self-Hosted Self-Hosted Deployment Inference Server Inference Library Other SDKs Enterprise Deployment Monitoring & Analytics Vision Events Active Learning Powered by GitBook On this page For the complete documentation index, see llms.txt . This page is also available as Markdown . Copy On this page Deployment Roboflow Cloud Serverless Cloud API Model pricing Credit prices for the models served by the Serverless Cloud API, per 1,000 images. Serverless Cloud API image inference is billed in credits per image. Every price on this page is credits per 1,000 images at the standard rate, rounded to four decimal places. Each row is a model architecture priced from its smallest size, and each section expands to show every size. Volume discounts apply automatically once monthly usage crosses a threshold. Pricing covers how billing works, including Workflow runs and which failed requests are billable. Video is priced separately in Serverless Video Streaming . Object detection Sorted by credits per 1,000 images divided by COCO mAP 50:95, using the smallest size of each architecture. Accuracy figures come from the Roboflow model leaderboard . These are the five most efficient architectures for this task. Model Credits per 1,000 images Sizes Best COCO mAP 50:95 RF-DETR 0.125 7 59.9% YOLO26 0.125 5 56.3% YOLOv12 0.125 5 54.0% YOLOv11 0.125 5 53.6% YOLOv10 0.125 6 53.6% Every object detection model and size RF-DETR Nano: 0.125 Small, Base, Medium, Large: 0.1875 XL: 0.25 2XL: 0.3125 YOLO26 Nano: 0.125 Small, Medium, Large: 0.1875 XL: 0.25 YOLOv12 Nano: 0.125 Small, Medium, Large: 0.1875 XL: 0.25 YOLOv11 Nano: 0.125 Small, Medium, Large: 0.1875 XL: 0.25 YOLOv10 Nano: 0.125 Small, Medium, Balanced, Large: 0.1875 XL: 0.25 YOLOv8 Nano: 0.125 Small, Medium, Large: 0.1875 XL: 0.25 YOLOv9 Tiny: 0.125 Small, Medium, Compact: 0.1875 Extended: 0.25 YOLOv7 Tiny: 0.125 Base: 0.1875 X: 0.25 YOLOv5 Nano: 0.125 Small, Medium, Large: 0.1875 XL: 0.25 YOLOLite Nano: 0.125 Small, Medium, Large: 0.1875 XL: 0.25 YOLO-NAS Small, Medium: 0.1875 Instance segmentation Sorted by price, lowest first. These are the five lowest-priced architectures for this task. Model Credits per 1,000 images Sizes RF-DETR Seg 0.1875 7 YOLO26 Seg 0.1875 5 YOLOv11 Seg 0.1875 5 YOLOv8 Seg 0.1875 5 YOLOv5 Seg 0.1875 5 Every instance segmentation model and size RF-DETR Seg Nano: 0.1875 Small, Medium, Large, Preview: 0.25 XL, 2XL: 0.3125 YOLO26 Seg Nano: 0.1875 Small, Medium, Large: 0.25 XL: 0.3125 YOLOv11 Seg Nano: 0.1875 Small, Medium, Large: 0.25 XL: 0.3125 YOLOv8 Seg Nano: 0.1875 Small, Medium, Large: 0.25 XL: 0.3125 YOLOv5 Seg Nano: 0.1875 Small, Medium, Large: 0.25 XL: 0.3125 YOLACT ResNet-101: 0.25 Semantic segmentation Model Credits per 1,000 images Sizes YOLO26 Semantic Seg 0.25 5 DeepLabV3+ 0.25 1 Every semantic segmentation model and size YOLO26 Semantic Seg Nano, Small, Medium, Large, XL: 0.25 DeepLabV3+ MobileNetV2: 0.25 Keypoint detection Model Credits per 1,000 images Sizes YOLO26 Pose 0.125 5 YOLOv11 Pose 0.125 5 YOLOv8 Pose 0.125 5 RF-DETR Keypoint 0.25 1 Every keypoint detection model and size YOLO26 Pose Nano: 0.125 Small, Medium, Large: 0.1875 XL: 0.25 YOLOv11 Pose Nano: 0.125 Small, Medium, Large: 0.1875 XL: 0.25 YOLOv8 Pose Nano: 0.125 Small, Medium, Large: 0.1875 XL: 0.25 RF-DETR Keypoint Preview: 0.25 Classification Model Credits per 1,000 images Sizes ViT 0.0625 1 ResNet 0.0625 4 DINOv3 Probe 0.0625 2 Every classification model and size ViT B/16: 0.0625 ResNet 18, 34, 50, 101: 0.0625 DINOv3 Probe Small: 0.0625 Base: 0.125 Open-vocabulary detection These models detect objects from a text prompt, with no training required. Model Credits per 1,000 images Sizes YOLO-World 0.1875 8 Roboflow Instant 0.75 1 Grounding DINO 0.75 1 OWLv2 0.75 2 Every open-vocabulary detection model and size YOLO-World S, M, L, X, v2-S, v2-M, v2-L, v2-X: 0.1875 Roboflow Instant Single size: 0.75 Grounding DINO Swin-T: 0.75 OWLv2 Large, Large (fine-tuned): 0.75 Segment Anything Promptable segmentation foundation models. Model Credits per 1,000 images Sizes SAM 2 0.3125 4 SAM 3 0.5 2 SAM 0.5 1 Every model and size in Segment Anything SAM 2 Hiera Tiny, Hiera Small: 0.3125 Hiera Base+, Hiera Large: 0.5 SAM 3 Base, Large: 0.5 SAM ViT-H: 0.5 OCR PP-OCR is billed per run, not per stage. Calls with text detection turned off bill at the recognition-only rate, and every combination with detection on bills at the OCR rate. Model Credits per 1,000 images Sizes PP-OCR (recognition only) 0.125 3 TrOCR 0.3125 1 PP-OCR (detection + recognition) 0.375 3 DocTR 0.375 1 EasyOCR 0.375 1 Every model and size in OCR PP-OCR (recognition only) Tiny, Small, Medium: 0.125 TrOCR Single size: 0.3125 PP-OCR (detection + recognition) Tiny, Small, Medium: 0.375 DocTR Single size: 0.375 EasyOCR Single size: 0.375 Embeddings Model Credits per 1,000 images Sizes CLIP 0.125 3 Perception Encoder 0.3125 1 Every embeddings model and size CLIP ViT-B/16, ViT-B/32: 0.125 ViT-L/14: 0.1875 Perception Encoder Single size: 0.3125 Depth estimation Model Credits per 1,000 images Sizes Depth Anything V3 0.3125 2 Depth Anything V2 0.3125 1 Every depth estimation model and size Depth Anything V3 Small: 0.3125 Base: 0.75 Depth Anything V2 Small: 0.3125 Execution time pricing Custom Python blocks and vision language models are billed for the time they run, not per image. One credit buys 500 execution seconds. Workload Execution seconds per credit Credits per second Credits per hour Custom Python blocks 500 0.002 7.2 Vision language models 500 0.002 7.2 Vision language models Every vision language model is billed for its execution time at the rate above, whatever the prompt or the number of output tokens. Model Execution seconds per credit PaliGemma 2 500 Florence 2 500 Qwen2.5 VL 500 Qwen3 VL 500 Qwen3.5 500 SmolVLM 500 Cosmos 3 (Edge) VLM 500 Moondream 500 Gemma 4 500 Mage-VL 500 GLM-OCR 500 A step that runs a vision language model for 2.5 seconds per image, across 10,000 images, uses 25,000 execution seconds, or 50 credits. Volume discounts Volume discounts are graduated: each rate applies only to the images that fall inside its band, and images below a threshold keep the rate of the band they fall in. Bands count a workspace total across all models for the calendar month. Select a band to see the rates that apply to images in it. First 250K 250K–500K 500K–1M 1M–2M 2M–5M Over 5M Standard rates, charged on the first 250,000 images each month. Standard rate Models on this rate Rate in this band 0.0625 Classification models 0.0625 0.125 Nano detection, CLIP, PP-OCR recognition only 0.125 0.1875 Small–Large detection, Nano segmentation 0.1875 0.25 XL detection, Small–Large segmentation 0.25 0.3125 XL segmentation, SAM 2 Tiny/Small 0.3125 0.375 OCR pipelines 0.375 0.5 Segment Anything 0.5 0.75 Open-vocabulary detection, Depth Anything V3 Base 0.75 25% off. Standard rate Models on this rate Rate in this band 0.0625 Classification models 0.0469 0.125 Nano detection, CLIP, PP-OCR recognition only 0.0938 0.1875 Small–Large detection, Nano segmentation 0.1406 0.25 XL detection, Small–Large segmentation 0.1875 0.3125 XL segmentation, SAM 2 Tiny/Small 0.2344 0.375 OCR pipelines 0.2813 0.5 Segment Anything 0.375 0.75 Open-vocabulary detection, Depth Anything V3 Base 0.5625 50% off. Standard rate Models on this rate Rate in this band 0.0625 Classification models 0.0313 0.125 Nano detection, CLIP, PP-OCR recognition only 0.0625 0.1875 Small–Large detection, Nano segmentation 0.0938 0.25 XL detection, Small–Large segmentation 0.125 0.3125 XL segmentation, SAM 2 Tiny/Small 0.1563 0.375 OCR pipelines 0.1875 0.5 Segment Anything 0.25 0.75 Open-vocabulary detection, Depth Anything V3 Base 0.375 60% off. Standard rate Models on this rate Rate in this band 0.0625 Classification models 0.025 0.125 Nano detection, CLIP, PP-OCR recognition only 0.05 0.1875 Small–Large detection, Nano segmentation 0.075 0.25 XL detection, Small–Large segmentation 0.1 0.3125 XL segmentation, SAM 2 Tiny/Small 0.125 0.375 OCR pipelines 0.15 0.5 Segment Anything 0.2 0.75 Open-vocabulary detection, Depth Anything V3 Base 0.3 70% off. Standard rate Models on this rate Rate in this band 0.0625 Classification models 0.0188 0.125 Nano detection, CLIP, PP-OCR recognition only 0.0375 0.1875 Small–Large detection, Nano segmentation 0.0563 0.25 XL detection, Small–Large segmentation 0.075 0.3125 XL segmentation, SAM 2 Tiny/Small 0.0938 0.375 OCR pipelines 0.1125 0.5 Segment Anything 0.15 0.75 Open-vocabulary detection, Depth Anything V3 Base 0.225 80% off. Standard rate Models on this rate Rate in this band 0.0625 Classification models 0.0125 0.125 Nano detection, CLIP, PP-OCR recognition only 0.025 0.1875 Small–Large detection, Nano segmentation 0.0375 0.25 XL detection, Small–Large segmentation 0.05 0.3125 XL segmentation, SAM 2 Tiny/Small 0.0625 0.375 OCR pipelines 0.075 0.5 Segment Anything 0.1 0.75 Open-vocabulary detection, Depth Anything V3 Base 0.15 For example, 600,000 images through RF-DETR Small in one month bill as 250,000 at 0.1875, then 250,000 at 0.1406, then 100,000 at 0.0938, for a total of 91.41 credits. Models priced elsewhere The video trackers SAM 2 Video and SAM 3 Video run on Serverless Video and are priced in Serverless Video Streaming . Previous Pricing Next Serverless Video Streaming Last updated 12 days ago Was this helpful? Company Blog About Us Press Support Contact Support User Forum Resources Contact Us Service Status Weekly Webinars 
+ document.addEventListener("DOMContentLoaded", () => {
+ if (Array.from(document.scripts).find(script => script.src.includes('rocket-loader.min.js'))) {
+ const alert = document.createElement('div');
+ alert.className = 'p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 mt-8 mx-8';
+ alert.innerHTML = `
+ Error in site configuration: 
+ It looks like ${window.location.hostname} has been incorrectly configured in Cloudflare. This may lead to unexpected behavior or issues with the page loading. If you are the owner of this site, please refer to GitBook's documentation for steps to fix the problem.
+ `;
+ document.body.prepend(alert);
+ }
+ }); Object detection Instance segmentation Semantic segmentation Keypoint detection Classification Open-vocabulary detection Segment Anything OCR Embeddings Depth estimation Execution time pricing Vision language models Volume discounts Models priced elsewhere $RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3 Was this helpful? 

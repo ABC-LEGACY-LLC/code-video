@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="title" content="UniMate" />
+  <meta name="description"
+    content="Articulated motion generation for arbitrary skeletons from a rigged 3D asset and a text prompt, with no per-skeleton retraining. SIGGRAPH Asia 2026." />
+  <meta name="keywords" content="Motion Generation, Character Animation, Auto-Rigging, Diffusion Transformer" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Linzhan Mou" />
+  <title>UniMate &mdash; One Unified Model to Animate Diverse Skeletons</title>
+
+  <!-- Link preview (iMessage / Slack / Twitter cards). This page's card is the
+       paper's teaser; the lab (interactive.html) has its own, a frame of the
+       lab itself — each shows what that page actually is.
+
+       Rules both cards answer to. Absolute URLs: scrapers resolve nothing.
+       Width and height must match the file on disk. A changed image needs a
+       NEW filename: scrapers cache an unchanged URL indefinitely. Limits are
+       the tightest platform's (X): long edge under 4096px, file under 5MB.
+       Aspect is the one neither meets — X and Facebook centre-crop anything
+       wider than 1.91:1, and these run 2.59:1 and 2.39:1, so each loses its
+       outer fifth or so there. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="UniMate — One Unified Model to Animate Diverse Skeletons" />
+  <meta property="og:description"
+    content="Articulated motion generation for arbitrary skeletons from a rigged 3D asset and a text prompt, with no per-skeleton retraining. SIGGRAPH Asia 2026." />
+  <meta property="og:url" content="https://linzhanmou.com/unimate/" />
+  <meta property="og:image" content="https://linzhanmou.com/unimate/assets/images/og-teaser.jpg" />
+  <meta property="og:image:width" content="3787" />
+  <meta property="og:image:height" content="1464" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://linzhanmou.com/unimate/assets/images/og-teaser.jpg" />
+
+  <link rel="canonical" href="https://linzhanmou.com/unimate/" />
+  <link rel="icon" type="image/png" sizes="2048x2048" href="assets/images/favicon-baymax.png" />
+  <link rel="apple-touch-icon" href="assets/images/favicon-baymax.png" />
+  <link rel="stylesheet" href="css/style.css?v=46" />
+  <!-- The Applications schematics' own figure system, kept out of the page
+       sheet. Loaded after it so it can read the tokens. -->
+  <link rel="stylesheet" href="css/schematics.css?v=1" />
+  <!-- Breakpoint overrides load last. -->
+  <link rel="stylesheet" href="css/responsive.css?v=20" />
+</head>
+
+<body>
+  <!-- Fixed table of contents (after videomimic.net). A <nav> landmark so
+       screen readers can jump to it; aria-label names it because the page has
+       more than one navigable region. -->
+  <nav class="toc" aria-label="Contents">
+    <div class="toc-title">Contents</div>
+    <ul>
+      <li><a href="#examples">Interactive</a></li>
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#experiments">Experiments</a></li>
+      <li class="toc-subsection"><a href="#diverse-skeletons-prompts">Diverse Skeletons, Diverse Prompts</a></li>
+      <li class="toc-subsection"><a href="#one-prompt-diverse-skeletons">One Prompt, Diverse Skeletons</a></li>
+      <li class="toc-subsection"><a href="#diverse-prompts">One Skeleton, Diverse Prompts</a></li>
+      <li class="toc-subsection"><a href="#diverse-motions">One Skeleton, One Prompt, Diverse Motions</a></li>
+      <li><a href="#application">Applications</a></li>
+      <li class="toc-subsection"><a href="#motion-editing">Motion Editing</a></li>
+      <li class="toc-subsection"><a href="#motion-inbetweening">Motion In-Betweening</a></li>
+      <li class="toc-subsection"><a href="#motion-expansion">Motion Expansion</a></li>
+      <li><a href="#dataset">Dataset</a></li>
+      <li><a href="#poster">Poster</a></li>
+      <li><a href="#citation">Citation</a></li>
+    </ul>
+  </nav>
+
+  <div class="main-content">
+    <!-- The mark is a two-joint kinematic chain — decorative, so hidden from
+         assistive tech; the credential is the text beside it. -->
+    <div class="venue-line">
+      <svg class="venue-rig" viewBox="0 0 34 8" aria-hidden="true" focusable="false">
+        <line x1="4" y1="4" x2="27" y2="4" />
+        <circle class="venue-rig-root" cx="4" cy="4" r="3" />
+        <circle class="venue-rig-joint" cx="29" cy="4" r="2" />
+      </svg>
+      <span class="venue">SIGGRAPH Asia <span class="venue-year">2026</span></span>
+    </div>
+    <h1 class="hero-text">UniMate</h1>
+    <div class="sub-hero-text">One Unified Model to Animate Diverse Skeletons</div>
+
+    <div class="authors">
+      <a href="https://linzhanmou.com/" target="_blank" rel="noopener">Linzhan Mou</a>,
+      <a href="https://jiahuilei.com/" target="_blank" rel="noopener">Jiahui Lei</a>,
+      <a href="https://frank-zy-dou.github.io/" target="_blank" rel="noopener">Zhiyang Dou</a>,
+      <a href="https://chenyue-cai.com/" target="_blank" rel="noopener">Chenyue Cai</a>,
+      <a href="https://chaoyuesong.github.io/" target="_blank" rel="noopener">Chaoyue Song</a>,
+      <a href="https://www.cs.princeton.edu/~af/" target="_blank" rel="noopener">Adam Finkelstein</a>,
+      <a href="https://www.cs.princeton.edu/~smr/" target="_blank" rel="noopener">Szymon Rusinkiewicz</a>
+    </div>
+
+    <div class="affiliations">
+      <img class="logo-lg" src="assets/logos/princeton.png" alt="Princeton University" />
+      <img class="logo-lg" src="assets/logos/ucb.svg" alt="University of California, Berkeley" />
+      <img src="assets/logos/mit.png" alt="Massachusetts Institute of Technology" />
+    </div>
+
+    <!-- The marks are inline SVG: this page loads no icon stylesheet.
+         Code's is the octocat in line work — see .quick-link-icon-git in style.css. -->
+    <div class="quick-links">
+      <a class="quick-link" href="https://arxiv.org/abs/2609.05415" target="_blank" rel="noopener"><svg
+          class="quick-link-icon quick-link-icon-doc" viewBox="0 0 12 15" aria-hidden="true"
+          focusable="false">
+          <path d="M0.75 0.75H7.4l3.85 3.85v9.65H0.75Z" />
+          <path d="M7.4 0.75V4.6h3.85" />
+          <path d="M3.4 8.2h5.2M3.4 11.2h5.2" />
+        </svg>arXiv</a>
+      <span class="quick-link-sep" aria-hidden="true">&#183;</span>
+      <a class="quick-link" href="https://youtu.be/xbndC-dEuVw" target="_blank" rel="noopener"><svg
+          class="quick-link-icon quick-link-icon-play" viewBox="0 0 15 15" aria-hidden="true"
+          focusable="false">
+          <circle cx="7.5" cy="7.5" r="6.75" />
+          <path d="M6 4.6 10.6 7.5 6 10.4Z" />
+        </svg>Video</a>
+      <span class="quick-link-sep" aria-hidden="true">&#183;</span>
+      <a class="quick-link" href="resources/unimate-poster.png" target="_blank" rel="noopener"><svg
+          class="quick-link-icon quick-link-icon-poster" viewBox="0 0 15 16" aria-hidden="true"
+          focusable="false">
+          <path d="M0.75 0.75H14.25V11.25H0.75Z" />
+          <path d="M3.75 11.25 2.75 15.25M11.25 11.25 12.25 15.25" />
+          <path d="M3.2 4.2h8.6M3.2 7.8h3.4M8.4 7.8h3.4" />
+        </svg>Poster</a>
+      <span class="quick-link-sep" aria-hidden="true">&#183;</span>
+      <a class="quick-link" href="interactive.html"><svg
+          class="quick-link-icon quick-link-icon-pad" viewBox="0 0 20 14" aria-hidden="true"
+          focusable="false">
+          <rect x="0.75" y="1.75" width="18.5" height="10.5" rx="3.75" />
+          <path d="M3.9 7h3.6M5.7 5.2v3.6" />
+          <circle cx="13.9" cy="8.5" r="1.25" />
+          <circle class="quick-link-icon-key" cx="16.2" cy="5.8" r="1.25" />
+        </svg><span class="quick-link-long">Interactive demo</span><span class="quick-link-short">Demo</span></a>
+      <span class="quick-link-sep" aria-hidden="true">&#183;</span>
+      <span class="quick-link-break" aria-hidden="true"></span>
+      <a class="quick-link" href="https://github.com/Friedrich-M/UniMate" target="_blank"
+        rel="noopener"><svg class="quick-link-icon quick-link-icon-git" viewBox="0 0 16 16"
+          aria-hidden="true" focusable="false">
+          <path d="M6.3 15.05A7.25 7.25 0 1 1 9.7 15.05" />
+          <path
+            d="M6.3 15.05V12.7C4.3 12.4 3.1 11.2 3.1 9.2 3.1 8.25 3.4 7.45 3.95 6.85 3.85 6.25 3.85 5.35 4.15 4.4c0 0 .9-.1 2.2.85a7 7 0 0 1 3.3 0c1.3-.95 2.2-.85 2.2-.85.3.95.3 1.85.2 2.45.55.6.85 1.4.85 2.35 0 2-1.2 3.2-3.2 3.5v2.35" />
+        </svg>Code</a>
+      <span class="quick-link-sep" aria-hidden="true">&#183;</span>
+      <a class="quick-link" href="https://huggingface.co/Linzhan/UniMate" target="_blank" rel="noopener"><svg
+          class="quick-link-icon quick-link-icon-cube" viewBox="0 0 14 15" aria-hidden="true"
+          focusable="false">
+          <path d="M7 0.75 13.25 4.1v6.8L7 14.25 0.75 10.9V4.1Z" />
+          <path d="M0.75 4.1 7 7.5l6.25-3.4M7 7.5v6.75" />
+        </svg>Models</a>
+      <span class="quick-link-sep" aria-hidden="true">&#183;</span>
+      <a class="quick-link" href="https://huggingface.co/collections/Linzhan/unimate" target="_blank" rel="noopener"><svg
+          class="quick-link-icon quick-link-icon-db" viewBox="0 0 12 15" aria-hidden="true"
+          focusable="false">
+          <ellipse cx="6" cy="2.75" rx="5.25" ry="2" />
+          <path d="M0.75 2.75v9.5a5.25 2 0 0 0 10.5 0v-9.5" />
+          <path d="M0.75 5.92a5.25 2 0 0 0 10.5 0M0.75 9.08a5.25 2 0 0 0 10.5 0" />
+        </svg>Dataset</a>
+    </div>
+
+    <!-- The teaser: the lab framed live on its one stage (js/teaser.js). Drag
+         orbits and the wheel zooms the frame, never the page; on a touch
+         screen it is a still picture. The teaser video it replaced stays in
+         assets/, unreferenced (AGENTS.md). -->
+    <figure class="teaser">
+      <div class="teaser-frame">
+        <iframe src="interactive.html?embed#teaser-scene"
+          title="UniMate's teaser: ten rigged characters, each animated from its own text prompt"></iframe>
+      </div>
+      <figcaption class="figure-caption">
+        Given a rigged 3D asset and a text prompt, UniMate generates animations for
+        characters with <em>diverse skeletal topologies</em> within a <em>single unified</em> model.
+      </figcaption>
+    </figure>
+
+    <section class="interactive-showcase" aria-labelledby="examples">
+      <header class="interactive-showcase-header">
+        <h2 id="examples">Interactive Examples.</h2>
+        <p class="interactive-instructions" aria-label="Viewer instructions">
+          <span class="instruction-item">
+            <svg class="gesture-icon" viewBox="0 0 32 28" aria-hidden="true" focusable="false">
+              <path class="gesture-track" d="M4.5 12.5C2.8 9.8 4.6 7 8 6.1" />
+              <path class="gesture-arrow" d="m5.1 9.1-.6 3.4 3.3-.8" />
+              <path class="gesture-track" d="M27.5 15.5c1.7 2.7-.1 5.5-3.5 6.4" />
+              <path class="gesture-arrow" d="m26.9 18.9.6-3.4-3.3.8" />
+              <rect class="gesture-mouse" x="10" y="2.5" width="12" height="23" rx="6" />
+              <path class="gesture-button" d="M16 3v7" />
+              <circle class="gesture-accent" cx="16" cy="7" r="1.5" />
+            </svg>
+            <span><strong>Drag</strong> to orbit</span>
+          </span>
+          <span class="instruction-item">
+            <svg class="gesture-icon" viewBox="0 0 32 28" aria-hidden="true" focusable="false">
+              <rect class="gesture-mouse" x="4" y="2.5" width="12" height="23" rx="6" />
+              <path class="gesture-button" d="M10 3v7" />
+              <circle class="gesture-accent" cx="10" cy="7" r="1.5" />
+              <path class="gesture-track" d="M24 5v18" />
+              <path class="gesture-arrow" d="m21 8 3-3 3 3M21 20l3 3 3-3" />
+            </svg>
+            <span><strong>Scroll</strong> to zoom</span>
+          </span>
+        </p>
+        <!-- The label names the destination, not the effect: worded as a size
+             change ("View larger") it read as a zoom control for the viewer
+             below, not a link out to the lab. The corners say the same thing a
+             diagonal arrow could not. -->
+        <a class="interactive-expand" href="interactive.html">Open full screen<svg
+            class="expand-mark" viewBox="0 0 14 14" aria-hidden="true" focusable="false">
+            <path d="M5.2 1H1v4.2M8.8 1H13v4.2M5.2 13H1V8.8M8.8 13H13V8.8" />
+          </svg></a>
+      </header>
+
+      <div class="viewer-layout">
+        <aside class="category-panel" aria-label="Motion categories">
+          <!-- One row per stage, filled by viewer.js. No "Categories" heading
+               here, unlike the lab: the section heading above already names
+               the block. -->
+          <div class="example-sidebar" id="example-sidebar" role="group" aria-label="Example stages"></div>
+        </aside>
+        <div class="embed-control-bar" aria-label="Display controls">
+          <div class="embed-control-actions">
+            <button class="embed-status-control embed-playback-control" type="button" data-setting="paused" aria-pressed="false"><span data-playback-label>Pause</span><i aria-hidden="true"></i></button>
+            <button class="embed-status-control is-active" type="button" data-setting="show model" aria-pressed="true"><span>Mesh</span><i aria-hidden="true"></i></button>
+            <button class="embed-status-control is-active" type="button" data-setting="show skeleton" aria-pressed="true"><span>Skeleton</span><i aria-hidden="true"></i></button>
+          </div>
+        </div>
+        <div class="viewer-wrapper" id="viewer-wrapper">
+          <!-- One prompt pill per model; filled and positioned by viewer.js. -->
+          <div id="viewer-labels"></div>
+          <div id="loading-overlay"><span class="spinner"></span>Loading…</div>
+          <div id="drop-hint">Drop .fbx / .glb / .gltf to visualize</div>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="tagline" id="abstract"><span>Abstract.</span></h2>
+    <div class="section abstract-copy" id="abstract-copy">
+      Recent advances in automatic rigging now deliver animation-ready 3D assets
+      at scale, yet generating the motion to drive them remains a bottleneck.
+      Existing learned animators are topology-constrained: they rely on
+      category-specific templates or require per-skeleton fine-tuning and reference
+      motions at inference. We present <em>UniMate</em>, a unified foundation model
+      that synthesizes articulated motion for <strong>arbitrary skeletons</strong> from a rigged 3D
+      asset and a text prompt, with <strong>no test-time optimization or per-skeleton
+      retraining</strong>. UniMate relies on a <strong>topology-aware diffusion transformer</strong>, which
+      integrates skeletal topology into attention via three mechanisms: (1) a
+      graph-aware attention bias from pairwise joint relations and geodesic
+      distances; (2) a spectral rotary position embedding generalizing RoPE to
+      arbitrary kinematic trees via the graph Laplacian; and (3) a global
+      topological conditioner attention-pooled from the rest-pose skeleton. We also
+      curate <strong>UniML3D, 13,006 motion sequences</strong> spanning bipedal, quadrupedal, avian,
+      marine, insectoid, serpentine, and articulated rigid objects with unified
+      canonicalization and text pairing. Trained on this dataset, UniMate
+      outperforms state-of-the-art baselines in quality, generalization, and
+      efficiency, and supports <strong>zero-shot cross-topology transfer, in-betweening,
+      expansion, and text-guided editing</strong>.
+    </div>
+    <button class="abstract-toggle" type="button" aria-expanded="false"
+      aria-controls="abstract-copy" hidden>Read full abstract <span aria-hidden="true">↓</span></button>
+
+    <!-- The talk, hosted on YouTube rather than shipped as another mp4: it is
+         minutes long with narration, and every clip on this page is a silent
+         two-second loop the browser autoplays. No heading of its own — it
+         closes the abstract, the way the teaser closes the title block. Lazy,
+         so the player's scripts load when the reader reaches it, not with the
+         hero. -->
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/xbndC-dEuVw"
+        title="UniMate: One Unified Model to Animate Diverse Skeletons" loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+
+    <h2 class="tagline" id="experiments"><span>Experiments.</span></h2>
+
+    <!-- Experiments §1, breadth first: each clip is a 2x4 sheet of prompt +
+         result panels across categories; Experiments §2–4 below hold one factor
+         fixed at a time. One sheet per view — the column-wide clip, the snap and
+         the whole-sheet step are style.css §7 and gallery.js. Styled and
+         numbered exactly like its siblings: marking it as a lead-in (an outlined
+         box, then no number) was tried twice and both read as broken. More
+         breadth means another sheet in this row. -->
+    <div class="section-subtitle" id="diverse-skeletons-prompts">1. Diverse Skeletons, Diverse Prompts.</div>
+
+    <div class="video-gallery-section" id="demoGallerySection">
+      <div class="video-gallery-container">
+        <div class="video-gallery" id="videoGalleryDemo">
+          <video class="gallery-video" src="assets/videos/diverse-skeletons-1.mp4" poster="assets/posters/diverse-skeletons-1.jpg" preload="none" muted playsinline loop></video>
+          <video class="gallery-video" src="assets/videos/diverse-skeletons-2.mp4" poster="assets/posters/diverse-skeletons-2.jpg" preload="none" muted playsinline loop></video>
+        </div>
+      </div>
+      <div class="gallery-caption-container">
+        <div class="gallery-nav-controls">
+          <button class="gallery-nav left" id="scrollLeftBtnDemo">&lt;</button>
+          <button class="gallery-nav right" id="scrollRightBtnDemo">&gt;</button>
+        </div>
+        <p class="figure-caption gallery-caption">
+          <b>Diverse skeletons, diverse prompts.</b> A single unified model generates
+          prompt-faithful, temporally coherent motion across heterogeneous rigs,
+          adapting to each skeleton's structure.
+        </p>
+      </div>
+    </div>
+
+    <!-- Experiments §2: Motion Transfer (paper "Text-Mediated Motion Transfer",
+         Sec. 5.5 / Fig. 12). The gallery pattern is VideoMimic's "Real-world
+         Demo": a horizontal .video-gallery row and one bold-lead caption. -->
+    <div class="section-subtitle" id="one-prompt-diverse-skeletons">2. One Prompt, Diverse Skeletons.</div>
+
+    <div class="video-gallery-section" id="transferGallerySection">
+      <div class="video-gallery-container">
+        <div class="video-gallery" id="videoGalleryTransfer">
+          <video class="gallery-video" src="assets/videos/one-prompt-walk.mp4" poster="assets/posters/one-prompt-walk.jpg" preload="none" muted playsinline loop></video>
+          <video class="gallery-video" src="assets/videos/one-prompt-attack.mp4" poster="assets/posters/one-prompt-attack.jpg" preload="none" muted playsinline loop></video>
+        </div>
+      </div>
+      <div class="gallery-caption-container">
+        <p class="figure-caption gallery-caption">
+          <b>One prompt, diverse skeletons.</b> A source behavior is abstracted into a text
+          prompt; the same prompt then animates rigs of differing topology,
+          conditioned directly on each target skeleton.
+        </p>
+      </div>
+    </div>
+
+    <!-- Experiments §3 (paper Fig. 5). Same gallery pattern, with nav buttons. -->
+    <div class="section-subtitle" id="diverse-prompts">3. One Skeleton, Diverse Prompts.</div>
+
+    <div class="video-gallery-section" id="promptGallerySection">
+      <div class="video-gallery-container">
+        <div class="video-gallery" id="videoGalleryPrompt">
+          <video class="gallery-video" src="assets/videos/diverse-prompts-baymax.mp4" poster="assets/posters/diverse-prompts-baymax.jpg" preload="none" muted playsinline loop></video>
+          <video class="gallery-video" src="assets/videos/diverse-prompts-eagle.mp4" poster="assets/posters/diverse-prompts-eagle.jpg" preload="none" muted playsinline loop></video>
+          <video class="gallery-video" src="assets/videos/diverse-prompts-shark.mp4" poster="assets/posters/diverse-prompts-shark.jpg" preload="none" muted playsinline loop></video>
+        </div>
+      </div>
+      <div class="gallery-caption-container">
+        <div class="gallery-nav-controls">
+          <button class="gallery-nav left" id="scrollLeftBtnPrompt">&lt;</button>
+          <button class="gallery-nav right" id="scrollRightBtnPrompt">&gt;</button>
+        </div>
+        <p class="figure-caption gallery-caption">
+          <b>One skeleton, diverse prompts.</b> Given a single skeleton, UniMate synthesizes
+          distinct, prompt-faithful motions for different input text prompts,
+          reflecting the controllability of the model.
+        </p>
+      </div>
+    </div>
+
+    <!-- Experiments §4 (paper Fig. 6). Same gallery pattern, with nav buttons. -->
+    <div class="section-subtitle" id="diverse-motions">4. One Skeleton, One Prompt, Diverse Motions.</div>
+
+    <div class="video-gallery-section" id="motionGallerySection">
+      <div class="video-gallery-container">
+        <div class="video-gallery" id="videoGalleryMotion">
+          <video class="gallery-video" src="assets/videos/diverse-motions-cat.mp4" poster="assets/posters/diverse-motions-cat.jpg" preload="none" muted playsinline loop></video>
+          <video class="gallery-video" src="assets/videos/diverse-motions-snake.mp4" poster="assets/posters/diverse-motions-snake.jpg" preload="none" muted playsinline loop></video>
+          <video class="gallery-video" src="assets/videos/diverse-motions-human.mp4" poster="assets/posters/diverse-motions-human.jpg" preload="none" muted playsinline loop></video>
+        </div>
+      </div>
+      <div class="gallery-caption-container">
+        <div class="gallery-nav-controls">
+          <button class="gallery-nav left" id="scrollLeftBtnMotion">&lt;</button>
+          <button class="gallery-nav right" id="scrollRightBtnMotion">&gt;</button>
+        </div>
+        <p class="figure-caption gallery-caption">
+          <b>One skeleton, one prompt, diverse motions.</b> Given the same skeleton and text
+          prompt, UniMate generates diverse yet prompt-consistent motion samples,
+          reflecting its generative diversity.
+        </p>
+      </div>
+    </div>
+
+    <h2 class="tagline" id="application"><span>Applications.</span></h2>
+    <!-- The paper's own definition (Sec. 5.5), and the sentence the three
+         plates below are drawn to: ink is what is held fixed, accent is what
+         is sampled. -->
+    <div class="section">
+      All three applications are <strong>zero-shot</strong>: they reuse the same pretrained
+      model with no fine-tuning or auxiliary networks, differing only in which
+      motion tokens are held fixed during sampling.
+    </div>
+
+    <!-- Application 1: Motion Editing (UniMate paper, Fig. 14). -->
+    <div class="section-subtitle" id="motion-editing">1. Motion Editing.</div>
+
+    <div class="video-gallery-section" id="editGallerySection">
+      <div class="app-row">
+        <div class="video-gallery-container">
+          <div class="video-gallery" id="videoGalleryEdit">
+            <video class="gallery-video" src="assets/videos/motion-editing.mp4" poster="assets/posters/motion-editing.jpg" preload="none" muted playsinline loop></video>
+          </div>
+        </div>
+        <!-- Editing is the spatial one: same span of time, some joints held and
+             the rest resampled — so the diagram splits one rig, not a clip. -->
+        <figure class="app-diagram">
+          <svg viewBox="0 0 200 362" role="img" aria-labelledby="dg-edit-t">
+            <title id="dg-edit-t">A source rig turns its head to the left while standing still. In the edited motion, the head turn is held in ink while the body and legs, drawn in the accent colour, are regenerated to walk forward from the new prompt.</title>
+            <text class="dg-label" x="100" y="12" text-anchor="middle">SOURCE</text>
+            <g class="dg-rig dg-ink is-quad-headshake dg-edit-source" transform="translate(42,30) scale(2.1)">
+              <g class="dg-body">
+                <path class="dg-edit-region" d="M14 24H42"/>
+                <circle class="dg-joint dg-ink dg-root dg-edit-region-root" cx="28" cy="24" r="2.6"/>
+                <circle class="dg-joint dg-ink dg-edit-region" cx="14" cy="24" r="2"/>
+                <circle class="dg-joint dg-ink dg-edit-region" cx="42" cy="24" r="2"/>
+                <g class="dg-limb dg-qleg-1 dg-edit-region">
+                  <path d="M15 24 11 36"/>
+                  <circle class="dg-joint dg-ink" cx="11" cy="36" r="2"/>
+                  <g class="dg-limb dg-qshin-1">
+                    <path d="M11 36 8 48"/>
+                    <circle class="dg-joint dg-ink" cx="8" cy="48" r="2"/>
+                  </g>
+                </g>
+                <g class="dg-limb dg-qleg-2 dg-edit-region">
+                  <path d="M21 24 23 36"/>
+                  <circle class="dg-joint dg-ink" cx="23" cy="36" r="2"/>
+                  <g class="dg-limb dg-qshin-2">
+                    <path d="M23 36 20 48"/>
+                    <circle class="dg-joint dg-ink" cx="20" cy="48" r="2"/>
+                  </g>
+                </g>
+                <g class="dg-limb dg-qleg-3 dg-edit-region">
+                  <path d="M35 24 33 36"/>
+                  <circle class="dg-joint dg-ink" cx="33" cy="36" r="2"/>
+                  <g class="dg-limb dg-qshin-3">
+                    <path d="M33 36 36 48"/>
+                    <circle class="dg-joint dg-ink" cx="36" cy="48" r="2"/>
+                  </g>
+                </g>
+                <g class="dg-limb dg-qleg-4 dg-edit-region">
+                  <path d="M41 24 45 36"/>
+                  <circle class="dg-joint dg-ink" cx="45" cy="36" r="2"/>
+                  <g class="dg-limb dg-qshin-4">
+                    <path d="M45 36 48 48"/>
+                    <circle class="dg-joint dg-ink" cx="48" cy="48" r="2"/>
+                  </g>
+                </g>
+                <g class="dg-limb dg-qneck">
+                  <path d="M42 24 48 17 53 18"/>
+                  <circle class="dg-joint dg-ink" cx="48" cy="17" r="2"/>
+                  <circle class="dg-head dg-joint dg-ink" cx="53" cy="18" r="2.4"/>
+                </g>
+                <g class="dg-limb dg-qtail">
+                  <path d="M14 24 8 18 4 14"/>
+                  <circle class="dg-joint dg-ink" cx="8" cy="18" r="2"/>
+                  <circle class="dg-joint dg-ink" cx="4" cy="14" r="2"/>
+                </g>
+              </g>
+            </g>
+
+            <g class="dg-edit-prompt">
+              <rect class="dg-chip" x="20" y="144" width="160" height="22" rx="11"/>
+              <text class="dg-chip-text" x="100" y="159" text-anchor="middle">walks forward</text>
+              <path class="dg-axis" d="M100 172v12"/>
+              <path class="dg-axis" d="m95 180 5 6 5-6"/>
+            </g>
+
+            <text class="dg-label is-gen" x="100" y="202" text-anchor="middle">EDITED</text>
+            <!-- One rig, two authors: the ink head keeps the source head turn;
+                 the accent body and legs are regenerated into a forward walk.
+                 The drawing is the plate's generic quadruped; the clip is a
+                 two-legged box robot (paper Fig. 14), and the caption follows
+                 the clip. -->
+            <g class="dg-rig dg-gen is-quad-walk dg-edit-output" transform="translate(42,220) scale(2.1)">
+              <g class="dg-body">
+                <path d="M14 24H42"/>
+                <circle class="dg-joint dg-gen dg-root" cx="28" cy="24" r="2.6"/>
+                <circle class="dg-joint dg-gen" cx="14" cy="24" r="2"/>
+                <circle class="dg-joint dg-gen" cx="42" cy="24" r="2"/>
+                <g class="dg-limb dg-qleg-1">
+                  <path d="M15 24 11 36"/>
+                  <circle class="dg-joint dg-gen" cx="11" cy="36" r="2"/>
+                  <g class="dg-limb dg-qshin-1">
+                    <path d="M11 36 8 48"/>
+                    <circle class="dg-joint dg-gen" cx="8" cy="48" r="2"/>
+                  </g>
+                </g>
+                <g class="dg-limb dg-qleg-2">
+                  <path d="M21 24 23 36"/>
+                  <circle class="dg-joint dg-gen" cx="23" cy="36" r="2"/>
+                  <g class="dg-limb dg-qshin-2">
+                    <path d="M23 36 20 48"/>
+                    <circle class="dg-joint dg-gen" cx="20" cy="48" r="2"/>
+                  </g>
+                </g>
+                <g class="dg-limb dg-qleg-3">
+                  <path d="M35 24 33 36"/>
+                  <circle class="dg-joint dg-gen" cx="33" cy="36" r="2"/>
+                  <g class="dg-limb dg-qshin-3">
+                    <path d="M33 36 36 48"/>
+                    <circle class="dg-joint dg-gen" cx="36" cy="48" r="2"/>
+                  </g>
+                </g>
+                <g class="dg-limb dg-qleg-4">
+                  <path d="M41 24 45 36"/>
+                  <circle class="dg-joint dg-gen" cx="45" cy="36" r="2"/>
+                  <g class="dg-limb dg-qshin-4">
+                    <path d="M45 36 48 48"/>
+                    <circle class="dg-joint dg-gen" cx="48" cy="48" r="2"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+            <g class="dg-rig dg-ink is-quad-headshake dg-edit-output" transform="translate(42,220) scale(2.1)">
+              <g class="dg-body">
+                <g class="dg-limb dg-qneck">
+                  <path d="M42 24 48 17 53 18"/>
+                  <circle class="dg-joint dg-ink" cx="48" cy="17" r="2"/>
+                  <circle class="dg-head dg-joint dg-ink" cx="53" cy="18" r="2.4"/>
+                </g>
+                <g class="dg-limb dg-qtail">
+                  <path d="M14 24 8 18 4 14"/>
+                  <circle class="dg-joint dg-ink" cx="8" cy="18" r="2"/>
+                  <circle class="dg-joint dg-ink" cx="4" cy="14" r="2"/>
+                </g>
+              </g>
+            </g>
+
+            <path class="dg-rig dg-ink" d="M26 341h14"/>
+            <text class="dg-label" x="46" y="344">HELD</text>
+            <path class="dg-rig dg-gen" d="M100 341h14"/>
+            <text class="dg-label is-gen" x="120" y="344">RESAMPLED</text>
+          </svg>
+        </figure>
+      </div>
+      <div class="gallery-caption-container">
+        <p class="figure-caption gallery-caption">
+          <b>Motion editing.</b> Given a source motion (left), a subset of joints stays
+          fixed while the rest are resampled under a new prompt (right): here the
+          head keeps its turn while the body walks forward.
+        </p>
+      </div>
+    </div>
+
+    <!-- Application 2: Motion In-Betweening (UniMate paper, Fig. 13). -->
+    <div class="section-subtitle" id="motion-inbetweening">2. Motion In-Betweening.</div>
+
+    <div class="video-gallery-section" id="inbetweenGallerySection">
+      <div class="app-row">
+        <div class="video-gallery-container">
+          <div class="video-gallery" id="videoGalleryInbetween">
+            <video class="gallery-video" src="assets/videos/motion-inbetweening.mp4" poster="assets/posters/motion-inbetweening.jpg" preload="none" muted playsinline loop></video>
+          </div>
+        </div>
+        <!-- In-betweening is temporal and symmetric: both ends given, the middle
+             filled. The rigs sit on one axis so the column reads as a span of
+             time, not three separate figures. -->
+        <figure class="app-diagram">
+          <svg viewBox="0 0 200 362" role="img" aria-labelledby="dg-btw-t">
+            <title id="dg-btw-t">Three human skeletons down one timeline: a standing key pose at the top, a generated skeleton squatting as it travels down the span, and the final return to standing at the bottom. The prompt reads “squats and then rises back up.”</title>
+            <!-- The axis is the argument: ink where the motion is given, accent
+                 across the span UniMate fills in. -->
+            <path class="dg-axis" d="M16 14V348"/>
+            <path class="dg-rig dg-gen dg-draw" pathLength="1" d="M16 78V288"/>
+            <path class="dg-rig dg-ink" d="M10 46h12M10 316h12"/>
+
+            <!-- The keys are the only still figures on the plate: they are what
+                 you gave. One generated skeleton travels down the span, morphing
+                 from the opening to the closing pose. -->
+            <g class="dg-rig dg-ink" transform="translate(58,16) scale(0.8)">
+              <g class="dg-body">
+                <path d="M22 38V26"/>
+                <circle class="dg-joint dg-ink" cx="22" cy="26" r="2"/>
+                <circle class="dg-joint dg-ink dg-root" cx="22" cy="38" r="2.6"/>
+                <path d="M22 38 17 40"/>
+                <circle class="dg-joint dg-ink" cx="17" cy="40" r="2"/>
+                <g class="dg-limb dg-leg-l">
+                  <path d="M17 40 14 52"/>
+                  <circle class="dg-joint dg-ink" cx="14" cy="52" r="2"/>
+                  <g class="dg-limb dg-shin-l">
+                    <path d="M14 52 12 64"/>
+                    <circle class="dg-joint dg-ink" cx="12" cy="64" r="2"/>
+                  </g>
+                </g>
+                <path d="M22 38 27 40"/>
+                <circle class="dg-joint dg-ink" cx="27" cy="40" r="2"/>
+                <g class="dg-limb dg-leg-r">
+                  <path d="M27 40 30 52"/>
+                  <circle class="dg-joint dg-ink" cx="30" cy="52" r="2"/>
+                  <g class="dg-limb dg-shin-r">
+                    <path d="M30 52 32 64"/>
+                    <circle class="dg-joint dg-ink" cx="32" cy="64" r="2"/>
+                  </g>
+                </g>
+                <path d="M22 26V19"/>
+                <circle class="dg-joint dg-ink" cx="22" cy="19" r="2"/>
+                <path d="M22 19V11"/>
+                <circle class="dg-head dg-joint dg-ink" cx="22" cy="11" r="2"/>
+                <path d="M22 26 14 23"/>
+                <circle class="dg-joint dg-ink" cx="14" cy="23" r="2"/>
+                <g class="dg-limb dg-arm-l">
+                  <path d="M14 23 8 33"/>
+                  <circle class="dg-joint dg-ink" cx="8" cy="33" r="2"/>
+                  <g class="dg-limb dg-fore-l">
+                    <path d="M8 33 5 44"/>
+                    <circle class="dg-joint dg-ink" cx="5" cy="44" r="2"/>
+                  </g>
+                </g>
+                <path d="M22 26 30 23"/>
+                <circle class="dg-joint dg-ink" cx="30" cy="23" r="2"/>
+                <g class="dg-limb dg-arm-r">
+                  <path d="M30 23 36 33"/>
+                  <circle class="dg-joint dg-ink" cx="36" cy="33" r="2"/>
+                  <g class="dg-limb dg-fore-r">
+                    <path d="M36 33 39 44"/>
+                    <circle class="dg-joint dg-ink" cx="39" cy="44" r="2"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+            <g class="dg-rig dg-gen dg-travel is-squat" transform="translate(58,85) scale(0.8)">
+              <g class="dg-body">
+                <path d="M22 38V26"/>
+                <circle class="dg-joint dg-gen" cx="22" cy="26" r="2"/>
+                <circle class="dg-joint dg-gen dg-root" cx="22" cy="38" r="2.6"/>
+                <path d="M22 38 17 40"/>
+                <circle class="dg-joint dg-gen" cx="17" cy="40" r="2"/>
+                <g class="dg-limb dg-leg-l">
+                  <path d="M17 40 14 52"/>
+                  <circle class="dg-joint dg-gen" cx="14" cy="52" r="2"/>
+                  <g class="dg-limb dg-shin-l">
+                    <path d="M14 52 12 64"/>
+                    <circle class="dg-joint dg-gen" cx="12" cy="64" r="2"/>
+                  </g>
+                </g>
+                <path d="M22 38 27 40"/>
+                <circle class="dg-joint dg-gen" cx="27" cy="40" r="2"/>
+                <g class="dg-limb dg-leg-r">
+                  <path d="M27 40 30 52"/>
+                  <circle class="dg-joint dg-gen" cx="30" cy="52" r="2"/>
+                  <g class="dg-limb dg-shin-r">
+                    <path d="M30 52 32 64"/>
+                    <circle class="dg-joint dg-gen" cx="32" cy="64" r="2"/>
+                  </g>
+                </g>
+                <path d="M22 26V19"/>
+                <circle class="dg-joint dg-gen" cx="22" cy="19" r="2"/>
+                <path d="M22 19V11"/>
+                <circle class="dg-head dg-joint dg-gen" cx="22" cy="11" r="2"/>
+                <path d="M22 26 14 23"/>
+                <circle class="dg-joint dg-gen" cx="14" cy="23" r="2"/>
+                <g class="dg-limb dg-arm-l">
+                  <path d="M14 23 8 33"/>
+                  <circle class="dg-joint dg-gen" cx="8" cy="33" r="2"/>
+                  <g class="dg-limb dg-fore-l">
+                    <path d="M8 33 5 44"/>
+                    <circle class="dg-joint dg-gen" cx="5" cy="44" r="2"/>
+                  </g>
+                </g>
+                <path d="M22 26 30 23"/>
+                <circle class="dg-joint dg-gen" cx="30" cy="23" r="2"/>
+                <g class="dg-limb dg-arm-r">
+                  <path d="M30 23 36 33"/>
+                  <circle class="dg-joint dg-gen" cx="36" cy="33" r="2"/>
+                  <g class="dg-limb dg-fore-r">
+                    <path d="M36 33 39 44"/>
+                    <circle class="dg-joint dg-gen" cx="39" cy="44" r="2"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+            <g class="dg-rig dg-ink is-squat-end" transform="translate(58,292) scale(0.8)">
+              <g class="dg-body">
+                <path d="M22 38V26"/>
+                <circle class="dg-joint dg-ink" cx="22" cy="26" r="2"/>
+                <circle class="dg-joint dg-ink dg-root" cx="22" cy="38" r="2.6"/>
+                <path d="M22 38 17 40"/>
+                <circle class="dg-joint dg-ink" cx="17" cy="40" r="2"/>
+                <g class="dg-limb dg-leg-l">
+                  <path d="M17 40 14 52"/>
+                  <circle class="dg-joint dg-ink" cx="14" cy="52" r="2"/>
+                  <g class="dg-limb dg-shin-l">
+                    <path d="M14 52 12 64"/>
+                    <circle class="dg-joint dg-ink" cx="12" cy="64" r="2"/>
+                  </g>
+                </g>
+                <path d="M22 38 27 40"/>
+                <circle class="dg-joint dg-ink" cx="27" cy="40" r="2"/>
+                <g class="dg-limb dg-leg-r">
+                  <path d="M27 40 30 52"/>
+                  <circle class="dg-joint dg-ink" cx="30" cy="52" r="2"/>
+                  <g class="dg-limb dg-shin-r">
+                    <path d="M30 52 32 64"/>
+                    <circle class="dg-joint dg-ink" cx="32" cy="64" r="2"/>
+                  </g>
+                </g>
+                <path d="M22 26V19"/>
+                <circle class="dg-joint dg-ink" cx="22" cy="19" r="2"/>
+                <path d="M22 19V11"/>
+                <circle class="dg-head dg-joint dg-ink" cx="22" cy="11" r="2"/>
+                <path d="M22 26 14 23"/>
+                <circle class="dg-joint dg-ink" cx="14" cy="23" r="2"/>
+                <g class="dg-limb dg-arm-l">
+                  <path d="M14 23 8 33"/>
+                  <circle class="dg-joint dg-ink" cx="8" cy="33" r="2"/>
+                  <g class="dg-limb dg-fore-l">
+                    <path d="M8 33 5 44"/>
+                    <circle class="dg-joint dg-ink" cx="5" cy="44" r="2"/>
+                  </g>
+                </g>
+                <path d="M22 26 30 23"/>
+                <circle class="dg-joint dg-ink" cx="30" cy="23" r="2"/>
+                <g class="dg-limb dg-arm-r">
+                  <path d="M30 23 36 33"/>
+                  <circle class="dg-joint dg-ink" cx="36" cy="33" r="2"/>
+                  <g class="dg-limb dg-fore-r">
+                    <path d="M36 33 39 44"/>
+                    <circle class="dg-joint dg-ink" cx="39" cy="44" r="2"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+
+            <text class="dg-label" x="110" y="46">START POSE</text>
+            <text class="dg-label is-gen" x="110" y="168">GENERATED</text>
+            <rect class="dg-chip" x="104" y="176" width="94" height="32" rx="12"/>
+            <text class="dg-chip-text is-extra-long" x="151" y="189" text-anchor="middle">
+              <tspan x="151">squats and then</tspan>
+              <tspan x="151" dy="10">rises back up.</tspan>
+            </text>
+            <text class="dg-label" x="110" y="320">END POSE</text>
+          </svg>
+        </figure>
+      </div>
+      <div class="gallery-caption-container">
+        <p class="figure-caption gallery-caption">
+          <b>Motion in-betweening.</b> Given the start and end poses and a text prompt,
+          UniMate synthesizes smooth, plausible in-betweens, holding the boundary
+          poses fixed while the prompt sets the transition's style.
+        </p>
+      </div>
+    </div>
+
+    <!-- Application 3: Motion Expansion (UniMate paper, Sec. 5.5 / Fig. 15). -->
+    <div class="section-subtitle" id="motion-expansion">3. Motion Expansion.</div>
+
+    <div class="video-gallery-section" id="expansionGallerySection">
+      <div class="app-row">
+        <div class="video-gallery-container">
+          <div class="video-gallery" id="videoGalleryExpansion">
+            <video class="gallery-video" src="assets/videos/motion-expansion.mp4" poster="assets/posters/motion-expansion.jpg" preload="none" muted playsinline loop></video>
+          </div>
+        </div>
+        <!-- Expansion is open-ended: one source, then a chip per chained prompt,
+             and the axis runs off the right edge because the sequence does. -->
+        <figure class="app-diagram">
+          <svg viewBox="0 0 200 362" role="img" aria-labelledby="dg-exp-t">
+            <title id="dg-exp-t">The bird skeleton follows three prompts down one timeline. It takes off, strikes forward, and lands, with each new motion continuing from the last pose of the preceding motion.</title>
+            <!-- The bar is the sequence: it steps down one third per prompt and
+                 never retreats, and the arrow at the foot arrives only with the
+                 last one, because the chain could go on. -->
+            <path class="dg-axis" d="M16 14V340"/>
+            <path class="dg-rig dg-gen dg-seq-axis" pathLength="1" d="M16 14V340"/>
+            <path class="dg-axis dg-seam is-t2" d="M11 123h10"/>
+            <path class="dg-axis dg-seam is-t3" d="M11 232h10"/>
+            <path class="dg-rig dg-gen dg-arrow-in" d="m10 334 6 8 6-8"/>
+
+            <!-- Pi-style moving dashed arrows hand the ending pose of each
+                 motion to the starting pose of the next one. -->
+            <g class="dg-pose-link is-link-1">
+              <path d="M91 54h3q5 0 5 5v105q0 6-6 6h-2"/>
+              <path class="dg-pose-link-head" d="m86 170 7-4v8z"/>
+            </g>
+            <g class="dg-pose-link is-link-2">
+              <path d="M91 170h3q5 0 5 5v105q0 6-6 6h-2"/>
+              <path class="dg-pose-link-head" d="m86 286 7-4v8z"/>
+            </g>
+
+            <!-- A bird gives Expansion its own skeleton vocabulary; one rig
+                 continues through three different motions. -->
+            <g class="dg-rig dg-gen dg-seq-in is-seq is-bird is-t1" transform="translate(28,24)">
+              <g class="dg-body dg-bird-body">
+                <path d="M8 30 28 30"/>
+                <path d="M8 30 1 25M8 30 1 33"/>
+                <circle class="dg-joint" cx="8" cy="30" r="2"/>
+                <circle class="dg-joint dg-root" cx="28" cy="30" r="2.6"/>
+                <g class="dg-limb dg-bird-neck"><path d="M28 30 39 24 48 25"/><circle class="dg-joint" cx="39" cy="24" r="2"/><circle class="dg-joint" cx="48" cy="25" r="2.4"/></g>
+                <g class="dg-limb dg-wing-up"><path d="M28 30 17 13 6 7"/><circle class="dg-joint" cx="17" cy="13" r="2"/><circle class="dg-joint" cx="6" cy="7" r="2"/></g>
+                <g class="dg-limb dg-wing-down"><path d="M28 30 19 43 9 49"/><circle class="dg-joint" cx="19" cy="43" r="2"/><circle class="dg-joint" cx="9" cy="49" r="2"/></g>
+                <g class="dg-limb dg-bird-legs"><path d="M24 31 23 40 18 45M31 31 33 40 38 44"/><circle class="dg-joint" cx="23" cy="40" r="2"/><circle class="dg-joint" cx="33" cy="40" r="2"/></g>
+              </g>
+            </g>
+            <g class="dg-rig dg-gen dg-seq-in is-seq is-bird is-t2" transform="translate(28,140)">
+              <g class="dg-body dg-bird-body">
+                <path d="M8 30 28 30"/>
+                <path d="M8 30 1 25M8 30 1 33"/>
+                <circle class="dg-joint" cx="8" cy="30" r="2"/>
+                <circle class="dg-joint dg-root" cx="28" cy="30" r="2.6"/>
+                <g class="dg-limb dg-bird-neck"><path d="M28 30 39 24 48 25"/><circle class="dg-joint" cx="39" cy="24" r="2"/><circle class="dg-joint" cx="48" cy="25" r="2.4"/></g>
+                <g class="dg-limb dg-wing-up"><path d="M28 30 17 13 6 7"/><circle class="dg-joint" cx="17" cy="13" r="2"/><circle class="dg-joint" cx="6" cy="7" r="2"/></g>
+                <g class="dg-limb dg-wing-down"><path d="M28 30 19 43 9 49"/><circle class="dg-joint" cx="19" cy="43" r="2"/><circle class="dg-joint" cx="9" cy="49" r="2"/></g>
+                <g class="dg-limb dg-bird-legs"><path d="M24 31 23 40 18 45M31 31 33 40 38 44"/><circle class="dg-joint" cx="23" cy="40" r="2"/><circle class="dg-joint" cx="33" cy="40" r="2"/></g>
+              </g>
+            </g>
+            <g class="dg-rig dg-gen dg-seq-in is-seq is-bird is-t3" transform="translate(28,256)">
+              <g class="dg-body dg-bird-body">
+                <path d="M8 30 28 30"/>
+                <path d="M8 30 1 25M8 30 1 33"/>
+                <circle class="dg-joint" cx="8" cy="30" r="2"/>
+                <circle class="dg-joint dg-root" cx="28" cy="30" r="2.6"/>
+                <g class="dg-limb dg-bird-neck"><path d="M28 30 39 24 48 25"/><circle class="dg-joint" cx="39" cy="24" r="2"/><circle class="dg-joint" cx="48" cy="25" r="2.4"/></g>
+                <g class="dg-limb dg-wing-up"><path d="M28 30 17 13 6 7"/><circle class="dg-joint" cx="17" cy="13" r="2"/><circle class="dg-joint" cx="6" cy="7" r="2"/></g>
+                <g class="dg-limb dg-wing-down"><path d="M28 30 19 43 9 49"/><circle class="dg-joint" cx="19" cy="43" r="2"/><circle class="dg-joint" cx="9" cy="49" r="2"/></g>
+                <g class="dg-limb dg-bird-legs"><path d="M24 31 23 40 18 45M31 31 33 40 38 44"/><circle class="dg-joint" cx="23" cy="40" r="2"/><circle class="dg-joint" cx="33" cy="40" r="2"/></g>
+              </g>
+            </g>
+
+            <g class="dg-chip-in is-t1">
+              <rect class="dg-chip" x="104" y="40" width="92" height="20" rx="10"/>
+              <text class="dg-chip-text" x="150" y="54" text-anchor="middle">1 &#183; takes off</text>
+            </g>
+            <g class="dg-chip-in is-t2">
+              <rect class="dg-chip" x="104" y="156" width="92" height="20" rx="10"/>
+              <text class="dg-chip-text is-long" x="150" y="170" text-anchor="middle">2 &#183; strikes forward</text>
+            </g>
+            <g class="dg-chip-in is-t3">
+              <rect class="dg-chip" x="104" y="272" width="92" height="20" rx="10"/>
+              <text class="dg-chip-text" x="150" y="286" text-anchor="middle">3 &#183; lands</text>
+            </g>
+            <text class="dg-label is-gen dg-arrow-in" x="30" y="356">EXTENDED</text>
+          </svg>
+        </figure>
+      </div>
+      <div class="gallery-caption-container">
+        <p class="figure-caption gallery-caption">
+          <b>Motion expansion.</b> Given sequential text prompts, UniMate extends a
+          motion segment by segment, each new segment continuing from the boundary
+          frames of the last with a smooth transition.
+        </p>
+      </div>
+    </div>
+
+    <!-- Dataset comes after Applications though the paper puts it at Sec. 4:
+         the visitor meets the model first and the corpus as supporting
+         material. The prose is deliberately short — the figure carries the
+         breadth, and the counts (13,006 sequences, 2,140,232 frames, 3,584
+         prompts) stay in the abstract and the paper. Anything added back must
+         come from Sec. 4 / Appendix A.1 of resources/unimate.pdf (2,140,232
+         frames is Sec. 4; 3,584 prompts is Sec. 1). -->
+    <h2 class="tagline" id="dataset"><span>Dataset.</span></h2>
+    <div class="section">
+      Training an animator that generalizes across object categories needs motion
+      data with the same breadth, but raw 4D sources are noisy and inconsistent:
+      disconnected or scene-level skeletons, broken roots, non-functional joints,
+      physically implausible motion, and mismatched coordinate frames or facing
+      directions. We curate
+      <strong>UniML3D</strong> by unifying three complementary sources &mdash;
+      <em>Truebones</em>, <em>Mixamo</em>, and <em>Objaverse-XL</em>.
+    </div>
+
+    <div class="dataset-scroll">
+      <img class="dataset-figure" src="assets/images/dataset-overview.png" width="4654" height="946"
+        loading="lazy" decoding="async"
+        alt="Sample rigs and motion sequences from UniML3D, spanning bipedal, quadrupedal, avian, marine, insectoid, serpentine, and articulated rigid skeletons." />
+    </div>
+    <p class="figure-caption">
+      Samples from <em>UniML3D</em>, spanning bipedal, quadrupedal, avian, marine, insectoid,
+      serpentine, and articulated rigid objects, with detailed skeleton annotations and coherent
+      text prompts paired with motion sequences.
+    </p>
+
+    <!-- Where to get it, between the figure and the table: the figure shows
+         what the corpus holds, this line says where it is, and the table then
+         says how it was made — so "the three passes below" points at what
+         follows. One line at the desktop measure (960px at 20px); a second
+         line reads as a paragraph, and this is a pointer, not one. Each link carries its host's official mark (assets/logos/),
+         the one place on the page a borrowed logo appears in colour: here the
+         mark names the destination, where in the quick links it would have
+         been the row's only silhouette (style.css §4). -->
+    <div class="section">
+      <strong>UniML3D</strong> is released on
+      <a href="https://huggingface.co/collections/Linzhan/unimate" target="_blank" rel="noopener"><img class="inline-mark" src="assets/logos/huggingface.svg" alt="" width="95" height="88" />Hugging Face</a>,
+      with the
+      <a href="https://github.com/Friedrich-M/UniMate/tree/main/data_process" target="_blank" rel="noopener"><img class="inline-mark" src="assets/logos/github.svg" alt="" width="98" height="96" />data-processing code</a>
+      for the three passes below.
+    </div>
+
+    <!-- One table, three passes — filter, annotate, canonicalize — following the
+         paper's own split: Sec. 4 "Skeleton-Based Filtering" (five numbered
+         stages) and "Motion Canonicalization" (four); annotation is Appendix
+         A.2–A.5, summarized in Algorithm 1. Every line must trace to one of
+         those. Checked against arXiv v1 (2609.05415, 4 Sep 2026) on
+         2026-09-09: line 7 is Algorithm 1's line 4 / Appendix A.3, the LLM
+         pick of the symmetric pair that line 14 then uses for facing. Why it
+         is a ruled <table> set as an algorithm float, and why the sigil is per
+         line, is at .algo in style.css.
+
+         Numbering runs 1..16 unbroken and the signature rows chain (raw clip →
+         kept clip → captioned clip → training sample), so it reads as one pass
+         over a clip, not three unrelated lists.
+
+         Canonicalize opens with two steps from Sec. 3.1 — BFS serialization and
+         topology-diameter normalization — because Sec. 4 says the mapping
+         builds on them and the later lines are meaningless without them: there
+         is no "one kinematic basis across topologies" until the joints share
+         an ordering and the rigs a scale. A different section of the paper,
+         not a different pipeline. -->
+    <table class="algo">
+      <caption class="algo-caption">Three passes over every asset. Each line removes (&minus;), adds (+), or re-expresses (&rarr;) what the pass was handed.</caption>
+      <tbody>
+        <tr class="algo-sig">
+          <th colspan="3" scope="colgroup">
+            <span class="algo-name">filter</span><span class="algo-arg">(raw&nbsp;clip)</span>
+            <span class="algo-sigil">&rarr;</span>
+            <span class="algo-ret">kept clip</span>
+          </th>
+        </tr>
+        <tr>
+          <td class="algo-n">1</td>
+          <td class="algo-op">prune to a single tree</td>
+          <td class="algo-out"><span class="algo-sigil">&minus;</span> every tree but the primary one, by cumulative skinning weight</td>
+        </tr>
+        <tr>
+          <td class="algo-n">2</td>
+          <td class="algo-op">realign the root by forward kinematics</td>
+          <td class="algo-out"><span class="algo-sigil">&rarr;</span> a spurious root carried onto the semantic root</td>
+        </tr>
+        <tr>
+          <td class="algo-n">3</td>
+          <td class="algo-op">remove phantom joints</td>
+          <td class="algo-out"><span class="algo-sigil">&minus;</span> IK controllers and helper bones with zero skinning weight</td>
+        </tr>
+        <tr>
+          <td class="algo-n">4</td>
+          <td class="algo-op">drop static clips</td>
+          <td class="algo-out"><span class="algo-sigil">&minus;</span> sequences with negligible bone-length-normalized displacement</td>
+        </tr>
+        <tr>
+          <td class="algo-n">5</td>
+          <td class="algo-op">reject implausible clips</td>
+          <td class="algo-out"><span class="algo-sigil">&minus;</span> outlier root velocity, or jitter past an anatomical threshold</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr class="algo-sig">
+          <th colspan="3" scope="colgroup">
+            <span class="algo-name">annotate</span><span class="algo-arg">(kept&nbsp;clip)</span>
+            <span class="algo-sigil">&rarr;</span>
+            <span class="algo-ret">captioned clip</span>
+          </th>
+        </tr>
+        <tr>
+          <td class="algo-n">6</td>
+          <td class="algo-op">standardize joint names</td>
+          <td class="algo-out"><span class="algo-sigil">&rarr;</span> one anatomical vocabulary, mapped by an LLM</td>
+        </tr>
+        <tr>
+          <td class="algo-n">7</td>
+          <td class="algo-op">select the lateral joint pair</td>
+          <td class="algo-out"><span class="algo-sigil">+</span> a symmetric pair for facing (thighs, front shoulders), by an LLM</td>
+        </tr>
+        <tr>
+          <td class="algo-n">8</td>
+          <td class="algo-op">resample and render</td>
+          <td class="algo-out"><span class="algo-sigil">&rarr;</span> 30 FPS, four synchronized views, the rest pose rendered alongside</td>
+        </tr>
+        <tr>
+          <td class="algo-n">9</td>
+          <td class="algo-op">caption with a multimodal LLM</td>
+          <td class="algo-out"><span class="algo-sigil">+</span> one text prompt per clip; &ldquo;in place&rdquo; marks a stationary root</td>
+        </tr>
+        <tr>
+          <td class="algo-n">10</td>
+          <td class="algo-op">review every pair by hand</td>
+          <td class="algo-out"><span class="algo-sigil">&minus;</span> captions that misidentify the dominant action or the moving part</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr class="algo-sig">
+          <th colspan="3" scope="colgroup">
+            <span class="algo-name">canonicalize</span><span class="algo-arg">(captioned&nbsp;clip)</span>
+            <span class="algo-sigil">&rarr;</span>
+            <span class="algo-ret">training sample</span>
+          </th>
+        </tr>
+        <tr>
+          <td class="algo-n">11</td>
+          <td class="algo-op">serialize the tree breadth-first</td>
+          <td class="algo-out"><span class="algo-sigil">&rarr;</span> one joint ordering per skeleton</td>
+        </tr>
+        <tr>
+          <td class="algo-n">12</td>
+          <td class="algo-op">scale by topology diameter</td>
+          <td class="algo-out"><span class="algo-sigil">&rarr;</span> comparable extent across rigs</td>
+        </tr>
+        <tr>
+          <td class="algo-n">13</td>
+          <td class="algo-op">place in a canonical frame</td>
+          <td class="algo-out"><span class="algo-sigil">&rarr;</span> <em>y</em>-axis up, the initial root at the origin</td>
+        </tr>
+        <tr>
+          <td class="algo-n">14</td>
+          <td class="algo-op">align the initial facing direction</td>
+          <td class="algo-out"><span class="algo-sigil">&rarr;</span> +<em>z</em>, from the left-to-right axis of that symmetric pair</td>
+        </tr>
+        <tr>
+          <td class="algo-n">15</td>
+          <td class="algo-op">express rotations against the rest pose</td>
+          <td class="algo-out"><span class="algo-sigil">&rarr;</span> one kinematic basis across topologies</td>
+        </tr>
+        <tr>
+          <td class="algo-n">16</td>
+          <td class="algo-op">normalize by feature statistics</td>
+          <td class="algo-out"><span class="algo-sigil">&rarr;</span> global on the root, local on the rest</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- The one-sheet of everything above, placed after it: a visitor who has
+         read the page recognizes every panel; one who has not gets the whole
+         argument at a glance before the citation. The PNG export is served as
+         is (3876x2582) and links to itself full size; the caption offers the
+         PDF. Unframed, unlike the dataset figure: the sheet is black to the
+         pixel, so its edge is its own frame on the cream. -->
+    <h2 class="tagline" id="poster"><span>Poster.</span></h2>
+    <a class="poster-link" href="resources/unimate-poster.png" target="_blank" rel="noopener"
+      aria-label="Open the UniMate poster full size">
+      <img class="poster-figure" src="resources/unimate-poster.png" width="3876" height="2582"
+        loading="lazy" decoding="async"
+        alt="The UniMate poster: the topology-aware diffusion transformer, generated motions across diverse skeletons, long coherent sequences, in-betweening, editing and expansion, and the UniML3D dataset." />
+    </a>
+    <p class="figure-caption">
+      The SIGGRAPH Asia 2026 poster. Click to open it full size, or as a
+      <a href="resources/unimate-poster.pdf" target="_blank" rel="noopener">PDF</a>.
+    </p>
+
+    <div class="bibtex-code" id="citation">
+      <div class="bibtex-title">BibTeX</div>
+      <pre><code>@article{mou2026unimate,
+  title   = {UniMate: One Unified Model to Animate Diverse Skeletons},
+  author  = {Mou, Linzhan and Lei, Jiahui and Dou, Zhiyang and Cai, Chenyue and
+             Song, Chaoyue and Finkelstein, Adam and Rusinkiewicz, Szymon},
+  journal = {arXiv preprint arXiv:2609.05415},
+  year    = {2026}
+}</code></pre>
+    </div>
+
+  </div> <!-- End of main-content -->
+
+  <div class="footer">
+    <p class="footer-related">
+      Related project &mdash;
+      <a href="https://linzhanmou.com/dimo/" target="_blank" rel="noopener">DIMO: Diverse 3D Motion Generation for Arbitrary Objects</a>
+      (ICCV 2025 Highlight).
+    </p>
+    &copy; Princeton University &nbsp;|&nbsp; Webpage built on the
+    <a href="https://github.com/videomimic-1/videomimic-1.github.io" target="_blank">VideoMimic</a> template.
+  </div>
+
+  <!-- Interactive 3D viewer (Three.js): #example-sidebar / #viewer-wrapper above. -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module" src="js/index-viewer.js?v=105"></script>
+
+  <!-- Galleries: scroll buttons + play-only-what-is-visible. -->
+  <script src="js/gallery.js?v=8"></script>
+
+  <!-- TOC rail: scroll-spy + the gutter-collision watcher. -->
+  <script src="js/toc.js?v=5"></script>
+
+  <!-- Abstract fold: the phone-width "Read full abstract" toggle. -->
+  <script src="js/abstract.js?v=1"></script>
+
+  <script type="text/javascript">
+    var sc_project = 12925377;
+    var sc_invisible = 1;
+    var sc_security = "43deea45";
+  </script>
+  <script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async></script>
+  <noscript>
+    <div class="statcounter"><a title="Web Analytics Made Easy - Statcounter" href="https://statcounter.com/"
+        target="_blank"><img class="statcounter"
+          src="https://c.statcounter.com/12925377/0/43deea45/1/"
+          alt="Web Analytics Made Easy - Statcounter" referrerPolicy="no-referrer-when-downgrade"></a>
+    </div>
+  </noscript>
+</body>
+
+</html>

@@ -1,0 +1,379 @@
+Auto Label | Datasets | Roboflow Docs
+Roboflow Docs
+⌘Ctrlk
+ResourcesDocsSign InBook a DemoGet Started
+More
+Get Started
+Deployment
+Workflows
+Models
+Datasets
+Reference
+English 🇺🇸
+Roboflow Docs
+English 🇺🇸
+Datasets
+Create & Upload
+Create a Project
+Upload Images, Videos, and Annotations
+Upload a Dataset
+Download a Dataset
+Annotate
+Annotate
+Annotate Keypoints
+Annotate Multimodal Data
+Annotate Video Segments
+Annotation Insights
+Introduction to Roboflow Annotate
+Set Keypoint Skeletons
+Manage Annotation Workflow
+Roboflow Labeling Services
+Collaborate on Labeling
+AI Labeling
+Auto Label
+Box Prompting
+Label Assist
+Smart Select
+Annotate an Image
+Annotation Groups
+Manage
+Manage Datasets
+Manage Images
+Project Folders
+Merge Projects
+Rename a Project
+Delete a Project
+Change Project Owner
+Make a Project Public
+Versions
+Dataset Versions
+Dataset Health Check
+Universe
+Universe
+Powered by GitBook
+On this page
+For the complete documentation index, see llms.txt. This page is also available as Markdown.
+Copy
+On this page
+Datasets
+Annotate
+Annotate
+AI Labeling
+Auto Label
+Auto-label images for use in training models.
+About
+Auto Label is one of many AI Labeling features. Using this feature will consume credits at the rates listed on our credits page.
+Roboflow Auto Label lets you use a foundation vision model (GPT-6 Astra, SAM 3, Gemini, or Claude Opus 5.5), Roboflow trained models, or a saved Workflow to automatically label images.
+Roboflow Auto Label can use the following sources to identify the objects you specify:
+GPT-6 Astra (Boxes) - GPT-6 Astra draws bounding boxes for the classes you list (object detection only)
+GPT-6 Astra (Masks) - GPT-6 Astra segments the classes you list and returns one mask per instance (instance segmentation only)
+GPT-6 Astra + SAM 3 (Polygons) - GPT-6 Astra finds each instance, then SAM 3 draws a polygon inside every box it found (instance segmentation only)
+SAM 3 - a foundation model that labels objects from text prompts (object detection and segmentation)
+Gemini (Boxes) - Gemini 3.7 Flash draws bounding boxes for the classes you list (object detection only)
+Claude Opus 5.5 (Boxes) - Claude Opus 5.5 draws bounding boxes for the classes you list (object detection only). Try it when classes are unclear or scenes are complex. Its token cost is often higher than Gemini.
+Models trained in Roboflow (https://github.com/roboflow/docs/tree/main/models/README.md)
+Note: Only models from the same dataset as your Annotation Batch are currently supported.
+A saved Workflow compatible with your project type
+GPT-6 Astra (Boxes) is selected for you on object detection projects. It handles open vocabulary class names, visible text, and object relationships well. OpenAI token use is billed on top of the credits per image, so it costs more per image than SAM 3. SAM 3 is selected for you on every other project type. The two GPT-6 Astra options for instance segmentation also bill OpenAI token use on top of the credits.
+Core’s paid monthly credit tiers include access to a Roboflow-provided OpenAI key. You can also use your own workspace OpenAI key.
+Auto Label has been used to label millions of images for use in training computer vision models.
+If your workspace uses Blocks Governance, a model whose blocks are disabled is still listed, greyed out with the reason, and you cannot select it. Ask a Super User to enable the blocks it needs.
+If you would rather auto-label on your own hardware, Roboflow also maintains Autodistill, an open source framework for auto-labeling image datasets with a range of foundation models.
+When to Use Roboflow Auto Label
+You should use Roboflow Auto Label if you need to annotate common objects such as vehicles (i.e. forklifts), people, generic defects (i.e. cracks), and generic products (i.e. vinyl records, bread).
+You should not use a foundation model like SAM 3 if you need to identify specific variants of an object. For example, Auto Label cannot distinguish between different types of crack, or identify unique defects in electronics.
+Label Data with Roboflow Auto Label
+The Roboflow platform lets you preview how Auto Label will perform on labeling classes of data in your dataset before you run a job on your full batch. After labeling, you can review the results for quality assurance (recommended) and train a model on the labeled dataset.
+Step #1: Upload Data
+First, upload data to Roboflow. See our Upload Images, Videos, and Annotations instructions for more information.
+Uploading images into Roboflow.
+Step #2: Enter Auto Label
+Once you have uploaded all of your images, you will be asked how you want to label your images. Select "Auto-Label And Review".
+Select "Auto-Label And Review" to open the Roboflow Auto Label interface.
+Step #3: Configure Auto Label
+The Auto Label labeling interface will appear in which you can configure your auto labeling job.
+Classes (& Descriptions)
+Classes represent the labels you want to assign to objects in the image. Descriptions represent a visual description of the class that the foundation model will use to identify instances of those classes. By default, the description will be the class name.
+GPT-6 Astra, SAM 3, and Gemini all search with the description and save what they find under the class name. For example, the class "umbrella" with the description "green umbrella" finds green umbrellas and labels them "umbrella". Give each class its own description: Auto Label rejects a preview or a job when two classes share one.
+Auto Label works best when labeling common objects with clear visual descriptions. For example, Auto Label will be able to identify the location of an aluminum can on a production line. But, Auto Label will be unable to label images according to specific requirements, such as distinguishing the brand of an aluminum can.
+Generating Test Results
+Once you have configured Auto Label, click "Generate Test Results" to test your classes on a small subset of your dataset. By default, four images are selected.
+The Auto Label interface.
+Step #4: Evaluate Roboflow Auto Label Labels
+Here are the test results when using the class "aluminum can" on an example image. From here, you can:
+Auto Label annotating aluminum cans.
+Adjust your classes & descriptions
+If Auto Label doesn't label images as expected, try testing different descriptions for your classes.
+All test results are free & don't use any credits.
+Adjust the confidence
+The number to the right of each class is represented as (boxes of this class that are shown) / (total boxes of this class). You can adjust the confidence threshold of each class to filter out more or less boxes. Higher confidence means less boxes will be shown.
+The confidence threshold set here will be the same one used when labeling the entire batch, so make sure it looks right!
+The GPT-6 Astra options, Gemini (Boxes), and Claude Opus 5.5 (Boxes) return every label at full confidence, so they have no threshold to set. The slider and the confidence values on preview labels are hidden when you select one of them.
+Test on different images
+To review Auto Label's performance on different images from your batch, click on an image in the "Test images" section on the bottom left. The preview for that image should load immediately without pressing additional buttons.
+Label with a Workflow
+Instead of a foundation or trained model, you can auto-label with a saved Workflow, letting you use SAHI, model ensembles, and multi-step custom logic to label your batch.
+In the Auto Label model dropdown, open the "Workflows" tab and select a workflow. Only workflows compatible with your project type (detection, segmentation, or classification) are listed.
+After selecting a workflow, map each of its output classes to a class in your project and set a per-class confidence threshold. A preview runs on sample images so you can confirm the mapping before starting the job.
+Only the classes you map are applied. Output classes with no mapping are dropped, so map every class you want written back to your project.
+When the mapping looks right, click "Auto Label With This Workflow" to start the job. It runs in the background and applies the mapped labels to your batch.
+Run Auto Label On Your Batch
+If Auto Label labels your images as you expect, click "Auto Label with This Model". Review the summary modal, and click to proceed. It should take a few minutes to label a thousand images.
+The modal itemizes the cost. Auto Label charges a set number of credits per image. Gemini (Boxes), Claude Opus 5.5 (Boxes), and workflows that call an outside AI model add usage charges for that model on top of the credits.
+Once the job starts, you are taken to the Annotate page, where the new Auto Label job is listed alongside your other annotation jobs. Auto Label runs in the background, so you can review results there when it finishes.
+Existing Annotations
+If images in your batch are already annotated, the summary modal asks how Auto Label should handle them. The job does not start until you choose one option:
+"Keep Existing Annotations" adds the Auto Label predictions next to the annotations already on each image.
+"Replace Existing Annotations" deletes the existing annotations and saves only the Auto Label predictions.
+Auto Label From the Agent
+Ask Roboflow Agent to label a batch for you. It can use GPT-6 Astra or Gemini on object detection projects, SAM 3, a model you trained, or a saved Workflow. Your saved class descriptions become the prompts, and classes with no description use the class name.
+When you ask the Agent for a new class, say what it looks like (ex: a worker in a yellow hard hat). The Agent saves that text as the class description and uses it as the prompt.
+The Agent labels one image first so you can see what the model finds. It then tells you the credit cost and asks once before it starts the job. The job runs as a background task, and the Agent opens it for review when it finishes. You can also ask the Agent to approve or reject the images in Review. It shows the jobs and image count and waits for you to confirm. Approved images do not go into the dataset until you ask for that as a separate step.
+HTTP API
+You can programmatically start and track auto-labeling jobs using the REST API. Auto Label uses a foundation model from the catalog below or your own trained Roboflow model to automatically annotate images in a batch.
+These endpoints require scoped API keys with the annotationJob.create and annotationJob.read scopes respectively.
+They also accept an OAuth access token, which is how the MCP Server starts a job. A job started with a token runs on the project's billing API key, so it keeps labeling after the token expires. If the app's access is limited to project folders, it can start a job with a foundation model only. A custom model or a saved Workflow returns a 403 with errorType FOLDER_SCOPED_TOKEN_REFERENCE, because the billing key reaches projects outside those folders. Start those jobs with a workspace API key.
+List Auto Label Models
+To list the foundation models you can label with, make a GET request:
+Each model in the response has an id (ex: gemini-boxes), the project types it supports, the credits it uses per image, guidance on when to pick it, and available, which is false when your plan does not include the model. Pass the id as modelType to start a job or run a preview.
+Preview a Model
+To run one image through a foundation model, make a POST request. Previews are free and do not create a job:
+Set image.type to url or base64. Omit ontology to use your dataset classes. The response holds the predictions and a summary with the count and top confidence per class, plus the classes the model found nothing for. Use it to compare models before you start a paid job.
+Create an Auto Label Job
+To start an auto-label job, make a POST request:
+You can also omit ontology to let the API derive it from your model or dataset classes:
+Request Body
+Parameter
+Type
+Required
+Description
+batchId
+string
+Yes
+The ID of the image batch to label.
+modelType
+string
+Yes
+Model to use: a catalog id from List Auto Label Models (ex: gpt-6-astra-boxes, sam3-rle, gemini-boxes), or custom_roboflow with the model id in modelOptions.modelId.
+ontology
+object or array
+No
+Maps prompts to class names. See formats below. When omitted, derived automatically (see Ontology Auto-Derivation).
+numImagesToLabel
+number
+No
+Number of images to label. Defaults to the full batch.
+defaultConfidence
+number
+No
+Confidence threshold applied to all classes (0-1).
+confidenceThresholds
+object
+No
+Per-class confidence thresholds, e.g. {"dog": 0.5, "cat": 0.7}.
+reviewerEmail
+string
+No
+Email of a workspace member to assign as reviewer. Defaults to the workspace owner.
+runNMS
+boolean
+No
+Whether to run non-max suppression. Defaults to true.
+modelOptions
+object
+No
+Additional model-specific options (e.g. {"modelId": "your-model/1"} for custom_roboflow).
+preserveExistingAnnotations
+boolean
+No
+Keep annotations already on the images and add the Auto Label results to them. Defaults to false, which replaces them.
+Ontology Formats
+The ontology field accepts several formats. All are normalized internally.
+Object (canonical) - keys are prompts, values are class names:
+Array of strings - each string is used as both prompt and class name:
+Array of objects:
+Ontology Auto-Derivation
+When ontology is omitted (or empty), the API will attempt to derive it automatically based on the modelType:
+Model Type
+Derivation Source
+custom_roboflow
+Uses the trained classes from the model specified in modelOptions.modelId.
+sam3, sam3-rle, sam3-polygon
+Uses the class names defined in the dataset.
+Send ontology when you start a job with the other catalog ids (ex: gpt-6-astra-boxes, gemini-boxes). A job does not derive one for them. A preview still does.
+If the dataset has locked annotation classes, the derived ontology is intersected with the allowed classes so no invalid annotations are produced.
+The request will fail with a 400 if the ontology cannot be derived, for example when the dataset has no classes or the model classes don't overlap with the dataset's locked classes. Possible errorType values:
+MISSING_MODEL_ID - modelOptions.modelId is required for custom_roboflow when ontology is not provided.
+MODEL_CLASSES_UNAVAILABLE - The specified model has no classes.
+NO_MATCHING_CLASSES - The model's classes don't overlap with the dataset's locked classes.
+DATASET_HAS_NO_CLASSES - The dataset has no classes defined (for sam3).
+Response
+Get Auto Label Job Status
+To check the progress of an auto-label job, make a GET request:
+Use the jobId returned from the create endpoint.
+Response
+Python SDK
+The roboflow package labels a batch from Python:
+ontology takes the same shapes as the API (see Ontology Formats) and can be omitted. Pass preserve_existing_annotations=True to add labels next to the annotations already on each image instead of replacing them.
+project.autolabel_preview(model, image, ontology=...) runs one image through a model before you commit a batch to it. image accepts an HTTPS URL or a local file path. A preview does not create a job and does not deduct Auto Label credits.
+CLI
+The same operations are available from the command line. See Install and Set Up the CLI first.
+List the models your Workspace can use:
+Each row carries the id you pass to preview and start, its credits per image, and whether your plan includes it.
+Try a model on one image before spending credits on a batch:
+The response summarizes what the model found per class and lists the classes it missed, so you can compare candidates.
+Start the job, then track it:
+start prints the jobId and annotationJobId. job looks the id up in your default Workspace, so pass the same -p when you started the job with a workspace/project shorthand.
+When a prompt and its class name are the same, repeated --class flags are shorter than JSON:
+Options for start:
+Option
+Description
+--batch-id
+Batch holding the images to label. Required.
+-m, --model
+Model id from autolabel models, or a Roboflow model id when you pass --model-type roboflow. Required.
+--model-type
+foundational (default) or roboflow for a model you trained.
+--ontology, --class
+What to label. Accepts @ontology.json as well as inline JSON.
+--num-images
+How many images from the batch to label. Defaults to all of them.
+--confidence
+Confidence threshold applied to every class.
+--confidence-thresholds
+Per-class thresholds as JSON (ex: '{"dog": 0.5}').
+--no-nms
+Turn off non-max suppression.
+--reviewer
+Email of the reviewer for the resulting annotation job. Must be a Workspace member.
+--model-options
+Model-specific options as JSON (ex: '{"outputFormat": "polygon"}').
+--preserve-existing
+Keep the annotations already on the images and only add new ones.
+By default the job replaces the annotations already on the batch images. Pass --preserve-existing to keep them.
+Every command accepts --json for structured output.
+MCP Server
+Connect your AI agent to the MCP Server and it can auto label a batch of images with these tools:
+Tool
+Description
+autolabel_start
+Start a hosted auto label job over a batch of images.
+autolabel_job_get
+Get per-subjob status and progress for an auto label job.
+PreviousAI Labeling
+NextBox Prompting
+Last updated 12 hours ago
+Was this helpful?
+Company
+Blog
+About Us
+Press
+Support
+Contact Support
+User Forum
+Resources
+Contact Us
+Service Status
+Weekly Webinars
+About
+When to Use Roboflow Auto Label
+Label Data with Roboflow Auto Label
+Step #1: Upload Data
+Step #2: Enter Auto Label
+Step #3: Configure Auto Label
+Step #4: Evaluate Roboflow Auto Label Labels
+Label with a Workflow
+Run Auto Label On Your Batch
+Existing Annotations
+Auto Label From the Agent
+HTTP API
+List Auto Label Models
+Preview a Model
+Create an Auto Label Job
+Get Auto Label Job Status
+Python SDK
+CLI
+MCP Server
+Was this helpful?
+Copy
+curl 'https://api.roboflow.com/${WORKSPACE}/autolabel/models?api_key=${ROBOFLOW_API_KEY}'
+Copy
+curl --location --request POST 'https://api.roboflow.com/${WORKSPACE}/${PROJECT}/autolabel/preview?api_key=${ROBOFLOW_API_KEY}' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"modelType": "gemini-boxes",
+"image": {"type": "url", "value": "https://example.com/image.jpg"},
+"ontology": {"a dog": "dog"}
+}'
+Copy
+curl --location --request POST 'https://api.roboflow.com/${WORKSPACE}/${PROJECT}/autolabel?api_key=${ROBOFLOW_API_KEY}' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"batchId": "<BATCH_ID>",
+"modelType": "sam3",
+"ontology": {"a dog": "dog", "a cat": "cat"}
+}'
+Copy
+curl --location --request POST 'https://api.roboflow.com/${WORKSPACE}/${PROJECT}/autolabel?api_key=${ROBOFLOW_API_KEY}' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"batchId": "<BATCH_ID>",
+"modelType": "sam3"
+}'
+Copy
+{"a dog": "dog", "a cat": "cat"}
+Copy
+["dog", "cat"]
+Copy
+[{"class": "dog", "prompt": "a dog"}, {"class": "cat", "prompt": "a cat"}]
+Copy
+{
+"jobId": "auto-label-job-uuid",
+"annotationJobId": "annotation-job-uuid",
+"message": "Automatic labeling job created"
+}
+Copy
+curl 'https://api.roboflow.com/${WORKSPACE}/autolabel/jobs/${JOB_ID}?api_key=${ROBOFLOW_API_KEY}'
+Copy
+{
+"id": "auto-label-job-uuid",
+"status": "pending",
+"modelType": "sam3",
+"projectType": "object-detection",
+"projectId": "project-id",
+"annotationJobId": "annotation-job-uuid",
+"numImages": 100,
+"numImagesSentBack": 0,
+"subjobs": [
+{"id": "subjob-1", "status": "pending"},
+{"id": "subjob-2", "status": "done"}
+],
+"ontology": {"a dog": "dog"},
+"confidenceThresholds": {"dog": 0.5},
+"startTime": "2026-01-01T00:00:00.000Z"
+}
+Copy
+from roboflow import Roboflow
+workspace = Roboflow(api_key="YOUR-API-KEY").workspace()
+project = workspace.project("my-project")
+for model in workspace.autolabel_models()["models"]:
+print(model["id"], model["available"])
+job = project.autolabel(
+"<BATCH_ID>",
+model="gpt-6-astra-boxes",
+ontology={"a dog": "dog", "a cat": "cat"},
+reviewer_email="reviewer@example.com",
+)
+print(project.autolabel_job(job["jobId"])["status"])
+Copy
+roboflow autolabel models
+Copy
+roboflow autolabel preview -p my-project -m sam3-rle \
+--image https://example.com/sample.jpg \
+--ontology '{"a dog": "dog", "a cat": "cat"}'
+Copy
+roboflow autolabel start -p my-project --batch-id <BATCH_ID> -m gpt-6-astra-boxes \
+--ontology '{"a dog": "dog", "a cat": "cat"}' --reviewer reviewer@example.com
+roboflow autolabel job <JOB_ID>
+Copy
+roboflow autolabel preview -p my-project -m sam3-rle --image sample.jpg --class dog --class cat

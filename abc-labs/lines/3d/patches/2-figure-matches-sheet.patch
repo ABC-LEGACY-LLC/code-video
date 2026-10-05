@@ -1,0 +1,177 @@
+diff --git a/loyihalar/kartalar/1-oq-kocha.json b/loyihalar/kartalar/1-oq-kocha.json
+index a66e38e..fc84837 100644
+--- a/loyihalar/kartalar/1-oq-kocha.json
++++ b/loyihalar/kartalar/1-oq-kocha.json
+@@ -35,7 +35,7 @@
+    "dalil": "jadvallar.HOLDS"
+   },
+   {
+-   "gap": "Personajlar va pozalar JSON hujjatda, GLSL undan generatsiya qilinadi — 690 satr manba.",
++   "gap": "Personajlar va pozalar JSON hujjatda, GLSL undan generatsiya qilinadi — 710 satr manba.",
+    "dalil": "satrlar"
+   }
+  ],
+diff --git a/oq-kocha/src/sheet.mjs b/oq-kocha/src/sheet.mjs
+index a78e3be..3cbb60e 100644
+--- a/oq-kocha/src/sheet.mjs
++++ b/oq-kocha/src/sheet.mjs
+@@ -21,3 +21,23 @@ export function travel(p){const k=Math.floor(p); return k*TRAVEL+CUM[idxAt(p-k)]
+ export function swapPose(P){return {hip:P.hip,lean:P.lean,arch:P.arch,sh:P.sh,hd:P.hd,hold:P.hold,
+  nk:P.fk,na:P.fa,nf:P.ff,fk:P.nk,fa:P.na,ff:P.nf,neb:P.feb,nh:P.fh,feb:P.neb,fh:P.nh,cl:P.cl};}
+ export function walkFrom(PW){return PW.concat(PW.map(swapPose));}
++
++/* A DRAWING AS THE SHADER TAKES IT: sixteen joints, in the order geo.frag names them and
++   the builder reads parts by. It lived in the page's template, where no test could run it. */
++export const NZ=-0.048,FZ=0.048;
++export const JOINT={hip:0,shoulder:1,head:2,neck:3,'knee.n':4,'ankle.n':5,'toe.n':6,'elbow.n':7,'hand.n':8,
++ 'knee.f':9,'ankle.f':10,'toe.f':11,'elbow.f':12,'hand.f':13,'cloak.mid':14,'cloak.hem':15};
++export function joints(K,out){
++ const X=v=>v/100,Y=v=>-v/100;
++ const toe=(a,g)=>[X(a[0]+Math.cos(g*0.6)*10.5),Y(a[1]-Math.sin(g*0.6)*10.5)];
++ const nt=toe(K.na,K.nf),ft=toe(K.fa,K.ff); let i=0;
++ const put=(x,y,z)=>{out[i++]=x;out[i++]=y;out[i++]=z;};
++ put(0,-K.hip/100,0); put(X(K.sh[0]),Y(K.sh[1]),0);
++ put(X(K.sh[0]+K.hd[0]+1.0),Y(K.sh[1]-11.0+K.hd[1]),0); put(X(K.sh[0]+0.6),Y(K.sh[1]-5.0),0);
++ put(X(K.nk[0]),Y(K.nk[1]),NZ); put(X(K.na[0]),Y(K.na[1]),NZ); put(nt[0],nt[1],NZ);
++ put(X(K.neb[0]),Y(K.neb[1]),NZ*1.5); put(X(K.nh[0]),Y(K.nh[1]),NZ*1.5);
++ put(X(K.fk[0]),Y(K.fk[1]),FZ); put(X(K.fa[0]),Y(K.fa[1]),FZ); put(ft[0],ft[1],FZ);
++ put(X(K.feb[0]),Y(K.feb[1]),FZ*1.5); put(X(K.fh[0]),Y(K.fh[1]),FZ*1.5);
++ put(X(K.cl[1][0]),Y(K.cl[1][1]),0); put(X(K.cl[3][0]-3),Y(K.cl[3][1]+10),0);
++ return out;
++}
+diff --git a/oq-kocha/test/checks-render.mjs b/oq-kocha/test/checks-render.mjs
+index 43c19e0..fd2e1fc 100644
+--- a/oq-kocha/test/checks-render.mjs
++++ b/oq-kocha/test/checks-render.mjs
+@@ -1,8 +1,9 @@
+ /* Checks that need the renderer. Each one still carries its known-bad case. */
+ import {check} from './lib.mjs';
+-import {pixels,matOf,CHARACTER,open,close} from './browser.mjs';
++import {pixels,state,matOf,CHARACTER,open,close} from './browser.mjs';
+ import {SHOTS,STARTS} from '../src/shots.mjs';
+-import {FPS} from '../src/sheet.mjs';
++import {FPS,JOINT,joints,walkFrom} from '../src/sheet.mjs';
++import {readFileSync} from 'fs';
+ const W=200,H=144;   // small on purpose: every check here is a ratio or a count, not a look
+
+ /* ===== ISH HAJMI: PRIMITIV SANOG'I, SOAT EMAS =====
+@@ -106,3 +107,76 @@ for(let i=0;i<SHOTS.length;i++){
+   calibrate:()=>area({cam:{ro:[sh.ro[0],sh.ro[1]+9,sh.ro[2]],ta:[sh.ta[0],sh.ta[1]+9,sh.ta[2]],foc:sh.foc}}),
+   note:i===0?'counting DARK pixels scored an empty shot higher than a framed one — a wall is darker than two men':undefined});
+ }
++
++/* ===== THE FIGURE ON SCREEN IS THE DRAWING THE SHEET HAS UP =====
++   The sheet checks read poses.json and never a pixel; the checks above count the man's
++   pixels and never ask which drawing he is. So the reference is drawn here from the
++   documents alone: the drawing the film says is up, its joints, the parts of his
++   character file joined the way tools/build.mjs joins them, the shot's camera and march
++   as geo.frag has them -- and laid over the material buffer occupancy counts. */
++const doc=f=>JSON.parse(readFileSync(new URL('../src/'+f,import.meta.url),'utf8'));
++const WALK=walkFrom(doc('poses.json').PW), MAN=doc('characters/hooded-walker.json');
++function figOf(ch,J){                                   // the distance field, as numbers
++ const P=n=>{ if(typeof n==='string') return J.slice(3*JOINT[n],3*JOINT[n]+3); if(Array.isArray(n)) return n;
++  const ax=c=>typeof c==='number'? c : (c.mix? P(c.mix[0])['xyz'.indexOf(c.a)]*(1-c.mix[2])+P(c.mix[1])['xyz'.indexOf(c.a)]*c.mix[2]
++                                            : P(c.j)['xyz'.indexOf(c.a)])+(c.add||0);
++  const b=n.axes? n.axes.map(ax) : n.mix? [0,1,2].map(i=>P(n.mix[0])[i]*(1-n.mix[2])+P(n.mix[1])[i]*n.mix[2]) : P(n.p);
++  return n.add? b.map((v,i)=>v+n.add[i]) : b; };
++ const cone=(a,b,r1,r2,s=[1,1,1])=>{                    // sdRoundCone; s scales space for sdSheet
++  a=a.map((v,i)=>v/s[i]); b=b.map((v,i)=>v/s[i]);
++  const bx=b[0]-a[0],by=b[1]-a[1],bz=b[2]-a[2],l2=bx*bx+by*by+bz*bz,rr=r1-r2,a2=l2-rr*rr,il2=1/l2,m=Math.min(...s);
++  return (x,y,z)=>{ x=x/s[0]-a[0]; y=y/s[1]-a[1]; z=z/s[2]-a[2];
++   const t=x*bx+y*by+z*bz, u=t-l2, vx=x*l2-bx*t, vy=y*l2-by*t, vz=z*l2-bz*t;
++   const x2=vx*vx+vy*vy+vz*vz, y2=t*t*l2, z2=u*u*l2, k=Math.sign(rr)*rr*rr*x2;
++   if(Math.sign(u)*a2*z2>k) return (Math.sqrt(x2+z2)*il2-r2)*m;
++   if(Math.sign(t)*a2*y2<k) return (Math.sqrt(x2+y2)*il2-r1)*m;
++   return ((Math.sqrt(x2*a2*il2)+t*rr)*il2-r1)*m; }; };
++ const smin=(a,b,k)=>{const h=Math.min(Math.max(0.5+0.5*(b-a)/k,0),1); return b+(a-b)*h-k*h*(1-h);};
++ const S=s=>{
++  if(s.cone) return cone(P(s.cone[0]),P(s.cone[1]),s.cone[2],s.cone[3]);
++  if(s.sheet) return cone(P(s.sheet[0]),P(s.sheet[1]),s.sheet[2],s.sheet[3],[s.sheet[4],1,s.sheet[5]]);
++  if(s.ellip){ const c=P(s.ellip[0]), r=s.ellip[1];
++   return (x,y,z)=>{ x-=c[0]; y-=c[1]; z-=c[2];
++    const k0=Math.hypot(x/r[0],y/r[1],z/r[2]), k1=Math.hypot(x/r[0]/r[0],y/r[1]/r[1],z/r[2]/r[2]); return k0*(k0-1)/k1; }; }
++  if(s.smin){ const f=s.smin.map(S); return (x,y,z)=>f.slice(1).reduce((d,g)=>smin(d,g(x,y,z),s.k),f[0](x,y,z)); }
++  if(s.min){ const f=s.min.map(S); return (x,y,z)=>Math.min(...f.map(g=>g(x,y,z))); }
++  if(s.sub){ const [f,g]=s.sub.map(S); return (x,y,z)=>Math.max(f(x,y,z),-g(x,y,z)); }
++  throw new Error('unreadable shape: '+JSON.stringify(s)); };
++ const body=ch.body.of.map(S), over=ch.over.map(S);
++ return (x,y,z)=>{ let d=body[0](x,y,z);
++  for(let i=1;i<body.length;i++) d=smin(d,body[i](x,y,z),ch.body.of[i].joinK);
++  for(const g of over) d=Math.min(d,g(x,y,z));
++  return d; };
++}
++/* rows from the bottom, as readPixels returns them; the figure's bounding sphere as mapFig
++   has it; the ground only as its bound, the plane y=0.026, so a sunk boot stays hidden */
++function silhouette(fig,sh){
++ const ro=sh.ro, A=sh.A, n=v=>{const l=Math.hypot(...v); return v.map(c=>c/l);};
++ const f=n(sh.ta.map((v,i)=>v-ro[i])), r=n([f[2],0,-f[0]]), u=[f[1]*r[2]-f[2]*r[1],f[2]*r[0]-f[0]*r[2],f[0]*r[1]-f[1]*r[0]];
++ const out=new Uint8Array(W*H);
++ for(let py=0;py<H;py++)for(let px=0;px<W;px++){
++  const a=(px+0.5-0.5*W)/H, b=(py+0.5-0.5*H)/H, d=n([0,1,2].map(i=>a*r[i]+b*u[i]+sh.foc*f[i]));
++  for(let t=0.05,i=0;i<128;i++){
++   const x=ro[0]+d[0]*t, y=ro[1]+d[1]*t, z=ro[2]+d[2]*t;
++   const bnd=Math.hypot(x-A[0],y-0.52,z-A[2])-0.68, dF=bnd>0.04? bnd : fig(x-A[0],y,z-A[2]), dG=y-0.026, h=Math.min(dF,dG);
++   if(h<0.0008*Math.max(t,1)){ if(dF<=dG&&bnd<=0.04) out[py*W+px]=1; break; }
++   t+=h*0.92; if(t>sh.far) break;
++  }
++ }
++ return out;
++}
++const iou=(a,b)=>{let i=0,u=0; for(let q=0;q<a.length;q++){ if(a[q]&&b[q]) i++; if(a[q]||b[q]) u++; } return u? i/u : 0;};
++const yi=SHOTS.findIndex(s=>s.k==='yurish'), ysh=SHOTS[yi];
++const seen=[];       // one frame of each of the eight drawings, as the film reports them
++for(let f=Math.ceil(STARTS[yi]*FPS);f<(STARTS[yi]+ysh.d)*FPS;f++){
++ const s=await state(f,8,6); if(s.shot==='yurish'&&!seen.some(x=>x.idx===s.idx)) seen.push({f,idx:s.idx}); }
++const refs={}, ref=k=>refs[k%8]??=silhouette(figOf(MAN,joints(WALK[k%8],[])),ysh);
++const shown={}, mask=async f=>{ if(!shown[f]){ const m=await pixels(f,W,H,{},1);
++ shown[f]=Uint8Array.from({length:W*H},(_,q)=>CHARACTER(matOf(m[q*4]))?1:0); } return shown[f]; };
++const worst=async(d)=>{ if(seen.length<8) throw new Error(`only ${seen.length} drawings up in yurish`);
++ let w=1; for(const s of seen) w=Math.min(w,iou(await mask(s.f),ref(s.idx+d))); return w; };
++await check({name:'figure/matches-sheet', unit:'worst IoU over 8 drawings',
++ measure:()=>worst(0),
++ pass:v=>v>0.90,     // first run: 0.979 worst true drawing, 0.758 best neighbour
++ calibrate:()=>worst(1),   // the next drawing's reference: the off-by-one the sheet would never see
++ note:'the man on screen against the drawing state(f).idx names, drawn from poses.json and his character file'});
+diff --git a/oq-kocha/tools/build.mjs b/oq-kocha/tools/build.mjs
+index f23317e..9bbc4c7 100644
+--- a/oq-kocha/tools/build.mjs
++++ b/oq-kocha/tools/build.mjs
+@@ -4,11 +4,7 @@
+    whole point: the next character is a new document, not a new shader. */
+ import {readFileSync, writeFileSync, mkdirSync} from 'fs';
+ import {dirname} from 'path';
+-
+-const JOINT = {hip:0, shoulder:1, head:2, neck:3,
+- 'knee.n':4,'ankle.n':5,'toe.n':6,'elbow.n':7,'hand.n':8,
+- 'knee.f':9,'ankle.f':10,'toe.f':11,'elbow.f':12,'hand.f':13,
+- 'cloak.mid':14,'cloak.hem':15};
++import {JOINT} from '../src/sheet.mjs';   // one table: joints() writes in this order, parts read by it
+
+ const f = v => { const s=String(v); return /[.eE]/.test(s)?s:s+'.0'; };
+ const v3 = a => `vec3(${a.map(f).join(',')})`;
+diff --git a/oq-kocha/tools/mkfilm.py b/oq-kocha/tools/mkfilm.py
+index 24307c7..e62923c 100644
+--- a/oq-kocha/tools/mkfilm.py
++++ b/oq-kocha/tools/mkfilm.py
+@@ -81,21 +81,6 @@ HEAD=r'''<title>Oq Ko'cha</title>
+ __SOUND__
+ const POSES=__POSES__, RAMP=new Float32Array(__RAMP__);
+ __SHEET__
+-const NZ=-0.048,FZ=0.048;
+-function joints(K,out){
+- const X=v=>v/100,Y=v=>-v/100;
+- const toe=(a,g)=>[X(a[0]+Math.cos(g*0.6)*10.5),Y(a[1]-Math.sin(g*0.6)*10.5)];
+- const nt=toe(K.na,K.nf),ft=toe(K.fa,K.ff); let i=0;
+- const put=(x,y,z)=>{out[i++]=x;out[i++]=y;out[i++]=z;};
+- put(0,-K.hip/100,0); put(X(K.sh[0]),Y(K.sh[1]),0);
+- put(X(K.sh[0]+K.hd[0]+1.0),Y(K.sh[1]-11.0+K.hd[1]),0); put(X(K.sh[0]+0.6),Y(K.sh[1]-5.0),0);
+- put(X(K.nk[0]),Y(K.nk[1]),NZ); put(X(K.na[0]),Y(K.na[1]),NZ); put(nt[0],nt[1],NZ);
+- put(X(K.neb[0]),Y(K.neb[1]),NZ*1.5); put(X(K.nh[0]),Y(K.nh[1]),NZ*1.5);
+- put(X(K.fk[0]),Y(K.fk[1]),FZ); put(X(K.fa[0]),Y(K.fa[1]),FZ); put(ft[0],ft[1],FZ);
+- put(X(K.feb[0]),Y(K.feb[1]),FZ*1.5); put(X(K.fh[0]),Y(K.fh[1]),FZ*1.5);
+- put(X(K.cl[1][0]),Y(K.cl[1][1]),0); put(X(K.cl[3][0]-3),Y(K.cl[3][1]+10),0);
+- return out;
+-}
+ /* THE SHOT LIST. Every camera lives here and nowhere else, so the cut audit can
+    read the authored subject scale instead of guessing it from pixels. */
+ __SHOTS__

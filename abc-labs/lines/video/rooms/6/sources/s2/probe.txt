@@ -1,0 +1,12 @@
+codec_name=h264
+profile=100
+codec_type=video
+width=1080
+height=1138
+pix_fmt=yuv420p
+r_frame_rate=60/1
+avg_frame_rate=60/1
+nb_frames=860
+duration=14.333333
+size=2906173
+bit_rate=1622050

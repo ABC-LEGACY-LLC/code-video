@@ -1,0 +1,288 @@
+Docs. Cuelume cuelume v0.2.4 Docs agents.md
+Getting started
+Install Quick start Attributes
+API
+bind() play() setTheme() setVolume() setEnabled() sounds SoundName
+Reference
+Sound catalog Which cue? Behavior
+Documentation Everything cuelume exports, and when to reach for it.
+Seven exports and seven attributes. Most projects only ever need bind()
+. The rest is here for sounds at an exact moment, a second material, or a listener who wants it quieter.
+Install
+Install Cuelume, then import it wherever your interface runs.
+$ npm install cuelume
+Click the command to switch package manager. ESM-only, zero runtime dependencies, and safe to import during SSR.
+Quick start
+Mark up the elements that should make a sound, then wire them all at once. Nothing else is needed.
+index.html
+1
+2
+3
+4 <button data-cuelume-tap >Save </button >
+<input data-cuelume-type placeholder = "Search" >
+<button data-cuelume-open >Open menu </button >
+<a href = "/settings" data-cuelume-navigate >Settings </a >
+app.ts
+1
+2
+3 import { bind } from "cuelume" ;
+bind();
+Attributes
+Each attribute covers one behavior. Leave the value empty to use its default sound, or set it to any name from the catalog .
+Attribute Fires on Default
+data-cuelume-tap
+Fires on click Default tap
+data-cuelume-type
+Fires on keydown (edits) Default type
+data-cuelume-select
+Fires on change, else click Default select
+data-cuelume-toggle
+Fires on click Default toggle
+data-cuelume-open
+Fires on click Default open
+data-cuelume-close
+Fires on click Default close
+data-cuelume-navigate
+Fires on click Default navigate
+Add data-cuelume-emphasis="subtle"
+or "strong"
+to an element or any ancestor to set how much the action matters. data-cuelume-theme="bubble"
+sets the material the same way.
+bind()
+bind(root?: ParentNode): void
+Delegates every data-cuelume-*
+interaction under root
+, which defaults to the whole document. Call it once at startup.
+It is idempotent, so calling it again is harmless, and it handles elements added later, so you do not need to re-bind after a render.
+app.ts
+1
+2
+3
+4 import { bind } from "cuelume" ;
+bind(); // the whole document
+bind(document.querySelector( "#app" )); // or one subtree
+play()
+play(name?: SoundName, options?: PlayOptions): void
+Plays a sound immediately, for moments that are not a DOM interaction: a request that resolved, a copy that landed, a form that failed. Defaults to tap
+.
+Options apply to this play only: volume
+, emphasis
+, the context a binding would detect ( direction
+, key
+, input
+), a theme
+for this play, and a duration
+for count
+. Unknown values are ignored.
+app.ts
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14 import { play } from "cuelume" ;
+play( "loading" );
+try {
+await exportReport();
+play( "ready" ); // the file is there
+} catch {
+play( "error" );
+}
+play( "navigate" , { direction: "back" }); // the whoosh falls
+play( "success" , { emphasis: "strong" }); // a publish, not an autosave
+play( "success" , { volume: 0.4 }); // quieter, just this once
+play( "count" , { duration: 900 }); // a number rolling to its new value
+Browsers block audio on a fresh visit until the listener interacts. Play navigate
+on client-side navigations after that first interaction.
+setTheme()
+setTheme(theme: "default" | "mech" | "bubble" | "press"): void
+Switches the material of future playback. All four themes carry the same fourteen cues at the same levels, so a switch changes how they sound, not what they mean. For one playful moment, pass theme
+to play()
+or set data-cuelume-theme
+instead. Unknown names are ignored and the choice is not persisted.
+app.ts
+1
+2
+3
+4
+5
+6
+7
+8 import { play, setTheme } from "cuelume" ;
+setTheme( "mech" ); // dry, machined parts
+setTheme( "bubble" ); // knocks, drips, corks, and gulps
+setTheme( "press" ); // a crisp click over a warm, swelling note
+setTheme( "default" ); // glass, wood, air, soft mallets
+play( "select" , { theme: "bubble" }); // one playful moment
+setVolume()
+setVolume(volume: number): void
+Sets the global level for future playback, clamped between 0
+and 1
+. Non-finite values are ignored.
+Your app owns the setting: cuelume applies it but never persists it, so wire it to whatever preference store you already have.
+app.ts
+1
+2
+3
+4 import { setVolume } from "cuelume" ;
+setVolume( 0.7 );
+setVolume(Number(localStorage.getItem( "ui-volume" ) ?? 1 ));
+setEnabled()
+setEnabled(enabled: boolean): void
+Turns future playback on or off. Sounds already ringing are left to finish, and like the volume, the preference is not persisted.
+app.ts
+1
+2
+3
+4 import { setEnabled } from "cuelume" ;
+setEnabled(false); // further play attempts become no-ops
+setEnabled(true);
+sounds
+sounds: readonly SoundName[]
+Every sound name, in catalog order. Useful for building a picker without hardcoding the list.
+app.ts
+1
+2
+3
+4
+5 import { sounds, play } from "cuelume" ;
+sounds.forEach((name) => {
+// one button per cue
+});
+SoundName
+type SoundName = "tap" | "type" | "select" | "toggle" | "open" | "close" | "success" | "error" | "navigate" | "warning" | "loading" | "ready" | "attention" | "count"
+The union of the fourteen cue names. Import it as a type to keep your own sound maps honest.
+app.ts
+1
+2
+3
+4
+5
+6
+7
+8
+9 import { play, type SoundName } from "cuelume" ;
+const forStatus: Record< "ok" | "warn" | "bad" , SoundName> = {
+ok: "success" ,
+warn: "warning" ,
+bad: "error" ,
+};
+play(forStatus[status]);
+Sound catalog
+Fourteen cues, each with its own shape. Press one to hear it.
+tap
+Small glassy tap Buttons, links
+type
+Keystroke, different every stroke Text entry
+select
+Crisp woody detent Menus, lists, tabs
+toggle
+One crisp snap with a knock of body Switches, checkboxes
+open
+Air drawing up over a light mallet note Menus, drawers, dialogs
+close
+Air falling shut over a low, damped note Closing, dismissing
+success
+One soft mallet chord, C–G–E spread wide Confirmed completion
+error
+One muted low chord, short Recoverable failure
+navigate
+Soft whoosh; falls going back Routes, pages, galleries
+warning
+One mallet fifth, A and E Done, but needs a look
+loading
+One soft, low note that swells and fades Slow work started
+ready
+One warm glass note in a small room A result is there
+attention
+One high glass bell, ringing longest Blocked on the user
+count
+One breath that rises with the count Numbers animating
+Which cue?
+Pick by the job, not by the sound. Every row uses a cue that exists; emphasis and options do the rest. Never play one per streamed token, per tool call, or on hover: play one when the run ends. An animated number gets one count, never one per digit.
+Moment Cue How
+Primary button: save, send, submit Cue tap How —
+Secondary or ghost button Cue tap How subtle
+Destructive confirm: delete, remove Cue close How strong
+Copy to clipboard Cue success How subtle
+Like, star, bookmark Cue toggle How —
+Undo / redo Cue navigate How subtle, direction "back" / "forward"
+Keystroke, delete, space, return Cue type How bindings set key
+Autocomplete accepted Cue select How —
+Field fails validation Cue error How subtle
+Menu, dropdown, or list option Cue select How —
+Tab, segmented control, radio Cue select How bindings set direction
+Checkbox, switch Cue toggle How bindings set direction
+Slider or stepper step Cue select How subtle, direction
+Menu or popover opens / closes Cue open / close How subtle
+Dialog or drawer opens / closes Cue open / close How —
+Accordion expands / collapses Cue open / close How subtle
+Command palette Cue open How subtle, or nothing
+Toast Cue the cue for what it reports How subtle
+Route change Cue navigate How —
+Back button Cue navigate How direction "back"
+Carousel, gallery, pagination Cue navigate How subtle, direction
+Drag picked up / dropped / cancelled Cue select / tap / close How — / strong / subtle
+Reorder a list item Cue select How direction
+Saved, synced Cue success How subtle
+Payment, publish, deploy confirmed Cue success How strong
+Partial failure, deprecation, connection retrying Cue warning How —
+Form rejected, permission denied Cue error How —
+Upload, export, or build started Cue loading How —
+Upload finished Cue success How —
+Export ready to download Cue ready How —
+Long job finished while the user was away Cue ready How strong
+New message in an open conversation Cue ready How subtle
+Reminder or timer due Cue attention How —
+A number animates to a new value Cue count How duration matching the animation
+A number counts down Cue count How direction "back"
+A live number that updates constantly: price feed, viewers Cue nothing How —
+AI: prompt sent / generation started Cue tap / loading How — / subtle
+AI: generation stopped Cue close How —
+AI: reply finished streaming Cue ready How subtle
+AI: tool call needs approval Cue attention How —
+AI: agent task done Cue success How —
+AI: model, tool, or network failure Cue error How —
+AI: suggestion accepted / rejected Cue select / close How — / subtle
+AI: switch model or mode Cue select How —
+One playful moment in a professional app, e.g. the AI model picker Cue the usual cue How theme "bubble"
+Behavior
+The defaults are opinionated so you do not have to be.
+One cue per action An event plays at most one cue, even with nested marked elements or several bound roots. Click bindings follow native activation, so Enter and Space play too. Typing that behaves Only keys that edit text play, never in a password field, at most once every 40ms. Holding Backspace keeps playing until there is nothing left to delete. Audible without clipping One shared boosted output stage keeps cues clear, with native compression protecting overlapping sounds. Struck, not played back Tones are modelled on real bars: each overtone dies faster the higher it is, and a brief mallet contact starts the note. Every play of a frequent cue is one strike, a little harder or softer than the last, so no two sound identical. Outcome cues play the same every time. One faint room Every cue rings very faintly into one shared, short stereo room, so it sounds placed around the listener rather than inside their head. One lazy AudioContext Shared across every sound and created on first use, not on import. Autoplay-friendly Suspended audio is resumed where possible, without surfacing an error when a browser blocks it. SSR-safe Importing on the server is a no-op.
+Anything missing?
+Open an issue on GitHub , or point your coding agent at agents.md and it can wire cuelume into a project on its own.
+MIT licensed. Built by Daniel White. Docs npm GitHub agents.md
+
+## links
+/favicon.svg
+https://fonts.googleapis.com
+https://fonts.gstatic.com
+https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap
+/_astro/global.DLQgwO74.css
+/_astro/docs.CEKTFyel.css
+/
+/docs
+https://github.com/danielwh2/cuelume
+#install
+#quick-start
+#attributes
+#bind
+#play
+#set-theme
+#set-volume
+#set-enabled
+#sounds-export
+#sound-name
+#catalog
+#which-cue
+#behavior
+/agents.md
+https://www.npmjs.com/package/cuelume

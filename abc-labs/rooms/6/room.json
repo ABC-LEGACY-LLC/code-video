@@ -1,0 +1,11 @@
+{
+  "room": 6,
+  "title": "Dithered koi shader",
+  "state": "verdict",
+  "opened": "2026-09-30",
+  "owner": "alonur",
+  "purpose": "Dithered koi: a 14.5 KB shader demo claiming 0.1 ms of JS per frame, made with the author's unreleased shader site; no code published",
+  "updated": "2026-10-01T07:27:22.967Z",
+  "lines": 115,
+  "pulled": "2026-10-01T10:06:36.389Z"
+}

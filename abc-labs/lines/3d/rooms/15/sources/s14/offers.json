@@ -1,0 +1,44 @@
+[
+ {
+  "name": "Free Plan",
+  "price": "0",
+  "priceCurrency": "USD",
+  "description": "No credit card needed - 100 credits per month, CC BY 4.0 license"
+ },
+ {
+  "name": "Pro Plan Monthly",
+  "price": "20",
+  "priceCurrency": "USD",
+  "description": "Best for individual creators - 1000 credits per month, private license, higher priority"
+ },
+ {
+  "name": "Pro Plan Yearly",
+  "price": "240",
+  "priceCurrency": "USD",
+  "description": "Best for individual creators - 1000 credits per month billed annually"
+ },
+ {
+  "name": "Premium Plan Monthly",
+  "price": "40",
+  "priceCurrency": "USD",
+  "description": "Best for professional creators - 3000 credits per month, up to 300 assets"
+ },
+ {
+  "name": "Ultra Plan Monthly",
+  "price": "100",
+  "priceCurrency": "USD",
+  "description": "Best for high-volume production - 8000 credits per month, up to 800 assets"
+ },
+ {
+  "name": "Studio Plan Monthly",
+  "price": "70",
+  "priceCurrency": "USD",
+  "description": "Best for studios and teams - 5500 shared credits pool per month, up to 550 assets, higher queue priority, 24 free retries per task"
+ },
+ {
+  "name": "Studio Plan Yearly",
+  "price": "840",
+  "priceCurrency": "USD",
+  "description": "Best for studios and teams - 5500 shared credits pool per month billed annually, up to 550 assets, higher queue priority, 24 free retries per task"
+ }
+]

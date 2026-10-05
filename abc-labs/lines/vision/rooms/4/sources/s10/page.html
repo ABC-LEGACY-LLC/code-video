@@ -1,0 +1,74 @@
+> For the complete documentation index, see [llms.txt](https://docs.roboflow.com/llms.txt). Markdown versions of documentation pages are available by appending `.md` to page URLs; this page is available as [Markdown](https://docs.roboflow.com/workflows/blocks/blocks/video-processing/sam3-video-tracker.md).
+
+# SAM3 Video Tracker
+
+Segment and track objects across video frames from text prompts with SAM3's streaming concept tracker.
+
+Run Segment Anything 3 on a live video stream frame by frame, keeping per-video temporal memory so object identities are preserved across frames.
+
+Provide the concepts to track as text in `class_names` (e.g. `["person", "forklift"]`) - no upstream detector is needed. SAM3 runs fused detection and tracking on every frame, so objects matching a concept that enter the scene mid-stream are picked up automatically and assigned fresh `tracker_id`s. Each emitted mask carries the prompt it matched as its class name and the model's detection score as its confidence.
+
+The block multiplexes a single SAM3 streaming model across many video streams by keying state on `video_metadata.video_identifier`; a session is re-seeded only when the source stream restarts or `class_names` changes. For detector-driven (box-prompted) video tracking, use the SAM2 Video Tracker block instead.
+
+Intended for use in a persistent WebRTC session, which delivers one frame at a time and tags each frame with video metadata.
+
+### Type identifier
+
+Use the following identifier in step `"type"` field: `roboflow_core/sam3_video@v1` to add the block as a step in your workflow.
+
+### Properties
+
+| **Name**      | **Type**                | **Description**                                                                                                                                                | Refs |
+| ------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| `name`        | `str`                   | Enter a unique identifier for this step..                                                                                                                      | ❌    |
+| `class_names` | `Union[List[str], str]` | Concepts to segment and track, as a list of phrases (or a single comma-separated string). Each emitted mask carries the concept it matched as its class name.. | ✅    |
+| `model_id`    | `str`                   | Streaming SAM3 model id resolved by `inference_models`..                                                                                                       | ✅    |
+| `threshold`   | `float`                 | Minimum detection score for emitted masks. Scores come from SAM3's per-object concept detection head..                                                         | ✅    |
+
+The **Refs** column marks possibility to parametrise the property with dynamic values available in `workflow` runtime. See *Bindings* for more info.
+
+### Runtime compatibility
+
+`soft` - runtime `hosted_serverless`, `dedicated_deployment`; execution `remote`; input `video` : Block keeps per-video state in process memory (keyed by video\_metadata.video\_identifier). With remote step execution on stateless or multi-replica HTTP runtimes, successive requests may be served by different worker processes, so the state resets between calls and the output is meaningless for tracking / counting / aggregation. Use local step execution in a persistent WebRTC session for stable cross-frame results.
+
+`hard` - runtime `self_hosted_cpu`; execution `local` : Requires a GPU; the streaming SAM3 video model needs CUDA.
+
+`soft` - input `image` : Block depends on temporal context from video or repeated-frame workflows. With a still image/photo, there is no meaningful history to track, compare, aggregate, or visualize, so the block provides little or no benefit.
+
+### Input and Output Bindings
+
+The available connections depend on its binding kinds. Check what binding kinds `SAM3 Video Tracker` in version `v1` has.
+
+<details>
+
+<summary>Input and output bindings</summary>
+
+* input
+  * `images` ([*`image`*](/workflows/developer-guide/developer-guide/kinds/image.md)): The image to infer on..
+  * `class_names` (*Union\[*[*`list_of_values`*](/workflows/developer-guide/developer-guide/kinds/list-of-values.md)*,* [*`string`*](/workflows/developer-guide/developer-guide/kinds/string.md)*]*): Concepts to segment and track, as a list of phrases (or a single comma-separated string). Each emitted mask carries the concept it matched as its class name..
+  * `model_id` ([*`roboflow_model_id`*](/workflows/developer-guide/developer-guide/kinds/roboflow-model-id.md)): Streaming SAM3 model id resolved by `inference_models`..
+  * `threshold` ([*`float`*](/workflows/developer-guide/developer-guide/kinds/float.md)): Minimum detection score for emitted masks. Scores come from SAM3's per-object concept detection head..
+* output
+  * `predictions` ([`instance_segmentation_prediction`](/workflows/developer-guide/developer-guide/kinds/instance-segmentation-prediction.md)): Prediction with detected bounding boxes and segmentation masks in form of sv.Detections(...) object.
+
+</details>
+
+<details>
+
+<summary>Example JSON definition</summary>
+
+```json
+{
+	    "name": "<your_step_name_here>",
+	    "type": "roboflow_core/sam3_video@v1",
+	    "images": "$inputs.image",
+	    "class_names": [
+	        "person",
+	        "forklift"
+	    ],
+	    "model_id": "sam3video",
+	    "threshold": 0.5
+	}
+```
+
+</details>

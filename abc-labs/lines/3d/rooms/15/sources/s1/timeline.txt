@@ -1,0 +1,140 @@
+# the author's newest posts (16)
+--- 2105470579268837753 @Bingeljell Thu Oct 01 01:31:18 +0000 2026 replies=1 likes=3 views=249
+Candid feedback is the best : "fine for normal use, flaws show up when you pixel-peep" . Some of that is the underlying models, some is mine to fix. The goal of my image to 3D lab is Tripo/Meshy-level, locally on your machine.
+
+More testers welcome.
+  [quotes]
+  | --- 2105416118169116731 @PrinceTeck Wed Sep 30 21:54:53 +0000 2026 replies=3 likes=4 views=296
+  | @Bingeljell this looks good. I hope we can get it somewhere to proper details. for normal use case its OK but pixel peeping can clearly see the issues.  is this ai models issue?
+  |   [photo 1703x1349] https://pbs.twimg.com/media/HTfwWkcbsAEYI9C.jpg?name=orig
+  |   [photo 1699x1322] https://pbs.twimg.com/media/HTfwYPWa8AA77kV.jpg?name=orig
+--- 2105364806379151765 @Bingeljell Wed Sep 30 18:31:00 +0000 2026 replies=17 likes=471 views=22502
+Free image-to-3D models don't preserve your source image - text, logos and fine detail come back garbled. 
+I got that working with my latest 'Pixel Match' feature in my image-to-3dlab: it copies the actual pixels from your source onto the model, even after retopo down to ~5k faces. High quality, low poly 3D models that are riggable and can be animated. 
+One step closer to Tripo / Meshy level of output, but free and on your own machine. Mac + NVIDIA. 
+Try it out here: https://github.com/Bingeljell/image-to-3dlab
+
+There's lots more to do, so please test, raise issues & PRs, etc.
+  [video 1080x1350 38.5s] https://video.twimg.com/amplify_video/2105354132051947520/vid/avc1/1080x1350/SALVDbSroWh83hsF.mp4?tag=29
+--- 2105364807239041376 @Bingeljell Wed Sep 30 18:31:00 +0000 2026 replies=0 likes=3 views=734 -> Bingeljell/2105364806379151765
+Latest release also has some other feature updates:
+
+1. You can use Pixel Match without repainting
+2. The finish pipeline has a before and after compare
+3. Compare up to 4 models in the viewer now
+4. Pixal3D uses BiRefNet-lite as the bg remover - no more halo on your matte images
+
+You'll need Blender for the Finish pipeline that does the 'Pixel Match'
+--- 2105211749586887042 @Bingeljell Wed Sep 30 08:22:48 +0000 2026 replies=0 likes=1 views=673
+When the creature trolls the creator! History books a 100 years from now are going to be lit!
+  [quotes]
+  | --- 2105154457113972959 @rovvmut_ Wed Sep 30 04:35:09 +0000 2026 replies=245 likes=6323 views=688616
+  | This is why RAM is so expensive.
+  |   [video 1079x1911 25s] https://video.twimg.com/amplify_video/2105154409013579776/vid/avc1/1080x1920/Hjzlky8RfCgItkbk.mp4?tag=29
+--- 2104908509632659496 @Bingeljell Tue Sep 29 12:17:50 +0000 2026 replies=1 likes=7 views=895
+Game devs and game dev tools are not in any danger of being replaced by one-shot wonders! If anything, more people will become game devs and that's good. 
+
+Learned that the hard way. I thought I could single prompt my way to the game I wanted. Didn't work. lol. 
+Still had to figure out sound, music, models, etc. And some of it is still bad! I'm glad I'm able to do most of it locally. 
+
+I'm not against the one-shot clips, they're good to get people interested. But expect disappointment if that's how you think it's going to work. 
+
+Ok back to work!
+  [video 1944x1092 21.5s] https://video.twimg.com/amplify_video/2104908190483968000/vid/avc1/1944x1092/XAF_NgSXgL_cGW4e.mp4?tag=29
+--- 2104542160079270161 @Bingeljell Mon Sep 28 12:02:06 +0000 2026 replies=1 likes=5 views=428
+Image to 3dlab has some nice QoL updates out now, with a big feature coming up tomorrow. 
+
+The QoL updates:
+1. Standardised the bg removal with BiRefNet-lite. It's amazing at getting rid of backgrounds and is lightning fast. ~1 sec to load and ~4 sec for bg removal on my mac.
+2. Pixal3D runs only builds a 1024 res model - but complex and 'chunky' images can take more time. This isn't an issue on Nvidia cards, but for Apple Silicon users, this can increase time taken to generate a good 3D model. Have optimised steps from 12>8 - no visible loss in quality. Works out of the box for fresh installs. Existing users will have to run a script to rebuild from source. 
+3. Minor fixes to how the viewer was loading up in the Generate 3D tab. Cleaner now. And images from Qwen now land in the /output/images/ folder - better organised for your viewing pleasure. 
+
+Download the latest version here: https://github.com/Bingeljell/image-to-3dlab 
+
+We have a really nice upgrade for retopology and new photo layer /paint step to keep the assets looking good even as low as ~5k faces. Also a much better user experience across the web viewer that should make life easy for game devs - Coming up in tomorrow's release. So stay tuned!
+--- 2104259265880064419 @Bingeljell Sun Sep 27 17:17:58 +0000 2026 replies=2 likes=18 views=922
+I've been shipping fixes and updates on a daily basis to my Image to 3Dlab pipeline... a few windows issues have been resolved (need more testers please) AND the retopo quality for low(er) poly images now maintains quality even as low as 5k faces. Get it here: https://github.com/Bingeljell/image-to-3dlab
+A snapshot of what's to come in the next few days: 
+1. A better finishing (retopo, deformation tests) workflow in the web viewer
+2. Rigging via the web viewer
+3. NPM installer so its just easier for people to install and get setup
+4. A BIG one: Automating promo creation for game devs
+
+I have a long list of things I want to sort through and I'll publish a more detailed roadmap in a few days. 
+
+Would love more feedback please. ❤️
+
++ I wanted to experiment with how good Opus 5.5 is with hyperframes for video creation - was not disappointed. I pointed opus at my local audio assetgen library that uses stable audio suite of models - pretty decent. (Django Reinhardt fans, unite!)
+  [video 1080x1350 55s] https://video.twimg.com/amplify_video/2104255638176256000/vid/avc1/1080x1350/4mOe8EDWatvoWhwx.mp4?tag=29
+--- 2104023467620470802 @Bingeljell Sun Sep 27 01:41:00 +0000 2026 replies=2 likes=14 views=826
+One of the really cool things about building open source stuff is that if people find value - they'll use it and talk about it. 
+Someone found my repo and put up on r/topologyAI on reddit. Genuinely happy that folks are finding it useful. 
+If you're a game dev making 3d assets, try it and please let me know what else in your workflow bugs you... I've just been adding things that I need help with.
+  [photo 1622x1736] https://pbs.twimg.com/media/HTKn4sSb0AAS2Hl.jpg?name=orig
+--- 2103914278701146347 @Bingeljell Sat Sep 26 18:27:07 +0000 2026 replies=2 likes=90 views=5884
+Local image to 3D is really the future for many game devs / animators. The raw output is already good enough for renders, stills and prints. See this orc!
+
+My pipeline also does some other things to clean up the meshes (retopology to get the triangle count down to usable levels) to make them rig and animation ready. Works on Nvidia GPUs - Linux + Windows (needs more testers please!) as well as Apple Silicon (yes, I gotchu metal heads!)
+
+Check it out here: https://github.com/Bingeljell/image-to-3dlab
+Am adding new stuff very frequently and a couple of folks have already raised issues and opened PRs. So, please use it, break it - help me improve it.
+  [video 1080x1350 13.9s] https://video.twimg.com/amplify_video/2103911280658825216/vid/avc1/1080x1350/R3lj6j-CC2zSJdKi.mp4?tag=29
+--- 2103554890387853556 @Bingeljell Fri Sep 25 18:39:02 +0000 2026 replies=4 likes=29 views=2420
+If you're looking for a local text to image to 3d pipeline that runs in your browser and is super easy to use, try this out. (Sound on, trust me)
+v0.3.1 of image-to-3dlab is out. Thanks to justifun, a kind windows + NVIDIA tester who flagged 3 bugs & a QoL change. 
+This runs on Apple Silicon + Nvidia Linux - and windows in early testing. 
+Give it a whirl: https://github.com/Bingeljell/image-to-3dlab/
+- Pixal3D no longer asks you to enable rembg 
+- the viewer no longer crashes on start on Windows
+- setup progress now shows under the model you're installing
+
+This troll shaman was done using Pixal3D in ~5 mins on a 3090 Ti. Rigged and animated in Blender locally on my mac. 
+
+Share feedback here, on github, anywhere - I'll get it fixed! 
+As an aside: Opus 5.5 has been such a blast to work with, I really hope they don't nerf it next week.
+  [video 1080x1350 16s] https://video.twimg.com/amplify_video/2103551377675022336/vid/avc1/1080x1350/j0WV7oVDINbuAG8v.mp4?tag=29
+--- 2103458941791526954 @Bingeljell Fri Sep 25 12:17:46 +0000 2026 replies=1 likes=1 views=760
+1/6
+If you're looking for some inspiration or references for what others are doing in 3D - I've got a mini thread for you. After a couple of days deep in the image > 3d land, I wanted to look up and see what else is happening. Some really cool stuff out there. Stuff that caught my eye this week: 
+
+1. Kicking it off with @btn_game's overall vibe - I like how they've done the movement and music
+https://x.com/btn_game/status/2103278295341220160?s=20
+  [quotes]
+  | --- 2103278295341220160 @btn_game Fri Sep 25 00:19:57 +0000 2026 replies=79 likes=5127 views=127730
+  | We're not just a Hack n' Slash, we've got schmoovement too 😼
+  |   [video 1080x1920 13.12s] https://video.twimg.com/amplify_video/2103277659317063680/vid/avc1/720x1280/zqDqw3D3Khui1POW.mp4?tag=14
+--- 2103458952667426928 @Bingeljell Fri Sep 25 12:17:49 +0000 2026 replies=1 likes=0 views=27 -> Bingeljell/2103458949995597889
+5. @peteborks hasn't been active here for 2 years now, but man that handle has some stylish work. https://x.com/peteborks/status/1839279984625496545?s=20 This one specifically recreated one of my favourite things about Sony's Spiderman movies.
+  [quotes]
+  | --- 1839279984625496545 @peteborks Thu Sep 26 12:24:55 +0000 2024 replies=85 likes=7761 views=518263
+  | I've always loved how Spider-Verse brought comic art to life on screen. It inspired me to take on the challenge of replicating that style in UE
+  | My favorite effect is how movement is often conveyed as strokes and smearing instead of motion-blur
+  | #UnrealEngine #TechArt #StylizedArt
+  |   [video 1920x1080 38.35s] https://video.twimg.com/ext_tw_video/1839271382896484352/pu/vid/avc1/1280x720/YBGkyU1kp122iFmp.mp4?tag=12
+--- 2103458955771138543 @Bingeljell Fri Sep 25 12:17:50 +0000 2026 replies=0 likes=0 views=25 -> Bingeljell/2103458952667426928
+6. And finally, @RyanLykos is my insta-follow for the week. Take a look at his timeline (or this rig of his - wow) and you'll see why. Thanks to @3DxDEV7 for the video - they also share a lot of inspiration.
+  [video 872x720 37.45s] https://video.twimg.com/amplify_video/2102628880007737344/vid/avc1/872x720/QvUzoZKlQFd66Z0D.mp4?tag=29
+--- 2103318577407291450 @Bingeljell Fri Sep 25 03:00:01 +0000 2026 replies=6 likes=203 views=12891
+Excited to share that the Image to 3D lab pipeline now works on nvidia gpus alongside Apple silicon. + some other nice updates. Get it here: https://github.com/Bingeljell/image-to-3dlab  
+
+1. Works on Nvidia / CUDA / Vulkan 
+2. A simple 1 line curl install (in the link above) - and you'll get notified about updates in the web viewer itself
+3. Simplified onboarding
+4. A more intuitive user experience across the pipeline
+
+Tested on a 3090/ 3090 Ti and a 4090. What you see in the video is from these cards. 
+
+It's blazing fast for you Nvidia users! 😤
+  [video 1080x1350 56.085s] https://video.twimg.com/amplify_video/2103188279978033152/vid/avc1/1080x1350/dpC0cEw0ZvoI_uiR.mp4?tag=29
+--- 2103202810259292385 @Bingeljell Thu Sep 24 19:20:00 +0000 2026 replies=1 likes=4 views=649
+Worklings - my desktop pet x dungeon crawler game - finally got some love. Opus 5.5 is a nice upgrade. Check out the before & after of the dungeon! 
+This is built in godot and some simple tweaks took it from a plane vanilla dungeon to something with a lot more depth. 
+I accidentally also introduced weather as a variable - all this should be in the next alpha. Hopefully over the weekend. 
+This game dev journey has been quite an interesting one!
+  [video 1920x1080 18s] https://video.twimg.com/amplify_video/2103186969736155136/vid/avc1/1920x1080/prY8E_8u07YAlV37.mp4?tag=29
+--- 2103106357167833389 @Bingeljell Thu Sep 24 12:56:44 +0000 2026 replies=2 likes=3 views=255
+The models in my image to 3d pipeline are made with pixal3d.cpp by @raven_38_ . It's the best backend I've tried by a mile. While the geometry is on par with Trellis2, the overall output clobbers everything else I've tried so far. And the optimisation is just sublime, makes everything really quick!
+
+Today he found my repo (YAY!) and fixed the licence files on his weights so they're clearer for everyone. Open source at its best 🙏 ありがとうございます！
+
+Also: I just shipped a big update. It runs on NVIDIA GPUs now. More on that tomorrow.

@@ -1,0 +1,156 @@
+Cardboard for Mac: The AI Video Editor for Your Mac
+[/] [/changelog] Changelog [/pricing] Pricing [/careers] Careers [/login] Login [/desktop/download] Download Free download for Mac [mailto:?subject=Cardboard%20for%20Mac&body=Download%20Cardboard%20for%20Mac%3A%20https%3A%2F%2Fwww.cardboard.ai%2Fdesktop%2Fdownload] Email me the Mac link
+[/login] Login [/signup] Get started
+[/signup] Get started
+The AI video editor for your Mac
+Drop in your footage, say what you want, and Cardboard edits it.
+[/desktop/download] Free download for Mac [mailto:?subject=Cardboard%20for%20Mac&body=Download%20Cardboard%20for%20Mac%3A%20https%3A%2F%2Fwww.cardboard.ai%2Fdesktop%2Fdownload] Email me the Mac link [/signup] Use in browser
+Connect your own Claude or Codex.
+Cardboard Lite is free on Mac
+Cardboard File Edit Playback View Window Help Mon Sep 28 9:41 AM
+Dashboard
+Piece Runner launch
+Makers documentary
+16:9 Export ⌘E
+Library
+Search project media… Add
+0:04 furnace-wide.mp4
+0:03 voiceover-bf8c0be5.mp3
+0:03 weld-11.mp4
+0:12 stock-cnc.mp4
+0:04 voiceover-66643085.mp3
+0:16 stock-plane.mp4
+0:00 / 1:04
+00:00:00.000 0 s 5 s 10 s 15 s 20 s 25 s 30 s 35 s 40 s 45 s 50 s 55 s 60 s 65 s 70 s
+Captions M
+Makers and shapers and put-it-togetherers. We work with our hands, and our hands serve us well. Iron and steel provide a nation with its comfort, its luxury, and its progress. This country was conquered by those who move forward. And you go ahead and land it. For some, there is nothing more beautiful than the man-made spectaculars. All these have come from the roots of the maker’s mind, or the fruits of the maker’s labors.
+Matched replacement edit M
+14 | original 21 | original 22 | forge 23 | hands 24 | steel 25 | city 27 | flag 35 | furnace 37 | lathe 49 | runner 62 | cad 69 | cnc 73 | original
+Voiceover M
+Makers and shapers and put-it-togetherers. We work with our hands, and our hands serve us well. Iron and steel provide a nation with its comfort, its luxury, and its progress. This country was conquered Picking up some dust. by those who move forward. Contact light. And so will space. And you go ahead and land it. For some, there is nothing more beautiful than the man-made spectaculars. All these have come from the roots of the maker’s mind, or the fruits of the maker’s labors.
+Score M
+Score
+Makers documentary
+makers-reference.mp4 Remake this with new footage. Match every cut and the pacing, keep the archival feel, and give it a fresh narrator.
+Worked for 52m 48s I’ll match your reference cut for cut: 73 shots across 30 subjects, from forges and furnaces to the moon landing, then narrate it fresh.
+Ran 5 commands
+Transcribed makers-reference.mp4
+Found archival footage: “American Maker” (1960)
+Generated a video: “Molten steel pouring from a furnace”
+Generated a video: “Welder at work in a shower of sparks”
+Found stock footage: “CNC machine cutting metal”
+Shots are in. Laying them on the reference’s cuts, with archival film for the speeches and a narrator reading each line.
+Ran 4 commands
+Your 65-second documentary is ready: 73 shots cut to the reference, 29 generated scenes alongside archival and stock footage, and 13 narrated lines with captions. Every shot is its own clip, so you can swap any of them.
+What should we do next? GPT-6 Astra
+Search
+Dashboard Projects Report an issue Settings I Ishan
+What are we editing today, Ishan?
+GPT-6 Astra
+Drag and drop or click here to add your media files
+Recent
+New project Start empty
+[#]
+Piece Runner launch 2 hours ago · 16:9 · 0:27
+[#]
+Makers documentary 1 day ago · 16:9 · 1:05
+Google Chrome
+Claude
+Cardboard
+Codex
+Trash
+Watch with sound 1:05
+Cardboard for Mac comes with Lite, included.
+Download the Mac app and the Lite plan is yours, on us. No card needed.
+Lite
+Complimentary with Cardboard for Mac
+Included · $10 /mo value
+[/desktop/download] Free download for Mac [mailto:?subject=Cardboard%20for%20Mac&body=Download%20Cardboard%20for%20Mac%3A%20https%3A%2F%2Fwww.cardboard.ai%2Fdesktop%2Fdownload] Email me the Mac link No card needed.
+The Director · 30 credits
+Bring your own Claude or Codex
+30 min of footage
+3 exports at 1080p
+Captions
+Audio cleanup
+Reframe
+Reference edits
+Need more? [/pricing] See all plans
+Faster editing, straight from your Mac.
+Bring your own agent.
+Connect Claude or Codex and use your existing plan to edit directly inside Cardboard.
+Footage stays on your Mac.
+Files are processed locally, so there’s nothing to upload before you start editing.
+Faster edits. Fewer credits.
+Skip the upload and cloud round trip. Edits come back faster and use fewer Cardboard credits.
+Built for bigger footage.
+Open hours of footage and heavy camera files straight from your Mac.
+Made with Cardboard on the Mac
+[/desktop/download] Free download for Mac [mailto:?subject=Cardboard%20for%20Mac&body=Download%20Cardboard%20for%20Mac%3A%20https%3A%2F%2Fwww.cardboard.ai%2Fdesktop%2Fdownload] Email me the Mac link
+Your first edit in three steps
+Cardboard Applications
+1. Download Cardboard.
+Sign in and Lite is included. No card needed.
+Import or drag your video Video, audio or images
+Auto
+interview.mov
+2. Drop in your footage.
+Phone clips, camera files, or hours of footage. No upload needed.
+demo.mp4 b-roll.mov interview.mov
+Ask Cardboard to cut, caption or make something…
+Opus
+First cut ready launch-video.mp4 · 0:30
+3. Tell Cardboard what you want.
+The Director plans the edit, builds the cut, then checks its work.
+You’re always in control.
+See the plan before it edits.
+Undo any change.
+Take over on the timeline anytime.
+Use your own agents.
+Already have a paid Claude or ChatGPT plan? Connect it in Cardboard and use Claude or Codex to edit your videos.
+Your agent does the thinking. Cardboard gives it the footage, timeline, and editing tools.
+No API keys. No terminal. Nothing extra to install.
+Requires an eligible paid Claude or ChatGPT plan.
+Ask Cardboard to cut, caption or make something…
+Auto Claude
+Model Claude Codex
+Connect in three steps
+Open the chat panel.
+Start a project and open the model picker.
+Choose Claude or Codex.
+Select the agent you want to use.
+Sign in to your account.
+Connect your existing Claude or ChatGPT subscription and start editing.
+00:12
+Get started with one prompt.
+[/desktop/download] Free download for Mac [mailto:?subject=Cardboard%20for%20Mac&body=Download%20Cardboard%20for%20Mac%3A%20https%3A%2F%2Fwww.cardboard.ai%2Fdesktop%2Fdownload] Email me the Mac link Connect your own Claude or Codex.
+Cardboard Lite is free on Mac
+Frequently asked questions
+Is there a free AI video editor for Mac?
+Yes. Cardboard for Mac is free to download and the Lite plan is free in the app.
+Does Cardboard work on Intel Macs?
+Can I edit videos with Claude or Codex?
+Do I need Claude or Codex?
+Is Cardboard on Windows?
+How is Cardboard different from Descript or CapCut?
+Is it better than iMovie?
+Can I export to Final Cut or Premiere?
+Do my web projects show up on the Mac?
+Where does my footage go?
+Create stunning content 10x faster with our agentic video editor.
+[https://x.com/usecardboard] [https://www.instagram.com/usecardboard] [https://www.linkedin.com/company/cardboardinc]
+Product
+[/pricing] Pricing
+[/changelog] Changelog
+[https://status.cardboard.ai] Status
+Legal
+[/privacy] Privacy
+[/terms] Terms of Service
+Company
+[/blog] Blog
+[/careers] Careers
+[/hard-problems] Hard problems
+[https://www.ycombinator.com/companies/cardboard] Y Combinator
+[mailto:founders@cardboard.ai] Contact
+Cardboard Cardboard Cardboard
+© 2026 Cardboard Inc. All rights reserved.
+Made within SF

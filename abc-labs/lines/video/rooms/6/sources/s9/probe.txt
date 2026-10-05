@@ -1,0 +1,7 @@
+codec_type=video
+width=1280
+height=656
+r_frame_rate=60/1
+nb_frames=2306
+duration=38.433333
+size=7089501

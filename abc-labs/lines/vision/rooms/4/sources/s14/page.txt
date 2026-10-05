@@ -1,0 +1,1189 @@
+ @media screen and (min-width: 64em) {
+ div.pmc-wm {
+ background: repeat-y;
+ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='350' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3Cfilter x='-.02' y='0' width='1.05' height='1' id='c'%3E%3CfeFlood flood-color='%23FFF'/%3E%3CfeComposite in='SourceGraphic'/%3E%3C/filter%3E%3Ctext id='b' font-family='Helvetica' font-size='11pt' style='opacity:1;fill:%23005ea2;stroke:none;text-anchor:middle' x='175' y='14'%3E%3C/text%3E%3Cpath id='a' style='fill:%23005ea2' d='M0 8h350v3H0z'/%3E%3C/defs%3E%3Cuse xlink:href='%23a' transform='rotate(90 10 10)'/%3E%3Cuse xlink:href='%23b' transform='rotate(90 10 10)' filter='url(%23c)'/%3E%3C/svg%3E");
+ padding-left: 3rem;
+ }
+ }
+ <link rel="apple-touch-icon"
+ sizes="180x180"
+ href="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/favicons/apple-touch-icon.png" />
+ <link rel="icon"
+ type="image/png"
+ sizes="48x48"
+ href="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/favicons/favicon-48x48.png" />
+ <link rel="icon"
+ type="image/png"
+ sizes="32x32"
+ href="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/favicons/favicon-32x32.png" />
+ <link rel="icon"
+ type="image/png"
+ sizes="16x16"
+ href="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/favicons/favicon-16x16.png" />
+ <link rel="mask-icon"
+ href="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/favicons/safari-pinned-tab.svg"
+ color="#0071bc" />
+ <meta name="msapplication-config"
+ content="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/favicons/browserconfig.xml" />
+ Computer Vision-Based Airport Turnaround Monitoring Using YOLOv11, Multi-Object Tracking, and Motion-Based Passenger and Baggage Activity Detection - PMC
+ Skip to main content
+ <img aria-hidden="true"
+ class="usa-banner__header-flag"
+ src="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/us_flag.svg"
+ alt="" />
+ An official website of the United States government
+ Here's how you know 
+ <button
+ type="button"
+ class="usa-accordion__button usa-banner__button
+ "
+ aria-expanded="false"
+ aria-controls="gov-banner-default"
+ data-testid="storybook-django-banner"
+ >
+ Here's how you know 
+ <div class="usa-banner__content usa-accordion__content"
+ id="gov-banner-default"
+ hidden>
+ <img class="usa-banner__icon usa-media-block__img"
+ src="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/icon-dot-gov.svg"
+ alt=""
+ aria-hidden="true" />
+ Official websites use .gov 
+ A
+ .gov website belongs to an official
+ government organization in the United States.
+ <img class="usa-banner__icon usa-media-block__img"
+ src="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/icon-https.svg"
+ alt=""
+ aria-hidden="true" />
+ Secure .gov websites use HTTPS 
+ A lock (
+ <svg xmlns="http://www.w3.org/2000/svg"
+ width="52"
+ height="64"
+ viewBox="0 0 52 64"
+ class="usa-banner__lock-image"
+ role="graphics-symbol"
+ aria-labelledby="banner-lock-description"
+ focusable="false">
+ Lock 
+ Locked padlock icon
+ <path fill="#000000"
+ fill-rule="evenodd"
+ d="M26 0c10.493 0 19 8.507 19 19v9h3a4 4 0 0 1 4 4v28a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V32a4 4 0 0 1 4-4h3v-9C7 8.507 15.507 0 26 0zm0 8c-5.979 0-10.843 4.77-10.996 10.712L15 19v9h22v-9c0-6.075-4.925-11-11-11z" />
+ ) or https:// means you've safely
+ connected to the .gov website. Share sensitive
+ information only on official, secure websites.
+ <a class="ncbi-header__logo-container"
+ href="https://www.ncbi.nlm.nih.gov/">
+ <img alt="NCBI home page"
+ class="ncbi-header__logo-image"
+ src="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/ncbi-logos/nih-nlm-ncbi--white.svg"
+ width="410"
+ height="100" />
+ <button
+ type="button"
+ class="usa-menu-btn ncbi-header__hamburger-button
+ "
+ aria-label="Show menu"
+ data-testid="navMenuButton"
+ >
+ <svg aria-hidden="true"
+ class="ncbi-hamburger-icon"
+ fill="none"
+ focusable="false"
+ height="21"
+ viewBox="0 0 31 21"
+ width="31"
+ xmlns="http://www.w3.org/2000/svg">
+ <path clip-rule="evenodd"
+ d="M0.125 20.75H30.875V17.3333H0.125V20.75ZM0.125 12.2083H30.875V8.79167H0.125V12.2083ZM0.125 0.25V3.66667H30.875V0.25H0.125Z"
+ fill="#F1F1F1"
+ fill-rule="evenodd" />
+ <button
+ type="button"
+ class="usa-button
+ usa-button--unstyled ncbi-header__desktop-button
+ "
+ aria-expanded="false"
+ aria-controls="search-field-desktop-navigation"
+ aria-label="Show search overlay"
+ data-testid="toggleSearchPanelButton"
+ data-toggle-search-panel-button
+ >
+ <img
+ src="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/usa-icons/search.svg"
+ class="usa-icon "
+ aria-hidden="true"
+ />
+ Search
+ <button
+ type="button"
+ class="usa-button
+ usa-button--unstyled ncbi-header__desktop-button ncbi-header__login-dropdown-button
+ "
+ aria-expanded="false"
+ aria-controls="login-dropdown-menu"
+ aria-label="Show login menu"
+ data-testid="toggleLoginMenuDropdown"
+ data-desktop-login-button
+ >
+ <img
+ src="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/usa-icons/person.svg"
+ class="usa-icon "
+ aria-hidden="true"
+ />
+ Log in 
+ <img
+ src="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/usa-icons/expand_less.svg"
+ class="usa-icon ncbi-header__login-dropdown-icon ncbi-header__login-dropdown-icon--expand-less ncbi-header__login-dropdown-icon--hidden"
+ aria-hidden="true"
+ data-login-dropdown-up-arrow
+ />
+ <img
+ src="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/usa-icons/expand_more.svg"
+ class="usa-icon ncbi-header__login-dropdown-icon ncbi-header__login-dropdown-icon--expand-more ncbi-header__login-dropdown-icon--hidden"
+ aria-hidden="true"
+ data-login-dropdown-down-arrow
+ />
+ <ul class="usa-nav__submenu ncbi-header__login-dropdown-menu"
+ id="login-dropdown-menu"
+ data-desktop-login-menu-dropdown
+ hidden>
+ Dashboard
+ Publications
+ Account settings
+ <button
+ type="button"
+ class="usa-button
+ usa-button--outline ncbi-header__login-dropdown-logout-button
+ "
+ data-testid="desktopLogoutButton"
+ data-desktop-logout-button
+ >
+ Log out
+ <div class="ncbi-search-panel ncbi--show-only-at-desktop"
+ data-header-search-panel
+ hidden>
+ <form action="https://www.ncbi.nlm.nih.gov/search/all/"
+ autocomplete="off"
+ class="usa-search usa-search--big ncbi-search-panel__form"
+ data-testid="desktop-navigation-search-form"
+ method="GET"
+ role="search">
+ Search…
+ <input class="usa-input"
+ id="search-field-desktop-navigation"
+ name="term"
+ placeholder="Search NCBI"
+ type="search"
+ value="" />
+ <button
+ type="submit"
+ class="usa-button
+ "
+ >
+ Search NCBI
+ Primary site navigation
+ <button
+ type="button"
+ class="usa-nav__close ncbi-nav__close-button
+ "
+ aria-label="Close navigation menu"
+ data-testid="navCloseButton"
+ >
+ <form class="usa-search usa-search--small ncbi--hide-at-desktop"
+ action="https://www.ncbi.nlm.nih.gov/search/all/"
+ autocomplete="off"
+ data-testid="mobile-navigation-search-form"
+ method="GET"
+ role="search">
+ Search
+ <input class="usa-input"
+ id="search-field-mobile-navigation"
+ type="search"
+ placeholder="Search NCBI"
+ name="term" />
+ <button
+ type="submit"
+ class="usa-button
+ "
+ >
+ <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTE1LjUgMTRoLS43OWwtLjI4LS4yN0E2LjQ3MSA2LjQ3MSAwIDAgMCAxNiA5LjUgNi41IDYuNSAwIDEgMCA5LjUgMTZjMS42MSAwIDMuMDktLjU5IDQuMjMtMS41N2wuMjcuMjh2Ljc5bDUgNC45OUwyMC40OSAxOWwtNC45OS01em0tNiAwQzcuMDEgMTQgNSAxMS45OSA1IDkuNVM3LjAxIDUgOS41IDUgMTQgNy4wMSAxNCA5LjUgMTEuOTkgMTQgOS41IDE0eiIvPjwvc3ZnPg=="
+ class="usa-search__submit-icon"
+ alt="Search" />
+ <div class="ncbi-nav__mobile-login-menu ncbi--hide-at-desktop"
+ data-mobile-login-menu
+ hidden>
+ Logged in as:
+ <strong class="ncbi-nav__mobile-login-menu-email"
+ data-mobile-login-email-text> 
+ Dashboard
+ Publications
+ Account settings
+ <button
+ type="button"
+ class="usa-button
+ ncbi-nav__mobile-login-button ncbi--hide-at-desktop
+ "
+ data-testid="mobileLoginButton"
+ data-mobile-login-button
+ >
+ Log in
+ <button
+ type="button"
+ class="usa-button usa-button--unstyled pmc-header__search__button"
+ aria-label="Open search"
+ data-ga-category="search"
+ data-ga-action="PMC"
+ data-ga-label="pmc_search_panel_mobile"
+ >
+ Search PMC Full-Text Archive 
+<button
+class="usa-button"
+type="submit"
+formaction="https://pmc.ncbi.nlm.nih.gov/search/"
+data-ga-category="search"
+data-ga-action="PMC"
+data-ga-label="PMC_search_button"
+>
+ Search in PMC 
+<img
+src="https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/img/usa-icons-bg/search--white.svg"
+class="usa-search__submit-icon"
+alt="Search"
+/>
+ Journal List
+ <a class="usa-link" href="/about/userguide/" data-ga-action="featured_link"
+ data-ga-label="user guide">
+ User Guide
+ <button
+ type="button"
+ class="usa-button pmc-sidenav__container__open usa-button--unstyled width-auto display-flex"
+ aria-label="Open resources"
+ data-extra-class="is-visible-resources"
+ data-ga-category="resources_accordion"
+ data-ga-action="click"
+ data-ga-label="mobile_icon"
+ >
+ <a
+ href="https://doi.org/10.3390/s26134231"
+ class="usa-link display-flex usa-tooltip"
+ role="button"
+ target="_blank"
+ rel="noreferrer noopener"
+ title="View on publisher site"
+ data-position="bottom"
+ aria-label="View on publisher site"
+ data-ga-category="actions"
+ data-ga-action="click"
+ data-ga-label="publisher_link_mobile"
+ >
+ <a
+ href="pdf/sensors-26-04231.pdf"
+ class="usa-link display-flex usa-tooltip"
+ role="button"
+ title="Download PDF"
+ data-position="bottom"
+ aria-label="Download PDF"
+ data-ga-category="actions"
+ data-ga-action="click"
+ data-ga-label="pdf_download_mobile"
+ >
+ <button
+ class="usa-button usa-button--unstyled usa-tooltip collections-dialog-trigger collections-button display-flex collections-button-empty"
+ title="Add to Collections"
+ data-position="bottom"
+ aria-label="Save article in MyNCBI collections."
+ data-ga-category="actions"
+ data-ga-action="click"
+ data-ga-label="collections_button_mobile"
+ data-collections-open-dialog-enabled="false"
+ data-collections-open-dialog-url="https://account.ncbi.nlm.nih.gov/?back_url=https%3A%2F%2Fpmc.ncbi.nlm.nih.gov%2Farticles%2FPMC13363769%2F%23open-collections-dialog"
+ data-in-collections="false"
+ >
+ <button role="button" class="usa-button usa-button--unstyled usa-tooltip citation-dialog-trigger display-flex"
+ aria-label="Open dialog with citation text in different styles"
+ title="Cite"
+ data-position="bottom"
+ data-ga-category="actions"
+ data-ga-action="open"
+ data-ga-label="cite_mobile"
+ data-all-citations-url="/resources/citations/13363769/"
+ data-citation-style="nlm"
+ data-download-format-link="/resources/citations/13363769/export/"
+ >
+ <button
+ type="button"
+ title="Permalink"
+ data-position="bottom"
+ class="usa-button usa-button--unstyled display-flex usa-tooltip"
+ aria-label="Show article permalink"
+ aria-expanded="false"
+ aria-haspopup="true"
+ data-ga-category="actions"
+ data-ga-action="open"
+ data-ga-label="permalink_mobile"
+ >
+ PERMALINK 
+ Copy 
+ <button
+ type="button"
+ class="usa-button pmc-sidenav__container__open usa-button--unstyled width-auto display-flex"
+ aria-label="Open article navigation"
+ data-extra-class="is-visible-in-page"
+ data-ga-category="actions"
+ data-ga-action="open"
+ data-ga-label="article_nav_mobile"
+ >
+ As a library, NLM provides access to scientific literature. Inclusion in an NLM database does not imply endorsement of, or agreement with,
+ the contents by NLM or the National Institutes of Health. 
+ Learn more:
+ PMC Disclaimer 
+ |
+ PMC Copyright Notice
+ <main
+ id="main-content"
+ class="usa-layout-docs__main usa-layout-docs grid-col-12 pmc-layout pmc-prose padding-0"
+ >
+ Sensors (Basel) . 2026 Jul 3;26(13):4231. doi: 10.3390/s26134231 
+ Search in PMC 
+ Search in PubMed 
+ View in NLM Catalog 
+ Add to search 
+ Computer Vision-Based Airport Turnaround Monitoring Using YOLOv11, Multi-Object Tracking, and Motion-Based Passenger and Baggage Activity Detection 
+ Nutchanon Suvittawat 
+ Nutchanon Suvittawat 
+ 1 Information Systems Technology and Design, Singapore University of Technology and Design, Singapore 487372, Singapore; nutchanon_suvittawat@mymail.sutd.edu.sg 
+ Conceptualization, Writing – original draft, Methodology, Software, Validation, Formal analysis, Investigation, Resources, Data curation 
+ Find articles by Nutchanon Suvittawat 
+ 1 , De Wen Soh 
+ De Wen Soh 
+ 1 Information Systems Technology and Design, Singapore University of Technology and Design, Singapore 487372, Singapore; nutchanon_suvittawat@mymail.sutd.edu.sg 
+ Writing – review & editing, Supervision, Project administration, Resources 
+ Find articles by De Wen Soh 
+ 1, * 
+ Editors: Xuefeng Liang 1 , Guangyu Chen 1 
+ Author information 
+ Article notes 
+ Copyright and License information 
+ 1 Information Systems Technology and Design, Singapore University of Technology and Design, Singapore 487372, Singapore; nutchanon_suvittawat@mymail.sutd.edu.sg 
+ * Correspondence: dewen_soh@sutd.edu.sg 
+ Roles 
+ Nutchanon Suvittawat : Conceptualization, Writing – original draft, Methodology, Software, Validation, Formal analysis, Investigation, Resources, Data curation 
+ De Wen Soh : Writing – review & editing, Supervision, Project administration, Resources 
+ Xuefeng Liang : Academic Editor 
+ Guangyu Chen : Academic Editor 
+ Received 2026 May 27; Revised 2026 Jun 30; Accepted 2026 Jul 1; Collection date 2026 Jul. 
+ © 2026 by the authors. 
+ Licensee MDPI, Basel, Switzerland. This article is an open access article distributed under the terms and conditions of the Creative Commons Attribution (CC BY) license . 
+ PMC Copyright notice 
+ PMCID: PMC13363769  PMID: 42451472 
+ Abstract 
+ Airport turnaround is an important operational process that directly affects flight punctuality, airport capacity, and ground-handling efficiency. However, many turnaround activities are still monitored manually or through fragmented operational records, which can limit real-time visibility and delay identification. This study proposes a computer vision-based airport turnaround monitoring pipeline that integrates YOLOv11 object detection, Norfair multi-object tracking, and frame differencing-based motion analysis to extract key operational events from airport video footage. Publicly available turnaround footage from Shinshu Matsumoto Airport, Japan, was collected under different environmental conditions, including daytime, nighttime, rainy, after-rain, and transition lighting conditions. From selected videos, 1446 images were labeled into 11 airport turnaround object classes, including tow tug, aerobridge, airplane, baggage container, belt loader, belt loader roof, fuel line, fuel tanker, fuel tube, tractor, and window. The dataset was divided into training, validation, and testing sets using a 70:20:10 ratio. The trained YOLOv11 model achieved strong detection performance, with overall test an precision of 0.9609, recall of 0.9445, and mAP50 of 0.9617. To support activity-level interpretation beyond object detection, the proposed pipeline applies frame differencing within specific regions of interest, including the aerobridge window region for passenger deboarding and boarding detection, and the belt loader roof region for baggage unloading and loading detection. The extracted object detections, motion spikes, and temporal logs are then converted into a Gantt chart that summarizes major turnaround activities, including airplane parking, deboarding, baggage unloading, refueling, baggage loading, boarding, and pushback. The results demonstrate that the proposed modified YOLO-based pipeline can transform ordinary airport video footage into structured operational timelines, supporting more transparent, data-driven, and automated monitoring of airport turnaround processes. 
+ Keywords: airport turnaround, computer vision, YOLOv11, object detection, Norfair tracking, frame differencing, passenger detection, baggage detection, ground support equipment, Gantt chart, airport operations 1. Introduction 
+ Airport turnaround—the set of ground operations conducted between an aircraft’s arrival and its subsequent departure—is a critical determinant of on-time performance and operational efficiency. After parking at the assigned stand, multiple coordinated activities occur in parallel: the passenger aerobridge docks; passengers deboard; ground crews unload baggage using belt loaders and tractors to transfer containers to the terminal; refueling is performed via hydrant systems or fuel trucks; and, when required, catering is replenished. Cabin cleaning and light line maintenance (e.g., routine A-checks) are often executed within this window to ensure safety and service readiness. Once loading and boarding are complete and all ground equipment is clear, the pushback tractor positions the aircraft for taxi and departure [ 1 , 2 , 3 ]. Figure 1 summarizes these stages within a standard turnaround flow. 
+ Figure 1. 
+ Open in a new tab 
+ Airport turnaround process diagram. The rebound in air travel demand following the COVID-19 pandemic [ 4 , 5 , 6 ] has intensified pressure on airport infrastructure and staffing. Many airports still rely heavily on human observation and ad hoc documentation to monitor turnaround progress, diagnose delays, and coordinate resources. Scaling this manual approach typically requires hiring additional personnel, which increases costs and can introduce variability, delayed situation awareness, and avoidable disruptions [ 1 , 7 , 8 ]. 
+ This paper proposes an AI-enabled monitoring framework that integrates computer vision with existing terminal CCTV/webcam feeds to automatically track the status of key turnaround activities from arrival to pushback. The system infers event start–end times and generates a Gantt-style timeline with timestamps and durations for each task (e.g., deboarding, baggage unloading/loading, refueling, cleaning, boarding). By transforming raw video into structured operational telemetry and visual summaries, the approach supports early detection of delays and anomalies, reduces the need for manual time-and-motion logging, and provides controllers and ramp managers with a concise, real-time picture of turnaround health. 
+ Our contributions are threefold: (i) a modular computer vision pipeline tailored to the airport ramp context that detects and associates ground assets, passenger flows, and aircraft–equipment interactions; (ii) a robust event-parsing method that converts detections into task timelines suitable for supervisory decision-making; and (iii) a practical visualization layer that renders per-flight Gantt charts for post hoc analysis and live operations. Collectively, these elements aim to improve turnaround transparency, support staffing efficiency, and help airports meet rising demand without compromising safety or service quality. 2. Research and Industry Survey 
+ There are some research papers and commercial work that proposed various methods using artificial intelligence to help airport management to handle the flow of airplanes and passengers in part of the turnaround process as can be seen in Table 1 below. 
+ Table 1. 
+ Lists of related research and commercial work using artificial intelligence to manage airport turnaround process. 
+ No., Year of Publication, Citation 
+ Method Used 
+ Type of Monitor Device or Input Source 
+ Accuracy of Model 
+ Baggage Unloading/Loading, Passenger Deboarding/Boarding 
+ 1., 2008 [ 9 ], 
+ Real-time aircraft turnaround monitoring framework (ATMS) and Turnaround Operation Monitoring Agent (TOM) 
+ Mobile computing devices (PDAs) and wireless network technology General Packet Radio Service (GPRS) 
+ Validated but not mentioned 
+ Bridge attach/detach; cargo-loader attach/detach. 
+ 2., 2018 [ 10 ], 
+ Machine learning (long short-term memory, LSTM) for prediction 
+ Simulated data via calibrated stochastic boarding model; aggregated into a time-based “complexity” metric 
+ Deviation reduced up to 75%; residual difference of ±20 s 
+ Agent-based passenger boarding simulation; no baggage/bridge/loader event detection. 
+ 3., 2020 [ 11 ], 
+ Tree-based machine learning algorithm XGBoost and interpretability framework SHAP for prediction 
+ Historical operational airport/airline databases 
+ Mean absolute error of 2.81 min and explained variance (R 2 ) of 0.60. 
+ Uses passenger count and cargo amount as variables to predict overall turnaround duration. 
+ 4., 2020 [ 12 ], 
+ ConvNet-based models (AirNet) for object detection, tracking, and activity detection 
+ Live gate cam (surveillance camera) 
+ Aircraft type recognition’s accuracy is 100%; object detection’s mAP is 0.9514; activity detection’s median error is <6 s 
+ Detects bridge attachment/detachment and cargo loader attachment/detachment events. 
+ 5., 2023 [ 13 , 14 ], 
+ Integration of AI, predictive analytics, machine learning, computer vision, and real-time data processing 
+ Cameras and sensors inside Safedock A-VDGS 
+ Not publicly reported (commercial solution) 
+ Bridge connection tracking confirmed; baggage load/unload not explicitly listed. 
+ 6., 2022 [ 15 ], 
+ AirNet (Custom CNN) with depthwise convolution 
+ Multiple cameras (wide field-of-view) 
+ Average precision of object detection is approximately 97%; average precision of the AirNet is 85% 
+ Detects GSE–aircraft interactions (bridge/cargo-loader attachment/detachment) 
+ 7., 2022 [ 16 ], 
+ Machine learning on turnaround sub-process durations + fusion of overlaps 
+ Historical operational turnaround data, specifically the durations of sub-processes 
+ Classification accuracy: decision tree 76.32%, random forest 83.22%. Random forest RMSE improved 4.64 to 4.36 min 
+ Uses 7 sub-process durations (operations record data; not computer vision) 
+ 8., 2023 [ 17 ], 
+ Computer vision key milestone nodes (KMNs) framework (improved YOLOv5 + Kalman filtering + Hungarian association) 
+ Fixed airport surveillance cameras 
+ Precision up to 93.6%, recall 93.1%, mAP 94.7%, multi-object tracking accuracy (MOTA) 95.09% 
+ Detects only in-/off-block + stairs docking/undocking (passenger access proxy); no baggage unload/load detection. 
+ 9., 2022 [ 18 ], 
+ Deep learning computer vision (YOLOv4/YOLO-tiny/SSD) for detection; CSRT/MOSSE tracking; Haar/TextBoxes + CRNN for tail numbers 
+ Intelligent cameras (passive system) 
+ Haar: Precision 84%, recall 77%. TextBoxes: Precisison 91%, recall 83%. Aircraft % (correctly) identified: 80% in Layout 2 
+ Aircraft computer vision only; no baggage/passengers activity detection. 
+ 10., 2022 [ 19 ], 
+ Deep learning computer vision system for auto-detecting/tracking ground service actions + start/end timestamps 
+ RGB video frame sequences (single fixed apron camera) 
+ Precision rates over 90%” for detecting/analyzing ground services 
+ Optical flow ROI around door/ladder and belt loader; mean flow direction/thresholds for boarding/deboarding and loading/unloading (rule-aided). 
+ 11., 2024 [ 20 ], 
+ Improved YOLOv5 (with SPD-Conv block) + activity identification 
+ Apron surveillance-camera video (real operational footage) 
+ Detection average precision of all objects is >90%; whole-class mAP 98.7%, with GPU/CPU inference efficiency +55.3%/+137.1% 
+ Recognizes GSE/door states: Bridge connected and passenger door open (pax proxy); baggage loading via belt-loader/tractor at hatch. 
+ 12., 2024 [ 21 ], 
+ Time Transition Petri Net (TTPN) and Bayesian theorem (modeling) 
+ Historical operational records 
+ RMSE: 3.75 min. MAE: 3.40 min. 
+ Focuses on time prediction of the overall process. 
+ 13., (Date not available) [ 22 ], 
+ AI-enabled video analytics engine 
+ Apron surveillance camera video 
+ Not publicly reported (commercial white paper) 
+ Baggage/cargo unloading monitoring: Detects belt loaders and baggage trucks and determines active status; passenger phases inferred from object/state cues. 
+ 14., 2024 [ 23 ], 
+ AI model using computer vision, Pytorch, OpenCV, and CNN 
+ Existing cameras in the terminal. 
+ Per-event success (Phase-1) of 16 events: 63–100% 
+ Monitors all processes of ground operations via GSE/objects and state cues. 
+ 15., (Date not available) [ 24 ], 
+ AI-driven computer vision (real-time tracking/counting, automated sorting and reading barcode tags) 
+ Video feeds from baggage claims and gates. 
+ Not publicly reported (commercial solution) 
+ Baggage/cargo: Real-time volume tracking + automated sorting/tracking. Passenger: Gate video estimates hand luggage counts vs. flight manifest (phase inference) 
+ Open in a new tab 
+ Note: GSE stands for Ground Support Equipment. Furthermore, the reviewed studies can be categorized according to the type of passenger access considered. Six studies focused exclusively on aerobridge-based operations [ 12 , 13 , 14 , 15 , 20 , 21 , 23 ], noting that [ 13 , 14 ] refer to the same work. Two studies considered only passenger stairs or ladders [ 17 , 19 ], while two studies addressed both aerobridge- and stair-based access [ 9 , 22 ]. Therefore, in the body of literature summarized in Figure 2 , several important gaps can be identified. Most notably, existing computer vision studies on airport turnaround monitoring largely emphasize the detection of the aerobridge and other large ground support equipment to infer operational phases, while limited attention has been given to the direct detection of passengers and baggage within the same field of view, particularly when the aerobridge is simultaneously present in the camera frame. As a result, current approaches often provide only a coarse representation of turnaround activities and may not capture fine-grained operational transitions. 
+ Figure 2. 
+ Open in a new tab 
+ A Venn diagram showing gaps concluded from the literature review table. This limitation is important because passengers and baggage are small, dynamic objects whose movements are directly associated with critical turnaround sub-processes, including deboarding, boarding, baggage unloading, and baggage loading. Without explicitly detecting these objects, it is difficult to determine the exact start and end times of these activities with high precision. Addressing this gap would enable more accurate event-level timestamping and duration estimation, thereby improving the realism and operational validity of airport turnaround monitoring. Such fine-grained detection capability could also enhance the usefulness of computer vision systems for performance analysis, process optimization, and decision support in airport ground operations. 
+ Additionally, two recent YOLOv5-based airport turnaround studies are particularly related to the present work. The authors of [ 17 ] proposed a vision-based framework for automatically collecting key milestone nodes, including in-block/off-block and docking/undocking events. The authors of [ 20 ] developed an improved YOLOv5-based apron surveillance method by introducing an SPD-Conv block to improve small-object detection for ground service object and activity recognition. These studies demonstrate the usefulness of YOLO-based perception for airport apron and turnaround monitoring. 
+ However, the present study differs from these works in its monitoring objective and output structure. Instead of focusing mainly on selected key milestone nodes or improving the YOLO architecture itself, this work uses YOLOv11 as the object detection module within a broader turnaround monitoring pipeline. The proposed framework combines object detection, Norfair tracking, region-of-interest frame differencing, and rule-based temporal event parsing to estimate multiple turnaround activities, including airplane parking, passenger deboarding, baggage unloading, refueling, baggage loading, passenger boarding, and pushback. 
+ Therefore, the main contribution of this study is not only object detection, but the transformation of detection, tracking, and motion information into structured operational monitoring outputs, including timestamped activity logs and a Gantt-style turnaround timeline. 3. Data Collection 
+ In this research we collected airport turnaround footage of Shinshu Matsumoto Airport, Japan, from this public-accessed available website [ 25 ] from 16 October 2024 to 10 December 2024 with a video resolution 1920 x 1080 HD. And then video frames were extracted at 15 s intervals to construct the image dataset. This interval was selected to reduce redundancy compared with consecutive-frame extraction while still capturing changes in aircraft turnaround activities. Although frames extracted from the same video may share the same camera viewpoint, airport stand layout, aircraft position, and background features, they are not exact duplicates because passengers, vehicles, baggage containers, belt loaders, tractors, tow tugs, and other ground support objects may move between sampled frames. Nevertheless, because the dataset split was performed at the image frame level, visually related frames from the same video may appear across the training, validation, and test sets. This may lead to more optimistic object detection performance than a strict video-level split. Therefore, future work should evaluate the proposed method using video-level or airport-level splits to better assess generalization to unseen turnaround sequences, camera viewpoints, and airport layouts. The videos that we selected represented every possible environmental condition as much as possible, such as shown in Figure 3 . After we screenshotted those eight selected turnaround videos, we had 1446 images in total for our dataset, then we used the Roboflow website [ 26 , 27 ] to label those objects that appear in the image scenes. The list of objects that we labeled are 1. tow tug, 2. aerobridge, 3. airplane, 4. baggage container, 5. belt loader, 6. belt loader roof, 7. fuel line, 8. fuel tanker, 9. fuel tube, 10. tractor, and 11. window. A labeled example image can be seen in Figure 3 and Figure 4 . 
+ Figure 3. 
+ Open in a new tab 
+ Image dataset environmental conditions that were used to train and test the AI model: ( a ) Daytime (sunny) without rain; ( b ) daytime (not sunny) without rain; ( c ) daytime with rain; ( d ) daytime after rain; ( e ) transition from daytime to nighttime with rain; ( f ) transition from daytime to nighttime without rain; ( g ) nighttime without rain; and ( h ) nighttime after rain. Figure 4. 
+ Open in a new tab 
+ Example of an annotated airport turnaround image prepared in Roboflow 3.0. The image shows manually labeled bounding boxes for key turnaround objects, including the aircraft, aerobridge, belt loader, baggage container, fuel-related equipment, tractor, tow tug, and window. Then, after we finished labeling all of 1446 images, we randomly divided them into three sets using a 70:20:10 ratio [ 28 , 29 ]—1. Training set with 1012 images (70%), 2. validation set with 288 images (20%), and 3. test set with 146 images (10%)—as this is a good ratio for image processing in aviation-related topics, as shown in our previous work [ 30 ]. Then, every set was assigned every object class, as shown in Figure 5 , with various number of instances shown in Table 2 . 
+ Figure 5. 
+ Open in a new tab 
+ Example images of object by classes using Roboflow: ( a ) Tow tug, ( b ) aerobridge, ( c ) airplane, ( d ) baggage container, ( e ) belt loader, ( f ) belt loader roof, ( g ) fuel line, ( h ) fuel tanker, ( i ) fuel tube, ( j ) tractor, ( k ) window. Table 2. 
+ Summary of object classes by training, validation, and test sets. 
+ Object Classes 
+ Dataset (1446 Images) 
+ Train 
+ Validation 
+ Test 
+ Tow tug 
+ 683 instances 
+ 237 instances 
+ 79 instances 
+ Aerobridge 
+ 1012 instances 
+ 288 instances 
+ 146 instances 
+ Airplane 
+ 1005 instances 
+ 287 instances 
+ 145 instances 
+ Baggage container 
+ 299 instances 
+ 77 instances 
+ 52 instances 
+ Belt loader 
+ 569 instances 
+ 145 instances 
+ 91 instances 
+ Belt loader roof 
+ 567 instances 
+ 145 instances 
+ 90 instances 
+ Fuel line 
+ 377 instances 
+ 67 instances 
+ 78 instances 
+ Fuel tanker 
+ 565 instances 
+ 127 instances 
+ 106 instances 
+ Fuel tube 
+ 253 instances 
+ 48 instances 
+ 46 instances 
+ Tractor 
+ 297 instances 
+ 78 instances 
+ 52 instances 
+ Window 
+ 753 instances 
+ 228 instances 
+ 118 instances 
+ number of total images 
+ 1012 images 
+ 288 images 
+ 146 images 
+ Open in a new tab 4. Methodology 
+ 4.1. Workflow of the Proposed Airport Turnaround Monitoring Pipeline 
+ 4.1.1. Input Acquisition 
+ The first stage of the workflow is the collection of airport turnaround video footage. This video serves as the raw observational data for the system. It contains visual information on aircraft position, ground support vehicles, aerobridge connection, passenger movement, and baggage-handling activities. The footage is then passed into the processing pipeline for automatic analysis. 4.1.2. Pipeline Initialization 
+ After the input video is loaded, the system initializes all major processing components. These include: 
+ The Ultralytics YOLO model with trained weights (best.pt) for object detection; 
+ The Norfair tracker for multi-object tracking across consecutive frames; 
+ A class color map for visual annotation; 
+ Supporting variables such as timers, logs, and temporary buffers for event recording. 
+ This initialization stage ensures that the detection, tracking, visualization, and logging modules are ready before frame-by-frame analysis begins. 4.1.3. Video Property Reading and Effective Frame Rate Computation 
+ Next, the system reads essential video properties such as frame rate (fps) and frame size. Based on these properties, the pipeline computes the effective fps, particularly when frame skipping is applied to reduce computational cost. This step is important because all temporal measurements, such as event duration and timestamp generation, must be consistent with the actual number of processed frames per second. 4.1.4. Object Detection Using YOLOv11 
+ Once video properties are prepared, each frame is processed using YOLOv11 object detection. At this stage, the model identifies relevant airport turnaround objects, such as aircraft, aerobridge, belt loader, baggage tractor, baggage container, fuel equipment, and other operational elements visible in the scene. 
+ The role of this stage is to convert raw image frames into structured detection outputs, including object class labels, bounding box locations, and confidence scores. These detections form the basis for the subsequent tracking and event analysis steps. 4.1.5. Multi-Object Tracking Using Norfair 
+ The detected objects are then passed to the Norfair tracking module. Tracking is used to maintain object identities across frames, allowing the system to determine how long each object remains visible and how its position changes over time. 
+ This stage is necessary because airport turnaround analysis depends not only on object presence but also on temporal continuity and motion behavior. By assigning persistent IDs to detected objects, the system can support event interpretation, duration measurement, and more reliable logging. 4.1.6. Branching into Two Analytical Pathways 
+ After tracking, the workflow splits into two complementary analytical branches: 
+ Event Logic from Spatial and Movement Relations 
+ The first branch analyzes spatial relationships and motion interactions among detected and tracked objects. This branch is used to infer operational events that depend on the relative arrangement or coordinated movement of multiple objects. According to the diagram, this logic is used for events such as refueling, airplane parking, pushback. Frame Differencing for Motion Spike Analysis 
+ The second branch performs frame differencing, which is used to detect motion changes between consecutive frames. This technique highlights areas of activity by measuring pixel-level differences over time. In the workflow, frame differencing is specifically applied to detect motion spikes, which are useful for identifying activities that are difficult to represent reliably using bounding-box detection alone. 
+ From this motion-based branch, two important airport turnaround processes are derived: 
+ Passenger deboarding/boarding; 
+ Baggage unloading/loading. 
+ 4.1.7. Passenger Activity Analysis 
+ One output of the frame differencing branch is passenger deboarding and boarding detection. Motion spikes in relevant regions indicate the collective movement of passengers between the terminal and the aircraft. By analyzing the temporal pattern of motion activity, the system can estimate when deboarding begins, when it ends, and when boarding starts later in the turnaround sequence. 4.1.8. Baggage Activity Analysis 
+ Another output of the frame differencing branch is baggage unloading and loading detection. Similar to passenger analysis, motion spikes are used to infer baggage handling activity, especially in regions where baggage carts, containers, or loaders interact with the aircraft. 4.1.9. Metrics and Logs Processing 
+ The outputs from both main branches are then forwarded to the metrics and logs processing stage. Here, the system organizes all detected events and tracking information into structured records. This includes: 
+ Event timestamps; 
+ Event durations; 
+ Tracked-object logs; 
+ Operational metrics; 
+ And summarized activity information. 
+ This stage transforms low-level frame-by-frame results into higher-level analytical outputs that can be used for performance evaluation and airport turnaround monitoring. 4.1.10. Final Outputs 
+ The final stage of the workflow produces several outputs: 
+ Processed video containing visual annotations of detections, tracks, and inferred events; 
+ Gantt charts, which summarize the temporal structure of turnaround activities; 
+ CSV files, which store detailed logs and numerical results for later analysis. 
+ These outputs make the system suitable for both visual inspection and quantitative study. The processed video supports interpretability, the Gantt chart supports operational timeline analysis, and the CSV files support reproducibility and downstream statistical evaluation. All of these steps are summarized in Figure 6 below. 
+ Figure 6. 
+ Open in a new tab 
+ Overall workflow of the proposed computer vision-based airport turnaround monitoring pipeline. The pipeline starts from input video acquisition, followed by YOLOv11 object detection, Norfair multi-object tracking, frame differencing-based motion analysis, event logic processing, and final output generation, including annotated video, CSV logs, and Gantt chart-based turnaround activity timelines. The modules in the proposed pipeline were selected according to the operational requirements of airport turnaround monitoring rather than as a random combination of existing tools. YOLOv11 was selected as the object detection module because the system first requires reliable frame-level identification of aircraft, aerobridge, belt loader, tractor, baggage container, fuel-related equipment, tow tug, and other turnaround objects. Norfair tracking was then used to provide temporal continuity by maintaining object identities across consecutive frames, which is necessary for estimating object presence, movement, and duration. However, object detection and tracking alone are not sufficient to identify passenger and baggage activities from a fixed long-distance airport camera view. Therefore, region-of-interest frame differencing was added to capture motion changes in operationally meaningful areas, especially the aerobridge window region for passenger movement and the belt loader roof region for baggage movement. Finally, rule-based temporal event parsing was used because airport turnaround activities follow known spatial and temporal relationships among aircraft, ground support equipment, and motion cues. This design allows the pipeline to transform object detections and motion signals into structured operational outputs, including timestamped logs and Gantt-style turnaround timelines. 4.2. YOLO and YOLOv11 
+ You Only Look Once (YOLO) is a one-stage object detection framework that performs object localization and classification in a single forward pass, making it well suited to real-time vision tasks. Unlike two-stage detectors that first generate region proposals and then classify them, YOLO directly predicts bounding boxes and class probabilities from the input image, which reduces latency and enables efficient deployment in video-based applications. In practical research settings, YOLO is widely used when a balance between detection accuracy and processing speed is required [ 31 , 32 ]. 
+ YOLOv11 is the Ultralytics generation of the YOLO family designed to support multiple computer vision tasks, including object detection, instance segmentation, image classification, pose estimation, and oriented object detection. According to the official Ultralytics documentation, YOLOv11 is provided in multiple model scales and is intended for training, validation, inference, and export across different deployment environments. For an academic methodology section, YOLOv11 can therefore be described as a real-time deep learning detector selected for its strong detection capability, flexible deployment, and compatibility with modern training and validation workflows [ 33 , 34 , 35 ]. 
+ In this study, YOLOv11 was adopted as the core object detector to identify operational targets from video frames. The main rationale for this choice is that YOLOv11 provides a practical trade-off between computational efficiency and detection performance, which is important in airport-turnaround analysis where multiple object classes may need to be detected continuously across long video sequences. In methodology terms, YOLOv11 may be presented as the primary spatial feature extractor that outputs class labels, confidence scores, and bounding boxes for downstream temporal analysis. 4.3. Norfair Tracking 
+ Norfair is a tracking-by-detection library designed to track multiple objects in video based on detections produced by an external detector. Its core idea is to receive frame-by-frame detections, associate them with existing tracked objects using a distance function, and maintain object identities over time. This makes Norfair especially suitable for pipelines in which a detector such as YOLO is responsible for spatial localization, while a dedicated tracker is responsible for temporal continuity [ 36 , 37 , 38 , 39 , 40 ]. 
+ The Norfair tracker performs data association by comparing newly detected objects with already tracked objects through a user-defined or predefined distance function. The official tracker reference explains that the distance_threshold determines the maximum distance allowed for a valid match, while the distance function itself defines how similarity between detections and tracked objects is measured. In practice, this mechanism allows the system to preserve object identities across consecutive frames, estimate trajectories, and support time-based event analysis. 
+ Norfair can be described as the temporal module of the proposed pipeline. After YOLOv11 detects objects in each frame, Norfair links detections across time to form continuous tracks. This step is important because airport turnaround interpretation depends not only on whether an object appears in one frame, but also on how long it remains present, when it enters or leaves the scene, and how its position evolves over time. 4.4. Frame Differencing 
+ Frame differencing is a classical motion detection technique that identifies moving regions by comparing adjacent video frames and highlighting pixels that change significantly over time. In computer vision, it is commonly used as a lightweight motion cue because it suppresses static background content and emphasizes temporal changes caused by moving objects or local activities. This makes it particularly useful when subtle motion needs to be detected in predefined regions of interest [ 41 ]. 
+ A New Method for Motion Target Detection by Background Subtraction and Update 
+ More broadly, frame differencing belongs to the family of foreground extraction and motion detection methods used in video analysis. Reviews of moving object detection note that background subtraction and frame difference approaches remain important for locating motion in image sequences, especially when they are used as a first-stage signal before higher-level recognition or tracking. Their main advantage is computational simplicity, although they can be sensitive to illumination changes, dynamic backgrounds, and camera motion [ 42 , 43 , 44 ]. 
+ Let I t x , y denote the pixel intensity at spatial position ( x , y ) in frame t , and I t − 1   x , y denote the corresponding pixel intensity in the previous frame. The basic frame difference image D t ( x , y ) is computed as 
+   D t ( x , y ) = ∣ I t ( x , y ) − I t − 1   ( x , y ) ∣ 
+ (1) 
+ This operation emphasizes pixels whose intensities have changed between two consecutive frames, which are likely associated with motion. 
+ To separate moving pixels from non-moving pixels, a threshold T is typically applied as follows: 
+   M t ( x , y ) = 1 ,       D t x , y > T , 0 ,       D t x , y ≤ T , 
+ (2) 
+where M t x , y is the resulting binary motion mask. A value of 1 indicates detected motion, whereas 0 indicates background or insignificant change. 
+ For region-based motion analysis, the amount of motion inside a region of interest (ROI) Ω can be summarized by the average difference magnitude as follows: 
+   S t = 1 ∣ Ω ∣ ∑ ( x , y ) ∈ Ω D t ( x , y ) 
+ (3) 
+where ∣Ω∣ is the number of pixels in the ROI. A motion event may then be declared when S t exceeds a predefined threshold as follows: 
+   M o t i o n   E v e n t   a t   t i m e   t ⟺ S t > τ , 
+ (4) 
+where τ is an empirically chosen motion threshold. This ROI-based formulation is especially suitable when the objective is to monitor localized activities, such as passenger movement or baggage handling motion, rather than full-scene object motion [ 45 , 46 , 47 ]. 
+ In methodology terms, frame differencing can be introduced as a complementary temporal analysis technique that augments detector-based recognition. While YOLOv11 captures semantic object categories, frame differencing provides direct evidence of motion between consecutive frames. In airport turnaround monitoring, this is useful for identifying fine-grained operational activities, such as localized passenger movement or baggage handling motion, particularly in regions where small targets may be partially occluded or difficult to detect robustly using bounding boxes alone. 4.5. Performance Metrics 
+ The performance of an object detection model is commonly evaluated using precision, recall, intersection over union (IoU), and mean average precision at an IoU threshold of 0.50 (mAP50). Ultralytics presents these as standard validation metrics for measuring classification correctness and localization quality in object detection tasks. 
+ Let TP, FP, and FN denote the numbers of true positives, false positives, and false negatives, respectively. Precision is defined as 
+ P r e c i s i o n   ( P ) = T P T P + F P   
+ (5) 
+which measures the proportion of predicted detections that are correct. A higher precision indicates fewer false alarms. 
+ Recall is defined as 
+ R e c a l l   R = T P T P + F N   
+ (6) 
+which measures the proportion of actual objects that are successfully detected. A higher recall indicates fewer missed detections. 
+ Intersection over union (IoU) quantifies the overlap between a predicted bounding box B p and a ground-truth bounding box B g . It is defined as 
+ I o U = B p ∩   B g B p ∪   B g   
+ (7) 
+where B p ∩ B g is the area of overlap and B p ∪ B g is the area of union between the two boxes. IoU is fundamental in object detection because it determines whether a predicted box is sufficiently aligned with the corresponding annotation. 
+ To summarize performance over varying confidence thresholds, the average precision (AP) for one class is computed as the area under the precision-recall curve as follows: 
+ A P = ∫ 0 1 P R   d R   
+ (8) 
+where P R represents precision as a function of recall. In practice, this integral is approximated numerically from the discrete precision–recall curve obtained during validation. 
+ For a multi-class detection problem with C classes, mean average precision at IoU 0.50 is defined as 
+ m A P @ 50 = 1 C ∑ c = 1 C A P c ( 0.50 ) 
+ (9) 
+where A P c ( 0.50 ) is the average precision of class c when a detection is counted as correct only if its IoU with the ground truth is at least 0.50. Thus, mAP50 provides an overall summary of detection quality across all classes under the commonly used IoU threshold of 0.50 [ 48 , 49 , 50 , 51 , 52 ]. 5. Experimental Results 
+ The experiments in this study were conducted using the dataset presented in Table 2 , and the corresponding training and testing results are shown in Table 3 . Training was performed using an NVIDIA L40S GPU, designed by NVIDIA Corporation (Santa Clara, CA, USA). The YOLOv11n model was trained with an image size of 640, a batch size of 16, a patience of 100, and a maximum of 3000 epochs. After training, the video processing and event extraction pipeline was also tested on a Lenovo IdeaPad Gaming 3 15IAH7 laptop, designed by Lenovo Group Limited (Beijing, China) to examine its practical usability on consumer-grade hardware. For each input video, the processing script automatically reads the original video frame rate, width, and height, and preserves the original frame size in the processed output. A frame-skipping strategy was applied with skip = 6, resulting in an effective processing frame rate of fps/6. This setting was selected to reduce computational load and support near-real-time processing, where the processing time was approximately comparable to the original video duration on the tested laptop. For example, a 30 min video required approximately 30 min to process in this setup. In addition, detected object positions were converted into a normalized 0–200 coordinate scale to support consistent spatial logging across videos. 
+ Table 3. 
+ Accuracy of the YOLOv11 model in detecting objects by class. 
+ Object Classes 
+ Train 
+ Validation 
+ Test 
+ p 
+ R 
+ mAP50 
+ p 
+ R 
+ mAP50 
+ p 
+ R 
+ mAP50 
+ Tow tug 
+ 0.9987 
+ 1 
+ 0.995 
+ 0.9956 
+ 1 
+ 0.9918 
+ 0.9915 
+ 0.9873 
+ 0.9949 
+ Aerobridge 
+ 0.9993 
+ 1 
+ 0.995 
+ 0.9984 
+ 1 
+ 0.995 
+ 1 
+ 1 
+ 0.995 
+ Airplane 
+ 0.9992 
+ 1 
+ 0.995 
+ 0.9987 
+ 0.993 
+ 0.995 
+ 0.9954 
+ 1 
+ 0.995 
+ Baggage container 
+ 0.9979 
+ 0.9933 
+ 0.995 
+ 0.9613 
+ 0.987 
+ 0.9929 
+ 0.9914 
+ 0.9808 
+ 0.9886 
+ Belt loader 
+ 0.9987 
+ 1 
+ 0.995 
+ 0.9918 
+ 1 
+ 0.995 
+ 0.9922 
+ 1 
+ 0.995 
+ Belt loader roof 
+ 0.9983 
+ 1 
+ 0.995 
+ 0.9925 
+ 1 
+ 0.995 
+ 0.9864 
+ 1 
+ 0.995 
+ Fuel line 
+ 0.9975 
+ 0.9947 
+ 0.995 
+ 0.9929 
+ 0.9701 
+ 0.994 
+ 0.9922 
+ 0.9872 
+ 0.9905 
+ Fuel tanker 
+ 0.9986 
+ 1 
+ 0.995 
+ 0.9977 
+ 1 
+ 0.995 
+ 0.9927 
+ 1 
+ 0.995 
+ Fuel tube 
+ 0.8413 
+ 0.8802 
+ 0.9174 
+ 0.8989 
+ 0.8542 
+ 0.9488 
+ 0.6909 
+ 0.5347 
+ 0.7033 
+ Tractor 
+ 0.992 
+ 1 
+ 0.995 
+ 0.9713 
+ 0.9744 
+ 0.9877 
+ 0.9773 
+ 0.9423 
+ 0.9749 
+ Window 
+ 0.999 
+ 1 
+ 0.995 
+ 0.9983 
+ 1 
+ 0.995 
+ 0.9604 
+ 0.9576 
+ 0.9519 
+ Overall 
+ 0.9837 
+ 0.988 
+ 0.9879 
+ 0.9816 
+ 0.9799 
+ 0.9896 
+ 0.9609 
+ 0.9445 
+ 0.9617 
+ Open in a new tab As presented in Table 3 , the overall precision, recall, and mAP50 on the test set all exceed 90%, demonstrating that the trained YOLOv11 model achieved strong overall detection performance for airport turnaround video analysis. However, class-level results also indicate that some small or visually ambiguous components, particularly the fuel tube class, require further improvement before engineering-level deployment. Although the overall detection performance was strong, the fuel tube class showed noticeably lower performance than the other classes, with a test mAP50 of 0.7033, recall of 0.5347, and precision of 0.6909. This indicates that fuel tube detection remains a limitation of the current model. The lower performance is likely related to the small and thin visual appearance of the fuel tube, partial occlusion, long-distance camera perspective, and low contrast between the fuel tube and surrounding aircraft or ground service equipment. Therefore, the current fuel tube result may not yet be sufficient for strict engineering deployment if fuel tube detection is required as an independent safety-critical output. However, in the proposed turnaround monitoring pipeline, the refueling stage is not inferred from the fuel tube alone, but also from related refueling cues such as the fuel line and fuel tanker. Future work should improve this class by increasing fuel tube samples, adding more varied annotations under different lighting and occlusion conditions, applying small-object augmentation, and testing higher-capacity YOLOv11 variants. 
+ Figure 7 illustrates a screenshot from the airport turnaround process, where the trained YOLOv11 model was employed to analyze the video and extract information on key operational stages, including airplane parking, passenger deboarding/boarding, and baggage unloading/loading. 
+ Figure 7. 
+ Open in a new tab 
+ Screenshot of Airport Turnaround Video Processed by the Trained YOLOv11 Model. Figure 8 presents the results of passenger detection during the airport turnaround process. Two distinct clusters of blue-line spikes can be observed on the left and right sides of the figure, corresponding to passenger movement detected by the proposed frame differencing approach. Specifically, the trained YOLOv11 model was first used to identify the aerobridge window region, and frame differencing was subsequently applied within this area to capture motion across consecutive frames. Whenever passenger movement occurred, the resulting pixel changes were recorded as blue-line spikes. The first cluster on the left indicates passenger deboarding, as it takes place shortly after the aircraft has parked at the stand. In contrast, the second cluster on the right corresponds to passenger boarding, occurring after a considerable time interval from the first cluster, which represents the ground preparation period before the aircraft’s next departure. 
+ Figure 8. 
+ Open in a new tab 
+ Passenger Detection During Airport Turnaround Using Frame Differencing in the Aerobridge Window Region. Figure 9 presents the detection of baggage movement during the airport turnaround process, based on a method similar to that used for passenger detection. The trained YOLOv11 model was first employed to detect the belt loader and define the belt loader roof region as the area of interest. Subsequently, frame differencing was applied within this region to identify motion across consecutive frames. When baggage moved through the bounding box area associated with the belt loader roof, the detected motion was recorded as blue-line spikes. The first cluster on the left represents baggage unloading, as it occurs shortly after the aircraft has parked at the stand. The second cluster represents baggage loading, which takes place after a noticeable time interval following the first cluster, indicating the aircraft preparation period before the next flight. 
+ Figure 9. 
+ Open in a new tab 
+ Baggage Detection During Airport Turnaround Using Frame Differencing in the Belt Loader Roof Region. After extracting data from all equipment associated with the airport turnaround process, namely (a) tow tug, (b) aerobridge, (c) airplane, (d) baggage container, (e) belt loader, (f) belt loader roof, (g) fuel line, (h) fuel tanker, (i) fuel tube, (j) tractor, and (k) window, together with the passenger and baggage movement data obtained as described previously, a Gantt chart was generated, as presented in Figure 10 . This chart visualizes the duration of each key turnaround activity, including airplane parking, deboarding, baggage unloading, refueling, baggage loading, boarding, and pushback. 
+ Figure 10. 
+ Open in a new tab 
+ Generated Gantt Chart of Airport Turnaround Activities Based on Extracted Operational Data. 6. Discussion and Conclusions 
+ Airport turnaround is a complex operational process that involves multiple ground activities occurring sequentially and in parallel. These activities include aircraft parking, aerobridge connection, passenger deboarding and boarding, baggage unloading and loading, refueling, and pushback. In current airport operations, these processes are commonly monitored by human operators, ground staff, or operational records. Although these conventional approaches are useful, they can be time-consuming and may not always provide detailed and consistent timestamps for each activity. Therefore, this study proposed a computer vision-based airport turnaround monitoring pipeline to automatically detect important ground-operation objects, analyze passenger and baggage-related motion, and convert the extracted information into a structured operational timeline. 
+ The experimental results show that the trained YOLOv11 model achieved strong object detection performance on the airport turnaround image dataset. As reported in Table 3 , the overall test precision, recall, and mAP50 were 0.9609, 0.9445, and 0.9617, respectively. These results indicate that the model was able to detect most key turnaround objects with high accuracy under the dataset conditions used in this study. Large and frequently visible objects, such as the airplane, aerobridge, belt loader, belt loader roof, and fuel tanker, achieved particularly strong performance. This is important because these objects are directly associated with several major turnaround stages, including aircraft parking, aerobridge connection, baggage handling, refueling, and pushback. 
+ However, the detection results also show that some object classes remain challenging. In particular, the fuel tube class achieved substantially lower performance than most other classes. This is likely due to its small size, thin shape, partial occlusion, low visibility, and visual similarity to surrounding aircraft components, ground equipment, shadows, and nighttime background regions. This finding highlights an important limitation of applying object detection to long-distance airport surveillance footage, where small or low-contrast objects may be difficult to detect consistently. Therefore, although the overall YOLOv11 detection performance was strong, the weaker performance of the fuel tube class indicates that the refueling-related part of the pipeline still requires further improvement. 
+ A key contribution of this study is that the proposed system does not rely only on object detection. While YOLOv11 provides useful semantic information about visible airport objects, some important turnaround activities cannot be reliably identified from bounding boxes alone. Passenger deboarding and boarding may occur inside or near the aerobridge, where individual passengers are small, partially hidden, or not clearly visible from the camera viewpoint. Similarly, individual baggage items may be too small or unclear to be labeled and detected reliably as separate objects. To address this issue, this study incorporated frame differencing as a complementary motion-based method. By applying frame differencing within selected regions of interest, the system was able to detect motion patterns associated with passenger and baggage activities. 
+ The passenger activity results show that motion spikes in the aerobridge window region can provide temporal evidence of passenger deboarding and boarding. The first major motion cluster appears after aircraft parking and corresponds to deboarding, while a later motion cluster corresponds to boarding. Similarly, the baggage activity results show that motion spikes in the belt loader roof region can support the interpretation of baggage unloading and baggage loading. These results suggest that localized motion analysis can help infer activity-level information, especially when individual objects are too small or partially occluded for reliable direct detection. 
+ The integration of YOLOv11 object detection, Norfair multi-object tracking, and frame differencing therefore provides a more complete monitoring framework than using object detection alone. YOLOv11 identifies the presence and location of key turnaround objects, Norfair tracking supports temporal continuity across video frames, and frame differencing adds motion-based evidence for activities involving small or partially visible objects. By combining these components, the proposed pipeline can transform frame-level detections and motion signals into higher-level operational outputs, including event logs and a Gantt-style turnaround timeline. 
+ The generated Gantt chart demonstrates the practical potential of the proposed approach. It summarizes key turnaround activities, including aircraft parking, deboarding, baggage unloading, refueling, baggage loading, boarding, and pushback. Such a timeline can help airport operators, ramp managers, and researchers understand when each activity starts, how long it lasts, and how different activities overlap. In future real-time or near-real-time deployment, this type of output could support delay identification, turnaround performance comparison, and improved coordination of ground resources. 
+ Nevertheless, the findings of this study should be interpreted carefully. The current work demonstrates the feasibility of using a single-camera computer vision pipeline for airport turnaround monitoring, but it should not yet be considered a fully validated operational system. First, the dataset was collected from one airport camera source, meaning that the camera angle, airport layout, aircraft type, and ground operation pattern may not fully represent other airport environments. Second, the train, validation, and test sets were created using an image frame-level split. Since frames from the same original video may appear across different subsets, the object detection results may be more optimistic than results obtained from a strict video-level or airport-level split. Third, the motion-based frame differencing method depends on manually selected regions of interest and motion thresholds. Changes in lighting, heavy rain, reflections, shadows, camera vibration, occlusion, or nighttime illumination may introduce noise into the motion signal. Fourth, the current pipeline has not yet been fully validated using large-scale independent manual ground truth timestamps for all operational events. Therefore, the results should be regarded as a proof-of-concept demonstration of the proposed monitoring framework rather than definitive evidence of operational-level accuracy. 
+ These limitations also indicate important directions for future research. Future work should expand the dataset to include more airports, aircraft types, stand layouts, camera viewpoints, and environmental conditions. A stricter video-level or airport-level dataset split should also be used to better evaluate generalization to unseen turnaround sequences. In addition, larger-scale manual annotation of event start and end times should be conducted to evaluate timestamp error, duration error, and event-level precision and recall. For refueling detection, future work should improve the detection of small and low-contrast objects such as fuel tubes and fuel lines, possibly by using higher-resolution imagery, additional camera viewpoints, small-object detection techniques, or multi-sensor information. More advanced temporal models, such as recurrent neural networks, transformer-based video models, or graph-based event reasoning, could also be explored to improve event recognition robustness. 
+ In conclusion, this study presented a modified YOLO-based computer vision pipeline for airport turnaround monitoring. The proposed method combines YOLOv11 object detection, Norfair multi-object tracking, and frame differencing-based motion analysis to detect key airport ground operation objects and infer passenger and baggage-related activities from video footage. The trained YOLOv11 model achieved strong overall object-detection performance, with test precision, recall, and mAP50 all above 90%. The system was also able to generate a Gantt-style timeline summarizing major turnaround activities. These results show that the proposed approach has potential to transform airport video footage into structured operational information. However, because the study is limited by a single airport camera viewpoint, frame-level dataset splitting, environmental noise, small-object detection challenges, and limited event-level ground truth validation, the current system should be regarded as a proof-of-concept framework. Further validation and technical refinement are required before the method can be applied as a reliable operational decision-support system in real airport environments. Acknowledgments 
+ The authors would like to thank the Aviation Studies Institute (ASI) at the Singapore University of Technology and Design (SUTD) for their time, support, and resources, which contributed to the successful completion of this research. Author Contributions 
+ N.S.: writing—original draft, conceptualization, methodology, software, validation, formal analysis, investigation, resources, data curation. D.W.S.: writing—review and editing, supervision, project administration, resources. All authors have read and agreed to the published version of the manuscript. Institutional Review Board Statement 
+ Not applicable. Informed Consent Statement 
+ Not applicable. Data Availability Statement 
+ Available Datasets at [ 53 ]: https://app.roboflow.com/airport-turnaroundmy-own/airport_turnaround_nagano_real1/2 (accessed on 18 May 2026). Conflicts of Interest 
+ The authors declare no conflicts of interest. Funding Statement 
+ This research received no external funding. Footnotes 
+ Disclaimer/Publisher’s Note: The statements, opinions and data contained in all publications are solely those of the individual author(s) and contributor(s) and not of MDPI and/or the editor(s). MDPI and/or the editor(s) disclaim responsibility for any injury to people or property resulting from any ideas, methods, instructions or products referred to in the content. References 
+ 1. Schmidt M. A review of aircraft turnaround operations and simulations. Prog. Aerosp. Sci. 2017;92:25–38. doi: 10.1016/j.paerosci.2017.05.002. [ DOI ] [ Google Scholar ] 
+ 2. Sng Z.Y., Hansman R.J. A Petri Net Framework for the Representation and Analysis of Aircraft Turnaround Operations. Massachusetts Institute of Technology; Cambridge, MA, USA: 2019. [ Google Scholar ] 
+ 3. Antonio A.S., Calvet L., Juan A.A., Casas P.F.I., Guimarans D. Winter Simulation Conference (WSC) IEEE; Piscataway, NJ, USA: 2017. Using simulation to estimate critical paths and survival functions in aircraft turnaround processes. [ Google Scholar ] 
+ 4. IATA (International Air Transport Association) Global Air Travel Demand Continued Its Bounce Back in 2023. Jan 31, 2024. [(accessed on 21 October 2025)]. Available online: https://www.iata.org/en/pressroom/2024-releases/2024-01-31-02/ 
+ 5. International Civil Aviation Organization The World of Air Transport in 2023. [(accessed on 26 June 2026)]. Available online: https://www.icao.int/world-air-transport-2023 . 
+ 6. Airports Council International ACI World Projects 10% Growth for Passenger Traffic in 2024 to Reach 9.5 Billion. Sep 18, 2024. [(accessed on 26 June 2026)]. Available online: https://aci.aero/2024/09/18/aci-world-projects-10-growth-for-passenger-traffic-in-2024-to-reach-9-5-billion/ 
+ 7. Aziz A., Brohi M., Soomro T., Ghazal T., Alzoubi H., Alshurideh M. The Effect of Information Technology on Business and Marketing Intelligence Systems. Springer; Cham, Switzerland: 2023. Aircraft Turnaround Manager (ATM): A Solution to Airport Operations; pp. 679–702. [ Google Scholar ] 
+ 8. ASSAIA Top 3 Issues Faced During Turnarounds and How to Avoid Them. [(accessed on 21 October 2025)]. Available online: https://www.assaia.com/resources/top-three-turnaround-issues . 
+ 9. Wu C.-L. Monitoring aircraft turnaround operations–framework development, application and implications for airline operations. Transp. Plan. Technol. 2008;31:215–228. [ Google Scholar ] 
+ 10. Schultz M., Reitmann S. Consideration of Passenger Interactions for the Prediction of Aircraft Boarding Time. Aerospace. 2018;5:101. doi: 10.3390/aerospace5040101. [ DOI ] [ Google Scholar ] 
+ 11. Halmesaari E. Interpretable Machine Learning for Prediction of Aircraft Turnaround Times. Aalto University; Espoo, Finland: 2020. [ Google Scholar ] 
+ 12. Phat T.V., Alam S., Lilith N., Tran P.N., Nguyen B.T. Aircraft Push-back Prediction and Turnaround Monitoring by Vision-based Object Detection and Activity Identification; Proceedings of the 10th SESAR Innovation Days; Virtual. 7–10 December 2020. [ Google Scholar ] 
+ 13. Kanable R. Smart Solution Manages Aircraft Turnaround Activities from Landing to Takeoff. Oct 10, 2023. [(accessed on 22 October 2025)]. Available online: https://www.aviationpros.com/ground-support-worldwide/gse/gse-technology/gse-tracking/article/53071893/smart-solution-manages-aircraft-turnaround-activities-from-landing-to-takeoff . 
+ 14. Petrie J. The Intelligent Airport Apron Becomes Reality. Apr 18, 2023. [(accessed on 22 October 2025)]. Available online: https://www.aviationpros.com/directory/airport-facilities-buildings/article/53042337/airport-intelligent-apron-technology . 
+ 15. Phat T.V. Doctoral Dissertation. Nanyang Technological University; Singapore: 2022. A Computer Vision Framework to Detect, Track and Identify Objects in a Wide Field-of-View Airport-Airside Environment. [ Google Scholar ] 
+ 16. Luo M., Schultz M., Fricke H., Desart B. Data-driven fusion of turnaround sub-processes to predict aircraft ground time; Proceedings of the 25th ATRS World Conference; Antwerpen, Belgium. 24–27 August 2022; pp. 24–27. [ Google Scholar ] 
+ 17. Xu J., Ding M., Zhang Z.-Z., Xu Y.-B., Wang X.-H., Zhao F. Vision-Based Automatic Collection of Nodes of In/Off Block and Docking/Undocking in Aircraft Turnaround. Appl. Sci. 2023;13:7832. [ Google Scholar ] 
+ 18. Farhadmanesh M., Rashidi A., Marković N. Automated Image-Based Aircraft Tracking and Record-Keeping for Utah Airports. Mountain-Plains Consortium; Fargo, ND, USA: 2022. [ Google Scholar ] 
+ 19. Yıldız S., Aydemir O., Memiş A., Varlı S. A turnaround control system to automatically detect and monitor the time stamps of ground service actions in airports: A deep learning and computer vision based approach. Eng. Appl. Artif. Intell. 2022;114:105032. doi: 10.1016/j.engappai.2022.105032. [ DOI ] [ Google Scholar ] 
+ 20. Xu Y., Liu Y., Shi K., Wang X., Li Y., Chen J. An airport apron ground service surveillance algorithm based on improved YOLO network. Electron. Res. Arch. 2024;32:3569–3587. doi: 10.3934/era.2024164. [ DOI ] [ Google Scholar ] 
+ 21. Cui Y., Ma L., Ding Q., He X., Xiao F., Cheng B. Aircraft turnaround time dynamic prediction based on Time Transition Petri Net. PLoS ONE. 2024;19:e0305237. doi: 10.1371/journal.pone.0305237. [ DOI ] [ PMC free article ] [ PubMed ] [ Google Scholar ] 
+ 22. TCG DIGITAL. [(accessed on 23 October 2025)]. Available online: https://tcgdigital.com/AFA/Whitepapers/Whitpaper_AI-enabled%20video%20analytics_V1.pdf . 
+ 23. İzzet S. “TURNAROUNDAI,” GlobalCIO. 2024. [(accessed on 23 October 2025)]. Available online: https://globalcio.com/cases/14597/ 
+ 24. Unleash. [(accessed on 23 October 2025)]. Available online: https://marketing.unleashlive.com/blog/the-power-of-ai-computer-vision-for-a-seamless-baggage-experience . 
+ 25. webcamtaxi Shinshu Matsumoto Airport, Japan. [(accessed on 3 November 2025)]. Available online: https://www.webcamtaxi.com/en/japan/nagano-prefecture/shinshu-matsumoto-airport-cam.html . 
+ 26. Roboflow. [(accessed on 3 November 2025)]. Available online: https://roboflow.com/ 
+ 27. Ciaglia F., Zuppichini F.S., Guerrie P., McQuade M., Solawetz J. Roboflow 100: A Rich, Multi-Domain Object Detection Benchmark. arXiv. 20222211.13523 [ Google Scholar ] 
+ 28. Solawetz J. Train, Validation, Test Split for Machine Learning, Roboflow. Sep 4, 2020. [(accessed on 1 November 2025)]. Available online: https://blog.roboflow.com/train-test-split/ 
+ 29. Ron K. IJCAI’95: Proceedings of the 14th International Joint Conference on Artificial Intelligence. Volume 2. Morgan Kaufmann Publishers Inc.; San Francisco, CA, USA: 1995. A study of cross-validation and bootstrap for accuracy estimation and model selection; pp. 1137–1145. [ Google Scholar ] 
+ 30. Suvittawat N., Kurniawan C., Datephanyawat J., Tay J., Liu Z., Soh D.W., Ribeiro N.A. Advances in Aircraft Skin Defect Detection Using Computer Vision: A Survey and Comparison of YOLOv9 and RT-DETR Performance. Aerospace. 2025;12:356. doi: 10.3390/aerospace12040356. [ DOI ] [ Google Scholar ] 
+ 31. Ultralytics. Ultralytics YOLO Docs. Nov 12, 2023. [(accessed on 8 April 2026)]. Available online: https://docs.ultralytics.com/ 
+ 32. Ultralytics Model Prediction with Ultralytics YOLO. Nov 12, 2023. [(accessed on 8 April 2026)]. Available online: https://docs.ultralytics.com/modes/predict/ 
+ 33. Ultralytics Ultralytics YOLO11. Sep 30, 2024. [(accessed on 8 April 2026)]. Available online: https://docs.ultralytics.com/models/yolo11/ 
+ 34. Ultralytics Models Supported by Ultralytics. Nov 12, 2023. [(accessed on 8 April 2026)]. Available online: https://docs.ultralytics.com/models/ 
+ 35. Khanam R., Hussain M. YOLOV11: An Overview of the Key Architectural Enhancements. arXiv. 20242410.17725 [ Google Scholar ] 
+ 36. Tryolabs Norfair/2.2/Getting_Started. [(accessed on 8 April 2026)]. Available online: https://tryolabs.github.io/norfair/2.2/getting_started/ 
+ 37. Tryolabs Norfair/Dev/Reference/Tracker/ [(accessed on 8 April 2026)]. Available online: https://tryolabs.github.io/norfair/dev/reference/tracker/ 
+ 38. Alori J., Descoins A., javier, Lezama F., Yuhara K., Fernández D., Castro A., fatih, David, Linares R.C., et al. Tryolabs/Norfair: V2.2.0. Zenodo; Geneva, Switzerland: 2023. [(accessed on 8 April 2026)]. Available online: https://zenodo.org/records/7504727 . [ Google Scholar ] 
+ 39. Alex B., Zongyuan G., Lionel O., Fabio R., Ben U. Proceedings of the 2016 IEEE International Conference on Image Processing (ICIP), Phoenix, AZ, USA, 25–28 September 2016. IEEE; Piscataway, NJ, USA: 2016. Simple Online and real time tracking. [ Google Scholar ] 
+ 40. Wojke N., Bewley A., Paulus D. Proceedings of the 2017 IEEE International Conference on Image Processing (ICIP), Beijing, China, 17–20 September 2017. IEEE; Piscataway, NJ, USA: 2017. Simple online and realtime tracking with a deep association metric. [ Google Scholar ] 
+ 41. Feng J., Zeng D., Jia X., Zhang X., Li J., Liang Y., Jiao L. Cross-frame keypoint-based and spatial motion information-guided networks for moving vehicle detection and tracking in satellite videos. ISPRS J. Photogramm. Remote Sens. 2021;177:116–130. [ Google Scholar ] 
+ 42. Chen Z., Zhao R., Guo X., Xie J., Han X. Moving Object Detection in Freely Moving Camera via Global Motion Compensation and Local Spatial Information Fusion. Sensors. 2024;9:2859. doi: 10.3390/s24092859. [ DOI ] [ PMC free article ] [ PubMed ] [ Google Scholar ] 
+ 43. Maddalena L., Petrosino A. Background Subtraction for Moving Object Detection in RGBD Data: A Survey. J. Imaging. 2018;4:71. doi: 10.3390/jimaging4050071. [ DOI ] [ Google Scholar ] 
+ 44. Yao G., Lei T., Zhong J., Jiang P., Jia W. Comparative Evaluation of Background Subtraction Algorithms in Remote Scene Videos Captured by MWIR Sensors. Sensors. 2017;17:1945. doi: 10.3390/s17091945. [ DOI ] [ PMC free article ] [ PubMed ] [ Google Scholar ] 
+ 45. Singla N. Motion Detection Based on Frame Difference Method. Int. J. Inf. Comput. Technol. 2014;4:1559–1565. doi: 10.1166/jmihi.2014.1288. [ DOI ] [ Google Scholar ] 
+ 46. Wei H., Peng Q. A block-wise frame difference method for real-time video motion detection. Int. J. Adv. Robot. Syst. 2018;4:1729881418783633. [ Google Scholar ] 
+ 47. Jodoin P.-M., Piérard S., Wang Y., Droogenbroeck M.V. Background Modeling and Foreground Detection for Video Surveillance. Routledge; Abingdon, UK: 2014. Overview and Benchmarking of Motion Detection Methods. [ Google Scholar ] 
+ 48. Ultralytics Insights on Model Evaluation and Fine-Tuning. Jun 29, 2024. [(accessed on 8 April 2026)]. Available online: https://docs.ultralytics.com/guides/model-evaluation-insights/ 
+ 49. Ultralytics Model Validation with Ultralytics YOLO. Nov 12, 2023. [(accessed on 8 April 2026)]. Available online: https://docs.ultralytics.com/modes/val/ 
+ 50. Ultralytics Reference for ultralytics/utils/metrics.py. Nov 12, 2023. [(accessed on 8 April 2026)]. Available online: https://docs.ultralytics.com/reference/utils/metrics/ 
+ 51. Ultralytics Performance Metrics Deep Dive. Nov 12, 2023. [(accessed on 8 April 2026)]. Available online: https://docs.ultralytics.com/guides/yolo-performance-metrics/ 
+ 52. Lin T.-Y., Maire M., Belongie S., Bourdev L., Girshick R., Hays J., Perona P., Ramanan D., Zitnick C.L., Dollár P. Proceedings of the European Conference on Computer Vision, 2014. Springer; Cham, Switzerland: 2014. Microsoft coco: Common objects in context; pp. 740–755. [ Google Scholar ] 
+ 53. Suvittawat N. airport_turnaround_Nagano_real1, Roboflow. May 28, 2025. [(accessed on 18 May 2026)]. Available online: https://app.roboflow.com/airport-turnaroundmy-own/airport_turnaround_nagano_real1/2 . 
+ Associated Data 
+ This section collects any data citations, data availability statements, or supplementary materials included in this article. 
+ Data Availability Statement 
+ Available Datasets at [ 53 ]: https://app.roboflow.com/airport-turnaroundmy-own/airport_turnaround_nagano_real1/2 (accessed on 18 May 2026). 
+ Articles from Sensors (Basel, Switzerland) are provided here courtesy of Multidisciplinary Digital Publishing Institute (MDPI) 
+ ACTIONS 
+ <a
+ href="https://doi.org/10.3390/s26134231"
+ class="usa-button usa-button--outline width-24 font-xs display-inline-flex flex-align-center flex-justify-start padding-left-1"
+ target="_blank"
+ rel="noreferrer noopener"
+ data-ga-category="actions"
+ data-ga-action="click"
+ data-ga-label="publisher_link_desktop"
+ >
+ View on publisher site 
+ <a
+ href="pdf/sensors-26-04231.pdf"
+ class="usa-button usa-button--outline width-24 display-inline-flex flex-align-center flex-justify-start padding-left-1"
+ data-ga-category="actions"
+ data-ga-action="click"
+ data-ga-label="pdf_download_desktop"
+ >
+ PDF (21.0 MB) 
+ <button role="button" class="usa-button width-24 citation-dialog-trigger display-inline-flex flex-align-center flex-justify-start padding-left-1"
+ aria-label="Open dialog with citation text in different styles"
+ data-ga-category="actions"
+ data-ga-action="open"
+ data-ga-label="cite_desktop"
+ data-all-citations-url="/resources/citations/13363769/"
+ data-citation-style="nlm"
+ data-download-format-link="/resources/citations/13363769/export/"
+ >
+ Cite 
+ <button class="usa-button width-24 collections-dialog-trigger collections-button display-inline-flex flex-align-center flex-justify-start padding-left-1 collections-button-empty"
+ aria-label="Save article in MyNCBI collections."
+ data-ga-category="actions"
+ data-ga-action="click"
+ data-ga-label="collections_button_desktop"
+ data-collections-open-dialog-enabled="false"
+ data-collections-open-dialog-url="https://account.ncbi.nlm.nih.gov/?back_url=https%3A%2F%2Fpmc.ncbi.nlm.nih.gov%2Farticles%2FPMC13363769%2F%23open-collections-dialog"
+ data-in-collections="false">
+ Collections 
+ <button
+ type="button"
+ class="usa-button width-24 display-inline-flex flex-align-center flex-justify padding-left-1 shadow-none"
+ aria-label="Show article permalink"
+ aria-expanded="false"
+ aria-haspopup="true"
+ data-ga-category="actions"
+ data-ga-action="open"
+ data-ga-label="permalink_desktop"
+ >
+ Permalink 
+ PERMALINK 
+ Copy 
+ RESOURCES 
+ <button
+ type="button"
+ class="usa-accordion__button"
+ aria-expanded="false"
+ aria-controls="resources-similar-articles"
+ data-ga-category="resources_accordion"
+ data-ga-action="open_similar_articles"
+ data-ga-label="/articles/PMC13363769/"
+ data-action-open="open_similar_articles"
+ data-action-close="close_similar_articles"
+ >
+ Similar articles
+ <div
+ id="resources-similar-articles"
+ class="usa-accordion__content usa-prose"
+ data-source-url="/resources/similar-article-links/42451472/"
+ >
+ <button
+ type="button"
+ class="usa-accordion__button"
+ aria-expanded="false"
+ aria-controls="resources-cited-by-other-articles"
+ data-ga-category="resources_accordion"
+ data-ga-action="open_cited_by"
+ data-ga-label="/articles/PMC13363769/"
+ data-action-open="open_cited_by"
+ data-action-close="close_cited_by"
+ >
+ Cited by other articles
+ <div
+ id="resources-cited-by-other-articles"
+ class="usa-accordion__content usa-prose"
+ data-source-url="/resources/cited-by-links/42451472/"
+ >
+ <button
+ type="button"
+ class="usa-accordion__button"
+ aria-expanded="false"
+ aria-controls="resources-links-to-ncbi-databases"
+ data-ga-category="resources_accordion"
+ data-ga-action="open_NCBI_links"
+ data-ga-label="/articles/PMC13363769/"
+ data-action-open="open_NCBI_links"
+ data-action-close="close_NCBI_link"
+ >
+ Links to NCBI Databases
+ <div
+ id="resources-links-to-ncbi-databases"
+ class="usa-accordion__content usa-prose"
+ data-source-url="/resources/db-links/13363769/"
+ >
+ <section
+ class="usa-in-page-nav usa-in-page-nav--wide margin-top-6 desktop:margin-top-4"
+ data-title-text="On this page"
+ data-title-heading-level="h2"
+ data-scroll-offset="0"
+ data-root-margin="-10% 0px -80% 0px"
+ data-main-content-selector="main"
+ data-threshold="1"
+ hidden
+ > 
+ Cite 
+ <button
+ class="usa-button usa-button--unstyled text-no-underline display-flex flex-align-center copy-button dialog-focus"
+ data-ga-category="save_share"
+ data-ga-action="cite"
+ data-ga-label="copy"
+ tabindex="2">
+ Copy 
+ <a
+ href="#"
+ role="button"
+ class="usa-button usa-button--unstyled text-no-underline display-flex flex-align-center export-button"
+ data-ga-category="save_share"
+ data-ga-action="cite"
+ data-ga-label="download"
+ title="Download a file for external citation management software"
+ tabindex="3">
+ Download .nbib 
+ .nbib 
+ Format: 
+ <option data-style-url-name="ama"
+ value="AMA"
+ >
+ AMA
+ <option data-style-url-name="apa"
+ value="APA"
+ >
+ APA
+ <option data-style-url-name="mla"
+ value="MLA"
+ >
+ MLA
+ <option data-style-url-name="nlm"
+ value="NLM"
+ selected="selected">
+ NLM
+ Add to Collections 
+<form id="collections-action-dialog-form"
+ class="usa-form maxw-full collections-action-panel-form action-panel-content action-form action-panel-smaller-selectors"
+ data-existing-collections-url="/list-existing-collections/"
+ data-add-to-existing-collection-url="/add-to-existing-collection/"
+ data-create-and-add-to-new-collection-url="/create-and-add-to-new-collection/"
+ data-myncbi-max-collection-name-length="100"
+ data-collections-root-url="https://www.ncbi.nlm.nih.gov/myncbi/collections/">
+ <input type="radio"
+ id="collections-action-dialog-new"
+ class="usa-radio__input usa-radio__input--tile collections-new margin-top-0"
+ name="collections"
+ value="new"
+ data-ga-category="collections_button"
+ data-ga-action="click"
+ data-ga-label="collections_radio_new" />
+ Create a new collection 
+ <input type="radio"
+ id="collections-action-dialog-existing"
+ class="usa-radio__input usa-radio__input--tile collections-existing"
+ name="collections"
+ value="existing"
+ checked="true"
+ data-ga-category="collections_button"
+ data-ga-action="click"
+ data-ga-label="collections_radio_existing" />
+ Add to an existing collection 
+ Name your collection
+ * 
+ <input
+ type="text"
+ name="add-to-new-collection"
+ id="collections-action-dialog-add-to-new"
+ class="usa-input collections-action-add-to-new"
+ pattern="[^"&=<>/]*" title="The following characters are not allowed in the Name field: "&=<>/"
+ maxlength=""
+ data-ga-category="collections_button"
+ data-ga-action="create_collection"
+ data-ga-label="non_favorties_collection"
+ required
+ />
+ Choose a collection
+ <select id="collections-action-dialog-add-to-existing"
+ class="usa-select collections-action-add-to-existing"
+ data-ga-category="collections_button"
+ data-ga-action="select_collection"
+ data-ga-label="($('.collections-action-add-to-existing').val() === 'Favorites') ? 'Favorites' : 'non_favorites_collection'">
+ Unable to load your collection due to an error 
+ Please try again 
+ <button class="usa-button margin-top-0 action-panel-submit"
+ type="submit"
+ data-loading-label="Adding..."
+ data-pinger-ignore
+ data-ga-category="collections_button"
+ data-ga-action="click"
+ data-ga-label="add">
+ Add
+ <button class="usa-button usa-button--outline margin-top-0 action-panel-cancel"
+ aria-label="Close 'Add to Collections' panel"
+ ref="linksrc=close_collections_panel"
+ data-ga-category="collections_button"
+ data-ga-action="click"
+ data-ga-label="cancel">
+ Cancel
+ Follow NCBI
+ <a href="https://twitter.com/ncbi"
+ class="ncbi-footer__social-icon ncbi-footer__social-icon--gray"
+ target="_blank"
+ rel="noreferrer noopener">
+ <svg width="40"
+ height="40"
+ viewBox="0 0 40 40"
+ fill="none"
+ xmlns="http://www.w3.org/2000/svg"
+ focusable="false"
+ aria-hidden="true">
+ NCBI on X (formerly known as Twitter) 
+ <a href="https://www.facebook.com/ncbi.nlm"
+ class="ncbi-footer__social-icon ncbi-footer__social-icon--gray"
+ target="_blank"
+ rel="noreferrer noopener">
+ <svg width="16"
+ height="29"
+ focusable="false"
+ aria-hidden="true"
+ viewBox="0 0 16 29"
+ fill="none"
+ xmlns="http://www.w3.org/2000/svg">
+ NCBI on Facebook 
+ <a href="https://www.linkedin.com/company/ncbinlm"
+ class="ncbi-footer__social-icon ncbi-footer__social-icon--gray"
+ target="_blank"
+ rel="noreferrer noopener">
+ <svg width="25"
+ height="23"
+ viewBox="0 0 26 24"
+ fill="none"
+ xmlns="http://www.w3.org/2000/svg"
+ focusable="false"
+ aria-hidden="true">
+ NCBI on LinkedIn 
+ <a href="https://github.com/ncbi"
+ class="ncbi-footer__social-icon ncbi-footer__social-icon--gray"
+ target="_blank"
+ rel="noreferrer noopener">
+ <svg width="28"
+ height="27"
+ viewBox="0 0 28 28"
+ fill="none"
+ xmlns="http://www.w3.org/2000/svg"
+ focusable="false"
+ aria-hidden="true">
+ NCBI on GitHub 
+ <a href="https://ncbiinsights.ncbi.nlm.nih.gov/"
+ class="ncbi-footer__social-icon ncbi-footer__social-icon--gray"
+ target="_blank"
+ rel="noreferrer noopener">
+ <svg width="26"
+ height="26"
+ viewBox="0 0 27 27"
+ fill="none"
+ xmlns="http://www.w3.org/2000/svg"
+ focusable="false"
+ aria-hidden="true">
+ NCBI RSS feed 
+ <div data-testid="gridContainer"
+ class="grid-container ncbi-footer__container">
+ <div class="grid-row ncbi-footer__main-content-container"
+ data-testid="grid">
+ Connect with NLM
+ <svg width="32"
+ height="32"
+ viewBox="0 0 40 40"
+ fill="none"
+ xmlns="http://www.w3.org/2000/svg"
+ focusable="false"
+ aria-hidden="true">
+ NLM on X (formerly known as Twitter) 
+ <svg width="13"
+ height="24"
+ viewBox="0 0 13 24"
+ fill="none"
+ xmlns="http://www.w3.org/2000/svg"
+ focusable="false"
+ aria-hidden="true">
+ NLM on Facebook 
+ <svg width="21"
+ height="15"
+ viewBox="0 0 21 15"
+ fill="none"
+ xmlns="http://www.w3.org/2000/svg"
+ focusable="false"
+ aria-hidden="true">
+ <path d="M19.2561 1.47914C18.9016 1.15888 18.5699 0.957569 17.2271 0.834039C15.5503 0.678484 13.2787 0.655608 11.563 0.65332H9.43556C7.71987 0.65332 5.4483 0.678484 3.77151 0.834039C2.43098 0.957569 2.097 1.15888 1.74242 1.47914C0.813665 2.32097 0.619221 4.62685 0.598633 6.89384C0.598633 7.31781 0.598633 7.74101 0.598633 8.16345C0.626084 10.4121 0.827391 12.686 1.74242 13.521C2.097 13.8412 2.4287 14.0425 3.77151 14.1661C5.4483 14.3216 7.71987 14.3445 9.43556 14.3468H11.563C13.2787 14.3468 15.5503 14.3216 17.2271 14.1661C18.5676 14.0425 18.9016 13.8412 19.2561 13.521C20.1712 12.6929 20.3725 10.451 20.3999 8.22064C20.3999 7.74025 20.3999 7.25986 20.3999 6.77946C20.3725 4.54907 20.1689 2.30724 19.2561 1.47914ZM8.55942 10.5311V4.65201L13.5601 7.50005L8.55942 10.5311Z"
+ fill="white" />
+ NLM on YouTube 
+ <a class="usa-link usa-link--external"
+ href="https://www.google.com/maps/place/8600+Rockville+Pike,+Bethesda,+MD+20894/%4038.9959508,
+ -77.101021,17z/data%3D!3m1!4b1!4m5!3m4!1s0x89b7c95e25765ddb%3A0x19156f88b27635b8!8m2!3d38.9959508!
+ 4d-77.0988323"
+ rel="noopener noreferrer" target="_blank">National Library of Medicine
+ 8600 Rockville Pike Bethesda, MD 20894 
+ Web Policies
+ FOIA
+ HHS Vulnerability Disclosure
+ Help
+ Accessibility
+ Careers
+ NLM
+ NIH
+ HHS
+ USA.gov
+ Back to Top 
+ window.ncbi = window.ncbi || {};
+ window.ncbi.pmc = window.ncbi.pmc || {};
+ window.ncbi.pmc.options = {
+ logLevel: 'INFO',
+ staticEndpoint: 'https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/9b1d9d87/var/data/static/',
+ citeCookieName: 'pmc-cf',
+ };
+ jQuery.getScript("https://cdn.ncbi.nlm.nih.gov/core/alerts/alerts.js", function () {
+ galert(['div.nav_and_browser', 'div.header', '#universal_header', '.usa-banner', 'body > *:nth-child(1)'])
+ });

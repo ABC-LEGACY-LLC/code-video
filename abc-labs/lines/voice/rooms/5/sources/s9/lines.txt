@@ -1,0 +1,59 @@
+## s9 use-sound
+9:- ⚡️ <1kb bytes (gzip) in your bundle! ~10kb loaded async.
+11:- 🗣 Uses a powerful, battle-tested audio utility: [**Howler.js**](https://howlerjs.com/)
+13:[![Minified file size](https://img.badgesize.io/https://www.unpkg.com/use-sound/dist/use-sound.esm.js.svg)](https://bundlephobia.com/result?p=use-sound) [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT) [![NPM version](https://img.shields.io/npm/v/use-sound)](https://www.npmjs.com/package/use-sound) [![Code of Conduct](https://img.shields.io/badge/Code%20of-conduct-d03eaf?style=flat)](https://github.com/joshwcomeau/use-sound/blob/master/CONDUCT.md)
+25:If you have ideas for features, or run into strange quirks, I thoroughly recommend forking the project and making it your own! It might seem intimidating, but the source isn't as complex as many other NPM packages; I defer all the hard audio work to [Howler](https://howlerjs.com/)). If you've been using React for a while and are comfortable with hooks, you should feel right at home with this package's code.
+45:If your project uses TypeScript, you should also install the `@types/howler` package as a dev dependency.
+64:import boopSfx from '../../sounds/boop.mp3';
+82:import fanfareSfx from '../../sounds/fanfare.mp3';
+104:import glugSfx from '../../sounds/glug.mp3';
+131:> NOTE: This example won’t work if you’re using sprites (defined below). The `playbackRate` option is only reactive when using a single sound.
+137:### Importing/sourcing audio files
+139:`useSound` requires a path to an audio file, and it isn't obvious how to provide one in a React application.
+141:Using `create-react-app`, you can "import" an MP3 file. It will resolve to a dynamically-generated path:
+## s10 ZzFX
+8:ZzFX is a tiny sound generator designed to produce a wide variety of sound effects with minimal code overhead. It's perfect for games, prototypes, and any web application that needs sound without the bulk of traditional sound files.
+16:- Compact: Less than 1 kilobyte when compressed!
+35:* Or paste the code from [ZzFXMicro.min.js](https://github.com/KilledByAPixel/ZzFX/blob/master/ZzFXMicro.min.js)
+51:- [ZzFX now supports music via ZzFXM by Keith Clark!](https://keithclark.github.io/ZzFXM/)
+52:- Super tiny player and songs.
+57:- Random Sound Generation: Create sounds from presets.
+69:let // ZzFXMicro - Zuper Zmall Zound Zynth - v1.4.0 by Frank Force
+74:,N=0)=>{let M=Math,d=2*M.PI,R=44100,G=u*=500*d/R/R,C=b*=(1-k+2*k*M.random(k=[]))*d/R,
+83:||(b=C,u=G,n=n||1);X=zzfxX,p=X.createBuffer(1,h,R);p.getChannelData(0).set(k);b=X.
+84:createBufferSource();b.buffer=p;b.connect(X.destination);b.start()}
+## s11 jsfxr
+3:App 👉 https://sfxr.me
+5:[About](#about) | [Use as a library](#library) | [Jsfxr Pro](#jsfxr-pro)
+9:A port of [sfxr](http://www.drpetter.se/project_sfxr.html) to HTML5 by Eric Fredricksen.
+12:![jsfxr screenshot](screenshot.png)
+23:npm i jsfxr
+29:import { sfxr } from "jsfxr";
+35:const sfxr = require("jsfxr").sfxr;
+45:<script src="https://sfxr.me/riffwave.js"></script>
+46:<script src="https://sfxr.me/sfxr.js"></script>
+49:You can then directly use the `sfxr` namespace without requiring it.
+56:import { sfxr } from "jsfxr"; // or const sfxr = require("jsfxr").sfxr;
+59:const sound = sfxr.generate(preset);
+61:sfxr.play(sound);
+64:Available presets are `pickupCoin`, `laserShoot`, `explosion`, `powerUp`, `hitHurt`, `jump`, `blipSelect`, `synth`, `tone`, `click`, and `random`.
+66:You can also use the interface at https://sfxr.me to find the sound you want and then use the sound definition.
+73:  "wave_type": 1,
+101:var a = sfxr.toAudio(sound);
+108:var a = sfxr.toAudio("5EoyNVSymuxD8s7HP1ixqdaCn5uVGEgwQ3kJBR7bSoApFQzm7E4zZPW2EcXm3jmNdTtTPeDuvwjY8z4exqaXz3NGBHRKBx3igYfBBMRBxDALhBSvzkF6VE2Pv");
+116:var buffer = sfxr.toBuffer(sound);
+120:Additionally you can get a dataURI for a wav file of the sound:
+## s12 Tone.js
+5:Tone.js is a Web Audio framework for creating interactive music in the browser. The architecture of Tone.js aims to be familiar to both musicians and audio programmers creating web-based audio applications. On the high-level, Tone offers common DAW (digital audio workstation) features like a global transport for synchronizing and scheduling events as well as prebuilt synths and effects. Additionally, Tone provides high-performance building blocks to create your own synthesizers, effects, and complex control signals.
+106:## Transport
+108:`Tone.getTransport()` returns the main timekeeper. Unlike the AudioContext clock, it can be started, stopped, looped and adjusted on the fly. You can think of it like the arrangement view in a Digital Audio Workstation.
+110:Multiple events and parts can be arranged and synchronized along the Transport. `Tone.Loop` is a simple way to create a looped callback that can be scheduled to start and stop.
+124:// all loops start when the Transport is started
+125:Tone.getTransport().start();
+127:Tone.getTransport().bpm.rampTo(800, 10);
+## s13 ModalBar
+17:         - Marimba = 0
+105:    {{1.0, 3.99, 10.65, -2443},		// Marimba
+106:     {0.9996, 0.9994, 0.9994, 0.999},
+134:     {0.9996, 0.999, 0.9994, 0.999},	
+145:    this->setRatioAndRadius(i, presets[temp][0][i], presets[temp][1][i]);

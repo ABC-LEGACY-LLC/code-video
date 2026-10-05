@@ -1,0 +1,9 @@
+codec_name=h264
+codec_type=video
+width=1920
+height=1080
+r_frame_rate=24/1
+nb_frames=240
+duration=10.000000
+size=3374996
+bit_rate=2699996

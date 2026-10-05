@@ -1,0 +1,78 @@
+--- 2105304109997830215 @mirrash7 Wed Sep 30 14:29:49 +0000 2026 likes=601 reply_to= media=videos quote=
+I just labelled over 1000 segmentation masks for utility poles in under 90 s 🤯
+
+-GPT Astra for box detections
+-SAM3 for masks on those boxes
+
+How long would it take a human to do the same??
+--- 2105342736526102662 @AlexBodner_ Wed Sep 30 17:03:18 +0000 2026 likes=4 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 Looks awesome man!
+--- 2105343481103397144 @mirrash7 Wed Sep 30 17:06:15 +0000 2026 likes=1 reply_to=AlexBodner_/2105342736526102662 media= quote=
+@AlexBodner_ Thanks 😊
+--- 2105408935700103665 @rotaruzaurul Wed Sep 30 21:26:21 +0000 2026 likes=2 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 If Astra and Sam3 can already detect these things, what is the point of annotation and dataset gathering?
+--- 2105415828384743624 @mirrash7 Wed Sep 30 21:53:44 +0000 2026 likes=10 reply_to=rotaruzaurul/2105408935700103665 media= quote=
+@rotaruzaurul Running them in production would be too slow and expensive. 
+
+Label with Astra/Sam3 then train a lightweight model
+--- 2105425775088255242 @rotaruzaurul Wed Sep 30 22:33:16 +0000 2026 likes=0 reply_to=mirrash7/2105415828384743624 media= quote=
+@mirrash7 Why the need for all the slight variations in the angles, then?
+--- 2105440336881361115 @mirrash7 Wed Sep 30 23:31:08 +0000 2026 likes=3 reply_to=rotaruzaurul/2105425775088255242 media= quote=
+@rotaruzaurul This is just an example of how fast labelling can happen. 
+
+Ideally I would have hundreds of images of different poles/environments/lighting to train a more generalized model
+--- 2105372763624255549 @WebCoderz Wed Sep 30 19:02:37 +0000 2026 likes=1 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 Man I literally used to do this as a job so this is super neat to see!
+--- 2105375023720550512 @mirrash7 Wed Sep 30 19:11:36 +0000 2026 likes=1 reply_to=WebCoderz/2105372763624255549 media= quote=
+@WebCoderz Hopefully this saves hours/days of tedious labelling
+--- 2105375480543133900 @WebCoderz Wed Sep 30 19:13:25 +0000 2026 likes=1 reply_to=mirrash7/2105375023720550512 media= quote=
+@mirrash7 Def will I had to walk pole to pole to do it so yea lol would be nice to just have a drone (this was before the time of drones being used )
+--- 2105472799980794164 @stronghamjji Thu Oct 01 01:40:07 +0000 2026 likes=1 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 how many of the 1000 did you end up fixing by hand?
+--- 2105497511758868512 @mirrash7 Thu Oct 01 03:18:19 +0000 2026 likes=0 reply_to=stronghamjji/2105472799980794164 media= quote=
+@stronghamjji For this demo none!
+--- 2105414854806757818 @BuildFutureTech Wed Sep 30 21:49:52 +0000 2026 likes=1 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 Is that running on a 3DGS model?!
+--- 2105415976414232741 @mirrash7 Wed Sep 30 21:54:20 +0000 2026 likes=1 reply_to=BuildFutureTech/2105414854806757818 media= quote=
+@BuildFutureTech Nope, RF-DETR!
+--- 2105420344769077617 @BuildFutureTech Wed Sep 30 22:11:41 +0000 2026 likes=0 reply_to=mirrash7/2105415976414232741 media= quote=
+@mirrash7 Interesting but is the original scene built from photos or LiDAR? It looks really clean
+--- 2105440670400041225 @mirrash7 Wed Sep 30 23:32:27 +0000 2026 likes=1 reply_to=BuildFutureTech/2105420344769077617 media= quote=
+@BuildFutureTech It's a regular drone shot. Did turn out very clean!
+--- 2105443063019528302 @BuildFutureTech Wed Sep 30 23:41:58 +0000 2026 likes=1 reply_to=mirrash7/2105440670400041225 media= quote=
+@mirrash7 Really impressive, I’ll have to play around with it thanks!
+--- 2105365777495073133 @manishxraj Wed Sep 30 18:34:51 +0000 2026 likes=1 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 its so cool when agents can see the real world
+--- 2105366263375515828 @mirrash7 Wed Sep 30 18:36:47 +0000 2026 likes=1 reply_to=manishxraj/2105365777495073133 media= quote=
+@manishxraj And they're only getting better!
+--- 2105630767695151560 @NTWR_LaL Thu Oct 01 12:07:50 +0000 2026 likes=1 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 So good
+--- 2105510865155784789 @_aftz Thu Oct 01 04:11:23 +0000 2026 likes=0 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 Curious, why are you doing this in the first place? Interesting niche here
+--- 2105512177641877593 @mirrash7 Thu Oct 01 04:16:36 +0000 2026 likes=0 reply_to=_aftz/2105510865155784789 media= quote=
+@_aftz A lot of $ and manpower goes into inspecting our utilities. We can now do it faster and safer than ever before
+--- 2105356764908564499 @13Rosalg Wed Sep 30 17:59:03 +0000 2026 likes=0 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 Can you share how was this achieved?
+--- 2105358570396995687 @mirrash7 Wed Sep 30 18:06:13 +0000 2026 likes=11 reply_to=13Rosalg/2105356764908564499 media= quote=
+@13Rosalg This was all done in Roboflow with its agent! 
+
+1. Open agent in your workspace
+2. Upload video(s) and ask it to run Astra detections then SAM 3 masks on the classes you want to find
+3. Approve the labels and make changes if needed
+4. Train a model 
+
+Can make a walkthrough video
+--- 2105362601358098798 @13Rosalg Wed Sep 30 18:22:14 +0000 2026 likes=1 reply_to=mirrash7/2105358570396995687 media= quote=
+@mirrash7 Thank you!
+--- 2105368078129193284 @Shockwave_App Wed Sep 30 18:44:00 +0000 2026 likes=0 reply_to=mirrash7/2105304109997830215 media=videos quote=
+@mirrash7 Now you`re gonna sell it to this industry and make revenue, right?
+--- 2105526353210560636 @AvodasTech Thu Oct 01 05:12:56 +0000 2026 likes=0 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 And this too
+--- 2105453162572509305 @Gbbragadev Thu Oct 01 00:22:06 +0000 2026 likes=0 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 Sam is an affordable model ? I am thinking use for a project
+--- 2105647457346699454 @magica_ai Thu Oct 01 13:14:09 +0000 2026 likes=0 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 Somewhere a computer vision team's Q3 roadmap just got deleted and replaced with 'done, next.
+--- 2105415363693552020 @AnalyticsGenius Wed Sep 30 21:51:54 +0000 2026 likes=0 reply_to=mirrash7/2105304109997830215 media= quote=
+@mirrash7 idk but astra can 1 shot this and do the segmentation too.
+--- 2105443101003125148 @mirrash7 Wed Sep 30 23:42:07 +0000 2026 likes=0 reply_to=AnalyticsGenius/2105415363693552020 media= quote=
+@AnalyticsGenius It can but it is much more expensive

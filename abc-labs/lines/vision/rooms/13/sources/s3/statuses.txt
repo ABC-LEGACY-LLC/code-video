@@ -1,0 +1,117 @@
+--- 2105666254992228588 @mirrash7 Thu Oct 01 14:28:51 +0000 2026 likes=25 reply_to= media=videos quote=https://x.com/mirrash7/status/2105304109997830215
+What if pole inspections were automated with drones? 
+
+They'd be:
+-Quicker 
+-Safer
+-Every inspection on record
+
+What used to take a crew climbing the pole now takes one drone pass. Every part found, counted, checked ✅
+--- 2105304109997830215 @mirrash7 Wed Sep 30 14:29:49 +0000 2026 likes=601 reply_to= media=videos quote=
+I just labelled over 1000 segmentation masks for utility poles in under 90 s 🤯
+
+-GPT Astra for box detections
+-SAM3 for masks on those boxes
+
+How long would it take a human to do the same??
+--- 2105323589369258344 @mirrash7 Wed Sep 30 15:47:13 +0000 2026 likes=10 reply_to= media= quote=
+Roboflow Labs launches today!! 
+
+Labs will help curate training data and benchmarks for frontier AI labs
+
+Better data =  better real-world work!
+https://blog.roboflow.com/roboflow-labs-launch/
+--- 2105017152629813426 @mirrash7 Tue Sep 29 19:29:33 +0000 2026 likes=8 reply_to= media=videos quote=
+This Thursday I'll be hosting  live session on drone storm response 12:00 pm EST!   
+
+Watch how we: 
+-Label a model with GPT-6 Astra and SAM 3 (preview below) 
+-Use custom logic to make a repair plan 
+-Dispatch workers live!
+--- 2105017321605796178 @mirrash7 Tue Sep 29 19:30:13 +0000 2026 likes=1 reply_to=mirrash7/2105017152629813426 media= quote=
+Register here: https://luma.com/lnepsrqs
+--- 2097718278911074683 @AlexBodner_ Wed Sep 09 16:06:26 +0000 2026 likes=261 reply_to= media=videos quote=
+Astra is Messi level🤖⚽️🐐
+AI could solve Navier-Stokes, can it solve football?
+I froze the video before memorable plays and made Astra, Fable and Sol take key decisions seeing Messi's POV 
+Compared it with what Messi did and Astra was the only one choosing the Messi options.
+What should I try next?
+--- 2096807718426128817 @mirrash7 Mon Sep 07 03:48:11 +0000 2026 likes=26 reply_to= media=photos quote=
+Even in a crowded scene, Astra gets all "people" detections right
+--- 2096347911005065479 @mirrash7 Sat Sep 05 21:21:04 +0000 2026 likes=3 reply_to= media= quote=https://x.com/skalskip92/status/2096345098195787777
+Let the CV wars begin ⚔️
+--- 2096345098195787777 @skalskip92 Sat Sep 05 21:09:54 +0000 2026 likes=546 reply_to= media=photos quote=https://x.com/i/status/2096317264463012261
+run Gemini 3.8 Flash and GPT-6 Astra side-by-side
+
+link: https://playground.roboflow.com/share/23e7822a-8bf4-41b6-ab68-96cdd5371009
+--- 2096341982834475431 @mirrash7 Sat Sep 05 20:57:31 +0000 2026 likes=16 reply_to= media=photos quote=https://x.com/skalskip92/status/2096317264463012261
+GPT-6 Astra is so good, the only detection it got "wrong" on this eval is a die that never got labeled.
+--- 2096317264463012261 @skalskip92 Sat Sep 05 19:19:18 +0000 2026 likes=1367 reply_to= media=photos quote=
+Gemini dethroned
+
+GPT-6 Astra is the best "vision" model I've seen
+
+- notices tiny details
+- draws conclusions
+- produces precise and tight boxes
+- sees and reads text in different contexts
+- knows a lot about a lot
+- fast
+- expensive
+
+↓ GPT-6 Astra detection deep dive
+--- 2090850167117225996 @mirrash7 Fri Aug 21 17:15:00 +0000 2026 likes=45 reply_to= media=videos quote=https://x.com/mirrash7/status/2087951811013492842
+More exciting annotators being added to Supervision-JS every day 🔥
+
+Some of my favourites:
+-Big Heads 
+-Team badges
+--- 2087951811013492842 @mirrash7 Thu Aug 13 17:17:58 +0000 2026 likes=110 reply_to= media=videos quote=
+Something exciting is brewing 👀
+
+We're making annotation rendering lightning fast and tunable right in the browser with supervision-js:
+
+-Test annotators live
+-Stack several at once
+-Copy the source code and reuse the style anywhere
+--- 2090129906705293340 @mirrash7 Wed Aug 19 17:32:57 +0000 2026 likes=9 reply_to= media= quote=https://x.com/roboflow/status/2090125129359544414
+The amount of cutting edge work happening behind the scenes at Roboflow is wild! 
+
+Come see for yourself - October 22 in San Fran 🦝🌉
+--- 2090125129359544414 @roboflow Wed Aug 19 17:13:58 +0000 2026 likes=60 reply_to= media=videos quote=
+We are hosting the Visual Intelligence Summit on October 22 in SF.
+
+The physical world is AI's biggest opportunity and the best way to advance humanity in our lifetimes. Few people are building for AI beyond the screen.
+
+The Summit is for the people who see it differently and want to be at the frontier of bringing AI into the physical world.
+
+If you’re building for that future, join us.
+--- 2087651678384201731 @mirrash7 Wed Aug 12 21:25:21 +0000 2026 likes=77 reply_to= media=videos quote=https://x.com/mirrash7/status/2087620464025719264
+More McByte tests on soccer:
+
+Pros: Much better ID retention than motion only trackers, but still not perfect
+
+Cons: Much slower to run as every player gets a segmentation mask
+
+Keep an eye on the referee, multiple switches in OC SORT, only one with McByte. Same with player ID 9.
+--- 2087620464025719264 @mirrash7 Wed Aug 12 19:21:19 +0000 2026 likes=254 reply_to= media=videos quote=
+McByte just landed in Roboflow trackers 🎭
+
+McByte adds segmentation masks as association evidence, so when boxes cross and overlap, pixels break the tie.
+--- 2087654208648413482 @mirrash7 Wed Aug 12 21:35:24 +0000 2026 likes=4 reply_to=mirrash7/2087651678384201731 media=photos quote=
+McByte: Players correctly keep their IDs
+OC-Sort: Overlap causes #9 and #4 to switch IDs, then #4 becomes #24
+--- 2087620465409904655 @mirrash7 Wed Aug 12 19:21:19 +0000 2026 likes=7 reply_to=mirrash7/2087620464025719264 media= quote=
+Try it yourself (Masks require GPU): https://github.com/mirrash7/Experiments/blob/main/mcbyte_tracker_comparison_1.ipynb
+--- 2087201178153087110 @mirrash7 Tue Aug 11 15:35:13 +0000 2026 likes=15 reply_to= media=photos quote=
+Supervision annotators are great on their own, but they create beautiful effects when combined
+
+Working on more glow animations 🎇
+--- 2082845535552016731 @mirrash7 Thu Jul 30 15:07:27 +0000 2026 likes=17 reply_to= media= quote=https://x.com/mirrash7/status/2072859464776950163
+Youtube breakdown of my soccer offside VAR is live 🎥
+
+Whole pipeline explained + live demos + how to run it yourself for ~$2 per match
+--- 2072859464776950163 @mirrash7 Fri Jul 03 01:46:22 +0000 2026 likes=538 reply_to= media=videos quote=https://x.com/i/status/2072337880127513076
+The fact that anyone can now run VAR tech like this is so exciting to me
+--- 2082845537506652496 @mirrash7 Thu Jul 30 15:07:28 +0000 2026 likes=3 reply_to=mirrash7/2082845535552016731 media= quote=
+Youtube: https://www.youtube.com/watch?v=04iEizjxqpg

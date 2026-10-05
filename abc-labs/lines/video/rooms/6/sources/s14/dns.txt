@@ -1,0 +1,6 @@
+2026-09-30T15:26:25Z
+curl https://ittybitty.dev -> Could not resolve host
+dns.google A:
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"ittybitty.dev.","type":1}],"Authority":[{"name":"ittybitty.dev.","type":6,"TTL":1800,"data":"achiel.ns.cloudflare.com. dns.cloudflare.com. 2416006444 10000 2400 604800 1800"}],"Comment":"Response from 108.162.194.101."}
+dns.google NS:
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"ittybitty.dev.","type":2}],"Answer":[{"name":"ittybitty.dev.","type":2,"TTL":21600,"data":"nataly.ns.cloudflare.com."},{"name":"ittybitty.dev.","type":2,"TTL":21600,"data":"achiel.ns.cloudflare.com."}],"Comment":"Response from 172.64.34.101."}

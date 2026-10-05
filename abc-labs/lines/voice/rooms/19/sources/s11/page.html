@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//en'
+    'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
+<head>
+ <title>Procedural audio modeling for particle-based environmental effects</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+ <link rel='shortcut icon' href='/reves/Basilic/images/basilic.ico' />
+ <link rel='stylesheet' href='/reves/Basilic/header.css' type='text/css' />
+ <link rel='stylesheet' href='/reves/Basilic/publi.css' type='text/css' />
+ <meta name='description' content='Procedural audio modeling for particle-based environmental effects' />
+</head>
+
+<body>
+                         
+  <script language="JavaScript">
+
+
+ <!--
+
+
+ function MM_findObj(n, d) { 
+
+
+   var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+
+
+     d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+
+
+   if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+
+
+   for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document); return x;
+
+
+ }
+
+
+ function MM_swapImage() { 
+
+
+   var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+
+
+    if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+
+
+ }
+
+
+ function MM_swapImgRestore() { 
+
+
+   var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+
+
+ }
+
+
+ 
+
+
+ function MM_preloadImages() { 
+
+
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+
+
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+
+
+    if (a[i].indexOf("\#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+
+
+ }
+
+
+ 
+</script>
+       
+<table cellpadding="2" cellspacing="2" border="0" width="730"
+ align="center">
+      <tbody>
+             <tr>
+          <td valign="top">                             
+                    
+      <table border="0" cellpadding="0" cellspacing="0" width="727">
+    <tbody>
+             
+<tr>
+   <td><img src="/reves/img/spacer.gif" width="129" height="1" border="0"></td>
+   <td><img src="/reves/img/spacer.gif" width="60" height="1" border="0"></td>
+   <td><img src="/reves/img/spacer.gif" width="63" height="1" border="0"></td>
+   <td><img src="/reves/img/spacer.gif" width="72" height="1" border="0"></td>
+   <td><img src="/reves/img/spacer.gif" width="108" height="1" border="0"></td>
+   <td><img src="/reves/img/spacer.gif" width="124" height="1" border="0"></td>
+   <td><img src="/reves/img/spacer.gif" width="110" height="1" border="0"></td>
+   <td><img src="/reves/img/spacer.gif" width="61" height="1" border="0"></td>
+   <td><img src="/reves/img/spacer.gif" width="1" height="1" border="0"></td>
+  </tr>
+
+  <tr>
+
+<tr>
+   <td rowspan="2"><a href="/reves/index.html"><img name="reves_navbar_r1_c1_image1" src="/reves/img/reves_navbar_r1_c1_image1.gif" width="129" height="81" border="0" alt="reves home"></a></td>
+   <td colspan="7"><img name="about_r1_c2" src="/reves/img/about_r1_c2.gif" width="598" height="45" border="0"></td>
+   <td><img src="/reves/img/spacer.gif" width="1" height="45" border="0"></td>
+  </tr>
+  <tr>
+   <td><a href="/reves/en/about.html" onMouseOut="MM_swapImgRestore();"  onMouseOver="MM_swapImage('reves_navbar_en_r2_c2','','/reves/img/reves_navbar_en_r2_c2_f2.gif',1);" ><img name="reves_navbar_en_r2_c2" src="/reves/img/reves_navbar_en_r2_c2.gif" width="60" height="36" border="0" alt="accueil"></a></td>
+   <td><a href="/reves/en/group.html" onMouseOut="MM_swapImgRestore();"  onMouseOver="MM_swapImage('reves_navbar_en_r2_c3','','/reves/img/reves_navbar_en_r2_c3_f3.gif',1);" ><img name="reves_navbar_en_r2_c3" src="/reves/img/reves_navbar_en_r2_c3.gif" width="63" height="36" border="0" alt="group"></a></td>
+   <td><a href="/reves/en/research.html" onMouseOut="MM_swapImgRestore();"  onMouseOver="MM_swapImage('reves_navbar_en_r2_c4','','/reves/img/reves_navbar_en_r2_c4_f4.gif',1);" ><img name="reves_navbar_en_r2_c4" src="/reves/img/reves_navbar_en_r2_c4.gif" width="72" height="36" border="0" alt="research"></a></td>
+   <td><a href="http://www-sop.inria.fr/reves/publis/setLanguage.php?lg=en&page=/reves/publis/" onMouseOut="MM_swapImgRestore();"  onMouseOver="MM_swapImage('reves_navbar_en_r2_c5','','/reves/img/reves_navbar_en_r2_c5_f5.gif',1);" ><img name="reves_navbar_en_r2_c5" src="/reves/img/reves_navbar_en_r2_c5.gif" width="108" height="36" border="0" alt="publications"></a></td>
+   <td><a href="/reves/en/collaborations.html" onMouseOut="MM_swapImgRestore();"  onMouseOver="MM_swapImage('reves_navbar_en_r2_c6','','/reves/img/reves_navbar_en_r2_c6_f6.gif',1);" ><img name="reves_navbar_en_r2_c6" src="/reves/img/reves_navbar_en_r2_c6.gif" width="124" height="36" border="0" alt="collaborations"></a></td>
+   <td><a href="/reves/en/events.html" onMouseOut="MM_swapImgRestore();"  onMouseOver="MM_swapImage('reves_navbar_en_r2_c7','','/reves/img/reves_navbar_en_r2_c7_f7.gif',1);" ><img name="reves_navbar_en_r2_c7" src="/reves/img/reves_navbar_en_r2_c7.gif" width="110" height="36" border="0" alt="events"></a></td>
+   <td><a href="/reves/en/gallery.html" onMouseOut="MM_swapImgRestore();"  onMouseOver="MM_swapImage('reves_navbar_en_r2_c8','','/reves/img/reves_navbar_en_r2_c8_f8.gif',1);" ><img name="reves_navbar_en_r2_c8" src="/reves/img/reves_navbar_en_r2_c8.gif" width="61" height="36" border="0" alt="gallery"></a></td>
+   <td><img src="/reves/img/spacer.gif" width="1" height="36" border="0"></td>
+  </tr>
+
+</tbody>                     
+</table>
+<div style='height:4px;'>&nbsp;</div>
+
+<div id='content'>
+<h1>Procedural audio modeling for particle-based environmental effects</h1>
+
+<div class='head'>
+<div class='author'>
+   <a href='http://www.charlesverron.com'>Charles Verron</a>,
+   <a href='http://www-sop.inria.fr/reves/George.Drettakis'>George Drettakis</a>
+ </div>
+<div class='conf'>
+  Proceedings of the 133rd AES Convention - October 2012
+ </div>
+<div class='pdfps'>
+  Download the publication : 
+   <a href='soundParticles_aes.pdf'><img src='/reves/Basilic/images/pdf.png' alt='soundParticles_aes.pdf [2.9Mo]'/></a> &nbsp;
+ </div>
+</div>
+
+<div class='abstract'>
+We present a sound synthesizer dedicated to particle-based environmental effects, for use in interactive virtual environments. The synthesis engine is based on five physically-inspired basic elements (which we call sound atoms) that can be parameterized and stochastically distributed in time and space. Based on this set of atomic elements, models are presented for reproducing several environmental sound sources. Compared to pre-recorded sound samples, procedural synthesis provides extra flexibility to manipulate and control the sound source properties with physically-inspired parameters. In this paper, the controls are used simultaneously to modify particle-based graphical models, resulting in synchronous audio/graphics environmental effects. The approach is illustrated with three models, that are commonly used in video games: fire, wind, and rain. The physically-inspired controls simultaneously drive graphical parameters (e.g., distribution of particles, average particles velocity) and sound parameters (e.g., distribution of sound atoms, spectral modifications). The joint audio/graphics control results in a tightly-coupled interaction between the two modalities that enhances the naturalness of the scene.
+</div>
+
+<h2>Images and movies</h2>
+<div class='imgMovies'>
+  <div class='thumb'><div style='padding-top:18px'><a href='http://www-sop.inria.fr/reves/Basilic/2012/VD12/demo_all_highRes.png'>
+  <img src='http://www-sop.inria.fr/reves/Basilic/2012/VD12/thumbs/demo_all_highRes.png.jpg' width='80' height='49' alt='demo_all_highRes.png [592Ko]'/></a></div></div>
+  <div class='thumb movie'><div style='padding-top:18px'><a href='http://www-sop.inria.fr/reves/Basilic/2012/VD12/demo_all_highRes.mov'>
+  <img src='http://www-sop.inria.fr/reves/Basilic/2012/VD12/thumbs/demo_all_highRes.mov.jpg' width='80' height='49' alt='demo_all_highRes.mov [157.6Mo]'/></a></div></div>
+  <div class='thumb movie'><div style='padding-top:16px'><a href='http://www-sop.inria.fr/reves/Basilic/2012/VD12/demo_wind_highRes.mov'>
+  <img src='http://www-sop.inria.fr/reves/Basilic/2012/VD12/thumbs/demo_wind_highRes.mov.jpg' width='80' height='53' alt='demo_wind_highRes.mov [144Mo]'/></a></div></div>
+  <div class='thumb movie'><div style='padding-top:17px'><a href='http://www-sop.inria.fr/reves/Basilic/2012/VD12/spad.mov'>
+  <img src='http://www-sop.inria.fr/reves/Basilic/2012/VD12/thumbs/spad.mov.jpg' width='80' height='50' alt='spad.mov [20.6Mo]'/></a></div></div>
+</div>
+<div class='endthumbs'>&nbsp;</div>
+
+<h2>See also</h2>
+<div class='seeAlso'>
+<!-- Video 1 -->
+        <p align="justify"><b>Companion Video 1</b> illustrates the fire, wind and rain audio/graphics models.  Please download the high-resolution video <a href="./demo_all_highRes.mov">HERE</a>.</p>
+        <p align="center"> <iframe src="http://player.vimeo.com/video/45122900" width="650" height="407" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> </p>
+        <p> <br /> </p>
+        
+        <!-- Video 2 -->
+        <p align="justify"><b>Companion Video 2</b> illustrates the sound synthesizer user interface. Please download the high-resolution video <a href="./spad.mov">HERE</a>.</p>
+		<p align="center"> <iframe src="http://player.vimeo.com/video/45126423" width="650" height="407" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> </p>
+        <p> <br /> </p>
+        
+        <!-- Video 3 -->
+        <p align="justify"><b>Companion Video 3</b> illustrates the wind audio/graphics model. Please download the high-resolution video <a href="./demo_wind_highRes.mov">HERE</a>.</p>
+        <p align="center"> <iframe src="http://player.vimeo.com/video/45126929" width="650" height="407" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> </p>
+        
+</div>
+
+<h2>BibTex references</h2>
+<pre class='bibtex'>
+@InProceedings{VD12,
+  author       = "Verron, Charles and Drettakis, George",
+  title        = "Procedural audio modeling for particle-based environmental effects",
+  booktitle    = "Proceedings of the 133rd AES Convention",
+  month        = "October",
+  year         = "2012",
+  organization = "AES",
+  url          = "http://www-sop.inria.fr/reves/Basilic/2012/VD12"
+}
+</pre>
+
+<h2>Other publications in the database</h2>
+<div class='otherPubli'>
+ <a href='/reves/Basilic/index.php?idAuthor=28'>&raquo; George Drettakis</a><br />
+</div>
+
+</div>
+
+<div style='height:4px;'>&nbsp;</div>
+
+<div id='footer'>
+  <span style='margin:5%'><a href='mailto:george.drettakis@nria.fr'>E-mail</a> any comment</span>
+  <span style='margin-left:5%'>&copy; <a href='http://artis.imag.fr/Software/Basilic'>Basilic 1.5.14</a> - 2006</span>
+</div>
+
+</body>
+</html>

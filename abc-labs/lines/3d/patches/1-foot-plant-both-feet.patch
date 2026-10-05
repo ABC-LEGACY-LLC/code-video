@@ -1,0 +1,101 @@
+diff --git a/oq-kocha/src/sheet.mjs b/oq-kocha/src/sheet.mjs
+index a78e3be..d6930a0 100644
+--- a/oq-kocha/src/sheet.mjs
++++ b/oq-kocha/src/sheet.mjs
+@@ -6,17 +6,17 @@ export const CYCLE = SLOTS/12;                 // seconds for one full cycle
+ export const TRAVEL = 0.68;                    // body-heights travelled per cycle
+ export const FPS = 24, TWOS = 2;
+
+-export const CUM = (()=>{const o=[];let a=0;
+- for(const h of HOLDS){o.push(a); a+=h*(TRAVEL/SLOTS);} return o;})();
+-
+-export function idxAt(ph){
+- ph=((ph%1)+1)%1; let d=ph*SLOTS, i=0;
+- while(d>=HOLDS[i]){d-=HOLDS[i]; i++; if(i>=HOLDS.length){i=0;break;}}
++/* The chart is an argument, HOLDS unless one is given: a check re-times it and still runs the film's own functions. */
++export const cumOf = H=>{const n=H.reduce((a,b)=>a+b,0), o=[];let a=0;
++ for(const h of H){o.push(a); a+=h*(TRAVEL/n);} return o;}, CUM = cumOf(HOLDS);
++export function idxAt(ph,H=HOLDS){
++ ph=((ph%1)+1)%1; let d=ph*H.reduce((a,b)=>a+b,0), i=0;
++ while(d>=H[i]){d-=H[i]; i++; if(i>=H.length){i=0;break;}}
+  return i;
+ }
+ /* Distance is a STEP function of the sheet: the world moves when the drawing moves
+    and not between, which is the only arrangement that plants the foot. */
+-export function travel(p){const k=Math.floor(p); return k*TRAVEL+CUM[idxAt(p-k)];}
++export function travel(p,H=HOLDS){const k=Math.floor(p); return k*TRAVEL+(H===HOLDS?CUM:cumOf(H))[idxAt(p-k,H)];}
+
+ export function swapPose(P){return {hip:P.hip,lean:P.lean,arch:P.arch,sh:P.sh,hd:P.hd,hold:P.hold,
+  nk:P.fk,na:P.fa,nf:P.ff,fk:P.nk,fa:P.na,ff:P.nf,neb:P.feb,nh:P.fh,feb:P.neb,fh:P.nh,cl:P.cl};}
+diff --git a/oq-kocha/test/checks-sheet.mjs b/oq-kocha/test/checks-sheet.mjs
+index ba313dc..9f73dfe 100644
+--- a/oq-kocha/test/checks-sheet.mjs
++++ b/oq-kocha/test/checks-sheet.mjs
+@@ -7,16 +7,31 @@ const POSES=JSON.parse(readFileSync(new URL('../src/poses.json',import.meta.url)
+ const WALK=walkFrom(POSES.PW);
+ const D=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+
+-/* the planted foot is FIXED IN THE WORLD: ankle_x + distance travelled must not move */
+-function plantDrift(travelFn){
++/* WHERE A FOOT IS DOWN is read from the pose, not from a list kept beside it. The ground
++   goes through the lowest joint of the standing pose, L is that pose's root height above
++   it, and an ankle is down while it is under 0.05 L. y grows downward, so the lowest joint
++   has the largest y. The joints are the positions a pose stores: hd is an offset, cl the cloak. */
++const JOINTS=['sh','nk','na','fk','fa','neb','nh','feb','fh'];
++const GROUND=Math.max(...JOINTS.map(j=>POSES.STAND[j][1]));
++const L=GROUND-POSES.STAND.hip;
++const down=(P,foot)=>(GROUND-P[foot][1])/L<0.05;
++
++/* the planted foot is FIXED IN THE WORLD: ankle_x + distance travelled must not move.
++   Both ankles, each stretch against the x where it began. The reference is dropped when
++   the foot lifts, not when the cycle wraps: the far foot is down in drawings 4-7 and 0,
++   a stretch that runs across the end of the cycle. The worst stretch, never an average. */
++function plantDrift(travelFn,chart=HOLDS){
+  let worst=0;
+- for(let f=0;f<=96;f++){
+-  const ph=f/96*3;                                  // three cycles
+-  const i=idxAt(ph);
+-  if(i>4) continue;                                 // drawings 0-4: the near foot is down
+-  const x=WALK[i].na[0]/100 + travelFn(ph);
+-  if(i===0) plantDrift.ref=x;
+-  if(plantDrift.ref!==undefined) worst=Math.max(worst,Math.abs(x-plantDrift.ref));
++ for(const foot of ['na','fa']){
++  let ref;
++  for(let f=0;f<=96;f++){
++   const ph=f/96*3;                                 // three cycles
++   const P=WALK[idxAt(ph,chart)];
++   if(!down(P,foot)){ ref=undefined; continue; }
++   const x=P[foot][0]/100 + travelFn(ph);
++   if(ref===undefined) ref=x;
++   worst=Math.max(worst,Math.abs(x-ref));
++  }
+  }
+  return worst;
+ }
+@@ -27,6 +42,26 @@ await check({name:'foot-plant', unit:'body-heights',
+  calibrate:()=>plantDrift(ph=>ph*TRAVEL),            // constant velocity: the old bug
+  note:'the world steps when the drawing steps; a constant velocity under an uneven timing chart slides the foot'});
+
++/* The far drawings are the near ones swapped, so the far foot is planted only while both
++   halves of the chart are timed alike. Re-time the second half and the near foot still
++   reads zero: one ankle from a hand-kept list passed this chart. */
++const RETIMED=[3,2,1,2,2,3,1,2];
++await check({name:'foot-plant/both-halves', unit:'body-heights',
++ measure:()=>plantDrift(travel),
++ pass:v=>v<0.004,
++ calibrate:()=>plantDrift(ph=>travel(ph,RETIMED),RETIMED),
++ note:`both ankles, across the wrap; ${RETIMED.join('·')} still adds up to ${SLOTS} slots and slides the far foot`});
++
++/* Contact found from the pose can pass by finding none: an ankle redrawn above the mark
++   drops out of its stretch, and the drift over what is left is still zero. So the support
++   itself is held: every drawing has a foot on the ground. */
++const unsupported=walk=>walk.filter(P=>!down(P,'na')&&!down(P,'fa')).length;
++await check({name:'walk/support', unit:'drawings with neither ankle down',
++ measure:()=>unsupported(WALK),
++ pass:v=>v===0,
++ calibrate:()=>unsupported(WALK.map((P,i)=>i===2?{...P,na:[P.na[0],P.fa[1]]}:P)),   // drawing 2: the near ankle at its far ankle's height
++ note:`ground y=${GROUND}, L=${L} pose units, an ankle is down under 0.05 L`});
++
+ /* one body, drawn sixteen times: the bones do not change length between drawings */
+ function limbSpread(poses){
+  /* Measured as a PERCENTAGE of the limb's own mean length, not in raw units: a

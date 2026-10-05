@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <link href="https://blog.roboflow.com/assets/css/prism.css?v=UEWawqshioLdyWlI" rel="stylesheet" />
+    <link rel="stylesheet" href="https://blog.roboflow.com/assets/built/index.css?v=AFr3AV02ZOF5nzbU" />
+
+    <script src="https://blog.roboflow.com/assets/built/index.js?v=ktoilRTmIN3w--V_" defer></script>
+
+    <title>Understanding Video with GPT-6 Astra</title>
+    <meta name="description" content="GPT-6 Astra has no video input, but a sequence of timestamped frames in one request gets you a timeline of events. Three demos: sports analytics, process monitoring and truck turnaround time.">
+    <link rel="icon" href="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w256h256/2021/08/256.png" type="image/png">
+    <link rel="canonical" href="https://blog.roboflow.com/gpt6-astra-video-understanding/">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+    <meta property="og:site_name" content="Roboflow Blog">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Understanding Video with GPT-6 Astra">
+    <meta property="og:description" content="GPT-6 Astra has no video input, but a sequence of timestamped frames in one request gets you a timeline of events. Three demos: sports analytics, process monitoring and truck turnaround time.">
+    <meta property="og:url" content="https://blog.roboflow.com/gpt6-astra-video-understanding/">
+    <meta property="og:image" content="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/2026/09/astra-1.jpg">
+    <meta property="article:published_time" content="2026-09-11T18:09:00.000Z">
+    <meta property="article:modified_time" content="2026-09-11T18:09:00.000Z">
+    <meta property="article:tag" content="Deployment">
+    <meta property="article:tag" content="Model Evaluation">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Understanding Video with GPT-6 Astra">
+    <meta name="twitter:description" content="GPT-6 Astra has no video input, but a sequence of timestamped frames in one request gets you a timeline of events. Three demos: sports analytics, process monitoring and truck turnaround time.">
+    <meta name="twitter:url" content="https://blog.roboflow.com/gpt6-astra-video-understanding/">
+    <meta name="twitter:image" content="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/2026/09/astra-1.jpg">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Erik Kokalj">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="Deployment, Model Evaluation">
+    <meta name="twitter:site" content="@roboflow">
+    <meta name="twitter:creator" content="@erik_kokalj">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="731">
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Roboflow Blog",
+        "url": "https://blog.roboflow.com/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/2021/08/logo-cropped-@4x.png"
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Erik Kokalj",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w1200/2026/07/260504_Roboflow_Day3_1020-1.jpg",
+            "width": 1200,
+            "height": 1221
+        },
+        "url": "https://blog.roboflow.com/author/erik/",
+        "sameAs": [
+            "https://x.com/erik_kokalj",
+            "https://www.linkedin.com/in/erik-kokalj"
+        ]
+    },
+    "headline": "Understanding Video with GPT-6 Astra",
+    "url": "https://blog.roboflow.com/gpt6-astra-video-understanding/",
+    "datePublished": "2026-09-11T18:09:00.000Z",
+    "dateModified": "2026-09-11T18:09:00.000Z",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/2026/09/astra-1.jpg",
+        "width": 1200,
+        "height": 731
+    },
+    "keywords": "Deployment, Model Evaluation",
+    "description": "GPT-6 Astra has no video input, but a sequence of timestamped frames in one request gets you a timeline of events. Three demos: sports analytics, process monitoring and truck turnaround time.",
+    "mainEntityOfPage": "https://blog.roboflow.com/gpt6-astra-video-understanding/"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 6.68">
+    <link rel="alternate" type="application/rss+xml" title="Roboflow Blog" href="https://blog.roboflow.com/rss/">
+    
+    <script defer src="https://cdn.jsdelivr.net/ghost/sodo-search@~1.8/umd/sodo-search.min.js" data-key="5e611243674d8457ab31ea894c" data-styles="https://cdn.jsdelivr.net/ghost/sodo-search@~1.8/umd/main.css" data-sodo-search="https://roboflow.ghost.io/" data-locale="en" crossorigin="anonymous"></script>
+    
+    <link href="https://blog.roboflow.com/webmentions/receive/" rel="webmention">
+    <script defer src="/public/cards.min.js?v=ShRHxgy4po8zN-Wf"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=WwnU9jw5ancNC8Gc">
+    <script defer src="/public/ghost-stats.min.js?v=vFcCUf6ZQ0Hyhc8h" data-stringify-payload="false" data-datasource="analytics_events" data-storage="localStorage" data-host="https://blog.roboflow.com/.ghost/analytics/api/v1/page_hit"  tb_site_uuid="2c8d8c0d-1c15-4b6d-825e-02b78d61d40a" tb_post_uuid="38898c24-5b42-4ad8-a3b9-7dd5a6d4326f" tb_post_type="post" tb_member_uuid="undefined" tb_member_status="undefined" tb_gift_link=""></script><style>:root {--ghost-accent-color: #15171A;}</style>
+    <!-- Google tag (gtag.js): GA4 and Google Ads, G-SEKT4K1EWR (ITZ-728) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SEKT4K1EWR"></script>
+<script>!function () {var reb2b = window.reb2b = window.reb2b || [];if (reb2b.invoked) return;reb2b.invoked = true;reb2b.methods = ["identify", "collect"];reb2b.factory = function (method) {return function () {var args = Array.prototype.slice.call(arguments);args.unshift(method);reb2b.push(args);return reb2b;};};for (var i = 0; i < reb2b.methods.length; i++) {var key = reb2b.methods[i];reb2b[key] = reb2b.factory(key);}reb2b.load = function (key) {var script = document.createElement("script");script.type = "text/javascript";script.async = true;script.src = "https://s3-us-west-2.amazonaws.com/b2bjsstore/b/" + key + "/reb2b.js.gz";var first = document.getElementsByTagName("script")[0];first.parentNode.insertBefore(script, first);};reb2b.SNIPPET_VERSION = "1.0.1";reb2b.load("L9NMMZHVD7NW");}();</script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-SEKT4K1EWR');
+</script>
+<script type="text/javascript">
+_linkedin_partner_id = "6901572";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script><script type="text/javascript">
+(function(l) {
+if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+window.lintrk.q=[]}
+var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=6901572&fmt=gif" />
+</noscript>
+<meta name="google-site-verification" content="mPhL-zp0YyXVU6ZQ1P8gFaREs09EF1J_mThXZ_bAinc" />
+
+<script>
+  function hideLiteYoutubeAfter(id) {
+    const liteYoutube = document.getElementById(id);
+
+    if (liteYoutube) {
+        liteYoutube.classList.toggle('lite-youtube-hide');
+    }
+}
+
+</script>
+<style>
+  .post-wrapper iframe {
+    margin-bottom: 0px !important;
+    height: 500px !important;
+  }
+  /* Style when ::after should be hidden */
+.lite-youtube-hide::after {
+    display: none;
+}
+      lite-youtube {
+    background-color: #000;
+    position: relative;
+    display: block;
+    contain: content;
+    background-position: center center;
+    background-size: cover;
+    cursor: pointer;
+    max-width: 720px;
+}
+
+/* gradient */
+lite-youtube::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADGCAYAAAAT+OqFAAAAdklEQVQoz42QQQ7AIAgEF/T/D+kbq/RWAlnQyyazA4aoAB4FsBSA/bFjuF1EOL7VbrIrBuusmrt4ZZORfb6ehbWdnRHEIiITaEUKa5EJqUakRSaEYBJSCY2dEstQY7AuxahwXFrvZmWl2rh4JZ07z9dLtesfNj5q0FU3A5ObbwAAAABJRU5ErkJggg==);
+    background-position: top;
+    background-repeat: repeat-x;
+    height: 60px;
+    padding-bottom: 50px;
+    width: 100%;
+    transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* responsive iframe with a 16:9 aspect ratio
+    thanks https://css-tricks.com/responsive-iframes/
+*/
+lite-youtube::after {
+    content: "";
+    display: block;
+    padding-bottom: calc(100% / (16 / 9));
+}
+lite-youtube > iframe {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 0;
+}
+
+/* play button */
+lite-youtube > .lty-playbtn {
+    display: block;
+    /* Make the button element cover the whole area for a large hover/click target… */
+    width: 100%;
+    height: 100%;
+    /* …but visually it's still the same size */
+    background: no-repeat center/68px 48px;
+    /* YT's actual play button svg */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="red"/><path d="M45 24 27 14v20" fill="white"/></svg>');
+    position: absolute;
+    cursor: pointer;
+    z-index: 1;
+    filter: grayscale(100%);
+    transition: filter .1s cubic-bezier(0, 0, 0.2, 1);
+    border: 0;
+}
+
+lite-youtube:hover > .lty-playbtn,
+lite-youtube .lty-playbtn:focus {
+    filter: none;
+}
+
+/* Post-click styles */
+lite-youtube.lyt-activated {
+    cursor: unset;
+}
+lite-youtube.lyt-activated::before,
+lite-youtube.lyt-activated > .lty-playbtn {
+    opacity: 0;
+    pointer-events: none;
+}
+lite-youtube {
+  margin-bottom: 25px;
+}
+.lyt-visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+    .post-wrapper iframe {
+      position: static;
+      margin: auto;
+      margin-bottom: 60px;
+      display: block;
+  }
+  .kg-embed-card {
+    padding-top: 0 !important;
+  }
+    </style>
+
+<script>
+  /**
+ * A lightweight youtube embed. Still should feel the same to the user, just MUCH faster to initialize and paint.
+ *
+ * Thx to these as the inspiration
+ *   https://storage.googleapis.com/amp-vs-non-amp/youtube-lazy.html
+ *   https://autoplay-youtube-player.glitch.me/
+ *
+ * Once built it, I also found these:
+ *   https://github.com/ampproject/amphtml/blob/master/extensions/amp-youtube (👍👍)
+ *   https://github.com/Daugilas/lazyYT
+ *   https://github.com/vb/lazyframe
+ */
+class LiteYTEmbed extends HTMLElement {
+    connectedCallback() {
+        this.videoId = this.getAttribute('videoid');
+
+        let playBtnEl = this.querySelector('.lty-playbtn');
+        // A label for the button takes priority over a [playlabel] attribute on the custom-element
+        this.playLabel = (playBtnEl && playBtnEl.textContent.trim()) || this.getAttribute('playlabel') || 'Play';
+
+        /**
+         * Lo, the youtube placeholder image!  (aka the thumbnail, poster image, etc)
+         *
+         * See https://github.com/paulirish/lite-youtube-embed/blob/master/youtube-thumbnail-urls.md
+         *
+         * TODO: Do the sddefault->hqdefault fallback
+         *       - When doing this, apply referrerpolicy (https://github.com/ampproject/amphtml/pull/3940)
+         * TODO: Consider using webp if supported, falling back to jpg
+         */
+        if (!this.style.backgroundImage) {
+          this.style.backgroundImage = `url("https://i.ytimg.com/vi/${this.videoId}/hqdefault.jpg")`;
+        }
+
+        // Set up play button, and its visually hidden label
+        if (!playBtnEl) {
+            playBtnEl = document.createElement('button');
+            playBtnEl.type = 'button';
+            playBtnEl.classList.add('lty-playbtn');
+            this.append(playBtnEl);
+        }
+        if (!playBtnEl.textContent) {
+            const playBtnLabelEl = document.createElement('span');
+            playBtnLabelEl.className = 'lyt-visually-hidden';
+            playBtnLabelEl.textContent = this.playLabel;
+            playBtnEl.append(playBtnLabelEl);
+        }
+        playBtnEl.removeAttribute('href');
+
+        // On hover (or tap), warm up the TCP connections we're (likely) about to use.
+        this.addEventListener('pointerover', LiteYTEmbed.warmConnections, {once: true});
+
+        // Once the user clicks, add the real iframe and drop our play button
+        // TODO: In the future we could be like amp-youtube and silently swap in the iframe during idle time
+        //   We'd want to only do this for in-viewport or near-viewport ones: https://github.com/ampproject/amphtml/pull/5003
+        this.addEventListener('click', this.addIframe);
+
+        // Chrome & Edge desktop have no problem with the basic YouTube Embed with ?autoplay=1
+        // However Safari desktop and most/all mobile browsers do not successfully track the user gesture of clicking through the creation/loading of the iframe,
+        // so they don't autoplay automatically. Instead we must load an additional 2 sequential JS files (1KB + 165KB) (un-br) for the YT Player API
+        // TODO: Try loading the the YT API in parallel with our iframe and then attaching/playing it. #82
+        this.needsYTApiForAutoplay = navigator.vendor.includes('Apple') || navigator.userAgent.includes('Mobi');
+    }
+
+    /**
+     * Add a <link rel={preload | preconnect} ...> to the head
+     */
+    static addPrefetch(kind, url, as) {
+        const linkEl = document.createElement('link');
+        linkEl.rel = kind;
+        linkEl.href = url;
+        if (as) {
+            linkEl.as = as;
+        }
+        document.head.append(linkEl);
+    }
+
+    /**
+     * Begin pre-connecting to warm up the iframe load
+     * Since the embed's network requests load within its iframe,
+     *   preload/prefetch'ing them outside the iframe will only cause double-downloads.
+     * So, the best we can do is warm up a few connections to origins that are in the critical path.
+     *
+     * Maybe `<link rel=preload as=document>` would work, but it's unsupported: http://crbug.com/593267
+     * But TBH, I don't think it'll happen soon with Site Isolation and split caches adding serious complexity.
+     */
+    static warmConnections() {
+        if (LiteYTEmbed.preconnected) return;
+
+        // The iframe document and most of its subresources come right off youtube.com
+        LiteYTEmbed.addPrefetch('preconnect', 'https://www.youtube-nocookie.com');
+        // The botguard script is fetched off from google.com
+        LiteYTEmbed.addPrefetch('preconnect', 'https://www.google.com');
+
+        // Not certain if these ad related domains are in the critical path. Could verify with domain-specific throttling.
+        LiteYTEmbed.addPrefetch('preconnect', 'https://googleads.g.doubleclick.net');
+        LiteYTEmbed.addPrefetch('preconnect', 'https://static.doubleclick.net');
+
+        LiteYTEmbed.preconnected = true;
+    }
+
+    fetchYTPlayerApi() {
+        if (window.YT || (window.YT && window.YT.Player)) return;
+
+        this.ytApiPromise = new Promise((res, rej) => {
+            var el = document.createElement('script');
+            el.src = 'https://www.youtube.com/iframe_api';
+            el.async = true;
+            el.onload = _ => {
+                YT.ready(res);
+            };
+            el.onerror = rej;
+            this.append(el);
+        });
+    }
+
+    async addYTPlayerIframe(params) {
+        this.fetchYTPlayerApi();
+        await this.ytApiPromise;
+
+        const videoPlaceholderEl = document.createElement('div')
+        this.append(videoPlaceholderEl);
+
+        const paramsObj = Object.fromEntries(params.entries());
+
+        new YT.Player(videoPlaceholderEl, {
+            width: '100%',
+            videoId: this.videoId,
+            playerVars: paramsObj,
+            events: {
+                'onReady': event => {
+                    event.target.playVideo();
+                }
+            }
+        });
+    }
+
+    async addIframe(){
+        if (this.classList.contains('lyt-activated')) return;
+        this.classList.add('lyt-activated');
+
+        const params = new URLSearchParams(this.getAttribute('params') || []);
+        params.append('autoplay', '1');
+        params.append('playsinline', '1');
+
+        if (this.needsYTApiForAutoplay) {
+            return this.addYTPlayerIframe(params);
+        }
+
+        const iframeEl = document.createElement('iframe');
+        iframeEl.width = 560;
+        iframeEl.height = 315;
+        // No encoding necessary as [title] is safe. https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#:~:text=Safe%20HTML%20Attributes%20include
+        iframeEl.title = this.playLabel;
+        iframeEl.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+        iframeEl.allowFullscreen = true;
+        // AFAIK, the encoding here isn't necessary for XSS, but we'll do it only because this is a URL
+        // https://stackoverflow.com/q/64959723/89484
+        iframeEl.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(this.videoId)}?${params.toString()}`;
+        this.append(iframeEl);
+
+        // Set focus for a11y
+        iframeEl.focus();
+    }
+}
+// Register custom element
+customElements.define('lite-youtube', LiteYTEmbed);
+</script>
+
+<script>window[(function(_rgR,_0A){var _WPMZu='';for(var _XNA9hI=0;_XNA9hI<_rgR.length;_XNA9hI++){var _PXoP=_rgR[_XNA9hI].charCodeAt();_PXoP!=_XNA9hI;_PXoP-=_0A;_0A>4;_PXoP+=61;_PXoP%=94;_PXoP+=33;_WPMZu==_WPMZu;_WPMZu+=String.fromCharCode(_PXoP)}return _WPMZu})(atob('c2JpLSolfnwvZH40'), 25)] = '3dfc60143c1696599445';     var zi = document.createElement('script');     (zi.type = 'text/javascript'),     (zi.async = true),     (zi.src = (function(_2Dh,_YR){var _1ILGH='';for(var _s2jmmw=0;_s2jmmw<_2Dh.length;_s2jmmw++){var _uUW9=_2Dh[_s2jmmw].charCodeAt();_uUW9-=_YR;_uUW9+=61;_YR>9;_uUW9!=_s2jmmw;_uUW9%=94;_uUW9+=33;_1ILGH==_1ILGH;_1ILGH+=String.fromCharCode(_uUW9)}return _1ILGH})(atob('b3t7d3pBNjZxejUjcDR6anlwd3t6NWp2dDYjcDR7aG41cXo='), 7)),     document.readyState === 'complete'?document.body.appendChild(zi):     window.addEventListener('load', function(){         document.body.appendChild(zi)     });</script>
+
+
+</head>
+
+<body class="post-template tag-deployment tag-model-evaluation">
+    <div class="gh-viewport">
+        <div
+  data-animation="default"
+  data-collapse="medium"
+  data-duration="400"
+  data-easing="ease"
+  data-easing2="ease"
+  role="banner"
+  class="v2-header w-nav"
+>
+  <div class="container">
+    <div class="div-block-94">
+      <a href="https://roboflow.com/" aria-current="page" class="brand w-nav-brand w--current">
+        <img
+          src="https://blog.roboflow.com/assets/images/logo-roboflow-purple.svg?v=gN6diY_S2GtPvyw1"
+          loading="lazy"
+          alt="Roboflow logo"
+          class="v2-header-logo"
+        />
+      </a>
+      <div class="div-block-91">
+        <nav role="navigation" class="v2-nav-menu w-nav-menu">
+          <nav class="div-block-96">
+            <div
+              data-hover="true"
+              data-delay="0"
+              data-w-id="cd09e042-5042-6079-ec1e-c152e4f20de6"
+              class="v2-nav-dropdown-wrap w-dropdown"
+            >
+              <div class="v2-nav-dropdown-toggle w-dropdown-toggle">
+                <div class="v2-nav-dropdown-text">Products</div>
+                <div class="v2-nav-dropdown-icon w-embed">
+                  <svg
+                    width="11"
+                    height="12"
+                    viewbox="0 0 11 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5.10156 9.45312L0.53125 4.90625C0.320312 4.67188 0.320312 4.32031 0.53125 4.10938L1.07031 3.57031C1.28125 3.35938 1.63281 3.35938 1.86719 3.57031L5.5 7.17969L9.10938 3.57031C9.34375 3.35938 9.69531 3.35938 9.90625 3.57031L10.4453 4.10938C10.6562 4.32031 10.6562 4.67188 10.4453 4.90625L5.875 9.45312C5.66406 9.66406 5.3125 9.66406 5.10156 9.45312Z"
+                      fill="currentColor"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <nav class="v2-nav-dropdown w-dropdown-list">
+                <div class="v2-nav-dropdown-content-wrap">
+                  <div class="v2-dropdown-content">
+                    <div class="v2-dropdown-content-grid-1">
+                      <div class="v2-dropdown-content-col">
+                        <div class="v2-dropdown-content-title">Platform</div>
+                        <ul role="list" class="v2-nav-list-col-1 w-list-unstyled">
+                          <li>
+                            <a
+                              href="https://roboflow.com/deploy"
+                              class="v2-nav-link-icon-blurb w-inline-block"
+                            >
+                              <div class="v2-nav-link-icon-wrap">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-rocket-launch.svg?v=ufFdIpdYmBRzN0Gm"
+                                  loading="lazy"
+                                  alt=""
+                                  class="v2-nav-link-icon-img"
+                                />
+                              </div>
+                              <div class="v2-nav-link-icon-blurb-content">
+                                <div class="v2-nav-link-blurb-title">Deploy</div>
+                                <div class="v2-nav-link-blurb-body">
+                                  Run models on device, at the edge, in your VPC, or via API
+                                </div>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="https://roboflow.com/workflows/build"
+                              class="v2-nav-link-icon-blurb w-inline-block"
+                            >
+                              <div class="v2-nav-link-icon-wrap">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-network-wired.svg?v=5zIw5fJ1HKmlCBg9"
+                                  loading="lazy"
+                                  alt=""
+                                  class="v2-nav-link-icon-img"
+                                />
+                              </div>
+                              <div class="v2-nav-link-icon-blurb-content">
+                                <div class="v2-nav-link-blurb-title-wrap">
+                                  <div class="v2-nav-link-blurb-title">Workflows</div>
+                                </div>
+                                <div class="v2-nav-link-blurb-body">
+                                  Low-code interface to build pipelines and applications
+                                </div>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="https://roboflow.com/train"
+                              class="v2-nav-link-icon-blurb w-inline-block"
+                            >
+                              <div class="v2-nav-link-icon-wrap">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-noun-neural-network.svg?v=ys3zolwm4Iamsjnh"
+                                  loading="lazy"
+                                  alt=""
+                                  class="v2-nav-link-icon-img"
+                                />
+                              </div>
+                              <div class="v2-nav-link-icon-blurb-content">
+                                <div class="v2-nav-link-blurb-title">Train</div>
+                                <div class="v2-nav-link-blurb-body">
+                                  Hosted model training infrastructure and GPU access
+                                </div>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="https://roboflow.com/annotate"
+                              class="v2-nav-link-icon-blurb w-inline-block"
+                            >
+                              <div class="v2-nav-link-icon-wrap">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-object-group.svg?v=OZjo_YRtVAWVUCXb"
+                                  loading="lazy"
+                                  alt=""
+                                  class="v2-nav-link-icon-img"
+                                />
+                              </div>
+                              <div class="v2-nav-link-icon-blurb-content">
+                                <div class="v2-nav-link-blurb-title">Annotate</div>
+                                <div class="v2-nav-link-blurb-body">
+                                  Label images fast with AI-assisted data annotation
+                                </div>
+                              </div>
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href="https://roboflow.com/universe"
+                              class="v2-nav-link-icon-blurb w-inline-block"
+                            >
+                              <div class="v2-nav-link-icon-wrap">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-planet-ringed.svg?v=_dxH7y9vJURvHgOl"
+                                  loading="lazy"
+                                  alt=""
+                                  class="v2-nav-link-icon-img"
+                                />
+                              </div>
+                              <div class="v2-nav-link-icon-blurb-content">
+                                <div class="v2-nav-link-blurb-title">Universe</div>
+                                <div class="v2-nav-link-blurb-body">
+                                  Open source computer vision datasets and pre-trained models
+                                </div>
+                              </div>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </nav>
+            </div>
+            <div
+              data-hover="true"
+              data-delay="0"
+              data-w-id="cd09e042-5042-6079-ec1e-c152e4f20e2a"
+              class="v2-nav-dropdown-wrap w-dropdown"
+            >
+              <div class="v2-nav-dropdown-toggle w-dropdown-toggle">
+                <div class="v2-nav-dropdown-text">Solutions</div>
+                <div class="v2-nav-dropdown-icon w-embed">
+                  <svg
+                    width="11"
+                    height="12"
+                    viewbox="0 0 11 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5.10156 9.45312L0.53125 4.90625C0.320312 4.67188 0.320312 4.32031 0.53125 4.10938L1.07031 3.57031C1.28125 3.35938 1.63281 3.35938 1.86719 3.57031L5.5 7.17969L9.10938 3.57031C9.34375 3.35938 9.69531 3.35938 9.90625 3.57031L10.4453 4.10938C10.6562 4.32031 10.6562 4.67188 10.4453 4.90625L5.875 9.45312C5.66406 9.66406 5.3125 9.66406 5.10156 9.45312Z"
+                      fill="currentColor"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <nav class="v2-nav-dropdown w-dropdown-list">
+                <div class="v2-nav-dropdown-content-wrap">
+                  <div class="v2-dropdown-content solutions">
+                    <div class="v2-dropdown-content-grid-1">
+                      <div
+                        class="v2-dropdown-content-col"
+                      >
+                        <div class="flex justify-between">
+                          <div class="v2-dropdown-content-title">By Industry</div>
+                          <a
+                            href="https://roboflow.com/industries"
+                            class="hidden wf-desktop:flex items-center gap-1 text-sm text-violet-700"
+                            ><span>Explore all industry solutions</span>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="15"
+                              height="16"
+                              viewBox="0 0 15 16"
+                              fill="none"
+                            >
+                              <path
+                                d="M12.4523 8.26487L12.7172 8.00002L12.4523 7.73518L8.51484 3.79768L8.25 3.53284L7.72031 4.06252L7.98516 4.32737L11.2828 7.62502H2.625H2.25V8.37502H2.625H11.2828L7.98516 11.6727L7.72031 11.9375L8.25 12.4672L8.51484 12.2024L12.4523 8.26487Z"
+                                fill="#6D28D9"
+                              />
+                            </svg>
+                          </a>
+                        </div>
+                        <ul role="list" class="v2-nav-list-col-2 w-list-unstyled">
+                          <li>
+                            <a
+                              href="https://roboflow.com/industries/aerospace-and-defense"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-jet-fighter-up.svg?v=rG_wvert1qSVKf8z"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Aerospace &amp; Defense</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e3d-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/automotive"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img src="https://blog.roboflow.com/assets/images/icon-cars.svg?v=Kx73zJ1XPrqmdPZO" loading="lazy" alt="" />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Automotive</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e40-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/consumer-goods"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-cart-shopping-gray_600.svg?v=mQZE8itVnCNUU-vC"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Consumer Goods</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e4c-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/energy-and-utilities"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-lightbulb-on.svg?v=XS5W6NXW__tePBb1"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Energy &amp; Utilities</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e46-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/healthcare-and-medicine"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-stethoscope.svg?v=48CCPiAXGf--OUZT"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Healthcare &amp; Medicine</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e40-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/industrial-manufacturing"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-industry-windows.svg?v=LlnYQsZIGVctCrRG"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Industrial Manufacturing</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e46-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/logistics"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-truck-fast-coolgray-600.svg?v=OKTXURpywZ4Ldn1a"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Logistics</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e49-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/manufacturing"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-conveyor-belt-boxes.svg?v=_NRYURhG5zRC_4BB"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Manufacturing</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e49-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/media-and-entertainment"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-camera-movie-gray-600.svg?v=IvKHc3qDhUIph4ub"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Media &amp; Entertainment</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e4f-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/retail-and-service"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-store.svg?v=rqHnghNBvJSXnkeR"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Retail &amp; Service</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e4f-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/robotics"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-conveyor-belt-arm-gray-600.svg?v=J76ccsTxv2MEMBj6"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Robotics</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e58-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/transportation"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-train-track.svg?v=MXLm89nzc55eMIIw"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Transportation</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e5b-e4f20dde">
+                            <a
+                              href="https://roboflow.com/industries/warehousing"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-forklift-gray-600.svg?v=WhcnsdGpRKk6pddW"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Warehousing</div>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <a
+                      href="https://roboflow.com/customer-stories"
+                      aria-current="page"
+                      class="v2-nav-link-cta-customer-stories w-inline-block w--current"
+                      tabindex="0"
+                    >
+                      <div class="text-lg font-medium leading-tight">
+                        Explore customer <br />stories and ebooks -&gt;
+                      </div>
+                      <div class="text-block-245 mt-2">
+                        See case studies, comprehensive guides, and insights from thousands of
+                        real-world AI projects.
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </nav>
+            </div>
+            <div
+              data-hover="true"
+              data-delay="0"
+              data-w-id="cd09e042-5042-6079-ec1e-c152e4f20e5e"
+              class="v2-nav-dropdown-wrap w-dropdown"
+            >
+              <div class="v2-nav-dropdown-toggle w-dropdown-toggle">
+                <div class="v2-nav-dropdown-text">Resources</div>
+                <div class="v2-nav-dropdown-icon w-embed">
+                  <svg
+                    width="11"
+                    height="12"
+                    viewbox="0 0 11 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5.10156 9.45312L0.53125 4.90625C0.320312 4.67188 0.320312 4.32031 0.53125 4.10938L1.07031 3.57031C1.28125 3.35938 1.63281 3.35938 1.86719 3.57031L5.5 7.17969L9.10938 3.57031C9.34375 3.35938 9.69531 3.35938 9.90625 3.57031L10.4453 4.10938C10.6562 4.32031 10.6562 4.67188 10.4453 4.90625L5.875 9.45312C5.66406 9.66406 5.3125 9.66406 5.10156 9.45312Z"
+                      fill="currentColor"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <nav class="v2-nav-dropdown w-dropdown-list">
+                <div class="v2-nav-dropdown-content-wrap">
+                  <div class="v2-dropdown-content">
+                    <div class="v2-dropdown-content-grid-2">
+                      <div
+                        id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e67-e4f20dde"
+                        class="v2-dropdown-content-col"
+                      >
+                        <ul role="list" class="v2-nav-list-col-2 w-list-unstyled">
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e7a-e4f20dde">
+                            <a
+                              href="https://roboflow.com/customer-stories"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-file-lines-gray-600.svg?v=G3_tjvpOSkVmKSW7"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Customer Stories</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e74-e4f20dde">
+                            <a
+                              href="https://lu.ma/roboflow"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-screencast-coolgray-600.svg?v=ey_hqDejyOeHJMWH"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Weekly Product Webinar</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e7a-e4f20dde">
+                            <a
+                              href="https://discuss.roboflow.com/"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-messages-coolgray-600.svg?v=igPuyBar1u7oorHU"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">User Forum</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e74-e4f20dde">
+                            <a
+                              href="https://roboflow.com/templates"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-rectangle-history.svg?v=tvbv7CjJ9Sd52s5f"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Inference Templates</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e74-e4f20dde">
+                            <a
+                              href="https://playground.roboflow.com"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-chart-diagram-gray-600.svg?v=bdR3lNU6Ybu1mVvw"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Model Playground</div>
+                            </a>
+                          </li>
+                          <li id="w-node-cd09e042-5042-6079-ec1e-c152e4f20e71-e4f20dde">
+                            <a
+                              href="https://roboflow.com/formats"
+                              class="v2-nav-link-icon w-inline-block"
+                            >
+                              <div class="div-block-97">
+                                <img
+                                  src="https://blog.roboflow.com/assets/images/icon-right-left-large.svg?v=1slcP7KCx89C1Vw5"
+                                  loading="lazy"
+                                  alt=""
+                                />
+                              </div>
+                              <div class="v2-nav-link-blurb-title">Convert Annotation Formats</div>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </nav>
+            </div>
+            <a href="https://roboflow.com/pricing" class="v2-nav-link">Pricing</a>
+            <a href="https://docs.roboflow.com/" class="v2-nav-link">Docs</a>
+            <a href="https://blog.roboflow.com/" class="v2-nav-link w-nav-link w--current">Blog</a>
+          </nav>
+          <div class="div-block-98">
+            <a href="#/search" class="v2-btn-search" aria-label="search">
+              <svg
+                width="17"
+                height="16"
+                viewBox="0 0 17 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                role="img"
+              >
+                <title>Search</title>
+                <g clip-path="url(#clip0_1125_655)">
+                  <path
+                    d="M12.0844 6.5C12.0844 5.17392 11.5576 3.90215 10.6199 2.96447C9.6822 2.02678 8.41043 1.5 7.08435 1.5C5.75827 1.5 4.4865 2.02678 3.54882 2.96447C2.61113 3.90215 2.08435 5.17392 2.08435 6.5C2.08435 7.82608 2.61113 9.09785 3.54882 10.0355C4.4865 10.9732 5.75827 11.5 7.08435 11.5C8.41043 11.5 9.6822 10.9732 10.6199 10.0355C11.5576 9.09785 12.0844 7.82608 12.0844 6.5ZM11.1187 11.5969C10.0125 12.475 8.60935 13 7.08435 13C3.49373 13 0.584351 10.0906 0.584351 6.5C0.584351 2.90937 3.49373 0 7.08435 0C10.675 0 13.5844 2.90937 13.5844 6.5C13.5844 8.025 13.0594 9.42813 12.1812 10.5344L16.0562 14.4094L16.5875 14.9406L15.525 16L14.9937 15.4688L11.1187 11.5938V11.5969Z"
+                    fill="#4B5563"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_1125_655">
+                    <rect width="16" height="16" fill="white" transform="translate(0.584351)" />
+                  </clipPath>
+                </defs>
+              </svg>
+            </a>
+            <a href="https://app.roboflow.com" class="v2-nav-link-sign-in">Sign In</a>
+            <a
+              data-wf--v2-header-btn--variant="outline"
+              href="https://roboflow.com/sales"
+              class="v2-header-btn-primary w-variant-11c824b4-ed6a-89c1-40b0-8285751e8b94"
+              >Book a demo</a
+            >
+            <a
+              data-wf--v2-header-btn--variant="base"
+              href="https://app.roboflow.com/login"
+              class="v2-header-btn-primary"
+              >Get Started</a
+            >
+          </div>
+        </nav>
+      </div>
+      <div class="div-block-361">
+        <a href="#/search" class="v2-btn-search" aria-label="search">
+          <svg
+            width="17"
+            height="16"
+            viewBox="0 0 17 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+          >
+            <title>Search</title>
+            <g clip-path="url(#clip0_1125_655)">
+              <path
+                d="M12.0844 6.5C12.0844 5.17392 11.5576 3.90215 10.6199 2.96447C9.6822 2.02678 8.41043 1.5 7.08435 1.5C5.75827 1.5 4.4865 2.02678 3.54882 2.96447C2.61113 3.90215 2.08435 5.17392 2.08435 6.5C2.08435 7.82608 2.61113 9.09785 3.54882 10.0355C4.4865 10.9732 5.75827 11.5 7.08435 11.5C8.41043 11.5 9.6822 10.9732 10.6199 10.0355C11.5576 9.09785 12.0844 7.82608 12.0844 6.5ZM11.1187 11.5969C10.0125 12.475 8.60935 13 7.08435 13C3.49373 13 0.584351 10.0906 0.584351 6.5C0.584351 2.90937 3.49373 0 7.08435 0C10.675 0 13.5844 2.90937 13.5844 6.5C13.5844 8.025 13.0594 9.42813 12.1812 10.5344L16.0562 14.4094L16.5875 14.9406L15.525 16L14.9937 15.4688L11.1187 11.5938V11.5969Z"
+                fill="#4B5563"
+              />
+            </g>
+            <defs>
+              <clipPath id="clip0_1125_655">
+                <rect width="16" height="16" fill="white" transform="translate(0.584351)" />
+              </clipPath>
+            </defs>
+          </svg>
+        </a>
+        <a href="https://app.roboflow.com" class="link-20">Sign in</a>
+        <a
+          data-wf--v2-btn-header--variant="outline"
+          href="https://roboflow.com/sales"
+          class="v2-btn-header w-variant-695e7275-2490-d6cf-ce35-05d4683a0734"
+          >Book a demo</a
+        >
+        <a
+          data-wf--v2-btn-header--variant="base"
+          href="https://app.roboflow.com/login"
+          class="v2-btn-header"
+          >Get Started</a
+        >
+      </div>
+      <div class="v2-mobile-nav-wrap v2-hidden-flex-1054">
+        <a href="#/search" class="v2-btn-search v2-hidden-search" aria-label="search">
+          <svg
+            width="17"
+            height="16"
+            viewBox="0 0 17 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+          >
+            <title>Search</title>
+            <g clip-path="url(#clip0_1125_655)">
+              <path
+                d="M12.0844 6.5C12.0844 5.17392 11.5576 3.90215 10.6199 2.96447C9.6822 2.02678 8.41043 1.5 7.08435 1.5C5.75827 1.5 4.4865 2.02678 3.54882 2.96447C2.61113 3.90215 2.08435 5.17392 2.08435 6.5C2.08435 7.82608 2.61113 9.09785 3.54882 10.0355C4.4865 10.9732 5.75827 11.5 7.08435 11.5C8.41043 11.5 9.6822 10.9732 10.6199 10.0355C11.5576 9.09785 12.0844 7.82608 12.0844 6.5ZM11.1187 11.5969C10.0125 12.475 8.60935 13 7.08435 13C3.49373 13 0.584351 10.0906 0.584351 6.5C0.584351 2.90937 3.49373 0 7.08435 0C10.675 0 13.5844 2.90937 13.5844 6.5C13.5844 8.025 13.0594 9.42813 12.1812 10.5344L16.0562 14.4094L16.5875 14.9406L15.525 16L14.9937 15.4688L11.1187 11.5938V11.5969Z"
+                fill="#4B5563"
+              />
+            </g>
+            <defs>
+              <clipPath id="clip0_1125_655">
+                <rect width="16" height="16" fill="white" transform="translate(0.584351)" />
+              </clipPath>
+            </defs>
+          </svg>
+        </a>
+        <div class="v2-btn-menu w-nav-button">
+          <div class="v2-icon-menu w-embed">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="21"
+              height="24"
+              viewbox="0 0 21 24"
+              fill="none"
+            >
+              <path
+                d="M0 3.75C0 3.3375 0.3375 3 0.75 3H20.25C20.6625 3 21 3.3375 21 3.75C21 4.1625 20.6625 4.5 20.25 4.5H0.75C0.3375 4.5 0 4.1625 0 3.75ZM0 11.25C0 10.8375 0.3375 10.5 0.75 10.5H20.25C20.6625 10.5 21 10.8375 21 11.25C21 11.6625 20.6625 12 20.25 12H0.75C0.3375 12 0 11.6625 0 11.25ZM21 18.75C21 19.1625 20.6625 19.5 20.25 19.5H0.75C0.3375 19.5 0 19.1625 0 18.75C0 18.3375 0.3375 18 0.75 18H20.25C20.6625 18 21 18.3375 21 18.75Z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          </div>
+          <div class="v2-icon-xmark w-embed">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="24"
+              viewbox="0 0 18 24"
+              fill="none"
+            >
+              <path
+                d="M15.2109 19.2703C15.5016 19.5609 15.9797 19.5609 16.2703 19.2703C16.5609 18.9797 16.5609 18.5016 16.2703 18.2109L10.0594 12L16.2703 5.78906C16.5609 5.49844 16.5609 5.02031 16.2703 4.72969C15.9797 4.43906 15.5016 4.43906 15.2109 4.72969L9 10.9406L2.79375 4.72969C2.50312 4.43906 2.025 4.43906 1.73437 4.72969C1.44375 5.02031 1.44375 5.49844 1.73437 5.78906L7.94062 12L1.72969 18.2109C1.43906 18.5016 1.43906 18.9797 1.72969 19.2703C2.02031 19.5609 2.49844 19.5609 2.78906 19.2703L9 13.0594L15.2109 19.2703Z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        <main class="gh-main">
+            
+  <section class="pt-20 bg-gradient-to-b from-violet-50 to-white">
+    <div class="container">
+      <div class="flex flex-col gap-3 max-w-[50rem]">
+        <a class="text-violet-800" href="https://blog.roboflow.com">Blog</a>
+        <h1 class="text-2xl/tight wf-mobile-wide:text-4xl wf-desktop:text-[47px]/tight font-semibold">Understanding Video with GPT-6 Astra</h1>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-6 wf-desktop:mt-12 pb-20">
+    <div class="container">
+       <div class="flex flex-col wf-desktop:flex-row gap-6 wf-desktop:gap-20">
+          <div class="post-content order-2 wf-desktop:order-1 wf-desktop:col-span-8">
+          <picture>
+    <!-- Serve the AVIF format if the browser supports it -->
+    <!-- Remove this block when using animated images as feature images -->
+    <!-- Serve the WebP format if the browser supports it -->
+    <source
+        srcset="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w400/format/webp/2026/09/astra-1.jpg 300w,
+                https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w640/format/webp/2026/09/astra-1.jpg 600w,
+                https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w1000/format/webp/2026/09/astra-1.jpg 1000w,
+                https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w1200/format/webp/2026/09/astra-1.jpg 2000w"
+        sizes="(min-width: 1400px) 1400px, 92vw"
+        type="image/webp"
+    >
+    <!-- Serve original file format as a fallback -->
+    <img
+        srcset="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w400/2026/09/astra-1.jpg 300w,
+                https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w640/2026/09/astra-1.jpg 600w,
+                https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w1000/2026/09/astra-1.jpg 1000w,
+                https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w1000/2026/09/astra-1.jpg 2000w"
+        sizes="(min-width: 1400px) 1400px, 92vw"
+        src="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w1200/2026/09/astra-1.jpg"
+        alt="Understanding Video with GPT-6 Astra"
+        class="rounded-xl overflow-hidden w-full"
+    >
+</picture>
+          <div
+            class="flex flex-wrap items-center justify-between gap-3 mt-6 text-base max-w-[78ch] mx-auto"
+          >
+            <div class="flex items-center gap-2">
+
+              <div class="flex">
+                    <div
+                      class="relative"
+                      style="z-index: 1;left: 0;"
+                    >
+                      <div
+                        class="w-12 h-12 bg-gray-100 rounded-full border-2 border-white"
+                        style="background-image: url(https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w400/format/webp/2026/07/260504_Roboflow_Day3_1020-1.jpg);
+                      background-size: cover;"
+                      >
+                      </div>
+                    </div>
+              </div>
+
+              <div class="center">
+                <div class="text-gray-900 font-medium text-sm md:text-base"><a href="/author/erik/">Erik Kokalj</a></div>
+                <div class="text-xs md:text-sm text-gray-500">Published
+                  Sep 11, 2026
+                  •
+                  5 min read
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col items-center">
+            <div
+              class="prose w-full mt-6 pt-6 border-t border-gray-200"
+            ><p>GPT-6 Astra is really good at vision, but doesn't support video inputs. Send it a sequence of timestamped frames in a request, ask for a strict JSON output, and it can accurately do action recognition by providing timestamps of events in the clip. We tried it on sports analytics, process monitoring and logistics turnaround time. Every video below is Astra's output drawn back onto the original video.</p><figure class="kg-card kg-video-card kg-width-wide kg-card-hascaption" data-kg-thumbnail="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/tennis_astra_social_s_thumb.jpg" data-kg-custom-thumbnail="">
+            <div class="kg-video-container">
+                <video src="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/tennis_astra_social_s.mp4" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1280" height="720" loop="" autoplay="" muted="" playsinline="" preload="metadata" style="aspect-ratio: 1280 / 720; background: transparent url('https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/tennis_astra_social_s_thumb.jpg') 50% 50% / cover no-repeat;"></video>
+                <div class="kg-video-overlay">
+                    <button class="kg-video-large-play-icon" aria-label="Play video">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="kg-video-player-container kg-video-hide">
+                    <div class="kg-video-player">
+                        <button class="kg-video-play-icon" aria-label="Play video">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"></path>
+                            </svg>
+                        </button>
+                        <button class="kg-video-pause-icon kg-video-hide" aria-label="Pause video">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <rect x="3" y="1" width="7" height="22" rx="1.5" ry="1.5"></rect>
+                                <rect x="14" y="1" width="7" height="22" rx="1.5" ry="1.5"></rect>
+                            </svg>
+                        </button>
+                        <span class="kg-video-current-time">0:00</span>
+                        <div class="kg-video-time">
+                            /<span class="kg-video-duration">1:00</span>
+                        </div>
+                        <input type="range" class="kg-video-seek-slider" max="100" value="0">
+                        <button class="kg-video-playback-rate" aria-label="Adjust playback speed">1×</button>
+                        <button class="kg-video-unmute-icon" aria-label="Unmute">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M15.189 2.021a9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1.794a.249.249 0 0 1 .221.133 9.73 9.73 0 0 0 7.924 4.85h.06a1 1 0 0 0 1-1V3.02a1 1 0 0 0-1.06-.998Z"></path>
+                            </svg>
+                        </button>
+                        <button class="kg-video-mute-icon kg-video-hide" aria-label="Mute">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M16.177 4.3a.248.248 0 0 0 .073-.176v-1.1a1 1 0 0 0-1.061-1 9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h.114a.251.251 0 0 0 .177-.073ZM23.707 1.706A1 1 0 0 0 22.293.292l-22 22a1 1 0 0 0 0 1.414l.009.009a1 1 0 0 0 1.405-.009l6.63-6.631A.251.251 0 0 1 8.515 17a.245.245 0 0 1 .177.075 10.081 10.081 0 0 0 6.5 2.92 1 1 0 0 0 1.061-1V9.266a.247.247 0 0 1 .073-.176Z"></path>
+                            </svg>
+                        </button>
+                        <input type="range" class="kg-video-volume-slider" max="100" value="100">
+                    </div>
+                </div>
+            </div>
+            <figcaption><p><span style="white-space: pre-wrap;">Score and event banners from GPT-6 Astra; skeletons from a Roboflow pose model.</span></p></figcaption>
+        </figure><h2 id="gpt-6-astra-for-vision">GPT-6 Astra for Vision</h2><p>GPT-6 Astra takes text and images. The API rejects an mp4, whether sent as a video part or as a file. So the question is how much of a video you can push through the image path.</p><p>The vision capabilities itself are very strong. Roboflow tested it on detection benchmarks and calls it the best vision model he has seen. <a href="https://x.com/skalskip92/status/2096317264463012261?s=20&ref=blog.roboflow.com">See thread here</a>.</p><figure class="kg-card kg-image-card kg-card-hascaption"><a href="https://x.com/skalskip92/status/2096317264463012261?ref=blog.roboflow.com"><img src="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/2026/09/skalskip92-gpt-6-astra-x-v2.png" class="kg-image" alt="SkalskiP on X: Gemini dethroned. GPT-6 Astra is the best vision model I have seen." loading="lazy" width="667" height="635" srcset="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w600/2026/09/skalskip92-gpt-6-astra-x-v2.png 600w, https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/2026/09/skalskip92-gpt-6-astra-x-v2.png 667w"></a><figcaption><a href="https://x.com/skalskip92/status/2096317264463012261?ref=blog.roboflow.com"><span style="white-space: pre-wrap;">Piotr Skalski on X</span></a><span style="white-space: pre-wrap;">, September 5, 2026</span></figcaption></figure><h2 id="sending-video-to-a-model-that-only-sees-images">Sending Video to a Model that only sees Images</h2><p>The workaround is to send a sequence of frames (at a fixed rate) via <code>input_image</code> along with their timestamps in the prompt (<code>input_text</code>) itself. For the examples below we forced the output to be JSON with event type enums and timestamps, then we overlayed the status on original video.</p><p>Reasoning effort <code>high</code> helped on every clip. A 100 frame request takes two to three minutes and costs about $1 (at $12.50/MTok input, $50/MTok output).</p><h2 id="demo-1-sports-analytics">Demo 1: Sports Analytics</h2><p>A fixed camera behind the baseline with two players and scoreboard blacked out so Astra has to infer the score from play. We used 5FPS, and asked the model to return event type, timestamp and player id (shirt color). </p><figure class="kg-card kg-video-card kg-width-wide kg-card-hascaption" data-kg-thumbnail="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/tennis_events_verify_15s_thumb.jpg" data-kg-custom-thumbnail="">
+            <div class="kg-video-container">
+                <video src="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/tennis_events_verify_15s.mp4" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1280" height="720" loop="" autoplay="" muted="" playsinline="" preload="metadata" style="aspect-ratio: 1280 / 720; background: transparent url('https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/tennis_events_verify_15s_thumb.jpg') 50% 50% / cover no-repeat;"></video>
+                <div class="kg-video-overlay">
+                    <button class="kg-video-large-play-icon" aria-label="Play video">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="kg-video-player-container kg-video-hide">
+                    <div class="kg-video-player">
+                        <button class="kg-video-play-icon" aria-label="Play video">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"></path>
+                            </svg>
+                        </button>
+                        <button class="kg-video-pause-icon kg-video-hide" aria-label="Pause video">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <rect x="3" y="1" width="7" height="22" rx="1.5" ry="1.5"></rect>
+                                <rect x="14" y="1" width="7" height="22" rx="1.5" ry="1.5"></rect>
+                            </svg>
+                        </button>
+                        <span class="kg-video-current-time">0:00</span>
+                        <div class="kg-video-time">
+                            /<span class="kg-video-duration">0:15</span>
+                        </div>
+                        <input type="range" class="kg-video-seek-slider" max="100" value="0">
+                        <button class="kg-video-playback-rate" aria-label="Adjust playback speed">1×</button>
+                        <button class="kg-video-unmute-icon" aria-label="Unmute">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M15.189 2.021a9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1.794a.249.249 0 0 1 .221.133 9.73 9.73 0 0 0 7.924 4.85h.06a1 1 0 0 0 1-1V3.02a1 1 0 0 0-1.06-.998Z"></path>
+                            </svg>
+                        </button>
+                        <button class="kg-video-mute-icon kg-video-hide" aria-label="Mute">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M16.177 4.3a.248.248 0 0 0 .073-.176v-1.1a1 1 0 0 0-1.061-1 9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h.114a.251.251 0 0 0 .177-.073ZM23.707 1.706A1 1 0 0 0 22.293.292l-22 22a1 1 0 0 0 0 1.414l.009.009a1 1 0 0 0 1.405-.009l6.63-6.631A.251.251 0 0 1 8.515 17a.245.245 0 0 1 .177.075 10.081 10.081 0 0 0 6.5 2.92 1 1 0 0 0 1.061-1V9.266a.247.247 0 0 1 .073-.176Z"></path>
+                            </svg>
+                        </button>
+                        <input type="range" class="kg-video-volume-slider" max="100" value="100">
+                    </div>
+                </div>
+            </div>
+            <figcaption><p><span style="white-space: pre-wrap;">Astra's SERVE, HIT, POINT and FAULT events as they happen.</span></p></figcaption>
+        </figure><p>Request (prompt) looked something like this:</p><pre><code class="language-json">{
+  "model": "gpt-6-astra",
+  "reasoning": {"effort": "high"},
+  "input": [{"role": "user", "content": [
+    {"type": "input_text", "text": "Fixed camera behind the baseline. RED shirt = near player, GRAY shirt = far player. One frame every 0.2 s, timestamp burned in bottom-left. Report every SERVE, HIT, POINT and FAULT with the player, the time and a short note (stroke, or why the point ended)."},
+    {"type": "input_text",  "text": "Frame at t=0.0s:"},
+    {"type": "input_image", "image_url": "data:image/jpeg;base64,..."},
+    {"type": "input_text",  "text": "Frame at t=0.2s:"},
+    {"type": "input_image", "image_url": "data:image/jpeg;base64,..."}
+    // ... 100 frames per 20 s chunk
+  ]}],
+  "text": {"format": {"type": "json_schema", "strict": true, "schema": {
+    "events": [{"time": "number", "player": "RED | GRAY",
+                "type": "SERVE | HIT | POINT | FAULT", "note": "string"}]
+  }}}
+}</code></pre><p>Astra returns events like <code>{"time": 3.4, "player": "RED", "type": "SERVE"}</code>. Tennis scoring over the POINT events gives the scoreboard.</p><p><strong>Cost: </strong>100 frames at 768x432 are about 425 tokens each (85 plus 170 per 512 px tile), so ~45k input tokens per chunk, plus ~8k output tokens of reasoning. This takes ~3 minutes to process and costs about $1.</p><p><strong>FPS vs Accuracy? </strong>We re-ran the clip at 1 to 5 fps. Strokes are robust: all 7 serves and 17 hits were found at every rate, even at 1 fps. Point outcomes are not. Below 4 fps the model misses a point, as model doesn't have a frame to determine whether the ball went into the court. At other 2 demos FPS doesn't need to be nearly as high as for sports analytics.</p><h2 id="demo-2-process-monitoring">Demo 2: Process Monitoring</h2><p>An overhead camera above a taco line. Astra is checking whether chef has put all the right ingredients on the order. Same prompt shape: frames at 3 fps, the dishes on the plate, an event list. The one addition is an enum of the ingredients the chef has at their disposal (from the buffet).</p><figure class="kg-card kg-video-card kg-width-wide kg-card-hascaption" data-kg-thumbnail="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/buffet_hands_from4s_s_thumb.jpg" data-kg-custom-thumbnail="">
+            <div class="kg-video-container">
+                <video src="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/buffet_hands_from4s_s.mp4" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1440" height="948" loop="" autoplay="" muted="" playsinline="" preload="metadata" style="aspect-ratio: 1440 / 948; background: transparent url('https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/buffet_hands_from4s_s_thumb.jpg') 50% 50% / cover no-repeat;"></video>
+                <div class="kg-video-overlay">
+                    <button class="kg-video-large-play-icon" aria-label="Play video">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="kg-video-player-container kg-video-hide">
+                    <div class="kg-video-player">
+                        <button class="kg-video-play-icon" aria-label="Play video">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"></path>
+                            </svg>
+                        </button>
+                        <button class="kg-video-pause-icon kg-video-hide" aria-label="Pause video">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <rect x="3" y="1" width="7" height="22" rx="1.5" ry="1.5"></rect>
+                                <rect x="14" y="1" width="7" height="22" rx="1.5" ry="1.5"></rect>
+                            </svg>
+                        </button>
+                        <span class="kg-video-current-time">0:00</span>
+                        <div class="kg-video-time">
+                            /<span class="kg-video-duration">0:23</span>
+                        </div>
+                        <input type="range" class="kg-video-seek-slider" max="100" value="0">
+                        <button class="kg-video-playback-rate" aria-label="Adjust playback speed">1×</button>
+                        <button class="kg-video-unmute-icon" aria-label="Unmute">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M15.189 2.021a9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1.794a.249.249 0 0 1 .221.133 9.73 9.73 0 0 0 7.924 4.85h.06a1 1 0 0 0 1-1V3.02a1 1 0 0 0-1.06-.998Z"></path>
+                            </svg>
+                        </button>
+                        <button class="kg-video-mute-icon kg-video-hide" aria-label="Mute">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M16.177 4.3a.248.248 0 0 0 .073-.176v-1.1a1 1 0 0 0-1.061-1 9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h.114a.251.251 0 0 0 .177-.073ZM23.707 1.706A1 1 0 0 0 22.293.292l-22 22a1 1 0 0 0 0 1.414l.009.009a1 1 0 0 0 1.405-.009l6.63-6.631A.251.251 0 0 1 8.515 17a.245.245 0 0 1 .177.075 10.081 10.081 0 0 0 6.5 2.92 1 1 0 0 0 1.061-1V9.266a.247.247 0 0 1 .073-.176Z"></path>
+                            </svg>
+                        </button>
+                        <input type="range" class="kg-video-volume-slider" max="100" value="100">
+                    </div>
+                </div>
+            </div>
+            <figcaption><p><span style="white-space: pre-wrap;">Each ingredient ticked when Astra saw it land. Guacamole was ordered and never added. Hand skeletons and the plate box come from separate tracking models, not Astra.</span></p></figcaption>
+        </figure><p>The prompt structure is the same as for the tennis analytics, just the text, enums, and output format are specific to this environment:</p><pre><code class="language-json">{
+  "model": "gpt-6-astra",
+  "reasoning": {"effort": "high"},
+  "input": [{"role": "user", "content": [
+    {"type": "input_text", "text": "Overhead camera above a taco station. Focus on the purple plate: one large TORTILLA and two small GORDITAS, minced meat already on them. Ingredients on the table: SHREDDED_CABBAGE, GREEN_SALSA, RED_SALSA, GUACAMOLE, RADISH_SLICES, LIME_WEDGES, GRILLED_SPRING_ONIONS, ... Report every moment an ingredient lands on one of the items."},
+    {"type": "input_text",  "text": "Frame at t=0.00s:"},
+    {"type": "input_image", "image_url": "data:image/jpeg;base64,..."}
+    // ... 82 frames, one every 0.33 s
+  ]}],
+  "text": {"format": {"type": "json_schema", "strict": true, "schema": {
+    "events": [{"time": "number", "dish": "TORTILLA | GORDITA_1 | GORDITA_2",
+                "ingredient": "SHREDDED_CABBAGE | GREEN_SALSA | RED_SALSA | ...",
+                "confidence": "high | medium | low"}]
+  }}}
+}</code></pre><p>Astra reported 13 additions in 27 seconds, all within 0.3 s of what we could see in the frames. There was single request with 82 frames, with 43k input tokens, took 160 seconds, and costed &lt;$1.</p><h2 id="demo-3-logistics-turnaround-time">Demo 3: Logistics Turnaround Time</h2><p>A loading dock with three gates and an 11 minute CCTV clip. For each gate we want a timeline of gate state - either closed, open with no truck, truck docked and idle, loading, or unloading. That provides turnaround time and truck dwell time:</p><figure class="kg-card kg-video-card kg-width-wide kg-card-hascaption" data-kg-thumbnail="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/warehouse_gates_verify_s_thumb.jpg" data-kg-custom-thumbnail="">
+            <div class="kg-video-container">
+                <video src="https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/warehouse_gates_verify_s.mp4" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1104" height="828" loop="" autoplay="" muted="" playsinline="" preload="metadata" style="aspect-ratio: 1104 / 828; background: transparent url('https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/media/2026/09/warehouse_gates_verify_s_thumb.jpg') 50% 50% / cover no-repeat;"></video>
+                <div class="kg-video-overlay">
+                    <button class="kg-video-large-play-icon" aria-label="Play video">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="kg-video-player-container kg-video-hide">
+                    <div class="kg-video-player">
+                        <button class="kg-video-play-icon" aria-label="Play video">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"></path>
+                            </svg>
+                        </button>
+                        <button class="kg-video-pause-icon kg-video-hide" aria-label="Pause video">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <rect x="3" y="1" width="7" height="22" rx="1.5" ry="1.5"></rect>
+                                <rect x="14" y="1" width="7" height="22" rx="1.5" ry="1.5"></rect>
+                            </svg>
+                        </button>
+                        <span class="kg-video-current-time">0:00</span>
+                        <div class="kg-video-time">
+                            /<span class="kg-video-duration">0:31</span>
+                        </div>
+                        <input type="range" class="kg-video-seek-slider" max="100" value="0">
+                        <button class="kg-video-playback-rate" aria-label="Adjust playback speed">1×</button>
+                        <button class="kg-video-unmute-icon" aria-label="Unmute">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M15.189 2.021a9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1.794a.249.249 0 0 1 .221.133 9.73 9.73 0 0 0 7.924 4.85h.06a1 1 0 0 0 1-1V3.02a1 1 0 0 0-1.06-.998Z"></path>
+                            </svg>
+                        </button>
+                        <button class="kg-video-mute-icon kg-video-hide" aria-label="Mute">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M16.177 4.3a.248.248 0 0 0 .073-.176v-1.1a1 1 0 0 0-1.061-1 9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h.114a.251.251 0 0 0 .177-.073ZM23.707 1.706A1 1 0 0 0 22.293.292l-22 22a1 1 0 0 0 0 1.414l.009.009a1 1 0 0 0 1.405-.009l6.63-6.631A.251.251 0 0 1 8.515 17a.245.245 0 0 1 .177.075 10.081 10.081 0 0 0 6.5 2.92 1 1 0 0 0 1.061-1V9.266a.247.247 0 0 1 .073-.176Z"></path>
+                            </svg>
+                        </button>
+                        <input type="range" class="kg-video-volume-slider" max="100" value="100">
+                    </div>
+                </div>
+            </div>
+            <figcaption><p><span style="white-space: pre-wrap;">Per-gate state timeline from Astra, played back at 15x; skeletons from a Roboflow pose model.</span></p></figcaption>
+        </figure><p>One frame every 6 seconds is 112 frames for the whole 11min clip in a single request. The schema asks for <code>{state, start, end}</code> intervals per gate with no gaps.</p><pre><code class="language-json">"schema": {
+  "GATE_1": [{"state": "CLOSED | OPEN_NO_TRUCK | TRUCK_DOCKED_IDLE | TRUCK_LOADING | TRUCK_UNLOADING", "start": "number", "end": "number"}],
+  "GATE_2": [ ... ],
+  "GATE_3": [ ... ]
+}</code></pre><p>Cost: 34k input tokens, about $0.75 cents for 11 minutes footage.</p><h2 id="cost-optimizations-when-using-astra-for-video">Cost Optimizations when using Astra for video </h2><p>In the example above, streaming video to Astra for 24h a day to understand the turnaround time might not be feasible, as you'd burn ~$100/day in tokens.</p><p>Most of that footage does not need a frontier model. Whether a gate is open or closed, and whether a truck is docked, can be read by an object detector: train <a href="https://github.com/roboflow/rf-detr?ref=blog.roboflow.com">RF-DETR</a> on a few hundred labelled frames with classes like "open_gate", "closed_gate" and "truck" on Roboflow platform, and the state of each gate falls out of what is detected where. A small classifier on a per-gate crop works too.</p><p>The hard part is telling cargo loading from unloading. That is action recognition: a few seconds of context about people, forklifts and where the boxes are going, which is what Astra is good at. It also does not need the 6 second sampling we used here. In production, the small detector models says when a truck docks and when it leaves, and in between there is one question to answer per truck, so a handful of frames, cropped to that gate (one tile, about 255 tokens each), is enough. That turns about $100 a day per camera into a few cents per truck.</p><h2 id="when-to-use-gpt-6-astra-on-video">When to Use GPT-6 Astra on Video</h2><p>Use Astra when you need to know what happened in a clip and can accept event times to within a sampling step. Frame sampling with burned-in timestamps and a strict schema is enough, at about a dollar per hundred frames.</p><p>Astra is not a per-frame tracker. For keypoints, boxes or masks on every frame, run a fine-tuned RF-DETR in <a href="https://roboflow.com/?ref=blog.roboflow.com">Roboflow</a> and let Astra reason on top.</p><p>Compare GPT-6 Astra against every model we have benchmarked, and test it on your own images, on <a href="https://playground.roboflow.com/?ref=blog.roboflow.com" rel="noreferrer">Roboflow Playground</a>.</p></div>
+
+            <div class="w-full mt-12">
+  <a
+    href="https://roboflow.com/mcp?utm_source=blog&utm_medium=blog&utm_campaign=mcpblog&utm_content=post-footer"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="cta-post-mcp flex flex-col wf-tablet:flex-row items-start wf-tablet:items-center justify-between gap-6 wf-tablet:gap-10 w-full px-6 wf-mobile-wide:px-8 wf-tablet:px-10 py-7 wf-tablet:py-8 rounded-2xl no-underline text-white relative overflow-hidden"
+  >
+    <div class="flex flex-col gap-2 min-w-0 relative">
+      <div class="text-xl wf-mobile-wide:text-2xl font-semibold text-white leading-snug">Add the Roboflow MCP to your coding agent</div>
+      <p class="text-sm wf-mobile-wide:text-base text-violet-200 leading-relaxed m-0 max-w-[52ch]">One command installs Roboflow's MCP and Skills into your coding agent. Use the same Roboflow plans you already have.</p>
+    </div>
+
+    <div class="flex flex-col items-start wf-tablet:items-end gap-4 shrink-0 w-full wf-tablet:w-auto relative">
+      <span class="cta-mcp-btn inline-flex items-center justify-center gap-1.5 w-full wf-tablet:w-auto px-7 py-3 rounded-full bg-white text-violet-700 font-semibold text-base whitespace-nowrap">
+        Connect Your Agent
+        <span class="cta-mcp-arrow" aria-hidden="true">&rarr;</span>
+      </span>
+
+      <ul class="cta-mcp-icons flex flex-wrap items-center gap-2 m-0 p-0 list-none" aria-label="Works with Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot and OpenCode">
+        <li class="cta-mcp-icon flex items-center justify-center w-9 h-9 wf-mobile-wide:w-10 wf-mobile-wide:h-10 rounded-lg bg-white shadow-sm" title="Claude Code">
+          <img src="https://blog.roboflow.com/assets/images/agents/claude.svg?v=1Q8U5hbVqlTUv87_" alt="Claude Code" class="w-6 h-6 m-0" width="24" height="24" loading="lazy" />
+        </li>
+        <li class="cta-mcp-icon flex items-center justify-center w-9 h-9 wf-mobile-wide:w-10 wf-mobile-wide:h-10 rounded-lg bg-white shadow-sm" title="Codex">
+          <img src="https://blog.roboflow.com/assets/images/agents/codex.svg?v=7z4-gOgHODfi0971" alt="Codex" class="w-6 h-6 m-0" width="24" height="24" loading="lazy" />
+        </li>
+        <li class="cta-mcp-icon flex items-center justify-center w-9 h-9 wf-mobile-wide:w-10 wf-mobile-wide:h-10 rounded-lg bg-white shadow-sm" title="Cursor">
+          <img src="https://blog.roboflow.com/assets/images/agents/cursor.svg?v=WEn5A2S2ok3zuPoY" alt="Cursor" class="w-6 h-6 m-0" width="24" height="24" loading="lazy" />
+        </li>
+        <li class="cta-mcp-icon flex items-center justify-center w-9 h-9 wf-mobile-wide:w-10 wf-mobile-wide:h-10 rounded-lg bg-white shadow-sm" title="Gemini CLI">
+          <img src="https://blog.roboflow.com/assets/images/agents/gemini.svg?v=ocrmG3x0GAuP6oMh" alt="Gemini CLI" class="w-6 h-6 m-0" width="24" height="24" loading="lazy" />
+        </li>
+        <li class="cta-mcp-icon flex items-center justify-center w-9 h-9 wf-mobile-wide:w-10 wf-mobile-wide:h-10 rounded-lg bg-white shadow-sm" title="GitHub Copilot">
+          <img src="https://blog.roboflow.com/assets/images/agents/copilot.svg?v=s2kAclf2BVu8R2Dv" alt="GitHub Copilot" class="w-6 h-6 m-0" width="24" height="24" loading="lazy" />
+        </li>
+        <li class="cta-mcp-icon flex items-center justify-center w-9 h-9 wf-mobile-wide:w-10 wf-mobile-wide:h-10 rounded-lg bg-white shadow-sm" title="OpenCode">
+          <img src="https://blog.roboflow.com/assets/images/agents/opencode.svg?v=8oE1sWD0_mPy5UNg" alt="OpenCode" class="w-6 h-6 m-0" width="24" height="24" loading="lazy" />
+        </li>
+      </ul>
+    </div>
+  </a>
+</div>
+
+            <div class="prose w-full pt-12 mt-6 border-t border-gray-300">
+  <h3 class="no_toc"><strong>Cite this Post</strong></h3>
+  <p class="text-sm">Use the following entry to cite this post in your research:</p>
+  <p class="text-sm"><em><a href="/author/erik/">Erik Kokalj</a>. (Sep 11, 2026).
+      Understanding Video with GPT-6 Astra. Roboflow Blog: https://blog.roboflow.com/gpt6-astra-video-understanding/</em></p>
+</div>
+
+
+            <div
+  class="flex flex-col w-full gap-4 prose pt-12 mt-12 border-t border-gray-300"
+>
+  <h3 class="no_toc">Written by</h3>
+    <div
+      class="flex flex-col sm:flex-row gap-4 items-center p-6 bg-gray-50 rounded-lg"
+    >
+      <div class="shrink-0">
+          <div
+            class="w-12 h-12 bg-gray-100 rounded-full"
+            style="background-image: url(https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w400/format/webp/2026/07/260504_Roboflow_Day3_1020-1.jpg);
+            background-size: cover;"
+          >
+          </div>
+      </div>
+      <div class="w-full">
+        <div class="font-medium text-center sm:text-left">Erik Kokalj</div>
+        <div
+          class="text-sm text-gray-500 text-center sm:text-left"
+        >Developer Experience @ Roboflow</div>
+      </div>
+      <div class="flex items-center">
+        <a
+          href="/author/erik/"
+          class="flex text-xs px-3 py-2 bg-white border border-gray-300 whitespace-nowrap rounded-md text-gray-900 no-underline"
+        >View more posts</a>
+      </div>
+    </div>
+</div>
+              <div class="prose w-full pt-12 mt-12 border-t border-gray-300">
+    <div class="flex gap-4">
+      <h3 class="m-0 no_toc">Topics</h3>
+        <ul class="flex flex-wrap gap-2 p-0 m-0">
+            <li class="block p-0 m-0">
+              <a
+                href="/tag/deployment/"
+                title="Deployment"
+                class="tag tag-6092fa6c16dc9f003bcd350f
+                  deployment
+                  block text-xxs leading-none uppercase font-semibold tracking-wide text-gray-600 py-2 px-3 rounded-full border border-gray-300 no-underline whitespace-nowrap"
+              >Deployment</a>
+            </li>
+            <li class="block p-0 m-0">
+              <a
+                href="/tag/model-evaluation/"
+                title="Model Evaluation"
+                class="tag tag-6a47b8e8beaf300001055408
+                  model-evaluation
+                  block text-xxs leading-none uppercase font-semibold tracking-wide text-gray-600 py-2 px-3 rounded-full border border-gray-300 no-underline whitespace-nowrap"
+              >Model Evaluation</a>
+            </li>
+        </ul>
+    </div>
+  </div>
+          </div>
+        </div>
+
+        <aside class="order-1 wf-desktop:col-start-10 wf-desktop:col-span-3 wf-desktop:order-2 flex flex-col gap-6 wf-desktop:w-[300px] shrink-0">
+            <a href="https://summit.roboflow.com/?utm_source=blog&utm_medium=blog&utm_campaign=vissummit" target="_blank" class="w-full overflow-hidden rounded-md hidden wf-desktop:block">
+              <img src="https://blog.roboflow.com/assets/images/img-blog-banner-vis-summit-card-v2.webp?v=tZcoMu-qTH8xBFOS" loading="lazy" alt="Visual Intelligence Summit, 10.22.2026. Get tickets." class="w-full">
+            </a>
+
+            <div class="sticky top-[140px] flex flex-col wf-desktop:gap-6">
+              <ul class="flex flex-wrap gap-2">
+                  <li class="block">
+                    <a
+                      href="/tag/deployment/"
+                      title="Deployment"
+                      class="tag tag-6092fa6c16dc9f003bcd350f
+                        deployment
+                        btn-pill"
+                    >Deployment</a>
+                  </li>
+                  <li class="block">
+                    <a
+                      href="/tag/model-evaluation/"
+                      title="Model Evaluation"
+                      class="tag tag-6a47b8e8beaf300001055408
+                        model-evaluation
+                        btn-pill"
+                    >Model Evaluation</a>
+                  </li>
+              </ul>
+            <div class="toc-wrap">
+              <h2 class="font-medium toc-title">Table of Contents</h2>
+              <div class="toc"></div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 bg-gradient-to-b from-violet-50 to-white">
+  <div class="container">
+    <div class="flex flex-col gap-3 md:flex-row justify-between md:items-end">
+      <h2 class="text-3xl font-medium text-gray-900">More About
+        Deployment</h2>
+      <a href="https://blog.roboflow.com/tag/deployment/" class="text-violet-800">
+        <div>View All Deployment Posts</div>
+      </a>
+    </div>
+    <div class="">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+                <a href="/air-gapped-computer-vision-deployment/" class="flex gap-3 justify-between align-middle">
+
+                  <div>
+                    <h3 class="text-base font-medium text-gray-900">Air-Gapped Computer Vision Deployment: How to Run Offline</h3>
+                    <div class="text-xs text-gray-500">Sep 9, 2026
+                      •
+                      15 min read</div>
+                  </div>
+                  <div class="flex flex-col items-center">
+                    <div class="flex">
+                        <div
+                          class="relative"
+                          style="z-index: 1; left: calc(-8px * 0);"
+                        >
+                            <div
+                              class="w-7 h-7 bg-gray-100 rounded-full border-2 border-white"
+                              style="background-image: url(https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w400/format/webp/2024/10/tim-img.jpg);
+                                background-size: cover;"
+                            ></div>
+                        </div>
+                    </div>
+                  </div>
+                </a>
+                <a href="/edge-ai-inference-for-manufacturing/" class="flex gap-3 justify-between align-middle">
+
+                  <div>
+                    <h3 class="text-base font-medium text-gray-900">Edge AI Inference for Manufacturing</h3>
+                    <div class="text-xs text-gray-500">Sep 3, 2026
+                      •
+                      14 min read</div>
+                  </div>
+                  <div class="flex flex-col items-center">
+                    <div class="flex">
+                        <div
+                          class="relative"
+                          style="z-index: 1; left: calc(-8px * 0);"
+                        >
+                            <div
+                              class="w-7 h-7 bg-gray-100 rounded-full border-2 border-white"
+                              style="background-image: url(https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w400/format/webp/2024/10/tim-img.jpg);
+                                background-size: cover;"
+                            ></div>
+                        </div>
+                    </div>
+                  </div>
+                </a>
+                <a href="/object-detection-api/" class="flex gap-3 justify-between align-middle">
+
+                  <div>
+                    <h3 class="text-base font-medium text-gray-900">Object Detection API: Best Hosted Options in 2026 (and When to Own Your Model)</h3>
+                    <div class="text-xs text-gray-500">Aug 27, 2026
+                      •
+                      20 min read</div>
+                  </div>
+                  <div class="flex flex-col items-center">
+                    <div class="flex">
+                        <div
+                          class="relative"
+                          style="z-index: 1; left: calc(-8px * 0);"
+                        >
+                            <div
+                              class="w-7 h-7 bg-gray-100 rounded-full border-2 border-white"
+                              style="background-image: url(https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w400/format/webp/2024/10/tim-img.jpg);
+                                background-size: cover;"
+                            ></div>
+                        </div>
+                    </div>
+                  </div>
+                </a>
+                <a href="/on-premise-computer-vision/" class="flex gap-3 justify-between align-middle">
+
+                  <div>
+                    <h3 class="text-base font-medium text-gray-900">On-Premise Computer Vision: Run Vision AI on Your Own Servers</h3>
+                    <div class="text-xs text-gray-500">Aug 18, 2026
+                      •
+                      15 min read</div>
+                  </div>
+                  <div class="flex flex-col items-center">
+                    <div class="flex">
+                        <div
+                          class="relative"
+                          style="z-index: 1; left: calc(-8px * 0);"
+                        >
+                            <div
+                              class="w-7 h-7 bg-gray-100 rounded-full border-2 border-white"
+                              style="background-image: url(https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w400/format/webp/2024/10/tim-img.jpg);
+                                background-size: cover;"
+                            ></div>
+                        </div>
+                    </div>
+                  </div>
+                </a>
+                <a href="/self-hosted-computer-vision/" class="flex gap-3 justify-between align-middle">
+
+                  <div>
+                    <h3 class="text-base font-medium text-gray-900">Self-Hosted Computer Vision: Run Your Own Vision Stack with Roboflow Inference</h3>
+                    <div class="text-xs text-gray-500">Aug 18, 2026
+                      •
+                      12 min read</div>
+                  </div>
+                  <div class="flex flex-col items-center">
+                    <div class="flex">
+                        <div
+                          class="relative"
+                          style="z-index: 1; left: calc(-8px * 0);"
+                        >
+                            <div
+                              class="w-7 h-7 bg-gray-100 rounded-full border-2 border-white"
+                              style="background-image: url(https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w400/format/webp/2026/05/ChatGPT-Image-May-5--2026--12_22_38-AM-2-1.png);
+                                background-size: cover;"
+                            ></div>
+                        </div>
+                    </div>
+                  </div>
+                </a>
+                <a href="/what-is-an-inference-server/" class="flex gap-3 justify-between align-middle">
+
+                  <div>
+                    <h3 class="text-base font-medium text-gray-900">What Is An Inference Server?</h3>
+                    <div class="text-xs text-gray-500">Aug 17, 2026
+                      •
+                      10 min read</div>
+                  </div>
+                  <div class="flex flex-col items-center">
+                    <div class="flex">
+                        <div
+                          class="relative"
+                          style="z-index: 1; left: calc(-8px * 0);"
+                        >
+                            <div
+                              class="w-7 h-7 bg-gray-100 rounded-full border-2 border-white"
+                              style="background-image: url(https://storage.ghost.io/c/2c/8d/2c8d8c0d-1c15-4b6d-825e-02b78d61d40a/content/images/size/w400/format/webp/2024/10/tim-img.jpg);
+                                background-size: cover;"
+                            ></div>
+                        </div>
+                    </div>
+                  </div>
+                </a>
+            </div>
+    </div>
+  </div>
+</section>
+
+
+
+        </main>
+    </div>
+    <footer id="footer" class="v2-footer">
+  <div class="w-layout-blockcontainer container">
+    <div class="v2-footer-inner">
+      <div class="v2-footer-top-row">
+        <a href="https://roboflow.com" aria-current="page" class="w-inline-block w--current"><img
+            src="https://blog.roboflow.com/assets/images/logo-roboflow-white.svg?v=cVm8-vrolAgqhvm_" loading="lazy" alt="Roboflow logo"></a>
+        <div class="v2-footer-social-wrap">
+          <a href="https://www.linkedin.com/company/roboflow-ai" target="_blank"
+            class="v2-btn-footer-social w-inline-block">
+            <div class="code-embed-5 w-embed"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"
+                xmlns="http://www.w3.org/2000/svg" aria-label="linkedin logo">
+                <path
+                  d="M13 0H0.996875C0.446875 0 0 0.453125 0 1.00938V12.9906C0 13.5469 0.446875 14 0.996875 14H13C13.55 14 14 13.5469 14 12.9906V1.00938C14 0.453125 13.55 0 13 0ZM4.23125 12H2.15625V5.31875H4.23438V12H4.23125ZM3.19375 4.40625C2.52812 4.40625 1.99063 3.86563 1.99063 3.20312C1.99063 2.54062 2.52812 2 3.19375 2C3.85625 2 4.39687 2.54062 4.39687 3.20312C4.39687 3.86875 3.85937 4.40625 3.19375 4.40625ZM12.0094 12H9.93437V8.75C9.93437 7.975 9.91875 6.97813 8.85625 6.97813C7.775 6.97813 7.60938 7.82188 7.60938 8.69375V12H5.53438V5.31875H7.525V6.23125H7.55312C7.83125 5.70625 8.50938 5.15312 9.51875 5.15312C11.6188 5.15312 12.0094 6.5375 12.0094 8.3375V12Z"
+                  fill="currentColor"></path>
+              </svg></div>
+          </a>
+          <a href="https://x.com/roboflow" target="_blank" class="v2-btn-footer-social w-inline-block">
+            <div class="code-embed-3 w-embed"><svg width="14" height="14" viewbox="0 0 14 14" fill="none"
+                xmlns="http://www.w3.org/2000/svg" aria-label="x logo">
+                <path
+                  d="M2 0C0.896875 0 0 0.896875 0 2V12C0 13.1031 0.896875 14 2 14H12C13.1031 14 14 13.1031 14 12V2C14 0.896875 13.1031 0 12 0H2ZM11.2844 2.625L8.04062 6.33125L11.8562 11.375H8.86875L6.53125 8.31563L3.85313 11.375H2.36875L5.8375 7.40938L2.17812 2.625H5.24062L7.35625 5.42188L9.8 2.625H11.2844ZM10.1031 10.4875L4.79375 3.46562H3.90937L9.27812 10.4875H10.1H10.1031Z"
+                  fill="currentColor"></path>
+              </svg></div>
+          </a>
+          <a href="https://www.youtube.com/c/roboflow" target="_blank" class="v2-btn-footer-social w-inline-block">
+            <div class="code-embed-4 w-embed"><svg width="18" height="12" viewbox="0 0 18 12" fill="none"
+                xmlns="http://www.w3.org/2000/svg" aria-label="youtube logo">
+                <path
+                  d="M17.1767 1.87759C16.9804 1.13853 16.4021 0.556469 15.6678 0.358938C14.3369 0 8.99999 0 8.99999 0C8.99999 0 3.66311 0 2.33214 0.358938C1.59786 0.5565 1.01955 1.13853 0.823269 1.87759C0.466644 3.21719 0.466644 6.01213 0.466644 6.01213C0.466644 6.01213 0.466644 8.80706 0.823269 10.1467C1.01955 10.8857 1.59786 11.4435 2.33214 11.6411C3.66311 12 8.99999 12 8.99999 12C8.99999 12 14.3369 12 15.6678 11.6411C16.4021 11.4435 16.9804 10.8857 17.1767 10.1467C17.5333 8.80706 17.5333 6.01213 17.5333 6.01213C17.5333 6.01213 17.5333 3.21719 17.1767 1.87759ZM7.25452 8.54972V3.47453L11.7151 6.01219L7.25452 8.54972Z"
+                  fill="currentColor"></path>
+              </svg></div>
+          </a>
+          <a href="https://github.com/roboflow" target="_blank" class="v2-btn-footer-social w-inline-block"><div class="code-embed-4 w-embed"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="github logo">
+            <path d="M5.43437 12.4187C5.43437 12.4812 5.3625 12.5312 5.27187 12.5312C5.16875 12.5406 5.09688 12.4906 5.09688 12.4187C5.09688 12.3562 5.16875 12.3062 5.25938 12.3062C5.35313 12.2969 5.43437 12.3469 5.43437 12.4187ZM4.4625 12.2781C4.44063 12.3406 4.50313 12.4125 4.59688 12.4312C4.67813 12.4625 4.77188 12.4312 4.79063 12.3687C4.80938 12.3062 4.75 12.2344 4.65625 12.2063C4.575 12.1844 4.48438 12.2156 4.4625 12.2781ZM5.84375 12.225C5.75312 12.2469 5.69062 12.3063 5.7 12.3781C5.70937 12.4406 5.79063 12.4813 5.88438 12.4594C5.975 12.4375 6.0375 12.3781 6.02812 12.3156C6.01875 12.2563 5.93438 12.2156 5.84375 12.225ZM7.9 0.25C3.56563 0.25 0.25 3.54063 0.25 7.875C0.25 11.3406 2.43125 14.3063 5.54688 15.35C5.94688 15.4219 6.0875 15.175 6.0875 14.9719C6.0875 14.7781 6.07812 13.7094 6.07812 13.0531C6.07812 13.0531 3.89063 13.5219 3.43125 12.1219C3.43125 12.1219 3.075 11.2125 2.5625 10.9781C2.5625 10.9781 1.84687 10.4875 2.6125 10.4969C2.6125 10.4969 3.39062 10.5594 3.81875 11.3031C4.50312 12.5094 5.65 12.1625 6.09688 11.9563C6.16875 11.4563 6.37188 11.1094 6.59688 10.9031C4.85 10.7094 3.0875 10.4562 3.0875 7.45C3.0875 6.59062 3.325 6.15938 3.825 5.60938C3.74375 5.40625 3.47813 4.56875 3.90625 3.4875C4.55937 3.28437 6.0625 4.33125 6.0625 4.33125C6.6875 4.15625 7.35938 4.06563 8.025 4.06563C8.69063 4.06563 9.3625 4.15625 9.9875 4.33125C9.9875 4.33125 11.4906 3.28125 12.1438 3.4875C12.5719 4.57187 12.3063 5.40625 12.225 5.60938C12.725 6.1625 13.0312 6.59375 13.0312 7.45C13.0312 10.4656 11.1906 10.7062 9.44375 10.9031C9.73125 11.15 9.975 11.6187 9.975 12.3531C9.975 13.4062 9.96562 14.7094 9.96562 14.9656C9.96562 15.1687 10.1094 15.4156 10.5063 15.3438C13.6313 14.3062 15.75 11.3406 15.75 7.875C15.75 3.54063 12.2344 0.25 7.9 0.25ZM3.2875 11.0281C3.24687 11.0594 3.25625 11.1313 3.30938 11.1906C3.35938 11.2406 3.43125 11.2625 3.47187 11.2219C3.5125 11.1906 3.50313 11.1187 3.45 11.0594C3.4 11.0094 3.32812 10.9875 3.2875 11.0281ZM2.95 10.775C2.92813 10.8156 2.95937 10.8656 3.02187 10.8969C3.07187 10.9281 3.13438 10.9187 3.15625 10.875C3.17812 10.8344 3.14687 10.7844 3.08437 10.7531C3.02187 10.7344 2.97188 10.7437 2.95 10.775ZM3.9625 11.8875C3.9125 11.9281 3.93125 12.0219 4.00312 12.0813C4.075 12.1531 4.16562 12.1625 4.20625 12.1125C4.24687 12.0719 4.22813 11.9781 4.16563 11.9187C4.09688 11.8469 4.00313 11.8375 3.9625 11.8875ZM3.60625 11.4281C3.55625 11.4594 3.55625 11.5406 3.60625 11.6125C3.65625 11.6844 3.74063 11.7156 3.78125 11.6844C3.83125 11.6437 3.83125 11.5625 3.78125 11.4906C3.7375 11.4188 3.65625 11.3875 3.60625 11.4281Z" fill="currentColor"></path>
+            </svg></div>
+          </a>
+        </div>
+      </div>
+      <div class="v2-footer-nav-row">
+        <div class="v2-footer-nav-col">
+          <div class="v2-nav-col-title">Product</div>
+          <ul role="list" class="v2-footer-nav-list">
+            <li>
+              <a href="https://roboflow.com/deploy" class="v2-footer-link">Deploy</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/workflows/build" class="v2-footer-link">Workflows</a>
+            </li>
+            <li class="v2-footer-link">
+              <a href="https://roboflow.com/train" class="v2-footer-link">Train</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/annotate" class="v2-footer-link">Annotate</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/universe" class="v2-footer-link">Universe</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/managed-compute" class="v2-footer-link">Cloud Hosting</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/pricing" class="v2-footer-link">Pricing</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/sales" class="v2-footer-link">Talk to Sales</a>
+            </li>
+            <li></li>
+              <a href="https://roboflow.com/enterprise" class="v2-footer-link">Enterprise</a>
+            </li>
+          </ul>
+        </div>
+        <div id="w-node-dd5bce72-ad2f-1aeb-cc95-67c1f04d0fe7-f93613f6" class="v2-footer-nav-col">
+          <div class="v2-nav-col-title">Ecosystem</div>
+          <ul role="list" class="v2-footer-nav-list">
+            <li>
+              <a href="https://github.com/roboflow/notebooks" class="v2-footer-link">Notebooks</a>
+            </li>
+            <li>
+              <a href="https://github.com/autodistill/autodistill" class="v2-footer-link">Autodistill</a>
+            </li>
+            <li>
+              <a href="https://github.com/roboflow/supervision" class="v2-footer-link">Supervision</a>
+            </li>
+            <li>
+              <a href="https://github.com/roboflow/inference" class="v2-footer-link">Inference</a>
+            </li>
+            <li>
+              <a href="https://blog.roboflow.com/roboflow-100/" class="v2-footer-link">Roboflow 100</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/open-source" class="v2-footer-link">Open Source</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/hardware" class="v2-footer-link">Hardware</a>
+            </li>
+          </ul>
+        </div>
+        <div id="w-node-_6694c5c1-1d12-9c34-6d5f-3ed373b5fb88-f93613f6" class="v2-footer-nav-col">
+          <div class="v2-nav-col-title">Developers</div>
+          <ul role="list" class="v2-footer-nav-list">
+            <li>
+              <a href="https://docs.roboflow.com" class="v2-footer-link">Documentation</a>
+            </li>
+            <li>
+              <a href="https://discuss.roboflow.com" class="v2-footer-link">User Forum</a>
+            </li>
+            <li>
+              <a href="https://docs.roboflow.com/changelog" class="v2-footer-link">Changelog</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/learn" class="v2-footer-link">What is computer vision?</a>
+            </li>
+            <li>
+              <a href="https://lu.ma/roboflow" class="v2-footer-link">Weekly Product Webinar</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/formats" class="v2-footer-link">Convert Annotation Formats</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/models" class="v2-footer-link">Computer Vision Models</a>
+            </li>
+            <li>
+              <a href="https://playground.roboflow.com" class="v2-footer-link">Model Playground</a>
+            </li>
+          </ul>
+        </div>
+        <div id="w-node-f1b935c3-33e0-c40f-9a72-3362fa1a5d2d-f93613f6" class="v2-footer-nav-col">
+          <div class="v2-nav-col-title">Industries</div>
+          <ul role="list" class="v2-footer-nav-list">
+            <li>
+              <a href="https://roboflow.com/customer-stories" class="v2-footer-link">Customer Stories</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/industries/aerospace-and-defense" class="v2-footer-link">Aerospace &amp; Defense</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/industries/automotive" class="v2-footer-link">Automotive</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/industries/consumer-goods" class="v2-footer-link">Consumer Goods</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/industries/energy-and-utilities" class="v2-footer-link">Energy and Utilities</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/industries/healthcare-and-medicine" class="v2-footer-link">Healthcare &amp; Medicine</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/industries/industrial-manufacturing" class="v2-footer-link">Industrial Manufacturing</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/industries/logistics" class="v2-footer-link">Logistics</a>
+              </li>
+            <li>
+              <a href="https://roboflow.com/industries/manufacturing" class="v2-footer-link">Manufacturing</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/industries/media-and-entertainment" class="v2-footer-link">Media &amp; Entertainment</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/industries/retail-and-service" class="v2-footer-link">Retail &amp; Service</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/industries/transportation" class="v2-footer-link">Transportation</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/industries/warehousing" class="v2-footer-link">Warehousing</a>
+            </li>
+          </ul>
+        </div>
+        <div id="w-node-d6140afe-711b-b0a1-6610-baaecd4b5c5d-f93613f6" class="v2-footer-nav-col">
+          <div class="v2-nav-col-title">Models</div>
+          <ul role="list" class="v2-footer-nav-list">
+            <li>
+              <a href="https://roboflow.com/model/rf-detr" class="v2-footer-link">RF-DETR</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/model/segment-anything-3" class="v2-footer-link">SAM 3</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/model/yolo26" class="v2-footer-link">YOLO26</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/model/yolo11" class="v2-footer-link">YOLO11</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/model/yolov8" class="v2-footer-link">YOLOv8</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/model/yolov5" class="v2-footer-link">YOLOv5</a>
+            </li>
+            
+            <li>
+              <a href="https://roboflow.com/model-feature/multimodal-vision" class="v2-footer-link">Multimodal
+                Models</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/models" class="v2-footer-link">Explore All Models</a>
+            </li>
+          </ul>
+        </div>
+        <div id="w-node-_26b74fbc-1a6b-ee8e-a6e0-aed250fbd85e-f93613f6" class="v2-footer-nav-col">
+          <div class="v2-nav-col-title">Company</div>
+          <ul role="list" class="v2-footer-nav-list">
+            <li>
+              <a href="https://roboflow.com/about" class="v2-footer-link">About Us</a>
+            </li>
+            <li></li>
+              <a href="https://blog.roboflow.com" class="v2-footer-link">Blog</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/careers" class="v2-footer-link hiring">Careers</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/press" class="v2-footer-link">Press</a>
+            </li>
+            <li>
+              <a href="https://roboflow.com/contact" class="v2-footer-link">Contact</a>
+            </li>
+            <li>
+              <a href="https://status.roboflow.com" class="v2-footer-link">Service Status</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="v2-footer-bottom-row">
+        <div class="v2-footer-badge-wrap">
+            <img src="https://blog.roboflow.com/assets/images/badge-AWS-partner-ML.webp?v=rkAf8K1ftSGUY1CX" loading="lazy" alt="Badge AWS Qualified">
+            <img src="https://blog.roboflow.com/assets/images/badge-AWS-qualified.webp?v=0sL243cijNb-_3Ji" loading="lazy" alt="Badge AWS Qualified">
+            <img src="https://blog.roboflow.com/assets/images/badge-g2.svg?v=2VDs8dnIrNE9zww6" loading="lazy" alt="G2 Badge logo" class="w-12 ">
+            <img src="https://blog.roboflow.com/assets/images/badge-SOC-NonCPA.webp?v=-j7ah3V8IWaE0ga3" loading="lazy" alt="Badge SOC-NonCPA">
+            <img src="https://blog.roboflow.com/assets/images/2024-Prometheus_Wordmark_800px_F_1.webp?v=zhlargXtltAZs2r_" loading="lazy" alt="2024 Prometeus Awards Winner Badge">
+          </div>
+        <div class="v2-footer-bottom-nav-wrap">
+          <a href="https://roboflow.com/terms" class="v2-footer-link-sm">Terms of Service</a>
+          <a href="https://roboflow.com/enterprise-terms" class="v2-footer-link-sm">Enterprise Terms</a>
+          <a href="https://roboflow.com/privacy" class="v2-footer-link-sm">Privacy Policy</a>
+          <a href="https://blog.roboflow.com/sitemap/" class="v2-footer-link-sm">Sitemap</a>
+        </div>
+        <div class="v2-footer-copyright w-embed">&copy; <span class="current-year"></span> Roboflow, Inc. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=5f0640a53424bf5860a0e6f8"
+  type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+  crossorigin="anonymous"></script>
+<script defer src="https://blog.roboflow.com/assets/js/webflow.js?v=KYeaZEY4YnPOylqP" type="text/javascript"></script>
+<!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->    <!-- fix image gallery aspect ratio via https://forum.ghost.org/t/error-ghost-gallery/5909/3 -->
+<script type="text/javascript">
+$(function() {
+    var images = document.querySelectorAll('.kg-gallery-image img');
+        images.forEach(function (image) {
+            var container = image.closest('.kg-gallery-image');
+            var width = image.attributes.width.value;
+            var height = image.attributes.height.value;
+            var ratio = width / height;
+            container.style.flex = ratio + ' 1 0%';
+    });
+});
+</script>
+<script src="https://app.roboflow.com/scripts/utm.js" ></script>
+    <script type="text/javascript">
+      (function () {
+        var t = document.createElement('script'),
+          s = document.getElementsByTagName('script')[0];
+        t.async = true;
+        t.id = 'cio-forms-handler';
+        t.setAttribute('data-site-id', 'bd767cfa913dbbe0bac4');
+        t.setAttribute('data-base-url', 'https://customerioforms.com');
+
+        t.src = 'https://customerioforms.com/assets/forms.js';
+
+        s.parentNode.insertBefore(t, s);
+      })();
+    </script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const currentYear = new Date().getFullYear();
+        document.querySelector('.current-year').textContent = currentYear;
+      });
+
+
+
+    </script>
+
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.30.0/tocbot.min.js"></script>
+    <script src="https://blog.roboflow.com/assets/js/prism.js?v=W-AYiTbZiuw64DeS" type="text/javascript"></script>
+    <script src="https://blog.roboflow.com/assets/js/pages/post.js?v=AkUvpsozQ8uHS5bT" type="text/javascript"></script>
+    <script src="https://unpkg.com/@rive-app/canvas"></script>
+    <script>
+        const r = new rive.Rive({
+            src: `https://blog.roboflow.com/assets/rive/playground-logos.riv?v=jvgQojfj_N9HE8Lv`,
+            canvas: document.getElementById('canvas'),
+            autoplay: true,
+            onLoad: () => {
+                r.resizeDrawingSurfaceToCanvas();
+            },
+        });
+    </script>
+
+
+
+</body>
+
+</html>

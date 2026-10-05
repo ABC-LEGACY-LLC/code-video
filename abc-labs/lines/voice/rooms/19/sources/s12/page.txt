@@ -1,0 +1,191 @@
+IEM Plug-in Suite
+
+ IEM Plug-in Suite
+
+ Download
+
+ Documentation
+
+ FAQ
+
+ Contact
+
+ Plug-in Descriptions 
+
+ Here you find a list of available plug-ins in alphabetical order and their description.
+
+ AllRADecoder
+
+Author Daniel Rudrich and Franz Zotter Type Decoder Input Ambisonic signals Output Audio signals
+
+With the AllRADecoder you can design an Ambisonic decoder for an arbitrary loudspeaker layout using the AllRAD approach. More information can be found in the AllRADecoder Guide.
+
+BinauralDecoder
+
+Author Daniel Rudrich Type Binaural Decoder Input Ambisonic signals Output Binaural headphone signals
+
+The BinauralDecoder renders the Ambisonic input signal to a binaural headphone signal using the MagLS approach proposed in [1]. The used HRTFs come from the Neumann KU 100 dummy head. Additionally, you can apply headphone equalizations from measurements by Benjamin Bernschütz et. al..
+
+In contrast to conventional binaural decoders, the BinauralDecoder does not use virtual loudspeakers, but converts the Ambisonic signals directly to binaural headphone signals, with help of pre-processed HRTFs. They are processed in way, that the original frequency response of the HRTFs is maintained as best as possible, when used with Ambisonics.
+
+[1] Schoerkhuber, Christian; Zaunschirm, Markus; Hoeldrich, Robert. “Binaural Rendering of Ambisonic Signals via Magnitude Least Squares”, Fortschritte der Akustik, DAGA, 2018
+
+CoordinateConverter
+
+Author Daniel Rudrich Type Tool Input N/A Output N/A
+
+The CoordinateConverter converts VST parameters from a spherical representation to a cartesian, and vice versa. There’s no audio processing, just the conversion of parameters. A typical application would be the conversion of xyz-position data (e.g. in an automation) to a spherical representation (azimuth, elevation, radius) for the use of Ambisonic encoders.
+
+Another example would be the usage with the RoomEncoder: With using the sphere panner (spherical coordinates) and mapping the calculated cartesian coordinates from the CoordinateConverter to the source position of the RoomEncoder, you can make a source rotate around the listener in the virtual room, maintaining the radius. For that you will need to set the radius normalization to any desired maximum value, and set x- and y-range to 15.0m, z-range to 10.0m, as these values are the parameter limits of the source’s x-, y- and z-position. Adjusting the ranges is necessary, as VST parameters are normlized to a range from 0 to 1.
+
+DirectionalCompressor
+
+Author Daniel Rudrich Type Dynamics Input Ambisonic signals Output Ambisonic signals
+
+The DirectionalCompressor is a more sophisticated Ambisonic compressor/limiter which lets you control the dynamics for different spatial regions. Example: a singer in the front could be compressed more than the rest. You can realize a ducking effect, with which the singer’s level can control the level of everything else.
+Use the sphere panner and width settings to create a spatial mask. You can listen to the masked and unmasked signals by selecting them in the combobox. There are two identical compressors available. In each you can choose between three input signals (full = omni, masked signal, and unmasked signal = the rest). You can also select the target to which the compressor gains are applied to.
+
+DirectivityShaper
+
+Author Daniel Rudrich Type Directivity encoder Input Mono audio signal Output Directivity signals
+
+This plugin let’s you filter your input signal into four independent bands, to which different directivity patterns can be applied to. Also the bands can be spatially panned.
+
+For each band, you can choose from four types of filters (all-pass, low-pass, band-pass, high-pass) blend continuously between different directivity orders, as well as different shapes: basic, maxRE and in-phase. The latter makes sure that there will be no side-lobes, at cost of a wider main-lobe. Use the sphere in the upper left to pan the individual bands. The black dot represents the probe, with which you can measure the frequency-response for that direction (white line in the filter visualizer). You can also lock the relative orientations of all bands to the probe, by enabling the “lock orientations”-button. Now every band will rotate according to the probe’s orientation.
+See the DirectivityShaper Guide for a detailed manual of the plug-in.
+
+DistanceCompensator
+
+Author Daniel Rudrich Type Loudspeaker compensation Input Audio signals Output Audio signals
+
+With the DistanceCompensator you can insert the distances from the listening position to each loudspeaker and the plug-in will calculate the needed delays and gains in order to compensate for distance differences. So this plug-in is best place at the end of your signal chain (e.g. right after the decoders).
+
+Gain and delay compensation can be enabled/disabled separately and their calculation parameters can also be set. Regarding delays, the speed of sound can be specified, which is 343.2m/s (at 20°C) per default. The gains are calculated using a distance-ratio-exponent, which has a value of 1.0 assuming free field conditions. In rooms, smaller values might be more adequate due to wall reflections. Additionally, you can specify whether there should be only attenuations or using the zero-mean setting, which also will have positive gains applied to loudspeakers further away from the listener.
+
+It’s also possible to load the distance information via configuration files holding a LoudspeakerLayout object (see the Configuration Files Guide for more information). Once loaded a LoudspeakerLayout, you can define the reference position to which the loudspeakers are compensated for.
+
+DualDelay
+
+Author Daniel Rudrich Type Delay Effect Input Ambisonic signals Output Ambisonic signals
+
+The DualDelay is the plug-in-version of our RotationalDelay we first used for the Al Di Meola concert. There are two delay-lines, which can be configured independently. The most exciting feature is the rotation or warping of the whole sound field every single time it runs through the delay-line. The delay’s timbre can be shaped with the high- and low-pass filters. The output of each delay-line can be fed back to itself or/and to the other one and mixed to the output signal. Delay times can be synced to the host BPM.
+
+EnergyVisualizer
+
+Author Daniel Rudrich Type Visualizer Input Ambisonic signals Output Ambisonic signals
+
+The EnergyVisualizer visualizes the energy distribution on the sphere of the Ambisonic input signal using a Hammer-Aitoff projection (a spherical projection which is area-preserving). The visualized dynamic range can be adjusted between 10 and 60dB, the range can be moved up or down using the slider next to the projection. The energy levels are color-coded with a perceptually motivated colormap. The used colormap is depicted next to the projection. As the Ambisonic Signal is decoded using 480 virtual loudspeakers with a subsequent RMS calculation and OpenGL visualization, the EnergyVisualizer is quite computation-intensive. Make sure you use only a few of them. The processing will be automatically deactivated when the GUI window is closed.
+
+FdnReverb
+
+Author Sebastian Grill Type Reverb Input Audio/Ambisonic signals Output Audio/Ambisonic signals
+
+The FdnReverb is a Feedback-Delay-Network reverberation. You can use it with single audio signals but also with Ambisonic signals, leading to a spatial and temporal diffuse reverberation. You can set the overall reverberation time and refine it frequency-dependently with the help of two shelving-filters. With the fade-in control you can make the effect even more diffuse by emplyoing a second network in parallel. Make sure the fade-in time is below the overall reverberation time.
+
+GranularEncoder
+
+Author Stefan Riedel Type Encoder/Synthesizer Input Mono or stereo audio signals Output Ambisonic signals
+
+The GranularEncoder takes a mono or stereo input signal, and encodes short ‘grains’ of audio into the Ambisonic domain. The grains are distributed around a controllable center direction, and you are able to specify the size and shape of the distribution. The ‘Mix’ parameter allows to blend between standard encoding (dry) and granular encoding (wet). This allows to use GranularEncoder either as an Ambisonic granulator (wet setting) or as an Ambisonic grain delay (mixed setting). The plug-in comes with integrated modulators for the grain parameters (cf. small sliders), which are useful to vary e.g. the grain seed ‘Position’ in the internal audio buffer.
+
+To get a visual impression of the grain distribution it is recommended to use the EnergyVisualizer plug-in, placed e.g. on your Ambisonic bus before decoding. A detailed description can be found in the GranularEncoder Guide.
+
+MatrixMultiplier
+
+Author Daniel Rudrich Type Matrix Transformation Input Audio/Ambisonic signals Output Audio/Ambisonic signals
+
+With the MatrixMultiplier you can load a configuration which contains a TransformationMatrix object (see the Configuration Files Guide) which will be applied to the input signal.
+
+MultiBandCompressor
+
+Author Markus Huber Type Dynamics Input Ambisonic signals Output Ambisonic signals
+
+The MultiBandCompressor splits your Ambisonic signal into four bands and compresses them individually. The filters’ crossover frequencies can be adjusted to taste, and the individual compressors are fully configurable as well, making use of the parameters threshold, knee, ratio, attac, release, and make-up gain. With the master controls you can adjust the parameters of all compressors simultaneously.
+
+The used filters are Linkwitz-Rilely crossovers, so the magnitude response of your mix will be retained, without introducing any phase issues. The plug-in will also retain the spatial image of your mix, by analyzing the omni-channel (W) of each band and applying the same gain reduction to all channels.
+
+MultiEncoder
+
+Author Daniel Rudrich Type Encoder Input Audio signals Output Ambisonic signals
+
+With the MultiEncoder you can encode multiple sources with just one plug-in. Select your desired number of input sources in the upper left corner (up to 64). Every source can be panned, muted and soloed individually. Also the gain and label color can be adjusted. Enable the „Lock Directions“-button to let the sources stick to the Master-Panner, which can be controlled separately.
+
+Double-click on the sphere, to switch to a linear elevation representation, to get a higher resolution at the horizon. Every ring represents 15° of elevation.
+
+MultiEQ
+
+Author Daniel Rudrich Type Filter Input Audio signals Output Audio signals
+
+The MultiEQ is a simple multi-channel equalizer, filtering up to 64 audio channels. Each of the six filters can be switched on and of, and different filter types can be selected. The first and last filter offer additional filter types: low-/high-pass of different filter orders. The 4th order HP / LP can be used to create a Linkwitz-Riley crossover, good for splitting audio into two bands, with a constant magnitude response when added together.
+
+OmniCompressor
+
+Author Daniel Rudrich Type Dynamics Input Ambisonic signals Output Ambisonic signals
+
+The OmniCompressor is an Ambisonic compressor which can also be used as a limiter. It works like a regular audio compressor. It uses the first input channel (W-channel, hence the name ‘Omni’) as the driving signal and applies the calculated gains to all the whole Ambisonic signal. When the ratio is set to infinity and the attack time is set to 0.0 ms, the compressor acts as a brick-wall limiter. With that setting you might want to enable the lookahead feature to avoid unwanted distortions. This introduces a delay of 5ms to your signal. There is a hidden parameter (when disabling the plug-ins GUI in your DAW) with which you can deactivate latency reporting to your DAW to compensate for it. This improves the playback performance of your project, however the delay won’t be compensated for with that setting.
+
+ProbeDecoder
+
+Author Daniel Rudrich Type Analysis tool/Decoder Input Ambisonic signals Output Mono audio signal
+
+The ProbeDecoder is a little tool to sample/decode the Ambisonic input signal for one specific direction and listen to the output, mostly used for testing purposes.
+
+RoomEncoder
+
+Author Daniel Rudrich Type Encoder+Reverb Input Mono audio signal or Directivity signals Output Ambisonic signals
+
+The RoomEncoder is so far the most complex and computation-intensive plug-in within the IEM Plug-in Suite. With it, you can put a source and a listener into a virtual shoebox-shaped room and render over 200 wall reflections. You can move the source and the listener freely within the room, which will automatically generate the Doppler-shift effect. Use the overall reflection coefficient and the low-shelve and high-shelve filters to change the character of the reflections. With the additional attenuation controls, you can add an additional attenuation for each of the six walls. E.g. you can get rid of the upper wall by completly turning down the ceiling attenuation.
+
+But thats not all: The RoomEncoder takes DirectivitySignals (or when set to 0th order also monophonic signals) as an input signal. This means that your source can have a frequency-dependent and time-variable (e.g. changing the direction of the source) directivity. The DirectivityShaper plugin is a good tool to create various directivity patterns.
+
+You can sync several RoomEncoder instances to render the same room using one of the four synchronization channels. You can also select, which parameters to sync (listener position, room size, and reflection properties).
+
+SceneRotator
+
+Author Daniel Rudrich Type Rotator Input Ambisonic signals Output Ambisonic signals
+
+The SceneRotator is an Ambisonic rotator plug-in, which rotates the Ambisonic scene, hence the name! It can be used with Yaw-Pitch-Roll rotation data, or alternativeley with Quaternions. Each of the three rotation axes can be flipped, and aso the Quaternion data can be inverted. Rotations then happen in reversed direction. You can also select the order of rotations. Ambisonic rotation is very useful in combination with binaural playback, so head-movements can be compensated for.
+
+SimpleDecoder
+
+Author Daniel Rudrich Type Decoder Input Ambisonic signals Output Audio signals
+
+The SimpleDecoder reads JSON configuration files and decodes the Ambisonic input signal to loudspeaker signals. You can create these configuration files with the AllRADecoder. For more information about the structure of the configuration files read the Configuration Files Guide.
+
+When setting the subwoofer mode to discrete or virtual the Ambisonic input signal is filtered into two bands (using 4th order high-/low-pass). The upper band is decoded according to the loaded configuration file. If set to discrete, the lower is sent to the defined subwoofer channel. You will get a warning, if you choose a channel, which is already used by the decoder. If set to virtual, the low-pass signal is passed to all loudspeakers, creating a virtual subwoofer.
+
+StereoEncoder
+
+Author Daniel Rudrich Type Encoder Input Mono or stereo audio signals Output Ambisonic signals
+
+Use the StereoEncoder plug-in to encode mono or stereo audio signals into the Ambisonic domain. In the upper right corner you can set your desired Ambisonic order and normalization. Make sure your bus size is big enough. Set to Auto-mode and the plug-in adapts to changes in bus size by using the highest possible order.
+
+Use the Azimuth, Elevation and Roll sliders to pan your source. With the Width slider you can separate the two input channels. You can, of course, use the StereoEncoder also for mono sources. Additionally, there is a quaternion input you can use as an alternative to Azimuth and Elevation, e.g. for orientation data of (head-)trackers.
+
+Use the following modifiers and the mouse-wheel to pan with the sphere panner:
+
+⌘/CTRL : Azimuth
+
+ALT : Elevation
+
+CMD / CTRL + ALT : Roll
+
+SHIFT : Width
+
+Double-click on the sphere, to switch to a linear elevation representation, to get a higher resolution at the horizon. Every ring represents 15° of elevation.
+
+There are some key-combinations to directly pan to a specific direction: SHIFT + F -> Front, SHIFT + U -> Up, SHIFT + L -> Left, and so on… you can figure out the rest :-)
+
+ToolBox
+
+Author Daniel Rudrich Type Ambisonic tool Input Ambisonic signals Output Ambisonic signals
+
+This is a small plug-in with a growing set of handy features. For now, you can flip the Ambisonic input signal along the x, y and/or z axis. You can also use it as an adapter between plug-ins with an automatic order settings and plug-ins with fixed order settings. The LOA (lower order Ambisonics) Weighting feature lets you mix Ambisonic signals with different orders. Example: use the ToolBox with the setting 1st (input), 5th (output) and maxrE weights for a FOA microphone signal (which is LOA) to include it in your 5th order mix. Note, that the weights have to match you decoder’s weights. The gain control boosts or attenuates the overall audio level.
+
+ Plug-in Suite by IEM - Institute of Electronic Music and Acoustics
+
+ IEM.at
+
+ Docs
+
+ Website created with Hugo using the kube theme.

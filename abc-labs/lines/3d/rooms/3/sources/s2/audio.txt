@@ -1,0 +1,4 @@
+size=N/A time=00:00:00.02 bitrate=N/A speed=66.5x    [silencedetect @ 0x720410f8a5c0] silence_start: 0
+[Parsed_volumedetect_0 @ 0x720412f4bec0] mean_volume: -91.0 dB
+[Parsed_volumedetect_0 @ 0x720412f4bec0] max_volume: -91.0 dB
+[silencedetect @ 0x720410f8a5c0] silence_end: 30.9986 | silence_duration: 30.9986

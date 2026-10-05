@@ -1,0 +1,16 @@
+CSS light theme: --c-accent oklch(.5 .24 265) -> [29, 76, 233]  --c-snippet-canvas oklch(.975 .012 265) -> [243, 247, 255]
+expected five tones (levels: 5), dark to light: [[29, 76, 233], [78, 126, 243], [131, 168, 250], [186, 208, 254], [243, 247, 255]]
+video background: [218, 223, 233]
+fish R-channel peaks over t000-t006 (value, smoothed count): [(33, 1934), (79, 2437), (101, 1654), (123, 2890), (145, 1560), (179, 3638), (193, 8055)]
+background R: 218  -> R levels a 5-level ramp from the darkest peak to the background would put at: [33, 79, 126, 172, 218]
+Bayer t000-t006: high-passed autocorrelation along x, lags 1..24: [0.752, 0.41, 0.189, 0.123, 0.112, 0.082, 0.036, 0.019, 0.043, 0.068, 0.065, 0.038, 0.022, 0.031, 0.053, 0.056, 0.041, 0.028, 0.034, 0.049, 0.053, 0.04, 0.025, 0.025]
+Bayer t000-t006: high-passed autocorrelation along y, lags 1..24: [0.707, 0.31, 0.078, 0.036, 0.047, 0.017, -0.036, -0.046, 0.002, 0.048, 0.05, 0.012, -0.009, 0.008, 0.044, 0.053, 0.029, 0.006, 0.011, 0.032, 0.04, 0.021, 0.002, 0.003]
+Bayer t000-t006: strongest repeat beyond lag 2: x at 3px, y at 3px
+Lines t008-t011: high-passed autocorrelation along x, lags 1..24: [0.741, 0.381, 0.164, 0.103, 0.097, 0.078, 0.05, 0.038, 0.041, 0.039, 0.029, 0.024, 0.034, 0.046, 0.056, 0.057, 0.047, 0.033, 0.023, 0.017, 0.01, 0.005, 0.006, 0.009]
+Lines t008-t011: high-passed autocorrelation along y, lags 1..24: [0.745, 0.403, 0.188, 0.119, 0.104, 0.077, 0.045, 0.032, 0.043, 0.05, 0.051, 0.051, 0.06, 0.071, 0.084, 0.086, 0.072, 0.047, 0.028, 0.022, 0.023, 0.019, 0.019, 0.021]
+Lines t008-t011: strongest repeat beyond lag 2: x at 3px, y at 3px
+dot-lattice test (x mod P, y mod P) over every frame of 5.0-5.5 s and t000-t006, Bayer only:
+  P=4: 11798 dots; share in the busiest 1/16 of the 16 residues = 0.08 (uniform would be 0.06)
+  P=8: 11798 dots; share in the busiest 1/16 of the 64 residues = 0.11 (uniform would be 0.06)
+  P=16: 11798 dots; share in the busiest 1/16 of the 256 residues = 0.14 (uniform would be 0.06)
+  P=17: 11798 dots; share in the busiest 1/16 of the 289 residues = 0.13 (uniform would be 0.06)

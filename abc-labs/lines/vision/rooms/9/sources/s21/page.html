@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" lang="en-us" xml:lang="en-us" class="_Skins_HTML5___Top_Navigation" data-mc-search-type="Stem" data-mc-help-system-file-name="Default.xml" data-mc-path-to-help-system="../../../" data-mc-has-content-body="True" data-mc-toc-path="User Guide|Compositing with Nuke|Filtering and Spatial Effects" data-mc-target-type="WebHelp2" data-mc-runtime-file-type="Topic;Default" data-mc-preload-images="false" data-mc-in-preview-mode="false">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset="utf-8" /><title>Simulating Depth-of-Field Blurring</title>
+        <link rel="shortcut icon" type="image/png" href="../../resources/images/logos/foundry_logo_small.png" />
+        <!-- Smartmenus css-->
+        <link href="../../../Skins/Default/Stylesheets/Slideshow.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../../Skins/Default/Stylesheets/TextEffects.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../../Skins/Default/Stylesheets/Topic.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../../Skins/Default/Stylesheets/Components/Styles.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../../Skins/Default/Stylesheets/Components/Tablet.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../../Skins/Default/Stylesheets/Components/Mobile.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../../Skins/Default/Stylesheets/Components/Print.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../../Skins/Fluid/stylesheets/foundation.6.2.3.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../../Skins/Fluid/stylesheets/styles.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../../Skins/Fluid/stylesheets/tablet.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../../Skins/Fluid/stylesheets/mobile.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../../Skins/Fluid/stylesheets/print.css" rel="stylesheet" type="text/css" data-mc-generated="True" />
+        <link href="../../resources/stylesheets/cookie-pro.css" rel="stylesheet" type="text/css" />
+        <link href="../../resources/js/smartmenus-1.0.0-beta1/css/sm-core-css.css" rel="stylesheet" type="text/css" />
+        <link href="../../resources/js/smartmenus-1.0.0-beta1/css/sm-mint/sm-mint.css" rel="stylesheet" type="text/css" />
+        <style>/*&lt;meta /&gt;*/
+
+.button.print-button
+{
+	-pie-background: linear-gradient(#ffffff, #ffffff);
+}
+
+.button.previous-topic-button
+{
+	-pie-background: linear-gradient(#ffffff, #ffffff);
+}
+
+.button.next-topic-button
+{
+	-pie-background: linear-gradient(transparent, transparent);
+}
+
+.needs-pie
+{
+	behavior: url('../../../Resources/Scripts/PIE-no-motw.htc');
+}
+
+</style>
+        <style>/*&lt;meta /&gt;*/
+
+.button.print-button
+{
+	-pie-background: linear-gradient(#ffffff, #ffffff);
+}
+
+.button.previous-topic-button
+{
+	-pie-background: linear-gradient(#ffffff, #ffffff);
+}
+
+.button.next-topic-button
+{
+	-pie-background: linear-gradient(transparent, transparent);
+}
+
+.needs-pie
+{
+	behavior: url('../../../Resources/Scripts/PIE-no-motw.htc');
+}
+
+</style>
+        <link href="../../resources/stylesheets/masterstyles.css" rel="stylesheet" type="text/css" />
+        <link href="../../resources/stylesheets/foundrypdfstyles.css" rel="stylesheet" type="text/css" />
+        <script src="../../../Resources/Scripts/jquery.min.js" type="text/javascript">
+        </script>
+        <script src="../../../Resources/Scripts/purify.min.js" type="text/javascript" defer="defer">
+        </script>
+        <script src="../../../Resources/Scripts/require.min.js" type="text/javascript" defer="defer">
+        </script>
+        <script src="../../../Resources/Scripts/require.config.js" type="text/javascript" defer="defer">
+        </script>
+        <script src="../../../Resources/Scripts/foundation.6.2.3_custom.js" type="text/javascript" defer="defer">
+        </script>
+        <script src="../../../Resources/Scripts/plugins.min.js" type="text/javascript" defer="defer">
+        </script>
+        <script src="../../../Resources/Scripts/MadCapAll.js" type="text/javascript" defer="defer">
+        </script>
+    </head>
+    <body>
+        <div class="foundation-wrap off-canvas-wrapper">
+            <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper="">
+                <aside class="off-canvas position-right" role="navigation" id="offCanvas" data-off-canvas="" data-position="right" data-mc-ignore="true">
+                    <ul class="off-canvas-accordion vertical menu off-canvas-list" data-accordion-menu="" data-mc-back-link="Back" data-mc-css-tree-node-expanded="is-accordion-submenu-parent" data-mc-css-tree-node-collapsed="is-accordion-submenu-parent" data-mc-css-sub-menu="vertical menu is-accordion-submenu nested" data-mc-include-indicator="False" data-mc-include-icon="False" data-mc-include-parent-link="True" data-mc-include-back="False" data-mc-defer-expand-event="True" data-mc-expand-event="click.zf.accordionMenu" data-mc-toc="True">
+                    </ul>
+                </aside>
+                <div class="off-canvas-content inner-wrap" data-off-canvas-content="">
+                    <div data-sticky-container="" class="title-bar-container">
+                        <nav class="title-bar tab-bar sticky" role="banner" data-sticky="" data-options="marginTop:0" style="width:100%" data-sticky-on="small" data-mc-ignore="true"><a class="skip-to-content fluid-skip showOnFocus" href="#">Skip To Main Content</a>
+                            <div class="middle title-bar-section outer-row clearfix">
+                                <div class="menu-icon-container relative clearfix">
+                                    <div class="central-account-wrapper">
+                                        <div class="central-dropdown"><a class="central-account-drop"><span class="central-account-image"></span><span class="central-account-text">Account</span></a>
+                                            <div class="central-dropdown-content"><a class="MCCentralLink central-dropdown-content-settings">Settings</a>
+                                                <hr class="central-separator" /><a class="MCCentralLink central-dropdown-content-logout">Logout</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="menu-icon" aria-label="Show Navigation Panel" data-toggle="offCanvas"><span></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="title-bar-layout outer-row">
+                                <div class="logo-wrapper"><a class="logo" href="../../learn_nuke.html" alt="Logo"></a>
+                                </div>
+                                <div class="navigation-wrapper nocontent">
+                                    <ul class="navigation clearfix" role="navigation" data-mc-css-tree-node-has-children="has-children" data-mc-css-sub-menu="sub-menu" data-mc-expand-event="mouseenter" data-mc-top-nav-menu="True" data-mc-max-depth="3" data-mc-include-icon="False" data-mc-include-indicator="False" data-mc-include-children="True" data-mc-include-siblings="True" data-mc-include-parent="True" data-mc-toc="True">
+                                        <li class="placeholder" style="visibility:hidden"><a>placeholder</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="central-account-wrapper">
+                                    <div class="central-dropdown"><a class="central-account-drop"><span class="central-account-image"></span><span class="central-account-text">Account</span></a>
+                                        <div class="central-dropdown-content"><a class="MCCentralLink central-dropdown-content-settings">Settings</a>
+                                            <hr class="central-separator" /><a class="MCCentralLink central-dropdown-content-logout">Logout</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="nav-search-wrapper">
+                                    <div class="nav-search row">
+                                        <form class="search" action="#">
+                                            <div class="search-bar search-bar-container needs-pie">
+                                                <input class="search-field needs-pie" type="search" aria-label="Search Field" placeholder="Search documentation" />
+                                                <div class="search-filter-wrapper"><span class="invisible-label" id="search-filters-label">Filter: </span>
+                                                    <div class="search-filter" aria-haspopup="true" aria-controls="sf-content" aria-expanded="false" aria-label="Search Filter" title="All Files" role="button" tabindex="0">
+                                                    </div>
+                                                    <div class="search-filter-content" id="sf-content">
+                                                        <ul>
+                                                            <li>
+                                                                <button class="mc-dropdown-item" aria-labelledby="search-filters-label filterSelectorLabel-00001"><span id="filterSelectorLabel-00001">All Files</span>
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="search-submit-wrapper" dir="ltr">
+                                                    <div class="search-submit" title="Search" role="button" tabindex="0"><span class="invisible-label">Submit Search</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                    <div class="main-section">
+                        <div class="row outer-row sidenav-layout">
+                            <nav class="sidenav-wrapper">
+                                <div class="sidenav-container">
+                                    <ul class="off-canvas-accordion vertical menu sidenav" data-accordion-menu="" data-mc-css-tree-node-expanded="is-accordion-submenu-parent" data-mc-css-tree-node-collapsed="is-accordion-submenu-parent" data-mc-css-sub-menu="vertical menu accordion-menu is-accordion-submenu nested" data-mc-include-indicator="False" data-mc-include-icon="False" data-mc-include-parent-link="False" data-mc-include-back="False" data-mc-defer-expand-event="True" data-mc-expand-event="click.zf.accordionMenu" data-mc-toc="True" data-mc-side-nav-menu="True">
+                                    </ul>
+                                </div>
+                            </nav>
+                            <div class="body-container">
+                                <div data-mc-content-body="True">
+                                    <MadCap:conditionalText data-mc-conditions="Default.HTMLOnline">
+                                        <script src="../../resources/js/tracking.js" type="text/javascript">
+                                        </script>
+                                        <script src="https://foundry-cdn.s3.amazonaws.com/navigation/foundry-menu-widget.min.js">
+                                        </script>
+                                        <script src="../../resources/js/online.js" type="text/javascript">
+                                        </script>
+                                        <script src="../../resources/js/cookie-pro.js" type="text/javascript">
+                                        </script>
+                                    </MadCap:conditionalText>
+                                    <script>/* <![CDATA[ */
+			$(document).ready(function() {
+			$("a.logo").after('<div class="product"><a href="https://www.foundry.com/products/nuke"><div class="productLogo" /></a></div>');
+			$("a.logo").attr("href", "http://learn.foundry.com");		
+			});
+		/* ]]> */</script>
+                                    <!--<div class="search-container" style="margin-top: 190px;">
+            <MadCap:searchBarProxy data-mc-skin="/Project/Skins/SearchTopics.flskn" />
+        </div>-->
+                                    <div class="row collapse">
+                                        <div class="top-bar">
+                                            <div class="buttons popup-container clearfix topicToolbarProxy _Skins_TopicToolbar mc-component nocontent" style="mc-topic-toolbar-items: ;">
+                                                <div class="button-group-container-left">
+                                                    <button class="button needs-pie print-button" title="Print">
+                                                        <div>
+                                                            <div role="img" class="button-icon-wrapper" aria-label="Print">
+                                                                <div class="button-icon"> </div>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                    <button class="button needs-pie previous-topic-button" title="Navigate previous" disabled="true">
+                                                        <div>
+                                                            <div role="img" class="button-icon-wrapper" aria-label="Navigate previous">
+                                                                <div class="button-icon"> </div>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                    <button class="button needs-pie next-topic-button" title="Navigate next" disabled="true">
+                                                        <div>
+                                                            <div role="img" class="button-icon-wrapper" aria-label="Navigate next">
+                                                                <div class="button-icon"> </div>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="nocontent">
+                                                <div class="MCBreadcrumbsBox_0 breadcrumbs" role="navigation" aria-label="Breadcrumbs" data-mc-breadcrumbs-divider=" &gt; " data-mc-breadcrumbs-count="3" data-mc-toc="True"><span class="MCBreadcrumbsPrefix">Nuke 17.1v2 docs: </span>
+                                                </div>
+                                            </div> </div>
+                                        <div class="topic-layout">
+                                            <div>
+                                                <div id="smartmenu">
+                                                    <ul class="nocontent menu _Skins_SideMenu mc-component" data-mc-linked-toc="Data/Tocs/HTML_Production.js" data-mc-side-menu="True" data-mc-max-depth="-1" data-mc-include-icon="False" data-mc-include-indicator="False" data-mc-include-children="True" data-mc-include-siblings="True" data-mc-include-parent="True" data-mc-toc="True">
+                                                    </ul>
+                                                </div>
+                                                <div class="side-content">
+                                                    <div class="MCDropDown MCDropDown_Closed dropDown"><span class="MCDropDownHead dropDownHead dropDownHeadside-content"><a style="font-size: 11pt; font-weight: normal;" href="#" class="MCDropDownHotSpot dropDownHotspot MCDropDownHotSpot_ side-content MCHotSpotImage" aria-expanded="false"><img class="MCDropDown_Image_Icon" src="../../../Skins/Default/Stylesheets/Images/transparent.gif" height="13" width="16" alt="Closed" data-mc-alt2="Open" />&#160;Search Tips</a></span>
+                                                        <div class="MCDropDownBody dropDownBody">
+                                                            <p>Search is based on keyword.</p>
+                                                            <p><samp>Ex:&#160;"Procedures"</samp>
+                                                            </p>
+                                                            <p>Do not search with natural language</p>
+                                                            <p><samp>Ex:&#160;"How do I write a new procedure?"</samp>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p><a class="feedback-button side-button" href="#feedback"><span style="font-size: 10pt;">Give Feedback</span></a><a class="feedback-button side-button" style="margin-left: 10px;" href="https://support.foundry.com/hc/en-us"><span style="font-size: 10pt;">Support Portal</span></a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div role="main" id="mc-main-content">
+                                                    <h1 class="sectionTitle" id="SimulatingDepthofFieldBlurring" data-magellan-target="SimulatingDepthofFieldBlurring"><a name="Simulating_Depth-of-Field_Blurring"></a>Simulating Depth-of-Field Blurring</h1>
+                                                    <div class="sticky-container-new">
+                                                        <div data-sticky-container="" id="92ZlaY6KrEyxV6-OFLEZ8w">
+                                                            <div class="sticky sticky-menu" style="width:100%" data-sticky="" data-top-anchor="92ZlaY6KrEyxV6-OFLEZ8w:top" data-bottom-anchor="contentBody:bottom" data-sticky-on="only screen and (min-width: 1280px)" data-scroll-container-on="small">
+                                                                <ul data-magellan="" data-animation-duration="250" data-active-class="selected" data-scroll-container-on="small" class="nocontent menu _Skins_SideMenu_Right mc-component">
+                                                                    <li><a href="#SimulatingDepthofFieldBlurring">Simulating Depth-of-Field Blurring</a>
+                                                                    </li>
+                                                                    <ul>
+                                                                        <li><a href="#QuickStart">Quick Start</a>
+                                                                        </li>
+                                                                        <li><a href="#ConnectingZDefocus">Connecting ZDefocus</a>
+                                                                        </li>
+                                                                        <li><a href="#AdjustingBlurSettings">Adjusting Blur Settings</a>
+                                                                        </li>
+                                                                        <li><a href="#AdjustingtheShapeofOutofFocusHighlights">Adjusting the Shape of Out-of-Focus Highlights</a>
+                                                                        </li>
+                                                                        <li><a href="#EnhancingOutofFocusHighlights">Enhancing Out-of-Focus Highlights</a>
+                                                                        </li>
+                                                                        <li><a href="#MaskingBlurEffects">Masking Blur Effects</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="afterHead">The ZDefocus node blurs the image according to a depth map channel. This allows you to simulate depth-of-field (DOF) blurring.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 11cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_before.png" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption">The original image.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 11cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_after.png" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption">Using ZDefocus to simulate a more narrow depth of field. <br />In this case, areas under the green sign remain in focus, <br />whereas areas in front of and behind it are blurred. <br />Any defocused highlights in the image bloom in the shape <br />of the filter image, creating a bokeh effect.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <p>In order to defocus the image, ZDefocus splits the image up into layers, each of which is assigned the same depth value everywhere and processed with a single blur size. After ZDefocus has processed all the layers, it blends them together from the back to the front of the image, with each new layer going over the top of the previous ones. This allows it to preserve the ordering of objects in the image.</p>
+                                                    <h1 id="QuickStart" data-magellan-target="QuickStart">Quick Start</h1>
+                                                    <p class="afterHead">Here's a quick overview of the workflow:</p>
+                                                    <table class="AutoNumber_p_numbered1" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>1. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="1. &#160;">Create a ZDefocus node and connect it to your script.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">See <a href="#filters_2072326023_691459" class="noPage MCXref xref xrefnoPage">Connecting ZDefocus</a>.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>2. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="2. &#160;">Adjust the blur settings.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">See <a href="#filters_2072326023_693457" class="noPage MCXref xref xrefnoPage">Adjusting Blur Settings</a>.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>3. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="3. &#160;">Adjust the shape of any out-of-focus highlights.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">See <a href="#filters_2072326023_691706" class="noPage MCXref xref xrefnoPage">Adjusting the Shape of Out-of-Focus Highlights</a>.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>4. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="4. &#160;">If necessary, enhance the highlights to make lens shape effects more visible.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">See <a href="#filters_2072326023_693943" class="noPage MCXref xref xrefnoPage">Enhancing Out-of-Focus Highlights</a>.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>5. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="5. &#160;">If necessary, mask the blur effect.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">See <a href="#filters_2072326023_693964" class="noPage MCXref xref xrefnoPage">Masking Blur Effects</a>.</p>
+                                                    <p class="tip" data-mc-autonum="&lt;b&gt;Tip:&lt;/b&gt; &#160;"><span class="autonumber"><span><b>Tip:</b> &#160;</span></span>You can check <b data-mc-conditions="Default.NoTranslate">Use GPU if available</b> to have the node run on the graphics processing unit (GPU) rather than the central processing unit (CPU). For more information on GPU support, see the <a href="https://learn.foundry.com/nuke/content/release_notes.html" target="_blank">Release Notes</a> for your version of Nuke.<br /><br />You can select the GPU to use in the Preferences. Press <b data-mc-conditions="Default.NoTranslate">Shift</b>+<b data-mc-conditions="Default.NoTranslate">S</b> to open the <b data-mc-conditions="Default.NoTranslate">Preferences</b> dialog, make sure you’re viewing the <b data-mc-conditions="Default.NoTranslate">Preferences</b> &gt; <b data-mc-conditions="Default.NoTranslate">Performance </b>&gt;<b data-mc-conditions="Default.NoTranslate"> Hardware</b> tab, and set <b data-mc-conditions="Default.NoTranslate">default blink device</b> to the device you want to use. You must restart <span class="mc-variable Custom.Product variable">Nuke</span> for the change to take effect.<br /><br />If you are using a render license of <span class="mc-variable Custom.Product variable">Nuke</span>, you need to add <b data-mc-conditions="Default.NoTranslate">--gpu</b> on the command line.</p>
+                                                    <h1 id="ConnectingZDefocus" data-magellan-target="ConnectingZDefocus"><a name="filters_2072326023_691459"></a>Connecting ZDefocus</h1>
+                                                    <p class="afterHead">To connect ZDefocus:</p>
+                                                    <table class="AutoNumber_p_numbered1" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>1. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="1. &#160;">Create a ZDefocus node by clicking <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Filter</span> &gt; <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">ZDefocus</span>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>2. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="2. &#160;">Connect the ZDefocus node’s <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">image</span> input to the image you want to blur.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="note" data-mc-autonum="&lt;b&gt;Note:&lt;/b&gt; &#160;"><span class="autonumber"><span><b>Note:</b> &#160;</span></span>This image also needs to contain a depth map channel. If your depth channel and rgba channels exist in two different files, you can use a Shuffle node to combine them.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>3. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="3. &#160;">Use the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">channels</span> dropdown menu to select the channels you want to blur.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>4. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="4. &#160;">Set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth channel</span> to the channel in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">image</span> input that contains the depth map. By default, the depth information is taken from <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth.Z</span>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">Note that the depth map should not be anti-aliased. If it is, pixels along an edge between two objects can be assigned a depth that is in-between the depth of the front object and back objects. This looks wrong, as it suggests that those edge pixels are floating somewhere between the objects.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>5. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="5. &#160;">If you want to use your own filter image (rather than the predefined <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">disc</span> or <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">bladed</span> images), connect that to the ZDefocus node’s <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> input and set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter type</span> to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">image</span> in the node’s properties.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">The filter image represents the shape and size of the camera aperture used to shoot the input footage. As the clip in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">image</span> input is blurred, any highlights in the clip bloom in the shape of the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> image, creating a bokeh effect.</p>
+                                                    <p class="note" data-mc-autonum="&lt;b&gt;Note:&lt;/b&gt; &#160;"><span class="autonumber"><span><b>Note:</b> &#160;</span></span>Loading scripts from pre-<span class="mc-variable Custom.Product variable">Nuke</span> 8.0v7 enables the <b data-mc-conditions="Default.NoTranslate">legacy resize mode</b> checkbox automatically, for backward compatibilty, and uses the <b data-mc-conditions="Default.NoTranslate">filter bounds</b> dropdown to determine how images used in filtering are resized.<br />Adding new ZDefocus nodes hides the <b data-mc-conditions="Default.NoTranslate">legacy resize mode</b> checkbox and allows you to use the <b data-mc-conditions="Default.NoTranslate">image filter</b> dropdown to give you more flexibility when calculating blur.<br />See <a href="#filters_2072326023_692173" class="noPage MCXref xref xrefnoPage">Using a Custom Filter Image</a> for more information.</p>
+                                                    <p class="numberedCont">You can create a filter image using the Roto node (<span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Draw</span> &gt; <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Roto</span>) or the Flare node (<span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Draw</span> &gt; <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Flare</span>), for example.</p>
+                                                    <p class="numberedCont">Note that you don’t necessarily need to crop the filter image to a smaller size, as fast Fourier transforms are used to speed up convolutions with large filter images.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>6. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="6. &#160;">Attach a Viewer to the ZDefocus node.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 7cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_nodes.png" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption">A ZDefocus script.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>7. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="7. &#160;">Proceed to <a class="noPage MCXref xref xrefnoPage" href="#filters_2072326023_691706">Adjusting the Shape of Out-of-Focus Highlights</a> below.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <h1 id="AdjustingBlurSettings" data-magellan-target="AdjustingBlurSettings"><a name="filters_2072326023_693457"></a>Adjusting Blur Settings</h1>
+                                                    <p class="afterHead">To adjust the Blur settings:</p>
+                                                    <table class="AutoNumber_p_numbered1" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>1. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="1. &#160;">Use <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">math</span> to specify how you want to use the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth</span> <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">channel</span> to calculate the distance between the camera and an object. For example, some programs use higher values to denote further away, while in others they mean closer to the camera:</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">direct</span> - The Z value in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth channel</span> directly controls blur. For example, if Z is 0.5, then the blur size is 0.5 times the value of the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">size</span> control (unless this is bigger than <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">maximum</span>, in which case it is clamped to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">maximum</span>).</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth</span> - The Z value in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth channel</span> is the distance between the camera and whatever is in the image at that pixel.</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">far = 0</span> - The Z value in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth channel</span> is equal to 1/distance. The values are expected to decrease from large positive values close to the camera to zero at infinity. This is compatible with depth maps generated by <span class="mc-variable Custom.Product variable">Nuke</span> and RenderMan.</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">far = 1</span> - Near plane = 0, far plane = 1. This is compatible with depth maps generated by OpenGL.</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">-direct</span> - As with the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">direct</span> mode, the Z value in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth channel</span> directly controls blur. In other words, each layer is blurred by the same amount as in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">direct</span> mode. However, in this mode, the layers are interpreted as being in the opposite order, so a higher depth value places a layer in front of another rather than behind it.</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">-depth</span> - The Z value in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth channel</span> is -distance in front of the camera. This is the same as <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth</span>, but the distances are negative to start with.</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">far = -0</span> - The Z value in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth channel</span> is equal to -1/distance. This is compatible with depth maps generated by Maya.</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">far = -1</span> - Near plane = 0, far plane = -1.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>2. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="2. &#160;">In the Viewer, drag the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">focal point</span> widget on top of the area that you want to be entirely in focus. </td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">This automatically updates the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">focal point</span> coordinates in the ZDefocus properties and sets the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">focus plane</span> control to the Z depth value at those coordinates. Any layers with this Z<span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate"> </span>depth value are left in focus. You can also set a depth slice around the focus plane that is in focus (as described in step 4), but any other areas of the image are blurred according to the depth map.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 11cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_focal_point1.png" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption">Focal point widget under the green sign.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 11cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <img src="../../resources/images/ug_images/zdefocus_focal_point2.png" />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption">Focal point widget near the cars in the distance.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <p class="tip" data-mc-autonum="&lt;b&gt;Tip:&lt;/b&gt; &#160;"><span class="autonumber"><span><b>Tip:</b> &#160;</span></span>The <b data-mc-conditions="Default.NoTranslate">fill foreground</b> control, enabled by default, attempts to compensate for missing information by filling regions in the foreground which are revealed when the foreground goes out of focus. However, because the true image information isn't available in these regions, <b data-mc-conditions="Default.NoTranslate">fill foreground</b> can sometimes introduce undesirable artefacts by adding things which aren't there.<br />If you see blurry artefacts in the foreground, rather than sharp edge artefacts, try disabling this control.</p>
+                                                    <p class="numberedCont">To better see the effect of your changes, you can also set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">output</span> to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">focal plane setup</span>. ZDefocus now displays depth-of-field (DOF) info in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">rgb</span> channels:</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span> <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">red</span> - Less than DOF (in front of the area that’s in focus).</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span> <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">green</span> - Inside DOF (in focus). Note that if <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth of field</span> is set to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">0</span>, nothing is displayed in green.</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span> <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">blue</span> - Greater than DOF (behind the area that’s in focus).</p>
+                                                    <p class="numberedCont">When <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">show image</span> is enabled, this information is overlaid upon the input image.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 5cm;" />
+                                                        <col style="width: 5cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_focal_pl_setup1.png" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_focal_pl_setup2.png" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption">Focal point widget under <br />the green sign.</td>
+                                                                <td class="caption">Focal point widget near <br />the cars in the distance.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>3. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="3. &#160;">To widen the area that is entirely in focus, increase <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth of field</span>. This sets a depth slice around the focus plane that is entirely in focus (and shown in green whenever <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">output</span> is set to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">focal plane setup</span>). True theoretical depth of field would set this to zero.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 5cm;" />
+                                                        <col style="width: 5cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_dof_0.png" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_focal_pl_setup3.png" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Depth of field</span> set to 0.</td>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Depth of field</span> set to 1.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>4. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="4. &#160;">To apply a small amount of blur to the in-focus region, make sure <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">blur inside</span> is enabled. This gives a smoother transition between the in-focus region and the out-of-focus regions around it.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>5. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="5. &#160;">Set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">output</span> back to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">result</span> and adjust the amount of blur at infinite depth by setting the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">size</span> value. Note that the amount of blur nearer the camera than the focus plane may be larger.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">If you have set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">math</span> to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">direct</span>, the size is multiplied by the depth to give the blur size at that depth. Setting <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">size</span> to 1 allows you to use the values in the depth map as the blur size directly.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>6. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="6. &#160;">If you increased the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">size</span> value in step 5, it’s a good idea to also increase the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">maximum</span> value. No blurring greater than this value is generated no matter where the object is in relation to the camera.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">For maximum processing speed, you may want to keep this value as low as possible.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>7. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="7. &#160;">By default, <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">automatic layer spacing</span> is enabled, which means ZDefocus automatically works out how many depth layers to use, based on the maximum blur size (<span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">maximum</span>). In this mode, the layers are closer together near to the focal plane, where a small change in the blur amount is more obvious, and increasingly more widely-spaced further away (this is equivalent to setting <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">layer curve</span> to a value of 1 when controlling the layers manually; see step 8).</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">To visualize the layers, you can set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">output</span> to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">layer setup</span>. This is like <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">focal plane setup</span>, but displays depth-of-field (DOF) information after the depth has been divided into layers.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 7cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_layer_setup.png" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Output</span> set to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">layer setup</span>.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <p class="numberedCont">The maximum number of blur sizes that are used between 0 and <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">maximum</span> is 256. This means you can have up to 256 layers behind the focal plane, and up to 256 in front of it as well.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>8. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="8. &#160;">If you uncheck <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">automatic layer</span> spacing, you can control the number of layers manually using <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">depth layers</span>. Note that the more layers you use, the longer it takes to process the blur.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 5cm;" />
+                                                        <col style="width: 5cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_layer_curve_0.png" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_depth_layers_50.png" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Depth layers</span> set to 10.</td>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Depth layers</span> set to 50.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <p class="numberedCont">If necessary, you can also increase <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">layer curve</span> to concentrate the layers around the focal plane. The default value of 0 produces evenly spaced layers.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 5cm;" />
+                                                        <col style="width: 5cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_layer_curve_1.png" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_layer_curve_5.png" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Layer curve</span> set to 0. <br />This produces evenly spaced <br />layers.</td>
+                                                                <td class="caption">Increasing the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">layer curve<br /></span> value concentrates the layers <br />around the focal plane.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>9. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="9. &#160;">Proceed to <a class="noPage MCXref xref xrefnoPage" href="#filters_2072326023_691706">Adjusting the Shape of Out-of-Focus Highlights</a>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <h1 id="AdjustingtheShapeofOutofFocusHighlights" data-magellan-target="AdjustingtheShapeofOutofFocusHighlights"><a name="filters_2072326023_691706"></a>Adjusting the Shape of Out-of-Focus Highlights</h1>
+                                                    <p class="afterHead">As the clip in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">image</span> input is blurred, any out-of-focus highlights (bokeh) in the clip assume the shape of the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> image (of the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter type</span> selected).</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 5cm;" />
+                                                        <col style="width: 5cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_bokeh_off.png" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_bokeh.png" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption">The original image.</td>
+                                                                <td class="caption">Out-of-focus highlights <br />(bokeh) in the shape of <br />the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> image.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <p>How you create the filter image is up to you. You can:</p>
+                                                    <p class="bulleted" data-mc-autonum="• "><span class="autonumber"><span>• </span></span>Use a predefined disc shape as the filter image. See <a href="#filters_2072326023_692223" class="noPage MCXref xref xrefnoPage">Using a Predefined Disc Image</a>.</p>
+                                                    <p class="bulleted" data-mc-autonum="• "><span class="autonumber"><span>• </span></span>Use a predefined bladed image (polygon) as the filter image. See <a href="#filters_2072326023_692244" class="noPage MCXref xref xrefnoPage">Using a Predefined Bladed Image</a>.</p>
+                                                    <p class="bulleted" data-mc-autonum="• "><span class="autonumber"><span>• </span></span>Use your own custom image in the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> input as the filter image. See <a href="#filters_2072326023_692173" class="noPage MCXref xref xrefnoPage">Using a Custom Filter Image</a>.</p>
+                                                    <h2><a name="filters_2072326023_692223"></a>Using a Predefined Disc Image</h2>
+                                                    <table class="AutoNumber_p_numbered1" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>1. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="1. &#160;">To see the effect of your changes, set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">output</span> in the ZDefocus controls to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter shape setup</span>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>2. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="2. &#160;">Set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter type</span> to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">disc</span>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>3. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="3. &#160;">Use the<span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate"> filter shape</span> control to dissolve the filter shape between Gaussian at 0 and disc at 1.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 3cm;" />
+                                                        <col style="width: 3cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_filter_shape_0.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_filter_shape_1.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Filter shape</span> set <br />to 0 (Gaussian).</td>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Filter shape</span> set <br />to 1 (disc). This is <br />the default value.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>4. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="4. &#160;">Use the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">aspect ratio</span> control to set the filter aspect ratio, which is 1:1 by default. Values less than 1 squeeze the filter on the x axis, and values larger than 1 squeeze it on the y axis<span class="_Override" style="font-size: 9pt;line-height: 11pt;">.</span></td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">This allows you to simulate the cat's eye effect, caused by vignetting inherent within some lens designs.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 3cm;" />
+                                                        <col style="width: 3cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_filter_aspect_0.5.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_filter_aspect_1.5.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 0.9997767px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Aspect ratio</span> set <br />to 0.5.</td>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Aspect ratio</span> set <br />to 1.5.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>5. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="5. &#160;">Proceed to <a href="#filters_2072326023_693943" class="noPage MCXref xref xrefnoPage">Enhancing Out-of-Focus Highlights</a>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <h2><a name="filters_2072326023_692244"></a>Using a Predefined Bladed Image</h2>
+                                                    <table class="AutoNumber_p_numbered1" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>1. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="1. &#160;">To see the effect of your changes, set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">output</span> in the ZDefocus controls to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter shape setup</span>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>2. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="2. &#160;">Set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter type</span> to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">bladed</span>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>3. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="3. &#160;">Use the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">blades</span> control to set the number of iris blades that make up the camera's diaphragm. A value of 3 produces a triangle, 4 a square, 5 a pentagon, 6 a hexagon, and so on.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">This field only accepts integers larger than 1.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 3cm;" />
+                                                        <col style="width: 3cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_blades_5.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_blades_8.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Blades</span> set to 5. <br />This is the default <br />value.</td>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Blades</span> set to 8.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>4. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="4. &#160;">Adjust <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">roundness</span> to control the rounding of the filter polygon’s sides. A value of 0 equals no rounding.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 3cm;" />
+                                                        <col style="width: 3cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_roundness_0.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_roundness_0.7.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Roundness</span> set <br />to 0.</td>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Roundness</span> set <br />to 8.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>5. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="5. &#160;">Use <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">rotation</span> to rotate the filter image in degrees. Positive values produce counter-clockwise rotation, and vice-versa.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>6. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="6. &#160;">Use the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">aspect ratio</span> control to set the filter aspect ratio, which is 1:1 by default. Values less than 1 squeeze the filter on the x axis, and values larger than 1 squeeze it on the y axis.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">This allows you to simulate the cat's eye effect, caused by vignetting inherent within some lens designs.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 3cm;" />
+                                                        <col style="width: 3cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_filter_blades_aspect_0.5.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_filter_blades_aspect_1.5.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Aspect ratio</span> set <br />to 0.</td>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Aspect ratio</span> set <br />to 2.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>7. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="7. &#160;">To adjust the distribution of light inside the out-of-focus highlights:</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span>Adjust <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">inner size</span> to control the size of the inner polygon, as a percentage of the outer polygon.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 3cm;" />
+                                                        <col style="width: 3cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_in_size_0.2.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_in_size_0.8.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Inner size</span> set <br />to 0.2.</td>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Inner size</span> set <br />to 0.8.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span>Use <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">inner feather</span> to add outward or inward feathering around the inner polygon. With values larger than 0.5, your feather effect is outward and, respectively, if your values are smaller than 0.5, the feather effect is inward. A value of 0.5 produces no feathering.  </p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 3cm;" />
+                                                        <col style="width: 3cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_in_feather_0.2.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_in_feather_0.8.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Inner feather</span> set <br />to 0.2.</td>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Inner feather</span> set <br />to 0.8.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span>Adjust inner brightness to control the brightness of the inner polygon, where 0 is equal to black and 1 to white.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 3cm;" />
+                                                        <col style="width: 3cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_in_brightness_0.3.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_in_brightness_0.7.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Inner brightness</span> <br />set to 0.3.</td>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Inner brightness</span> <br />set to 0.7.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span>If you want to simulate catadioptric lenses, check <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">catadioptric</span>. When using catadioptric lenses, the defocused areas of the image are annular, producing donut-shaped bokeh. You can use <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">catadioptric size</span> to adjust the size of the catadioptric hole in the filter.</p>
+                                                    <p>&#160;</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 3cm;" />
+                                                        <col style="width: 3cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_cat_size_0.3.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_cat_size_0.7.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 1.000059px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Catadioptric size</span> <br />set to 0.3.</td>
+                                                                <td class="caption"><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">Catadioptric size</span> <br />set to 0.7.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>8. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="8. &#160;">Proceed to <a href="#filters_2072326023_693943" class="noPage MCXref xref xrefnoPage">Enhancing Out-of-Focus Highlights</a>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <h2><a name="filters_2072326023_692173"></a>Using a Custom Filter Image</h2>
+                                                    <table class="AutoNumber_p_numbered1" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>1. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="1. &#160;">Set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter type</span> in the ZDefocus controls to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">image</span>. </td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">This tells ZDefocus to use the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> input rather than a predefined shape as the filter image.</p>
+                                                    <p class="numberedCont">Note that the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> image can be a color image. This can be useful, for example, if you want to add color fringing to your out-of-focus highlights to simulate chromatic aberration.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 3cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_filter_image.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-bottom: 0.9997767px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption">The <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> image.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>2. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="2. &#160;">If you want to display the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> image in the Viewer, set <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">output</span> to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter shape setup</span>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="note" data-mc-autonum="&lt;b&gt;Note:&lt;/b&gt; &#160;"><span class="autonumber"><span><b>Note:</b> &#160;</span></span>Loading scripts from pre-<span class="mc-variable Custom.Product variable">Nuke</span> 9.0v2 enables the <b data-mc-conditions="Default.NoTranslate">legacy resize mode</b> checkbox automatically, for backward compatibilty, and uses the <b data-mc-conditions="Default.NoTranslate">filter bounds</b> dropdown to determine how images used in filtering are resized.<br />Adding new ZDefocus nodes hides the <b data-mc-conditions="Default.NoTranslate">legacy resize mode</b> checkbox and allows you to use the <b data-mc-conditions="Default.NoTranslate">image filter</b> dropdown to give you more flexibility when calculating blur.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>3. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="3. &#160;">To select what channel to use from the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> input, do one of the following:</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span>Set the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter channel </span>dropdown menu to the channel you want to use. By default, this menu is set to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">rgba.alpha</span>.</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span>To use the same channels from the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> input as the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">image</span> input (that is, whatever <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">channels</span> is set to), check <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">use input channels</span>.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>4. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="4. &#160;">In newer <span class="mc-variable Custom.Product variable">Nuke</span> scripts, use the <b data-mc-conditions="Default.NoTranslate">image filter</b> dropdown to select the required filter. See <a href="../transforming_elements/filtering_algorithm_2d.html" class="noPage MCXref xref xrefnoPage">Choosing a Filtering Algorithm</a> for more information on the available filters.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="note" data-mc-autonum="&lt;b&gt;Note:&lt;/b&gt; &#160;"><span class="autonumber"><span><b>Note:</b> &#160;</span></span>When using filters that employ sharpening, such as <b data-mc-conditions="Default.NoTranslate">Rifman</b> and <b data-mc-conditions="Default.NoTranslate">Lanczos</b>, you may see a haloing effect. If necessary, check <b data-mc-conditions="Default.NoTranslate">clamp image filter</b> to correct this problem.</p>
+                                                    <p class="numberedCont">In older <span class="mc-variable Custom.Product variable">Nuke</span> scripts with <b data-mc-conditions="Default.NoTranslate">legacy resize mode</b> enabled, use the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter bounds</span> dropdown to select whether you want to limit the filter image to:</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">shape</span> - the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> input’s bounding box. In this case, ZDefocus only uses the bounding box area, and the center of the filter is the center of the bounding box. This is the default value. You may want to use it, for example, if your <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> input is a roto shape with a small bounding box that doesn’t fill the entire format area.</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span><span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">format</span> - the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">filter</span> input’s format. In this case, ZDefocus uses the entire format area, allowing you to offset the filter image within the format.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>5. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="5. &#160;">Proceed to <a class="noPage MCXref xref xrefnoPage" href="#filters_2072326023_693943">Enhancing Out-of-Focus Highlights</a>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <h1 id="EnhancingOutofFocusHighlights" data-magellan-target="EnhancingOutofFocusHighlights"><a name="filters_2072326023_693943"></a>Enhancing Out-of-Focus Highlights</h1>
+                                                    <p class="afterHead">To enhance the out-of-focus highlights:</p>
+                                                    <table class="AutoNumber_p_numbered1" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>1. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="1. &#160;">To make bokeh lens shape effects warmer and more visible, check <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">gamma correction</span>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">This means a gamma lookup curve of 2.2 is applied before blurring and then reversed for the final output.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 5cm;" />
+                                                        <col style="width: 5cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_gamma_off.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-right: 0.5198649px;margin-bottom: 1.000067px;" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_gamma_on.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-right: 0.5198649px;margin-bottom: 1.000067px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption">Without <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">gamma correction</span>.</td>
+                                                                <td class="caption">With <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">gamma correction</span>.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>2. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="2. &#160;">You can also make the lens shape effects more visible by enabling <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">bloom</span>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">Any highlights above the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">bloom threshold</span> value are multiplied by the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">bloom gain</span> value. Highlights below the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">bloom threshold</span> are not affected.</p>
+                                                    <p class="numberedCont">This allows you more control over the highlights than <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">gamma correction</span>; however, <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">gamma correction</span> may bring out some of the highlights better.</p>
+                                                    <table style="margin-left:auto; margin-right:auto;">
+                                                        <col style="width: 5cm;" />
+                                                        <col style="width: 5cm;" />
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_gamma_off1.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-right: 0.5198649px;margin-bottom: 1.000067px;" />
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="graphic">
+                                                                        <img src="../../resources/images/ug_images/zdefocus_bloom_on.png" style="margin-left: 1.000063px;margin-top: 1.000063px;margin-right: 0.5198649px;margin-bottom: 0.9997844px;" />
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="caption">Without <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">bloom</span>.</td>
+                                                                <td class="caption">With <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">bloom</span>.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>3. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="3. &#160;">Proceed to <a class="noPage MCXref xref xrefnoPage" href="#filters_2072326023_693964">Masking Blur Effects</a>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <h1 id="MaskingBlurEffects" data-magellan-target="MaskingBlurEffects"><a name="filters_2072326023_693964"></a>Masking Blur Effects</h1>
+                                                    <p class="afterHead">To mask the blur effect:</p>
+                                                    <table class="AutoNumber_p_numbered1" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>1. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="1. &#160;">Do <span class="_Override" style="text-decoration: underline;">one</span> of the following:</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span>Make sure there is a mask channel in the ZDefocus node’s <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">image</span> input and nothing is connected to the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">mask</span> input.</p>
+                                                    <p class="processBullet" data-mc-autonum="• "><span class="autonumber"><span>• </span></span>Connect a mask to the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">mask</span> input of the ZDefocus node. If you cannot see the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">mask</span> input, open the node’s controls and make sure <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">mask</span> is set to <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">none</span>.</p>
+                                                    <p class="processBulletCont">If you want the mask from the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">mask</span> input copied into the predefined <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">mask.a</span> channel, also check <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">inject</span>. This way, you can use the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">mask</span> input again downstream.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>2. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="2. &#160;">If you don’t want to use the alpha channel as the matte, select the channel you want to use from the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">mask</span> dropdown menu.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <p class="numberedCont">By default, the blur is limited to the non-black areas of this channel.</p>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>3. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="3. &#160;">If necessary, check <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">invert</span> to reverse the mask, so that the blur is limited to the non-white areas of the mask.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>4. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="4. &#160;">To blur only the edges of the mask, check <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">fringe</span>.</td>
+                                                        </tr>
+                                                    </table>
+                                                    <table class="AutoNumber_p_numbered" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                                                        <col style="width: 0px;" />
+                                                        <col style="width: 25px;" />
+                                                        <col style="width: auto;" />
+                                                        <tr>
+                                                            <td valign="top" />
+                                                            <td class="AutoNumber_p_numbered1" valign="top"><span>5. &#160;</span>
+                                                            </td>
+                                                            <td class="AutoNumber_p_numbered1" valign="top" data-mc-autonum="5. &#160;">To dissolve between the original image (at 0) and the full ZDefocus effect (at 1), adjust the <span class="_Override" style="font-weight: bold;" data-mc-conditions="Default.NoTranslate">mix</span> slider. A small light-gray square appears on the node in the Node Graph to indicate that the full effect is not used.</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <br />
+                                                <MadCap:conditionalText data-mc-conditions="Default.HTMLOnline">
+                                                    <div id="feedback-survey">
+                                                        <img src="../../resources/images/arrow_circle.png" class="feedback-arrow" />
+                                                        <p><a id="feedback" style="font-weight: bold;">Can't find what you're looking for? Use our feedback widget on the right to request more information.</a> <br /><a id="feedback" style="font-size: 14px">You must accept cookies from <b>learn.foundry.com</b> and disable any ad-blockers to provide feedback.</a></p>
+                                                    </div>
+                                                </MadCap:conditionalText>
+                                                <!-- feedback section -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p />
+                                    <br />
+                                    <div class="top-bar">
+                                        <div class="buttons popup-container clearfix topicToolbarProxy _Skins_TopicToolbar mc-component nocontent" style="mc-topic-toolbar-items: ;">
+                                            <div class="button-group-container-left">
+                                                <button class="button needs-pie print-button" title="Print">
+                                                    <div>
+                                                        <div role="img" class="button-icon-wrapper" aria-label="Print">
+                                                            <div class="button-icon"> </div>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                                <button class="button needs-pie previous-topic-button" title="Navigate previous" disabled="true">
+                                                    <div>
+                                                        <div role="img" class="button-icon-wrapper" aria-label="Navigate previous">
+                                                            <div class="button-icon"> </div>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                                <button class="button needs-pie next-topic-button" title="Navigate next" disabled="true">
+                                                    <div>
+                                                        <div role="img" class="button-icon-wrapper" aria-label="Navigate next">
+                                                            <div class="button-icon"> </div>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="nocontent">
+                                            <div class="MCBreadcrumbsBox_0 breadcrumbs" role="navigation" aria-label="Breadcrumbs" data-mc-breadcrumbs-divider=" &gt; " data-mc-breadcrumbs-count="3" data-mc-toc="True"><span class="MCBreadcrumbsPrefix">Nuke 17.1v2 docs: </span>
+                                            </div>
+                                        </div> </div>
+                                    <script src="../../resources/js/smartmenus-1.0.0-beta1/jquery.smartmenus.js" type="text/javascript">
+                                    </script>
+                                    <script src="../../resources/js/smartmenus-1.0.0-beta1/initialise.js" type="text/javascript">
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div><a data-close="true"></a>
+                </div>
+            </div>
+        </div>
+    </body>
+    <footer id="globalFooter">
+        <div class="top"><a href="https://www.foundry.com/" class="footer-logo">Home</a><span class="credits">The Foundry Visionmongers Limited is registered in England and Wales.</span>
+            <nav class="social"><a href="https://www.facebook.com/thefoundryteam/" target="_blank"><span class="icon facebook">Facebook</span></a><a href="https://www.youtube.com/user/TheFoundryChannel" target="_blank"><span class="icon youtube">YouTube</span></a>
+            </nav>
+        </div>
+        <nav class="footer-nav">
+            <h4>Help</h4><a href="https://www.foundry.com/careers">Careers</a><a href="https://www.foundry.com/meet-our-local-resellers">Find a Reseller</a><a href="https://www.foundry.com/licensing">Licensing Help</a><a href="https://www.foundry.com/product-downloads">Product Downloads</a><a href="https://www.foundry.com/sitemap">Site Map</a><a href="https://www.foundry.com/education">Students and Educators</a><a href="https://www.foundry.com/user-guides">User Guides</a>
+        </nav>
+        <nav class="footer-nav">
+            <h4>Legal Information</h4><a href="https://www.foundry.com/candidate-privacy-notice">Candidate Privacy Notice</a><a href="https://www.foundry.com/cookie-policy">Cookie Policy</a><a href="https://www.foundry.com/eula">End User License Agreement</a><a href="https://www.foundry.com/environment-policy">Environment Policy</a><a href="https://www.foundry.com/esg-mission-statement">ESG Mission Statement</a><a href="https://www.foundry.com/license-compliance">License Compliance</a><a href="https://www.foundry.com/license-transfer-policy">License Transfer Policy</a><a href="https://www.foundry.com/modern-slavery-act-statement">Modern Slavery Act Statement</a><a href="https://www.foundry.com/privacy-notice">Privacy Notice</a><a href="https://www.foundry.com/web-terms-of-use">Website Terms and Conditions</a>
+        </nav>
+    </footer>
+</html>

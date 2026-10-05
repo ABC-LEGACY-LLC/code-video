@@ -1,0 +1,62 @@
+| 
+ | 
+ | 
+ | 
+ | 
+ | 
+ | 
+ | 
+ | 
+
+ | 
+ | 
+ | 
+
+ | 
+ | 
+ | 
+ | 
+ | 
+ | 
+ | 
+ | 
+
+Procedural audio modeling for particle-based environmental effects
+
+ Charles Verron,
+ George Drettakis
+
+ Proceedings of the 133rd AES Convention - October 2012
+
+ Download the publication : 
+
+We present a sound synthesizer dedicated to particle-based environmental effects, for use in interactive virtual environments. The synthesis engine is based on five physically-inspired basic elements (which we call sound atoms) that can be parameterized and stochastically distributed in time and space. Based on this set of atomic elements, models are presented for reproducing several environmental sound sources. Compared to pre-recorded sound samples, procedural synthesis provides extra flexibility to manipulate and control the sound source properties with physically-inspired parameters. In this paper, the controls are used simultaneously to modify particle-based graphical models, resulting in synchronous audio/graphics environmental effects. The approach is illustrated with three models, that are commonly used in video games: fire, wind, and rain. The physically-inspired controls simultaneously drive graphical parameters (e.g., distribution of particles, average particles velocity) and sound parameters (e.g., distribution of sound atoms, spectral modifications). The joint audio/graphics control results in a tightly-coupled interaction between the two modalities that enhances the naturalness of the scene.
+
+Images and movies
+
+See also
+
+ Companion Video 1 illustrates the fire, wind and rain audio/graphics models. Please download the high-resolution video HERE.
+
+ Companion Video 2 illustrates the sound synthesizer user interface. Please download the high-resolution video HERE.
+
+ Companion Video 3 illustrates the wind audio/graphics model. Please download the high-resolution video HERE.
+
+BibTex references
+
+@InProceedings{VD12,
+ author = "Verron, Charles and Drettakis, George",
+ title = "Procedural audio modeling for particle-based environmental effects",
+ booktitle = "Proceedings of the 133rd AES Convention",
+ month = "October",
+ year = "2012",
+ organization = "AES",
+ url = "http://www-sop.inria.fr/reves/Basilic/2012/VD12"
+}
+
+Other publications in the database
+
+ » George Drettakis
+
+ E-mail any comment
+ © Basilic 1.5.14 - 2006

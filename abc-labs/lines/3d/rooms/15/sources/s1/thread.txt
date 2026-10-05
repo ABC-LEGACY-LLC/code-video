@@ -1,0 +1,111 @@
+# the post
+--- 2105364806379151765 @Bingeljell Wed Sep 30 18:31:00 +0000 2026 replies=17 likes=471 views=22502
+Free image-to-3D models don't preserve your source image - text, logos and fine detail come back garbled. 
+I got that working with my latest 'Pixel Match' feature in my image-to-3dlab: it copies the actual pixels from your source onto the model, even after retopo down to ~5k faces. High quality, low poly 3D models that are riggable and can be animated. 
+One step closer to Tripo / Meshy level of output, but free and on your own machine. Mac + NVIDIA. 
+Try it out here: https://github.com/Bingeljell/image-to-3dlab
+
+There's lots more to do, so please test, raise issues & PRs, etc.
+  [video 1080x1350 38.5s] https://video.twimg.com/amplify_video/2105354132051947520/vid/avc1/1080x1350/SALVDbSroWh83hsF.mp4?tag=29
+
+# thread (as the mirror gives it)
+--- 2105364806379151765 @Bingeljell Wed Sep 30 18:31:00 +0000 2026 replies=17 likes=471 views=22502
+Free image-to-3D models don't preserve your source image - text, logos and fine detail come back garbled. 
+I got that working with my latest 'Pixel Match' feature in my image-to-3dlab: it copies the actual pixels from your source onto the model, even after retopo down to ~5k faces. High quality, low poly 3D models that are riggable and can be animated. 
+One step closer to Tripo / Meshy level of output, but free and on your own machine. Mac + NVIDIA. 
+Try it out here: https://github.com/Bingeljell/image-to-3dlab
+
+There's lots more to do, so please test, raise issues & PRs, etc.
+  [video 1080x1350 38.5s] https://video.twimg.com/amplify_video/2105354132051947520/vid/avc1/1080x1350/SALVDbSroWh83hsF.mp4?tag=29
+
+# replies (33), oldest first
+--- 2105364807239041376 @Bingeljell Wed Sep 30 18:31:00 +0000 2026 replies=0 likes=3 views=734 -> Bingeljell/2105364806379151765
+Latest release also has some other feature updates:
+
+1. You can use Pixel Match without repainting
+2. The finish pipeline has a before and after compare
+3. Compare up to 4 models in the viewer now
+4. Pixal3D uses BiRefNet-lite as the bg remover - no more halo on your matte images
+
+You'll need Blender for the Finish pipeline that does the 'Pixel Match'
+--- 2105374470739472592 @powerhubinc Wed Sep 30 19:09:24 +0000 2026 replies=1 likes=1 views=427 -> Bingeljell/2105364806379151765
+@Bingeljell The tricky case I’d want to see is a small label wrapping around a curved surface after the 5k-face retopo. Does Pixel Match keep the lettering readable there? Your new before/after viewer seems well suited to show it.
+--- 2105375555071959145 @SmokeyMeowSOL Wed Sep 30 19:13:42 +0000 2026 replies=1 likes=0 views=355 -> Bingeljell/2105364806379151765
+@Bingeljell Here https://x.com/dustinng_gs/status/2105352107046117773?s=46
+  [quotes]
+  | --- 2105352107046117773 @dustinng_gs Wed Sep 30 17:40:32 +0000 2026 replies=8 likes=24 views=10986
+  | Opus 5.5, @threejs and @MeshyAI help me do this! 
+  | I wanted to play Liar's Bar with Liar's Dice rules… so I built it.
+  | 4 characters from Meshy, every animation hand-coded (no mocap), voices by ElevenLabs.
+  | One revolver. Every loser pulls.
+  |   [video 1920x1080 30.1s] https://video.twimg.com/amplify_video/2105351904465403904/vid/avc1/1920x1080/br9v0XPijT9vwmng.mp4?tag=29
+--- 2105378269025697880 @PrinceTeck Wed Sep 30 19:24:30 +0000 2026 replies=1 likes=1 views=335 -> Bingeljell/2105364806379151765
+@Bingeljell Do you have video tutorial for the same? I can test on rtx 5080 🙂
+--- 2105379923280224326 @Bingeljell Wed Sep 30 19:31:04 +0000 2026 replies=0 likes=1 views=377 -> powerhubinc/2105374470739472592
+@powerhubinc As long as the camera can see it cleanly, it will come out clean. You got an image in mind? i can run it for you.
+--- 2105380100216881474 @Bingeljell Wed Sep 30 19:31:46 +0000 2026 replies=0 likes=2 views=302 -> PrinceTeck/2105378269025697880
+@PrinceTeck Godsent! Thank you. I'll DM you - I have a small video tut coming up on how to use the viewer. It's pretty straight forward, but was planning on posting it tomorrow.
+--- 2105386490243211604 @Shinobi_110 Wed Sep 30 19:57:10 +0000 2026 replies=1 likes=5 views=439 -> Bingeljell/2105364806379151765
+@Bingeljell Awesome I'm currently working on something similar. This is my current output.  No tripo haha
+  [video 1476x1182 51.984s] https://video.twimg.com/amplify_video/2105386014424678400/vid/avc1/1476x1182/EwX1f7-zTUJYgsbx.mp4?tag=29
+--- 2105391783266103484 @Bingeljell Wed Sep 30 20:18:12 +0000 2026 replies=2 likes=3 views=335 -> Shinobi_110/2105386490243211604
+Oh this looks nice. Anywhere for us to test? 
+
+I'm quite impressed with Tripo's work - inspired even. That's why I'm pushing to do as much as I can locally. I have a bunch of ideas yet to implement - better geometry, multi camera angle to replace the paint step on all the models. That will open up the possibility of using other mesh / geometry only models as well.
+--- 2105394129966629107 @Bingeljell Wed Sep 30 20:27:31 +0000 2026 replies=0 likes=0 views=163 -> SmokeyMeowSOL/2105375555071959145
+@SmokeyMeowSOL Nice. Good thing with image to 3dlab is that you can generate the models locally too.
+--- 2105429834222715141 @fjjfewez3 Wed Sep 30 22:49:24 +0000 2026 replies=0 likes=0 views=87 -> Bingeljell/2105364806379151765
+@Bingeljell MY GOAT
+--- 2105449809905881452 @AxxekYxixpvcbo Thu Oct 01 00:08:46 +0000 2026 replies=1 likes=1 views=213 -> Bingeljell/2105364806379151765
+@Bingeljell Projecting exact pixels ensures a sharp front view, but the hidden backside still needs a plausible texture. If the tool has to generate the unseen areas from scratch, there might be a jarring drop in quality on those faces.
+--- 2105462098352300057 @Shinobi_110 Thu Oct 01 00:57:36 +0000 2026 replies=1 likes=1 views=31 -> Bingeljell/2105391783266103484
+@Bingeljell We can only do so much locally without a specially trained Ai model is what i learned so I turned to gaussian splat haha captures it for what it is, then use houdini to animate it my app is more of a personal thing cause it's not a user friendly process lol
+--- 2105463130616946918 @Bingeljell Thu Oct 01 01:01:42 +0000 2026 replies=1 likes=1 views=31 -> Shinobi_110/2105462098352300057
+@Shinobi_110 While that's true, there's a lot you can still push the with image to 3d. I'm sure I can squeeze out more in terms of geometry and accuracy.
+--- 2105463398804975966 @Bingeljell Thu Oct 01 01:02:46 +0000 2026 replies=0 likes=1 views=177 -> AxxekYxixpvcbo/2105449809905881452
+@AxxekYxixpvcbo Absolutely. Multiview is wip. Will make the default model paint step redundant too and be much more accurate.
+--- 2105465285910417877 @Shinobi_110 Thu Oct 01 01:10:16 +0000 2026 replies=0 likes=1 views=30 -> Bingeljell/2105463130616946918
+@Bingeljell Yeah nice work
+--- 2105533559478087775 @chaogetalks Thu Oct 01 05:41:34 +0000 2026 replies=0 likes=0 views=40 -> Bingeljell/2105364806379151765
+@Bingeljell Make your project live. Love it!
+--- 2105583281768992780 @Neuralwerk Thu Oct 01 08:59:08 +0000 2026 replies=1 likes=1 views=76 -> Bingeljell/2105364806379151765
+@Bingeljell Thank you very much for that. This is truly important work, and it's great that these closed-source companies are facing open-source competition. If only because the pricing is incomprehensible.
+--- 2105584352281108987 @Bingeljell Thu Oct 01 09:03:24 +0000 2026 replies=0 likes=0 views=68 -> Neuralwerk/2105583281768992780
+lol thanks. I didn't think about it that way. I started trying to make a 2d game, found sprite generation was a pain. So tried 3d. Found asset generation was a pain. And unfortunately got completely sucked into 3d. Turns out you can make 2d games from 3d assets as well. 2 birds, 1 stone. :D
+--- 2105584792515301511 @DupelJean Thu Oct 01 09:05:09 +0000 2026 replies=1 likes=1 views=50 -> Bingeljell/2105364806379151765
+@Bingeljell Thank you so much for thinking about Mac users !!! Amazing work !
+--- 2105593590768713927 @Bingeljell Thu Oct 01 09:40:06 +0000 2026 replies=0 likes=0 views=43 -> DupelJean/2105584792515301511
+@DupelJean I'm now an Apple Silicon first guy :P - the amount of digging and rummaging done to get stuff run on metal. :D lmk if you run into any issues.
+--- 2105596124489011605 @flaggedaccount Thu Oct 01 09:50:10 +0000 2026 replies=0 likes=0 views=22 -> Bingeljell/2105364806379151765
+@Bingeljell Great idea!
+--- 2105611990156636621 @DrocksAlex2 Thu Oct 01 10:53:13 +0000 2026 replies=2 likes=3 views=179 -> Bingeljell/2105364806379151765
+Looks too good to be true. I'll test it today. Thanks a lot for open sourcing.
+
+At the same time if you are good with 3d models I highly recommend you checkout to "mine" on Bittensor subnet @404gen_ ... you could get paid for what you're already good at doing and improve their overall subnet quality potentially
+--- 2105615073192632620 @Bingeljell Thu Oct 01 11:05:28 +0000 2026 replies=1 likes=1 views=63 -> DrocksAlex2/2105611990156636621
+@DrocksAlex2 @404gen_ Thanks. The pixel match works only for the front of the model right now. Getting it sorted for the multi view next. 
+Will can out the link. Thanks for sharing.
+--- 2105616210578596028 @DrocksAlex2 Thu Oct 01 11:09:59 +0000 2026 replies=1 likes=1 views=79 -> Bingeljell/2105615073192632620
+@Bingeljell @404gen_ Awesome
+--- 2105616581703139558 @DrocksAlex2 Thu Oct 01 11:11:28 +0000 2026 replies=0 likes=3 views=77 -> DrocksAlex2/2105616210578596028
+@Bingeljell @404gen_ @404gen_ can you sponsor him somehow so he can try mining your subnet without worrying about registration fees?
+--- 2105633752533905541 @saynullogic Thu Oct 01 12:19:42 +0000 2026 replies=0 likes=0 views=14 -> Bingeljell/2105364806379151765
+@Bingeljell interesting. i'll wait for the stable version for Windows.
+--- 2105650774995005602 @ultralightpcb Thu Oct 01 13:27:20 +0000 2026 replies=1 likes=1 views=14 -> Bingeljell/2105364806379151765
+@Bingeljell Well well well my 3060 12gb would like to scream
+--- 2105674494404952117 @Jeffsthinking Thu Oct 01 15:01:35 +0000 2026 replies=1 likes=0 views=10 -> Bingeljell/2105364806379151765
+@Bingeljell no window?
+--- 2105682027869765766 @StudioOmnes Thu Oct 01 15:31:31 +0000 2026 replies=1 likes=1 views=7 -> Bingeljell/2105364806379151765
+@Bingeljell What kind of hardware do you use to use the tool|?
+--- 2105684924703576079 @Bingeljell Thu Oct 01 15:43:02 +0000 2026 replies=0 likes=0 views=6 -> Jeffsthinking/2105674494404952117
+@Jeffsthinking Hey, sorry, didn't understand your question.
+--- 2105685185169920102 @Bingeljell Thu Oct 01 15:44:04 +0000 2026 replies=0 likes=0 views=2 -> saynullogic/2105633752533905541
+@saynullogic If you're open to helping me test, I'm happy to assist you?
+--- 2105685540867862682 @Bingeljell Thu Oct 01 15:45:29 +0000 2026 replies=0 likes=0 views=4 -> ultralightpcb/2105650774995005602
+@ultralightpcb I feel you man. Unfortunately the back ends all need a bit more ram. I'm also keen on trying to get that down.
+--- 2105686082419642385 @Bingeljell Thu Oct 01 15:47:38 +0000 2026 replies=0 likes=0 views=10 -> StudioOmnes/2105682027869765766
+@StudioOmnes Macbook m5, 32 gigs of memory. 
+
+I've tested across multiple nvidia GPUs as well. 3090, 3090 Ti, 4090, etc
+
+# cursor: {"bottom": "DAAKCgABHTjqPC-__1MLAAIAAAGIRW1QQzZ3QUFBZlEvZ0dKTjB2R3AvQUFBQUNJZE9GdWQ0MXJ3WHgwNGlkQUNWaUg3SFRpVWhQQ2JVWlVkT0E5eWE5cVJiQjAzMnF3S21qQzhIVGlpOHZRVzhjMGRPTVk1UUpwd29oMDN5K21lMnVCcEhUamwxOUFhOEpvZE45ek9iTnFBOHgwM3ptR0RHb0JZSFRpbklBR1dnT1lkT09WSVdkb1FEeDA0aU5iQzE1QU1IVGdhbjR4V1lCa2ROOVhicWRwaFZCMDQyOHZibTRBMUhUZkNJeklYZ1dBZE9LWEF4MXJoTEIwNDVsWG5HMUFSSFRnYnpsVmJjVjRkT0pJM0F4dkF4eDA0cHNtWTEyQzhIVGZRQzk2YWdVSWROOC9pckZ0Z1JoMDRHNC9rR3VEbUhUamxoUDdiRUdZZE9JbzJnbGJRaHgwNHRyM20yekNGSFRmSzdTZWFNTkFkT0IyRnRadFIxUjA0NHFYaEdnQ0dIVGZDSXY3V29aVWROLzFIZUZyQkJRPT0IAAMAAAACCwAEAAAABkJvdHRvbQAA"}

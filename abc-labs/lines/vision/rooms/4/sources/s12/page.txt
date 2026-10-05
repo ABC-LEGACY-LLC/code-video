@@ -1,0 +1,997 @@
+ Assaia | ApronAI 
+{
+ "@context": "https://schema.org",
+ "@type": "WebPage",
+ "name": "ApronAI Base",
+ "url": "/solutions/apron-ai",
+ "description": "Get Real Time Visibility & Predictive Alerting for Improved Turnaround Performance. ApronAI enhances airport, airline, and ground handler operations through real-time visibility of turnaround operations.",
+ "about": {
+ "@type": "SoftwareApplication",
+ "name": "ApronAI Base",
+ "applicationCategory": "BusinessApplication",
+ "operatingSystem": "Web",
+ "description": "ApronAI enhances airport, airline, and ground handler operations through real-time visibility of turnaround operations.",
+ "offers": {
+ "@type": "Offer",
+ "availability": "https://schema.org/InStock"
+ },
+ "featureList": [
+ "Live camera feeds for all turnarounds",
+ "Airport map overview",
+ "Real Time turnaround event detections",
+ "Predictions (POBT/PRDT)",
+ "Mobile Alerting",
+ "SSO",
+ "Performance against Precision Time Schedule or turnaround timeline",
+ "Data export",
+ "API"
+ ],
+ "provider": {
+ "@type": "Organization",
+ "name": "Assaia International Ltd",
+ "url": "https://www.assaia.com",
+ "email": "info@assaia.com",
+ "telephone": "+41767388898",
+ "address": {
+ "@type": "PostalAddress",
+ "addressCountry": "CH"
+ },
+ "contactPoint": [
+ {
+ "@type": "ContactPoint",
+ "contactType": "Customer Service",
+ "email": "info@assaia.com",
+ "telephone": "+41767388898"
+ },
+ {
+ "@type": "ContactPoint",
+ "contactType": "Human Resources",
+ "email": "hr@assaia.com"
+ }
+ ]
+ }
+ }
+}
+ (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-W6BN8TL7'); 
+<link
+ rel="stylesheet"
+ href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+/>
+ <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W6BN8TL7"
+height="0" width="0" style="display:none;visibility:hidden"> 
+/* TYPOGRAPHY STYLES */
+/* defaults */
+[class*="fs0"],
+h1, [class*="fs1"],
+h2, [class*="fs2"],
+h3, [class*="fs3"], 
+h4, [class*="fs4"],
+h5, [class*="fs5"],
+h6, [class*="fs6"],
+p, [class*="fs7"] {
+ font-size: inherit;
+ font-family: inherit;
+ font-weight: inherit;
+ line-height: inherit;
+ letter-spacing: inherit;
+ text-transform: inherit;
+}
+body { font-smoothing: antialiased; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, h5, h6, p { margin-top: 0; margin-bottom: 0; }
+:is(h1, h2, h3, h4, h5, h6, p) a { text-decoration: underline; }
+.w-richtext > *:first-child { margin-top: 0; }
+.w-richtext > *:last-child { margin-bottom: 0; }
+/* body font styles */
+body {
+ font-size: 1.125rem;
+ font-family: var(--ff1);
+ font-weight: var(--fw1);
+ line-height: var(--lh2);
+ letter-spacing: var(--ls1);
+ text-transform: var(--tt1);
+}
+/* heading font styles */
+[class*="fs0"],
+h1, [class*="fs1"],
+h2, [class*="fs2"],
+h3, [class*="fs3"],
+h4, [class*="fs4"],
+h5, [class*="fs5"],
+h6, [class*="fs6"] {
+ /* font-family: var(--ff0); */
+ font-weight: var(--fw2);
+ line-height: var(--lh1);
+ /* letter-spacing: var(--ls2); */
+ /* text-transform: var(--tt0); */
+}
+/* individual font styles */
+[class*="fs0"] {
+ font-size: 6rem;
+ /* font-family: var(--ff0); */
+ font-weight: var(--fw4);
+ /* line-height: var(--lh0); */
+ letter-spacing: var(--ls5);
+ /* text-transform: var(--tt0); */
+}
+h1, [class*="fs1"] {
+ font-size: 6rem;
+ /* font-family: var(--ff0); */
+ /* font-weight: var(--fw0); */
+ /* line-height: var(--lh0); */
+ letter-spacing: var(--ls5);
+ /* text-transform: var(--tt0); */
+}
+h2, [class*="fs2"] {
+ font-size: 3.75rem;
+ /* font-family: var(--ff0); */
+ /* font-weight: var(--fw0); */
+ /* line-height: var(--lh0); */
+ letter-spacing: var(--ls4);
+ /* text-transform: var(--tt0); */
+}
+h3, [class*="fs3"] {
+ font-size: 1.875rem;
+ /* font-family: var(--ff0); */
+ font-weight: var(--fw1);
+ /* line-height: var(--lh0); */
+ /* letter-spacing: var(--ls0); */
+ /* text-transform: var(--tt0); */
+}
+h4, [class*="fs4"] {
+ font-size: 2rem;
+ /* font-family: var(--ff0); */
+ /* font-weight: var(--fw0); */
+ /* line-height: var(--lh0); */
+ letter-spacing: var(--ls2);
+ /* text-transform: var(--tt0); */
+}
+h5, [class*="fs5"] {
+ font-size: 1.5rem;
+ /* font-family: var(--ff0); */
+ font-weight: var(--fw1);
+ /* line-height: var(--lh0); */
+ letter-spacing: var(--ls2);
+ /* text-transform: var(--tt0); */
+}
+h6, [class*="fs6"] {
+ font-size: 1.5rem;
+ /* font-family: var(--ff0); */
+ /* font-weight: var(--fw0); */
+ /* line-height: var(--lh0); */
+ /* letter-spacing: var(--ls0); */
+ /* text-transform: var(--tt0); */
+}
+[class*="fs7"] {
+ font-size: inherit;
+ /* font-family: var(--ff0); */
+ /* font-weight: var(--fw0); */
+ /* line-height: var(--lh0); */
+ /* letter-spacing: var(--ls0); */
+ /* text-transform: var(--tt0); */
+}
+[class*="fs7-1"] {
+ font-size: 1.5rem;
+ /* font-family: var(--ff0); */
+ /* font-weight: var(--fw0); */
+ /* line-height: var(--lh0); */
+ letter-spacing: var(--ls2);
+ /* text-transform: var(--tt0); */
+}
+[class*="fs7-2"] {
+ font-size: 1.25rem;
+ /* font-family: var(--ff0); */
+ /* font-weight: var(--fw0); */
+ /* line-height: var(--lh0); */
+ letter-spacing: var(--ls1);
+ /* text-transform: var(--tt0); */
+}
+[class*="fs7-3"] {
+ font-size: 1rem;
+ /* font-family: var(--ff0); */
+ /* font-weight: var(--fw0); */
+ /* line-height: var(--lh0); */
+ /* letter-spacing: var(--ls0); */
+ /* text-transform: var(--tt0); */
+}
+[class*="fs7-4"] {
+ font-size: 0.75rem;
+ /* font-family: var(--ff0); */
+ /* font-weight: var(--fw0); */
+ /* line-height: var(--lh0); */
+ /* letter-spacing: var(--ls0); */
+ /* text-transform: var(--tt0); */
+}
+[class*="fs8"] {
+ font-size: 1rem;
+ /* font-family: var(--ff0); */
+ font-weight: var(--fw3);
+ /* line-height: var(--lh0); */
+ letter-spacing: var(--ls6);
+ text-transform: var(--tt2);
+}
+[class*="fs8-1"] {
+ font-size: 0.75rem;
+ /* font-family: var(--ff0); */
+ font-weight: var(--fw3);
+ /* line-height: var(--lh0); */
+ letter-spacing: var(--ls6);
+ text-transform: var(--tt2);
+}
+/* responsive font styles */
+@media screen and (max-width: 991px) {
+ /* tablet font styles */
+ [class*="fs0"] { font-size: 4rem; }
+ h1, [class*="fs1"] { font-size: 4rem; }
+ h2, [class*="fs2"] { font-size: 3rem; }
+ h3, [class*="fs3"] { font-size: 1.5rem; }
+ h4, [class*="fs4"] { font-size: 1.5rem; }
+ h5, [class*="fs5"] { /* font-size: 0rem; */ }
+ h6, [class*="fs6"] { /* font-size: 0rem; */ }
+ body { /* font-size: 0rem; */ }
+ [class*="fs7-1"] { font-size: 1.25rem; }
+ [class*="fs7-2"] { font-size: 1rem; }
+ [class*="fs7-3"] { /* font-size: 0rem; */ }
+ [class*="fs8"] { /* font-size: 0rem; */ }
+ [class*="fs8-1"] { /* font-size: 0rem; */ }
+}
+@media screen and (max-width: 767px) {
+ /* landscape font styles */
+ [class*="fs0"] { font-size: 4rem; }
+ h1, [class*="fs1"] { font-size: 4rem; }
+ h2, [class*="fs2"] { font-size: 3rem; }
+ h3, [class*="fs3"] { font-size: 1.5rem; }
+ h4, [class*="fs4"] { font-size: 1.5rem; }
+ h5, [class*="fs5"] { /* font-size: 0rem; */ }
+ h6, [class*="fs6"] { /* font-size: 0rem; */ }
+ body { /* font-size: 0rem; */ }
+ [class*="fs7-1"] { font-size: 1.25rem; }
+ [class*="fs7-2"] { font-size: 1rem; }
+ [class*="fs7-3"] { /* font-size: 0rem; */ }
+ [class*="fs8"] { /* font-size: 0rem; */ }
+ [class*="fs8-1"] { /* font-size: 0rem; */ }
+}
+@media screen and (max-width: 479px) {
+ /* portrait font styles */
+ [class*="fs0"] { font-size: 4rem; }
+ h1, [class*="fs1"] { font-size: 4rem; }
+ h2, [class*="fs2"] { font-size: 3rem; }
+ h3, [class*="fs3"] { font-size: 1.5rem; }
+ h4, [class*="fs4"] { font-size: 1.5rem; }
+ h5, [class*="fs5"] { /* font-size: 0rem; */ }
+ h6, [class*="fs6"] { /* font-size: 0rem; */ }
+ body { /* font-size: 0rem; */ }
+ [class*="fs7-1"] { font-size: 1.25rem; }
+ [class*="fs7-2"] { font-size: 1rem; }
+ [class*="fs7-3"] { /* font-size: 0rem; */ }
+ [class*="fs8"] { /* font-size: 0rem; */ }
+ [class*="fs8-1"] { /* font-size: 0rem; */ }
+}
+/* variables */
+html {
+ /* font family */
+ --ff0: inherit;
+ --ff1: Work Sans, sans-serif;
+ /* font weight */
+ --fw0: inherit;
+ --fw1: 400;
+ --fw2: 500;
+ --fw3: 600;
+ --fw4: 300;
+ /* line height */
+ --lh0: inherit;
+ --lh1: 1;
+ --lh2: 1.2;
+ /* letter spacing */
+ --ls0: inherit;
+ --ls1: -0.4px;
+ --ls2: -0.5px;
+ --ls3: -0.6px;
+ --ls4: -1px;
+ --ls5: -2px;
+ --ls6: 1.4px;
+ /* text transform */
+ --tt0: inherit;
+ --tt1: none;
+ --tt2: uppercase;
+ --tt3: capitalize;
+ --tt4: lowercase;
+}
+/* utilities */
+/* font family */
+[class*="ff1"] { font-family: var(--ff1); }
+[class*="ff0"] { font-family: var(--ff0); }
+/* font weight */
+[class*="fw1"] { font-weight: var(--fw1); }
+[class*="fw2"] { font-weight: var(--fw2); }
+[class*="fw3"] { font-weight: var(--fw3); }
+[class*="fw4"] { font-weight: var(--fw4); }
+[class*="fw0"] { font-weight: var(--fw0); }
+/* line height */
+[class*="lh1"] { line-height: var(--lh1); }
+[class*="lh2"] { line-height: var(--lh2); }
+[class*="lh0"] { line-height: var(--lh0); }
+/* letter spacing */
+[class*="ls1"] { letter-spacing: var(--ls1); }
+[class*="ls2"] { letter-spacing: var(--ls2); }
+[class*="ls3"] { letter-spacing: var(--ls3); }
+[class*="ls4"] { letter-spacing: var(--ls4); }
+[class*="ls5"] { letter-spacing: var(--ls5); }
+[class*="ls6"] { letter-spacing: var(--ls6); }
+[class*="ls0"] { letter-spacing: var(--ls0); }
+/* text transform */
+[class*="tt1"] { text-transform: var(--tt1); }
+[class*="tt2"] { text-transform: var(--tt2); }
+[class*="tt3"] { text-transform: var(--tt3); }
+[class*="tt4"] { text-transform: var(--tt4); }
+[class*="tt0"] { text-transform: var(--tt0); }
+/* line clamp */
+[class*="lc1"], [class*="lc2"], [class*="lc3"], [class*="lc4"] {
+ display: -webkit-box;
+ overflow: hidden;
+ -webkit-line-clamp: 1;
+ -webkit-box-orient: vertical;
+}
+[class*="lc2"] { -webkit-line-clamp: 2; }
+[class*="lc3"] { -webkit-line-clamp: 3; }
+[class*="lc4"] { -webkit-line-clamp: 4; }
+/* text wrap */
+[class*="tw1"] { text-wrap: balance; }
+/* COLOR STYLES */
+/**%#**/
+/* btn and link mode transitions */
+[btn-mode], [class*="bm0"],
+[link-mode], [class*="lm0"] {
+ transition-property: background-color, color, border-color, box-shadow;
+ transition-duration: 200ms;
+}
+/* applies default border width to cards, elements, and buttons */
+[card-mode]:not([card-mode=""]), [class*="cm0"],
+[element-mode]:not([element-mode=""]), [class*="em0"],
+[btn-mode]:not([btn-mode=""]), [class*="bm0"] {
+ --border-width: var(--bw1);
+}
+/**#%**/
+/* global swatches */
+html {
+ --dark-1: 31, 28, 57;
+ --dark-2: 36, 44, 94;
+ --dark-3: 33, 56, 127;
+ --alt-dark-1: 47, 91, 102;
+ --alt-dark-2: 41, 132, 140;
+ --light-1: 255, 255, 255;
+ --light-2: 246, 246, 246;
+ --brand-1: 69, 170, 165;
+ --brand-2: 248, 84, 121;
+ --brand-3: 247, 159, 109;
+ --brand-4: 186, 50, 160;
+ --alt-selection-bg: rgba(var(--brand-1), 1);
+ --alt-selection-fc: rgba(var(--dark-1), 1);
+}
+/* section mode 1 (light mode) */
+body, [section-mode="1"], [class*="sm0-1"],
+/* styles card mode 2 when inside section mode 2 */
+:is([section-mode="2"], [class*="sm0-2"]) :is([card-mode="2"], [class*="cm0-2"]) {
+ /* section mode 1 */
+ --m-bg1: rgba(var(--light-1), 1);
+ --m-bg2: rgba(var(--light-2), 1);
+ --m-bg3: rgba(var(--light-2), 1);
+ --m-fc1: rgba(var(--dark-2), 1);
+ --m-fc2: rgba(var(--dark-2), 0.7);
+ --m-bc1: rgba(var(--dark-2), 0.2);
+ --m-bc2: rgba(var(--dark-2), 1);
+ --m-sc1: rgba(var(--dark-2), 1);
+ /* element mode 1 (tag) */
+ --em1-bg1: rgba(var(--brand-1), 1);
+ --em1-bg2: rgba(var(--alt-dark-1), 1);
+ --em1-fc1: rgba(var(--light-1), 1);
+ --em1-bc1: rgba(var(--brand-1), 1);
+ /* element mode 2 (tag) */
+ --em2-bg1: rgba(var(--brand-2), 1);
+ --em2-fc1: rgba(var(--dark-1), 1);
+ --em2-bc1: rgba(var(--brand-2), 1);
+ /* element mode 3 (tag) */
+ --em3-bg1: rgba(var(--brand-3), 1);
+ --em3-fc1: rgba(var(--dark-1), 1);
+ --em3-bc1: rgba(var(--brand-3), 1);
+ /* element mode 4 (tag) */
+ --em4-bg1: rgba(var(--brand-4), 1);
+ --em4-fc1: rgba(var(--light-1), 1);
+ --em4-bc1: rgba(var(--brand-4), 1);
+ /* btn mode 1 (primary) */
+ --bm1-bg1: rgba(var(--brand-1), 1);
+ --bm1-bg1b: rgba(var(--brand-1), 1);
+ --bm1-fc1: rgba(var(--dark-2), 1);
+ --bm1-bg1-hover: rgba(var(--brand-1), 1);
+ --bm1-bg1b-hover: rgba(var(--brand-1), 1);
+ --bm1-fc1-hover: rgba(var(--dark-1), 1);
+ /* btn mode 2 (secondary) */
+ --bm2-bg1b: rgba(var(--brand-1), 1);
+ --bm2-fc1: rgba(var(--dark-2), 1);
+ --bm2-bg1-hover: rgba(var(--brand-1), 1);
+ --bm2-bg1b-hover: rgba(var(--brand-1), 1);
+ --bm2-fc1-hover: rgba(var(--dark-1), 1);
+ /* link mode 1 (tab link) */
+ --lm1-fc1: rgba(var(--dark-2), 1);
+ --lm1-fc1-hover: rgba(var(--dark-2), 0.8);
+ --lm1-bg1b-active: rgba(var(--dark-2), 1);
+ --lm1-fc1-active: rgba(var(--dark-2), 1);
+}
+/* section mode 2 (blue mode) */
+[section-mode="2"], [class*="sm0-2"],
+/* card mode 2 */
+[card-mode="2"], [class*="cm0-2"],
+/* styles card mode 2 when inside section mode 1 */
+:is([section-mode="1"], [class*="sm0-1"]) :is([card-mode="2"], [class*="cm0-2"]) {
+ /* section mode 2 */
+ --m-bg1: rgba(var(--dark-2), 1);
+ --m-bg2: rgba(var(--dark-3), 1);
+ --m-bg3: rgba(var(--dark-1), 1);
+ --m-fc1: rgba(var(--light-1), 1);
+ --m-fc2: rgba(var(--light-1), 0.7);
+ --m-bc1: rgba(var(--light-1), 0.2);
+ --m-bc2: rgba(var(--light-1), 1);
+ --m-sc1: rgba(var(--brand-1), 1);
+ /* element mode 1 (tag) */
+ --em1-bg1: rgba(var(--brand-1), 1);
+ --em1-bg2: rgba(var(--alt-dark-1), 1);
+ --em1-fc1: rgba(var(--light-1), 1);
+ --em1-bc1: rgba(var(--brand-1), 1);
+ /* element mode 2 (tag) */
+ --em2-bg1: rgba(var(--brand-2), 1);
+ --em2-fc1: rgba(var(--dark-1), 1);
+ --em2-bc1: rgba(var(--brand-2), 1);
+ /* element mode 3 (tag) */
+ --em3-bg1: rgba(var(--brand-3), 1);
+ --em3-fc1: rgba(var(--dark-1), 1);
+ --em3-bc1: rgba(var(--brand-3), 1);
+ /* element mode 4 (tag) */
+ --em4-bg1: rgba(var(--brand-4), 1);
+ --em4-fc1: rgba(var(--light-1), 1);
+ --em4-bc1: rgba(var(--brand-4), 1);
+ /* btn mode 1 (primary) */
+ --bm1-bg1: rgba(var(--brand-1), 1);
+ --bm1-bg1b: rgba(var(--light-1), 1);
+ --bm1-fc1: rgba(var(--light-1), 1);
+ --bm1-bg1-hover: rgba(var(--brand-1), 1);
+ --bm1-bg1b-hover: rgba(var(--brand-1), 1);
+ --bm1-fc1-hover: rgba(var(--dark-1), 1);
+ /* btn mode 2 (secondary) */
+ --bm2-bg1b: rgba(var(--brand-1), 1);
+ --bm2-fc1: rgba(var(--light-1), 1);
+ --bm2-bg1-hover: rgba(var(--brand-1), 1);
+ --bm2-bg1b-hover: rgba(var(--brand-1), 1);
+ --bm2-fc1-hover: rgba(var(--dark-1), 1);
+ /* link mode 1 (tab link) */
+ --lm1-fc1: rgba(var(--light-1), 1);
+ --lm1-fc1-hover: rgba(var(--light-1), 0.8);
+ --lm1-bg1b-active: rgba(var(--light-1), 1);
+ --lm1-fc1-active: rgba(var(--light-1), 1);
+}
+/* section mode 3 (green mode) */
+[section-mode="3"], [class*="sm0-3"],
+/* card mode 2 */
+[card-mode="3"], [class*="cm0-3"],
+/* styles card mode 3 when inside section mode 1 */
+:is([section-mode="1"], [class*="sm0-1"]) :is([card-mode="3"], [class*="cm0-3"]) {
+ /* section mode 3 */
+ --m-bg1: rgba(var(--alt-dark-2), 1);
+ --m-bg2: rgba(var(--brand-1), 1);
+ --m-bg3: rgba(var(--alt-dark-1), 1);
+ --m-fc1: rgba(var(--light-1), 1);
+ --m-fc2: rgba(var(--light-1), 0.7);
+ --m-bc1: rgba(var(--light-1), 0.2);
+ --m-bc2: rgba(var(--light-1), 1);
+ --m-sc1: rgba(var(--brand-1), 1);
+ /* element mode 1 (tag) */
+ --em1-bg1: rgba(var(--brand-1), 1);
+ --em1-bg2: rgba(var(--alt-dark-1), 1);
+ --em1-fc1: rgba(var(--light-1), 1);
+ --em1-bc1: rgba(var(--brand-1), 1);
+ /* element mode 2 (tag) */
+ --em2-bg1: rgba(var(--brand-2), 1);
+ --em2-fc1: rgba(var(--dark-1), 1);
+ --em2-bc1: rgba(var(--brand-2), 1);
+ /* element mode 3 (tag) */
+ --em3-bg1: rgba(var(--brand-3), 1);
+ --em3-fc1: rgba(var(--dark-1), 1);
+ --em3-bc1: rgba(var(--brand-3), 1);
+ /* element mode 4 (tag) */
+ --em4-bg1: rgba(var(--brand-4), 1);
+ --em4-fc1: rgba(var(--light-1), 1);
+ --em4-bc1: rgba(var(--brand-4), 1);
+ /* btn mode 1 (primary) */
+ --bm1-bg1: rgba(var(--light-1), 1);
+ --bm1-bg1b: rgba(var(--light-1), 1);
+ --bm1-fc1: rgba(var(--light-1), 1);
+ --bm1-bg1-hover: rgba(var(--light-1), 1);
+ --bm1-bg1b-hover: rgba(var(--light-1), 1);
+ --bm1-fc1-hover: rgba(var(--dark-1), 1);
+ /* btn mode 2 (secondary) */
+ --bm2-bg1b: rgba(var(--light-1), 1);
+ --bm2-fc1: rgba(var(--light-1), 1);
+ --bm2-bg1-hover: rgba(var(--light-1), 1);
+ --bm2-bg1b-hover: rgba(var(--light-1), 1);
+ --bm2-fc1-hover: rgba(var(--dark-1), 1);
+ /* link mode 1 (tab link) */
+ --lm1-fc1: rgba(var(--light-1), 1);
+ --lm1-fc1-hover: rgba(var(--light-1), 0.8);
+ --lm1-bg1b-active: rgba(var(--light-1), 1);
+ --lm1-fc1-active: rgba(var(--light-1), 1);
+}
+/* card mode 1 when inside section mode 2 */
+:is([section-mode="2"], [class*="sm0-2"]) :is([card-mode="1"], [class*="cm0-1"]) {
+ --m-bg1: rgba(var(--dark-1), 0.6);
+ --m-fc2: rgba(var(--light-1), 0.7);
+ --m-bc1: rgba(var(--light-1), 0.2);
+ --m-sc1: rgba(var(--brand-1), 1);
+}
+/* card mode 1 default style */
+:is([card-mode="1"], [class*="cm0-1"]),
+/* card mode 1 when inside section mode 1 */
+:is([section-mode="1"], [class*="sm0-1"]) :is([card-mode="1"], [class*="cm0-1"]) {
+ --m-bg1: rgba(var(--light-2), 1);
+ --m-fc2: rgba(var(--dark-1), 0.7);
+ --m-bc1: rgba(var(--dark-1), 0.2);
+ --m-sc1: rgba(var(--dark-1), 1);
+}
+/**%{{element mode: tag}**/
+[element-mode="1"], [class*="em0-1"] {
+ --m-bg1: var(--em1-bg1);
+ --m-fc1: var(--em1-fc1);
+ --m-bc1: var(--em1-bc1);
+ --m-bg2: var(--em1-bg2);
+}
+[element-mode="2"], [class*="em0-2"] {
+ --m-bg1: var(--em2-bg1);
+ --m-fc1: var(--em2-fc1);
+ --m-bc1: var(--em2-bc1);
+}
+[element-mode="3"], [class*="em0-3"] {
+ --m-bg1: var(--em3-bg1);
+ --m-fc1: var(--em3-fc1);
+ --m-bc1: var(--em3-bc1);
+}
+[element-mode="4"], [class*="em0-4"] {
+ --m-bg1: var(--em4-bg1);
+ --m-fc1: var(--em4-fc1);
+ --m-bc1: var(--em4-bc1);
+}
+/**}%**/
+/**%{{btn mode: solid}**/
+[btn-mode="1"], [class*="bm0-1"] {
+ --m-bg1: var(--bm1-bg1);
+ --m-fc1: var(--bm1-fc1);
+ --m-bg1-hover: var(--bm1-bg1-hover);
+ --m-fc1-hover: var(--bm1-fc1-hover);
+} /**}%**/
+/**%{{btn mode: outlined}**/
+[btn-mode="2"], [class*="bm0-2"] {
+ --m-bg1b: var(--bm2-bg1b);
+ --m-fc1: var(--bm2-fc1);
+ --m-bg1-hover: var(--bm2-bg1-hover);
+ --m-bg1b-hover: var(--bm2-bg1b-hover);
+ --m-fc1-hover: var(--bm2-fc1-hover);
+ --selection-bg: var(--alt-selection-bg);
+ --selection-fc: var(--alt-selection-fc);
+} /**}%**/
+/**%{{link mode: nav}**/
+[link-mode="1"], [class*="lm0-1"] {
+ --m-fc1: var(--lm1-fc1);
+ --m-fc1-hover: var(--lm1-fc1-hover);
+ --m-bg1b-active: var(--lm1-bg1b-active);
+ --m-fc1-active: var(--lm1-fc1-active);
+ --selection-bg: var(--alt-selection-bg);
+ --selection-fc: var(--alt-selection-fc);
+} /**}%**/
+/* backgrounds */
+[class*="bg0"] { background-color: transparent; }
+[class*="bg0-1"] { background-color: currentColor; }
+[class*="bg1"] { 
+ background-color: var(--bg1);
+ background-image: var(--bg1i);
+ border-color: var(--bg1b);
+ box-shadow: var(--bg1s);
+}
+[class*="bg2"] { 
+ background-color: var(--bg2);
+ background-image: var(--bg2i);
+ border-color: var(--bg2b);
+ box-shadow: var(--bg2s);
+}
+[class*="bg3"] { 
+ background-color: var(--bg3);
+ background-image: var(--bg3i);
+ border-color: var(--bg3b);
+ box-shadow: var(--bg3s);
+}
+/* font colors */
+[class*="fc0"] { color: transparent; }
+[class*="fc0-1"] { color: currentColor; }
+[class*="fc0-2"] { color: inherit; }
+[class*="fc1"] { color: var(--fc1); }
+[class*="fc2"] { color: var(--fc2); }
+/* border colors */
+[class*="bc0"] { border-color: transparent; }
+[class*="bc0-1"] { border-color: currentColor; }
+[class*="bc0-2"] { border-color: inherit; }
+[class*="bc1"] { border-color: var(--bc1); }
+[class*="bc2"] { border-color: var(--bc2); }
+/* text stroke colors */
+[class*="sc0"] { -webkit-text-stroke-color: transparent; }
+[class*="sc0-1"] { -webkit-text-stroke-color: currentColor; }
+[class*="sc0-2"] { -webkit-text-stroke-color: inherit; }
+[class*="sc1"] { -webkit-text-stroke-color: var(--sc1); }
+/* UTILITY STYLES */
+/* defaults */
+* {
+ --text-stroke-width: 0;
+ -webkit-text-stroke-width: var(--text-stroke-width);
+ --border-radius: 0;
+ border-radius: var(--border-radius);
+ --border-width: 0;
+ border-width: var(--border-width);
+ border-style: solid;
+}
+/* variables */
+html { 
+ /* small section padding */
+ --vt1: var(--size4);
+ --vb1: var(--size4);
+ /* medium section padding */
+ --vt2: var(--size8);
+ --vb2: var(--size8);
+ /* large section padding */
+ --vt3: var(--size10);
+ --vb3: var(--size10);
+ /* extra large section padding */
+ --vt4: var(--size15);
+ --vb4: var(--size15);
+ /* page padding */
+ --pp1: 3rem;
+ /* max width */
+ --mw1: 72rem;
+ --mw2: 62rem;
+ /* stroke width */
+ --sw1: var(--bw1);
+ --sw2: var(--bw2);
+ /* border radius */
+ --br1: 0.75rem;
+ --br2: 1.5rem;
+ --br3: 2rem;
+ --br4: 2.5rem;
+ --br5: 100vw;
+ /* border width */
+ --bw1: 1px;
+ --bw2: 2px;
+ /* default grid gap */
+ --default-grid-gap: 1.25rem;
+ --default-row-gap: var(--default-grid-gap);
+ --default-column-gap: var(--default-grid-gap);
+ /* spacing scale */
+ --spacing-scale: 1;
+}
+/* tablet */
+@media screen and (max-width: 991px) {
+ html { 
+ /* page padding */
+ --pp1: 1.5rem;
+ /* spacing scale */
+ --spacing-scale: 0.825;
+ }
+}
+/* landscape */
+@media screen and (max-width: 767px) {
+ html { 
+ /* page padding */
+ --pp1: 1.25rem;
+ /* spacing scale */
+ --spacing-scale: 0.75;
+ }
+}
+/* portrait */
+@media screen and (max-width: 479px) {
+ html { 
+ /* page padding */
+ --pp1: 1rem;
+ }
+}
+/* section styles */
+section, header, footer {
+ position: relative;
+ padding-top: var(--vt2);
+ padding-bottom: var(--vb2);
+}
+/* small */
+[class*="vt1"],[vertical-top="1"] { padding-top: var(--vt1); }
+[class*="vb1"],[vertical-bottom="1"] { padding-bottom: var(--vb1); }
+/* medium */
+[class*="vt2"],[vertical-top="2"] { padding-top: var(--vt2); }
+[class*="vb2"],[vertical-bottom="2"] { padding-bottom: var(--vb2); }
+/* large */
+[class*="vt3"],[vertical-top="3"] { padding-top: var(--vt3); }
+[class*="vb3"],[vertical-bottom="3"] { padding-bottom: var(--vb3); }
+/* extra large */
+[class*="vt4"],[vertical-top="4"] { padding-top: var(--vt4); }
+[class*="vb4"],[vertical-bottom="4"] { padding-bottom: var(--vb4); }
+/* none */
+[class*="vt0"],[vertical-top="0"] { padding-top: 0; }
+[class*="vb0"],[vertical-bottom="0"] { padding-bottom: 0; }
+/* container styles */
+.w-container {
+ position: relative;
+ padding-left: var(--pp1);
+ padding-right: var(--pp1);
+ width: 100%;
+ max-width: var(--mw2);
+}
+/* page padding */
+[class*="pp1"] { padding-left: var(--pp1); padding-right: var(--pp1); }
+[class*="pp0"] { padding-left: 0; padding-right: 0; }
+/* max width */
+[class*="mw1"] { max-width: var(--mw1); }
+[class*="mw2"] { max-width: var(--mw2); }
+[class*="mw0"] { max-width: none; }
+/* stroke width */
+[class*="sw1"] { --text-stroke-width: var(--sw1); }
+[class*="sw2"] { --text-stroke-width: var(--sw2); }
+[class*="sw0"] { --text-stroke-width: 0px; }
+/* border radius */
+[class*="br1"] { --border-radius: var(--br1); }
+[class*="br2"] { --border-radius: var(--br2); }
+[class*="br3"] { --border-radius: var(--br3); }
+[class*="br4"] { --border-radius: var(--br4); }
+[class*="br5"] { --border-radius: var(--br5); }
+[class*="br0"] { --border-radius: 0rem; }
+/* border width */
+[class*="bw1"] { border-width: var(--bw1); border-style: solid; }
+[class*="bw2"] { border-width: var(--bw2); border-style: solid; }
+[class*="bw0"] { border-width: 0; }
+/* border direction */
+/**%{{border: top}**/
+[class*="bw1t"], [class*="bw2t"] {
+ border-bottom-width: 0;
+ border-left-width: 0;
+ border-right-width: 0;
+} /**}%**/
+/**%{{border: bottom}**/
+[class*="bw1b"], [class*="bw2b"] {
+ border-top-width: 0;
+ border-left-width: 0;
+ border-right-width: 0;
+} /**}%**/
+/**%{{border: left}**/
+[class*="bw1l"], [class*="bw2l"] {
+ border-top-width: 0;
+ border-bottom-width: 0;
+ border-right-width: 0;
+} /**}%**/
+/**%{{border: right}**/
+[class*="bw1r"], [class*="bw2r"] {
+ border-top-width: 0;
+ border-bottom-width: 0;
+ border-left-width: 0;
+} /**}%**/
+/**%{{border: vertical}**/
+[class*="bw1v"], [class*="bw2v"] {
+ border-left-width: 0;
+ border-right-width: 0;
+} /**}%**/
+/**%{{border: horizontal}**/
+[class*="bw1h"], [class*="bw2h"] {
+ border-top-width: 0;
+ border-bottom-width: 0;
+} /**}%**/
+/* pointer events */
+[class*="pe0"] { pointer-events: none; }
+[class*="pe1"] { pointer-events: auto; }
+/**%{{pointer-events: children}**/
+[class*="pe2"] { pointer-events: none; }
+[class*="pe2"] > * { pointer-events: auto; }
+/**}%**/
+/* icon styles */
+/**%#**/
+[class*="ic1"] svg,
+[class*="ic2"] svg { width: 100% !important; height: 100% !important; }
+/**#%**/
+[class*="ic1"] * { fill: currentColor !important; }
+[class*="ic2"] * { stroke: currentColor !important; }
+/* cover */
+[class*="cf1"] { width: 100%; height: 100%; }
+[class*="ca1"] { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
+/* CUSTOM STYLES */
+/* remove scroll bounce */
+body { overscroll-behavior: none; }
+/* prevent horizontal scroll */
+.page_wrap { overflow: clip; }
+/* enable setting w-button border radius with utilities */
+.w-button { border-radius: var(--border-radius); }
+/* hide container ::before & ::after */
+.w-container::before, .w-container::after { display: none; }
+/* empty div in designer view when utilities are added */
+.wf-empty[class*="--"] { padding-bottom: 0; padding-right: 0; }
+/* flex: reverse direction */
+[reverse-direction="true"] { flex-direction: row-reverse; }
+/* btn small */
+[btn-main-small="true"] { padding: 0.6rem 1rem; }
+/* btn hovers */
+@media (pointer: fine) {
+ a:hover [btn-main="icon"] { transform: translateX(0.2rem); }
+ a:hover [btn-play="base"] { transform: scale(1.1); }
+}
+/* form styles */
+/* field placeholder */
+.w-input::placeholder, .w-select::placeholder {
+ color: var(--fc2);
+}
+/* field focus */
+.w-input:focus, .w-select:focus {
+ border-color: var(--bc2);
+}
+/* checkbox and radio selected */
+.w-checkbox-input.w--redirected-checked,
+.w-radio-input.w--redirected-checked {
+/* background-color: rgba(var(--brand-1), 1); */
+/* border-color: rgba(var(--brand-1), 1); */
+}
+/* line breaking inside webflow dropdown element */
+[class*="li_accordion_toggle"] {
+ white-space: normal;
+}
+/* fix swiper.js bullet position */
+ .swiper-pagination-bullets.swiper-pagination-horizontal {
+ width: auto;
+ max-width: 60%;
+ display: flex;
+ justify-content: flex-end;
+ align-items: center;
+ flex-wrap: wrap;
+ gap: 0.75rem; 
+}
+.swiper-bullet {
+ font-size: 0;
+ width: 1rem;
+ height: 1rem;
+ box-sizing: border-box; /* To include padding and border in the element's total width and height */
+ border: 1px solid #45aaa5; /* Unified border shorthand */
+ border-radius: 0.5rem; /* Unified border-radius shorthand */
+ background-color: transparent;
+}
+.form_main_field_input--fs7-fc1-bw1b-bc1 {
+ -webkit-appearance: none;
+ -moz-appearance: none;
+ appearance: none;
+}
+.form_main_field_input--fs7-fc1-bw1b-bc1::-ms-expand {
+ display: none; /* Hide the default arrow in Internet Explorer 10 and Internet Explorer 11 */
+}
+.navbar_link--pv0-25, .footer_link--pv0-25 {
+ box-sizing: content-box;
+}
+.news_grid_item--br2-bg2 {
+ -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+label {
+ font-weight: inherit;
+ margin-bottom: 0;
+}
+.checkbox_label:has(input:checked) .checkbox_circle_inner {
+ opacity: 1;
+}
+/* The class we'll toggle to animate the modal */
+ .modal_cta.is-visible {
+ opacity: 1 !important;
+ pointer-events: auto !important;
+ visibility: visible !important;
+ }
+ /* The class we add to the body to lock scrolling */
+ body.no-scroll {
+ overflow: hidden !important;
+ }
+ iframe[src*="recaptcha"] {
+ max-width: none !important;
+ }
+/* 1. Ensure the wrapper acts as a flex container */
+.is-animate-marquee {
+ display: flex !important;
+ flex-wrap: nowrap;
+ /* Make sure you set the gap on this wrapper in Webflow to match your list! */
+}
+/* 2. Format the CMS list to keep its width and animate */
+.is-animate-marquee .customer_list {
+ /* Prevent the lists from squishing */
+ flex-shrink: 0;
+ min-width: max-content; 
+ /* The Animation: 25 seconds, constant speed, infinite loop */
+ /*animation: scrollMarquee 40s linear infinite; */
+}
+/* 3. The Keyframes */
+@keyframes scrollMarquee {
+ 0% { 
+ transform: translateX(0); 
+ }
+ 100% { 
+ /* Translates left by 100% of its own width, PLUS the gap size */
+ /* Update '3rem' to match your xx-large variable value */
+ transform: translateX(calc(-100% - 64px)); 
+ }
+}
+/* 
+ .is-animate-marquee:hover .customer_list {
+ animation-play-state: paused;
+ }
+*/
+ Why Assaia 
+ Airports Airlines Customer stories Solutions 
+ ApronAI 
+ TurnaroundControl 
+ ResourceManager 
+ SafetyControl 
+ EmissionsControl 
+ Analysis as a Service 
+ FAQ Company 
+ Careers Management Team Customer-focused Teams Strategic Partner Community Assaia Safety Round Table Resources Get in touch 
+ Why Assaia Airports Airlines Customer Stories Solutions 
+ ApronAI 
+ TurnaroundControl 
+ ResourceManager 
+ SafetyControl 
+ EmissionsControl 
+ Analysis as a Service 
+ FAQ Company Careers Management Team Customer-focused Teams Strategic Partner Community Assaia Safety Round Table Resources Get in touch 
+ Contact Us info@assaia.com +41 76 738 88 98 Join our Team hr@assaia.com Social Links 
+ Apronai Get real-time visibility & predictive alerting for improved turnaround performance ApronAI enhances airport, airline, and ground handler operations through real-time visibility of turnaround operations. With strategically placed cameras across aircraft stands, aerobridges, and the apron, accurate timestamps for turnaround events are generated in real time. Our advanced machine-learning techniques enable accurate predictions for aircraft off-block (POBT) and departure readiness (PRDT). Get in touch 
+ ApronAI has already proven its ability to improve turnaround operations at airports like: Assaia's ApronAI offers an intuitive interface that showcases live video, turnaround data, and alerting capabilities to prioritize important information With full visibility, decision support, and alerting capabilities, users gain control over operations and can make rapid informed decisions and adopt management by exception. ApronAI's success at airports like JFKIAT and Seattle-Tacoma has resulted in reduced delays and increased capacity. 5min Ground delays reduced at JFKIAT 17% Increase in OTP for Alaska Airlines Aircraft turnaround management Stay in the loop with real-time updates on airline turnaround data. Our system uses airline-specific business logic and alerts to keep you informed about crucial processes like cleaning. No more waiting to find out if something didn't start or end on time. With instant notifications, airlines and ground handlers can take immediate action, resolving issues and minimizing disruptions. Our data-driven approach also offers centralized turnaround management, giving your staff the power to handle multiple turnarounds at once. 
+ Improved OTP 
+ Improved passenger experience 
+ Reduction in delay related costs 
+ Increase in employee productivity 
+ Less staff experience/training required 
+ Higher gate utilization (due to shorter and more stable turns) 6min Ground delays reduced at ADR 44% Reduction in average taxi-in time for Toronto Pearson International Airport Resource Management Get accurate, real-time predictions for when aircraft will leave the gate and be ready for takeoff. Our advanced system uses live turnaround data, flight details, weather updates, and more to provide precise off-block times (POBT) and ready times (PRDT) - consistently beating current alternatives. These predictions make resource management a whole lot easier. Airports and airlines can efficiently allocate gates, pushback tugs, and loading teams without unnecessary delays. By increasing predictability, this system minimizes the need for excessive planning buffers, streamlining operations and saving time. 
+ Increased resource utilization 
+ Less delays due to resource unavailability 
+ Increase in gate capacity 
+ Less last minute gate changes 
+ Less inbound holding 
+ Increase in passenger experience 
+ Less jet fuel consumption 
+ Reduced carbon emissions With the help of Predicted Off-Block Time from Assaia JFKIAT Operations can be proactive to reduce or eliminate any delays and gate holds. Stephen Tukavkin VP IT & Digital, JFKIAT 5min average reduction in ground delays 25% increase in percentage of occasions where the gate was clear upon arrival Read customer story 
+ Additional features Alerting CSV data export Watchlist Assaia & Frontier Audio live voice interaction explore Other solutions TurnaroundControl Airline 
+ ResourceManager Airport 
+ SafetyControl Airport Airline 
+ EmissionsControl Airport 
+ Get in touch Unlock growth with reduced operational costs and increased OTP Get in touch 
+ We will help you improve your airside operations. Subscribe to our newsletter. Email Address 
+ Thank you! Your submission has been received! Oops! Something went wrong while submitting the form. Why Assaia Airports Airlines Customer stories Solutions 
+ ApronAI 
+ TurnaroundControl 
+ ResourceManager 
+ SafetyControl 
+ EmissionsControl 
+ Analysis as a Service 
+ Resources News and Insights Events Company Careers Management Team Strategic Partner Community Assaia Safety Round Table Legal Cookie policy Privacy policy Anti-Slavery & Human Trafficking AI Ethical Use Policy Anti Bribery Policy Environmental Management System Corporate Social Responsibility HR Policy: Equal Employment HR Policy: Training and Development Health, Safety & RIDDOR Assaia International AG Operation Center 8058 Zurich Switzerland Assaia International AG Achtern Barg, 41 22885 Barsbüttel Germany Assaia Inc. 748 Market Street Tacoma, WA 98402 United States Contact Us info@assaia.com Join our Team hr@assaia.com Social Links 
+ World Business Partner Strategic Partner Assaia International Ltd. 2026 © All Rights Reserved Crafted by Sherry Design Get in touch Unlock growth with reduced operational costs and increased OTP Send us a message Name * Email Address * Company * I'm interested in ApronAI TurnaroundControl SafetyControl EmissionsControl StandManager Analysis as a service Updates from Assaia SPC Receive marketing communication from Assaia including product updates, industry news, and event invitations. You can unsubscribe at any time. Submit 
+ Assaia will handle your data pursuant to its Privacy Policy Thank you! Your submission has been received! An Assaia team member will be in touch shortly. Oops! Something went wrong while submitting the form. 
+ _linkedin_partner_id = "695858"; window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || []; window._linkedin_data_partner_ids.push(_linkedin_partner_id); 
+ (function(l) { if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])}; window.lintrk.q=[]} var s = document.getElementsByTagName("script")[0]; var b = document.createElement("script"); b.type = "text/javascript";b.async = true; b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js"; s.parentNode.insertBefore(b, s);})(window.lintrk); 
+ (function(e,t,o,n,p,r,i){e.visitorGlobalObjectAlias=n;e[e.visitorGlobalObjectAlias]=e[e.visitorGlobalObjectAlias]||function(){(e[e.visitorGlobalObjectAlias].q=e[e.visitorGlobalObjectAlias].q||[]).push(arguments)};e[e.visitorGlobalObjectAlias].l=(new Date).getTime();r=t.createElement("script");r.src=o;r.async=true;i=t.getElementsByTagName("script")[0];i.parentNode.insertBefore(r,i)})(window,document,"https://diffuser-cdn.app-us1.com/diffuser/diffuser.js","vgo");
+ vgo('setAccount', '802586631');
+ vgo('setTrackByDefault', true);
+ vgo('process');
+ // Wait for the page to fully load
+ document.addEventListener("DOMContentLoaded", function() {
+ // 1. Check the browser to see if the user has a saved tag from the /explore page
+ var savedTag = sessionStorage.getItem('source_tag');
+ // 2. If a tag is found, proceed
+ if (savedTag) {
+ // 3. Find any hidden fields we created named 'Dynamic_Tag'
+ var tagInputs = document.querySelectorAll('input[name="Dynamic_Tag"]');
+ // 4. Inject the saved tag into those hidden fields
+ tagInputs.forEach(function(input) {
+ input.value = savedTag;
+ });
+ }
+ });

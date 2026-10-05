@@ -1,0 +1,17 @@
+codec_name=h264
+codec_type=video
+width=1920
+height=1080
+r_frame_rate=60/1
+bit_rate=4304918
+nb_frames=1280
+codec_name=aac
+codec_type=audio
+sample_rate=48000
+channels=2
+r_frame_rate=0/0
+bit_rate=128000
+nb_frames=1002
+duration=21.376000
+size=11854136
+bit_rate=4436428

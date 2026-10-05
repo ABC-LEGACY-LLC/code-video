@@ -1,0 +1,618 @@
+Code examples for “Designing Sound” textbook
+
+ Practical 15: Rain
+
+ Pure Data
+
+Rain - simple pulse model
+
+#N canvas 265 179 157 217 10;
+#X obj 1 195 dac~;
+#X obj 1 127 catch~ rain;
+#X obj 1 22 throw~ rain;
+#X obj 1 65 throw~ rain;
+#X obj 1 107 throw~ rain;
+#X obj 1 42 cpraingen 60 12 0.2;
+#X obj 1 169 hip~ 900;
+#X obj 1 0 cpraingen 50 12 0.15;
+#X obj 1 84 cpraingen 70 12 0.4;
+#X obj 1 148 *~ 0.2;
+#X connect 1 0 9 0;
+#X connect 5 0 3 0;
+#X connect 6 0 0 1;
+#X connect 6 0 0 0;
+#X connect 7 0 2 0;
+#X connect 8 0 4 0;
+#X connect 9 0 6 0;
+
+Download rain1.pd.
+
+Rain - abstraction needed by pulse model
+
+#N canvas 791 232 243 317 10;
+#X obj 2 282 del;
+#X obj 90 213 / 100;
+#X obj 60 170 t b b;
+#X obj 2 3 loadbang;
+#X obj 68 3 inlet rate;
+#X obj 148 170 inlet fspread;
+#X obj 113 233 inlet fbase;
+#X obj 90 254 + \$3;
+#X obj 90 193 random \$2;
+#X obj 90 297 outlet~;
+#X obj 2 113 random;
+#X obj 39 70 f \$1;
+#X obj 2 28 t b b;
+#X obj 2 234 exp;
+#X obj 2 171 / 15;
+#X obj 2 141 + 7;
+#X obj 2 256 + 40;
+#X obj 2 199 + 2.718;
+#X obj 39 92 clip 30 90;
+#X obj 90 276 cpulse;
+#X connect 0 0 2 0;
+#X connect 1 0 7 0;
+#X connect 2 0 10 0;
+#X connect 2 1 8 0;
+#X connect 3 0 12 0;
+#X connect 4 0 11 0;
+#X connect 5 0 8 1;
+#X connect 6 0 7 1;
+#X connect 7 0 19 0;
+#X connect 8 0 1 0;
+#X connect 10 0 15 0;
+#X connect 11 0 18 0;
+#X connect 12 0 10 0;
+#X connect 12 1 11 0;
+#X connect 13 0 16 0;
+#X connect 14 0 17 0;
+#X connect 15 0 14 0;
+#X connect 16 0 0 0;
+#X connect 17 0 13 0;
+#X connect 18 0 10 1;
+#X connect 19 0 9 0;
+
+Download cpraingen.pd.
+
+Rain - pulse generator abstraction (needed by above model)
+
+#N canvas 1080 462 117 214 10;
+#X obj 2 63 vline~;
+#X msg 2 43 1 \, 0 \$1 0;
+#X obj 2 189 outlet~;
+#X obj 2 -3 inlet;
+#X obj 2 83 -~ 0.5;
+#X obj 2 106 *~;
+#X obj 2 126 *~ -4;
+#X obj 2 147 +~ 1;
+#X obj 53 146 sqrt;
+#X obj 2 169 *~;
+#X obj 2 17 t f f;
+#X obj 53 83 + 0.1;
+#X connect 0 0 4 0;
+#X connect 1 0 0 0;
+#X connect 3 0 10 0;
+#X connect 4 0 5 0;
+#X connect 4 0 5 1;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 9 0;
+#X connect 8 0 9 1;
+#X connect 9 0 2 0;
+#X connect 10 0 1 0;
+#X connect 10 1 11 0;
+#X connect 11 0 8 0;
+
+Download cpulse.pd.
+
+Rain - parabolic shaped noise algorithm
+
+#N canvas 676 292 211 504 10;
+#X obj 5 100 dac~;
+#X obj 5 -146 phasor~;
+#X obj 5 -83 *~;
+#X obj 5 -125 -~ 0.25;
+#X obj 5 -104 cos~;
+#X obj 21 -249 *~;
+#X obj 5 -278 lop~ 500;
+#X obj 5 -188 *~ 80;
+#X obj 5 -167 +~ 40;
+#X obj 21 -228 *~ 10;
+#X obj 5 -297 bp~ 50 0.4;
+#N canvas 0 0 450 300 grapha 0;
+#X obj 100 100 cnv 15 100 100 empty empty empty 20 12 0 14 -262144
+-66577 0;
+#N canvas 0 0 450 300 graph3 0;
+#X array A 2048 float 0;
+#X coords 0 1 2047 -1 100 100 1;
+#X restore 100 100 graph;
+#X obj 210 209 tabwrite~ A;
+#X obj 289 155 inlet~;
+#X obj 210 130 loadbang;
+#X obj 278 131 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 217 178 s b;
+#X obj 210 155 metro 200;
+#X connect 3 0 2 0;
+#X connect 4 0 7 0;
+#X connect 5 0 7 0;
+#X connect 7 0 2 0;
+#X connect 7 0 6 0;
+#X coords 0 -1 1 1 100 100 1 100 100;
+#X restore 83 -43 pd grapha;
+#N canvas 0 0 450 300 grapha 0;
+#X obj 100 100 cnv 15 100 100 empty empty empty 20 12 0 14 -262144
+-66577 0;
+#N canvas 0 0 450 300 graph3 0;
+#X array B 2048 float 0;
+#X coords 0 1 2047 -1 100 100 1;
+#X restore 100 100 graph;
+#X obj 289 155 inlet~;
+#X obj 210 182 tabwrite~ B;
+#X obj 210 156 r b;
+#X connect 2 0 3 0;
+#X connect 4 0 3 0;
+#X coords 0 -1 1 1 100 100 1 100 100;
+#X restore 84 70 pd grapha;
+#X obj 5 -12 -~ 0.35;
+#X obj 5 -33 max~ 0.35;
+#X obj 5 29 *~ 0.5;
+#X obj 5 51 hip~ 500;
+#X obj 5 73 hip~ 500;
+#X obj 5 -320 gaussianoise 0.4;
+#X connect 1 0 3 0;
+#X connect 2 0 11 0;
+#X connect 2 0 14 0;
+#X connect 3 0 4 0;
+#X connect 4 0 2 0;
+#X connect 5 0 9 0;
+#X connect 6 0 7 0;
+#X connect 6 0 5 0;
+#X connect 6 0 5 1;
+#X connect 7 0 8 0;
+#X connect 8 0 1 0;
+#X connect 9 0 2 1;
+#X connect 10 0 6 0;
+#X connect 13 0 15 0;
+#X connect 13 0 12 0;
+#X connect 14 0 13 0;
+#X connect 15 0 16 0;
+#X connect 16 0 17 0;
+#X connect 17 0 0 0;
+#X connect 17 0 0 1;
+#X connect 18 0 10 0;
+
+Download rain_on_leaf.pd.
+
+Rain - impulse model (noisy rain)
+
+#N canvas 864 641 223 124 10;
+#X obj 1 92 dac~;
+#X obj 57 26 + 0.004;
+#X obj 57 6 / 20;
+#X obj 60 -12 hsl 128 15 0 1 0 0 empty empty rain-rain-go-away 12 7
+1 8 -262144 -1 -1 0 1;
+#X obj 1 70 hip~ 2000;
+#X obj 1 46 drops 7.7 0.013 0.16 3;
+#X connect 1 0 5 1;
+#X connect 2 0 1 0;
+#X connect 3 0 2 0;
+#X connect 4 0 0 0;
+#X connect 4 0 0 1;
+#X connect 5 0 4 0;
+
+Download spikerain.pd.
+
+Rain - abstraction needed by above patch
+
+#N canvas 180 245 151 246 10;
+#X obj 5 12 *~;
+#X obj 5 35 *~;
+#X obj 5 -59 clip~ 0 1;
+#X obj 63 -108 inlet q;
+#X obj 83 -87 inlet t;
+#X obj 94 -65 inlet a;
+#X obj 5 78 outlet~;
+#X obj 5 -36 max~ \$3;
+#X obj 5 -13 -~ \$3;
+#X obj 5 57 *~ \$4;
+#X obj 5 -81 bp~ \$1 \$2;
+#X obj 34 -128 inlet f;
+#X obj 6 -147 noise~;
+#X connect 0 0 1 0;
+#X connect 0 0 1 1;
+#X connect 1 0 9 0;
+#X connect 2 0 7 0;
+#X connect 3 0 10 2;
+#X connect 4 0 7 1;
+#X connect 4 0 8 1;
+#X connect 5 0 9 1;
+#X connect 7 0 8 0;
+#X connect 8 0 0 0;
+#X connect 8 0 0 1;
+#X connect 9 0 6 0;
+#X connect 10 0 2 0;
+#X connect 11 0 10 1;
+#X connect 12 0 10 0;
+
+Download drops.pd.
+
+Rain - rain on water, alternative droplet model
+
+#N canvas 599 163 297 465 10;
+#X obj 85 277 osc~;
+#X obj 85 256 *~;
+#X obj 40 302 *~;
+#X obj 41 389 dac~;
+#X obj 2 223 *~;
+#X obj 111 138 vline~;
+#X obj 111 -31 threshold~ 0.01 1 0.01 1;
+#X obj 111 93 f;
+#X obj 2 247 *~;
+#X obj 2 175 sig~ 1;
+#X obj 2 199 -~;
+#X msg 111 114 0 \, 1 \$1;
+#X obj 40 323 *~;
+#X obj 174 81 + 2;
+#X obj 208 102 + 400;
+#X obj 2 269 lop~ 12;
+#X obj 141 11 random 1000;
+#X obj 174 59 / 100;
+#X obj 241 123 / 1000;
+#X obj 208 81 / 5;
+#X obj 141 35 trigger f f f f;
+#X obj 141 59 / 7;
+#X obj 40 344 lop~ 1000;
+#X obj 111 180 delread~ a 3;
+#X obj 111 159 delwrite~ a 3;
+#X obj 111 -52 raindrops 20 0.1;
+#X obj 111 -10 t b b;
+#X obj 85 237 pow~;
+#X obj 41 365 *~ 0.1;
+#X obj 84 208 sig~;
+#X connect 0 0 2 1;
+#X connect 1 0 0 0;
+#X connect 2 0 12 0;
+#X connect 4 0 8 0;
+#X connect 4 0 8 1;
+#X connect 5 0 10 1;
+#X connect 5 0 24 0;
+#X connect 6 0 26 0;
+#X connect 7 0 11 0;
+#X connect 8 0 15 0;
+#X connect 9 0 10 0;
+#X connect 10 0 4 0;
+#X connect 10 0 4 1;
+#X connect 11 0 5 0;
+#X connect 12 0 22 0;
+#X connect 13 0 29 0;
+#X connect 14 0 1 1;
+#X connect 15 0 2 0;
+#X connect 16 0 20 0;
+#X connect 17 0 13 0;
+#X connect 18 0 12 1;
+#X connect 19 0 14 0;
+#X connect 20 0 21 0;
+#X connect 20 1 17 0;
+#X connect 20 2 19 0;
+#X connect 20 3 18 0;
+#X connect 21 0 7 1;
+#X connect 22 0 28 0;
+#X connect 23 0 27 1;
+#X connect 25 0 6 0;
+#X connect 26 0 7 0;
+#X connect 26 1 16 0;
+#X connect 27 0 1 0;
+#X connect 28 0 3 1;
+#X connect 28 0 3 0;
+#X connect 29 0 27 0;
+
+Download rain_on_water.pd.
+
+Rain - rain against glass (use with wind patch later)
+
+#N canvas 99 23 443 256 10;
+#X obj -21 66 dac~;
+#X obj -19 -45 hip~ 9000;
+#X obj -19 -92 noise~;
+#X obj -20 2 glasswindow 2007 1994 1986 1969 254 669 443 551 3.7 4.2
+0.61 2.3;
+#X obj -19 -69 dropsig 7.7 0.002 0.1 1;
+#X obj 32 -145 delread~ a;
+#X obj 33 -119 *~ 24;
+#X obj 33 -96 +~ 6;
+#X obj -21 40 *~ 0.35;
+#X obj -20 -23 *~ 20;
+#X connect 1 0 9 0;
+#X connect 2 0 4 0;
+#X connect 3 0 8 0;
+#X connect 4 0 1 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 4 1;
+#X connect 8 0 0 0;
+#X connect 8 0 0 1;
+#X connect 9 0 3 0;
+
+Download windywindow.pd.
+
+Rain - abstraction needed by rain on window patch
+
+#N canvas 0 0 197 235 10;
+#X obj 6 -2 *~;
+#X obj 6 21 *~;
+#X obj 6 -72 clip~ 0 1;
+#X obj 75 -72 inlet t;
+#X obj 79 -49 inlet a;
+#X obj 6 64 outlet~;
+#X obj 6 -152 inlet~ s;
+#X obj 6 -49 max~ \$3;
+#X obj 6 -28 -~ \$3;
+#X obj 6 43 *~ \$4;
+#X obj 45 -133 inlet~ f;
+#X obj 114 -142 loadbang;
+#X msg 114 -121 0.01;
+#X obj 6 -93 vcf~ \$1 0.01;
+#X connect 0 0 1 0;
+#X connect 0 0 1 1;
+#X connect 1 0 9 0;
+#X connect 2 0 7 0;
+#X connect 3 0 7 1;
+#X connect 3 0 8 1;
+#X connect 4 0 9 1;
+#X connect 6 0 13 0;
+#X connect 7 0 8 0;
+#X connect 8 0 0 0;
+#X connect 8 0 0 1;
+#X connect 9 0 5 0;
+#X connect 10 0 13 1;
+#X connect 11 0 12 0;
+#X connect 12 0 13 2;
+#X connect 13 0 2 0;
+
+Download dropsig.pd.
+
+Rain - window model, needed by above patch
+
+#N canvas 71 186 388 231 10;
+#X obj -23 192 *~;
+#X obj 62 191 *~;
+#X obj 190 189 *~;
+#X obj 276 192 *~;
+#X obj -23 171 osc~ \$5;
+#X obj 62 168 osc~ \$6;
+#X obj 190 166 osc~ \$7;
+#X obj 276 169 osc~ \$8;
+#X obj -7 104 *~ \$11;
+#X obj 78 103 *~ \$11;
+#X obj 206 101 *~ \$11;
+#X obj 292 104 *~ \$11;
+#X obj -7 128 bp~ \$1 \$12;
+#X obj 78 128 bp~ \$2 \$12;
+#X obj 206 130 bp~ \$3 \$12;
+#X obj 292 131 bp~ \$4 \$12;
+#X obj 77 26 catch~ \$0-a;
+#X obj 208 26 catch~ \$0-b;
+#X obj -23 213 throw~ \$0-b;
+#X obj 62 213 throw~ \$0-a;
+#X obj 190 213 throw~ \$0-b;
+#X obj 276 213 throw~ \$0-a;
+#X obj 152 0 inlet~;
+#X obj 122 161 outlet~;
+#X obj 78 80 delread~ \$0-a \$9;
+#X obj 77 56 delwrite~ \$0-a 300;
+#X obj 206 78 delread~ \$0-b \$10;
+#X obj 208 57 delwrite~ \$0-b 300;
+#X connect 0 0 18 0;
+#X connect 1 0 19 0;
+#X connect 2 0 20 0;
+#X connect 3 0 21 0;
+#X connect 4 0 0 0;
+#X connect 5 0 1 0;
+#X connect 6 0 2 0;
+#X connect 7 0 3 0;
+#X connect 8 0 12 0;
+#X connect 9 0 13 0;
+#X connect 9 0 23 0;
+#X connect 10 0 14 0;
+#X connect 10 0 23 0;
+#X connect 11 0 15 0;
+#X connect 12 0 0 1;
+#X connect 13 0 1 1;
+#X connect 14 0 2 1;
+#X connect 15 0 3 1;
+#X connect 16 0 25 0;
+#X connect 17 0 27 0;
+#X connect 22 0 25 0;
+#X connect 22 0 27 0;
+#X connect 24 0 8 0;
+#X connect 24 0 9 0;
+#X connect 26 0 10 0;
+#X connect 26 0 11 0;
+
+Download glasswindow.pd.
+
+Rain - Gaussian noise generator
+
+#N canvas 767 150 181 279 10;
+#X obj 0 -98 noise~;
+#X obj 99 76 noise~;
+#X obj 35 138 *~;
+#X obj 35 58 ln~;
+#X obj 35 79 *~ -2;
+#X obj 35 158 outlet~;
+#X obj 98 -46 sig~ 1;
+#X obj 98 -21 -~;
+#X obj 35 12 *~;
+#X obj 35 36 +~;
+#X obj 0 -67 max~ 0;
+#X obj 51 -67 min~ 0;
+#X obj 51 -45 *~ -1;
+#X obj 35 -14 +~;
+#X obj 114 -73 sig~ \$1;
+#X obj 99 99 cos~;
+#X obj 35 100 q8_sqrt~;
+#X connect 0 0 10 0;
+#X connect 0 0 11 0;
+#X connect 1 0 15 0;
+#X connect 2 0 5 0;
+#X connect 3 0 4 0;
+#X connect 4 0 16 0;
+#X connect 6 0 7 0;
+#X connect 7 0 9 1;
+#X connect 8 0 9 0;
+#X connect 9 0 3 0;
+#X connect 10 0 13 0;
+#X connect 11 0 12 0;
+#X connect 12 0 13 1;
+#X connect 13 0 8 0;
+#X connect 14 0 8 1;
+#X connect 14 0 7 1;
+#X connect 15 0 2 1;
+#X connect 16 0 2 0;
+
+Download gaussianoise.pd.
+
+Audio
+
+Rain effects
+
+The example contains a moving mixture. Initially you can hear only Gaussian distributed parabolic pulses, then these excite a range of noise band frequencies. Droplets for entrained water bubbles are added. Finally the sound of drop signatures exciting a glass lamina (rain on window) is heard. 
+
+Download rain.wav.
+
+ Index
+
+ Tarball
+
+ Pure Data
+
+ Designing Sound - Book
+
+ Chapters 9 to 14
+
+ Introductory Pure Data
+
+ 9: Starting with Pure Data
+
+ 10: Using Pure Data
+
+ 11: Pure Data Audio
+
+ 12: Abstraction
+
+ 13: Shaping Sound
+
+ 14: Pure Data Essentials
+
+ Chapters 17 to 21
+
+ Techniques
+
+ 17: Summation
+
+ 18: Tables
+
+ 19: Non-linear
+
+ 20: Modulation
+
+ 21: Granular Methods
+
+ Practical Series 1
+
+ Artificial Sounds
+
+ 1: Pedestrian Crossing
+
+ 2: Telephone Siganlling Tones
+
+ 3: DTMF Dialling Tones
+
+ 4: Alarm and Menu Sounds
+
+ 5: Police Siren
+
+ Practical Series 2
+
+ Idiophonics
+
+ 6: Telephone Bell
+
+ 7: Bouncing Ball
+
+ 8: Rolling Tin Can
+
+ 9: Creaking Door
+
+ 10: Boingy Sound
+
+ Practical Series 3
+
+ Nature
+
+ 11: Fire
+
+ 12: Bubbles
+
+ 13: Running Water
+
+ 14: Pouring
+
+ 15: Rain
+
+ 16: Electricity
+
+ 17: Thunder
+
+ 18: Wind
+
+ Practical Series 4
+
+ Machines
+
+ 19: Switches
+
+ 20: Clocks
+
+ 21: Motors
+
+ 22: Cars
+
+ 23: Fans
+
+ 24: Jet Engine
+
+ 25: Helicopter
+
+ Practical Series 5
+
+ Lifeforms
+
+ 26: Footsteps
+
+ 27: Insects
+
+ 28: Birds
+
+ 29: Mammals
+
+ Practical Series 6
+
+ Project Mayhem
+
+ 30: Guns
+
+ 31: Explosions
+
+ 32: Rocket Launcher
+
+ Practical Series 7
+
+ Science Fiction
+
+ 33: Transporter
+
+ 34: R2D2
+
+ 35: Red Alert

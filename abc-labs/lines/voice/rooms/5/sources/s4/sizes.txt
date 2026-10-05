@@ -1,0 +1,42 @@
+## files in the tarball (bytes)
+  1069 package/LICENSE
+ 19383 package/README.md
+  2857 package/dist/audio/engine.d.ts
+ 13066 package/dist/audio/engine.js
+   838 package/dist/index.d.ts
+   624 package/dist/index.js
+  1612 package/dist/interactions/bind.d.ts
+ 10307 package/dist/interactions/bind.js
+  6108 package/dist/sounds/bubble.d.ts
+  8436 package/dist/sounds/bubble.js
+  2041 package/dist/sounds/context.d.ts
+  5007 package/dist/sounds/context.js
+ 12844 package/dist/sounds/mech.d.ts
+  9232 package/dist/sounds/mech.js
+  7009 package/dist/sounds/press.d.ts
+  9698 package/dist/sounds/press.js
+ 16914 package/dist/sounds/recipes.d.ts
+ 13960 package/dist/sounds/recipes.js
+ 35311 package/dist/sounds/themes.d.ts
+   620 package/dist/sounds/themes.js
+  1087 package/package.json
+178023 total
+
+## package.json: dependencies, peerDependencies, optionalDependencies
+{"version":"0.2.4","dependencies":null,"peerDependencies":null,"optionalDependencies":null,"sideEffects":false}
+
+## imports of anything outside the package, in dist/*.js
+from "cuelume"
+from "cuelume"
+from "normal"
+from "normal"
+from "normal"
+
+## the shipped JS (tsc output, unminified): raw bytes, and gzip -9 of all of it concatenated
+70950
+18779
+
+## esbuild --bundle --minify --format=esm of package/dist/index.js, then gzip -9 and brotli
+minified bytes: 26768
+min+gzip -9 bytes: 7415
+min+brotli bytes: 6584

@@ -1,0 +1,76 @@
+[
+  {
+    "url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/issues/78",
+    "repository_url": "https://api.github.com/repos/Bingeljell/image-to-3dlab",
+    "labels_url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/issues/78/labels{/name}",
+    "comments_url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/issues/78/comments",
+    "events_url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/issues/78/events",
+    "html_url": "https://github.com/Bingeljell/image-to-3dlab/pull/78",
+    "id": 5652097967,
+    "node_id": "PR_kwDOTrN4PM8AAAABF9uUFQ",
+    "number": 78,
+    "title": "feat(viewer): add a Props tab (prop sheets 3/3)",
+    "user": {
+      "login": "AdrielSantana",
+      "id": 92326914,
+      "node_id": "U_kgDOBYDMAg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/92326914?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/AdrielSantana",
+      "html_url": "https://github.com/AdrielSantana",
+      "followers_url": "https://api.github.com/users/AdrielSantana/followers",
+      "following_url": "https://api.github.com/users/AdrielSantana/following{/other_user}",
+      "gists_url": "https://api.github.com/users/AdrielSantana/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/AdrielSantana/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/AdrielSantana/subscriptions",
+      "organizations_url": "https://api.github.com/users/AdrielSantana/orgs",
+      "repos_url": "https://api.github.com/users/AdrielSantana/repos",
+      "events_url": "https://api.github.com/users/AdrielSantana/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/AdrielSantana/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "labels": [
+
+    ],
+    "state": "open",
+    "locked": false,
+    "assignees": [
+
+    ],
+    "milestone": null,
+    "comments": 0,
+    "created_at": "2026-09-30T19:45:44Z",
+    "updated_at": "2026-09-30T21:27:27Z",
+    "closed_at": null,
+    "assignee": null,
+    "author_association": "NONE",
+    "active_lock_reason": null,
+    "draft": false,
+    "pull_request": {
+      "url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/pulls/78",
+      "html_url": "https://github.com/Bingeljell/image-to-3dlab/pull/78",
+      "diff_url": "https://github.com/Bingeljell/image-to-3dlab/pull/78.diff",
+      "patch_url": "https://github.com/Bingeljell/image-to-3dlab/pull/78.patch",
+      "merged_at": null
+    },
+    "body": "Last of the three PRs for prop sheets (#49). **Stacked on #77:** only the last 5 commits are new here.\n\n**Props tab.** Runs the two prop sheet scripts from the browser. You pick a model Generate 3D made (or upload a GLB), type the names in reading order, and press **Split & finish**. Each prop gets a chip, a 3D view, and a LOD table with downloads and the triangles each file really holds. A flagged tie gets **Turn 90°**, which re-splits with that turn and re-bakes only that prop. The turn is built beside the run and swapped in when it finishes, so a failed or cancelled turn leaves the run as it was.\n\n`props_api.py` copies the job shape of `finish_api.py`: one job at a time, SSE (server-sent events) with a polling fallback, runs kept in `output/props/`, and owner-tagged pid files. A props bake refuses to start beside a generation, a finishing job or a rig rebind, and they refuse to start beside it. Each run records the licence its props inherit from the model's record, and says so when there isn't one.\n\nThe LODs this tab makes, set out as a scene: https://claude.ai/artifact/M3j52iC8brXTANz4w8UCZp\n\nIt also has four viewer fixes I hit while building it, one commit each so they're easy to split out if you'd rather:\n\n- **Ctrl-C now stops a running Finish job too.** Before, its Blender stages ran on with nobody watching.\n- **Folders named `pid` in `output/` are left alone.** The startup cleanup tried to unlink them and the viewer wouldn't start. A prop named `pid` makes one.\n- **`serve.py --open` lands on Compare.** Before, it landed on Setup, or on About on the first visit after an update.\n- **The menu bar stays on one row.** It fits at 1024 px with the new tab and scrolls sideways below that (a plain mouse wheel too), where before the labels wrapped and About fell off the edge.\n\nTested, suite green on every commit, and in headless Chrome against a real run:\n- Split & finish of 9 props took 2 min 51 s.\n- Turn 90° on the chest took 34 s and changed only the chest.\n- A crate turn cancelled mid-bake left the run byte-identical, with no stray processes.\n- Ctrl-C during a Finish stopped everything.\n- The viewer starts with an `output/x/pid` folder present.\n- A `?a=` link lands on Compare with the model loaded.\n- The menu was checked at 1440, 1024, 768 and 390 px.\n\nFound along the way, not changed here:\n- With Debug off, Generate 3D deletes `<name>.json` and the staged views. `<name>.json` is where Pixal3D keeps its licence record. #72 keeps `<name>.provenance.json`, which is a different file. So a model generated with Debug off has no record for the Props tab to inherit (the tab says so). Finish's Pixel Match needs both to find the camera, so it's skipped, and the message (\"only Pixal3D runs made here have one\") reads wrong for a Pixal3D run that *was* made here.\n- Finish, Props and Rig now have three similar job classes. A shared base, and one gate for the heavy jobs, would make the next tab cheaper, and would close the gap where two starts land at the same moment.\n- Blender is launched from several places with different flags: the split adds `--factory-startup`, and `rig_api` and `render_glb_comparison` have no `--python-exit-code`, so a crashing rebind still exits 0. One launcher in `image_to_3dlab/blender.py` would fix that everywhere.\n\nHappy to do any of these in a follow-up if you want them.\n\nCloses #49.\n",
+    "closed_by": null,
+    "reactions": {
+      "url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/issues/78/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "timeline_url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/issues/78/timeline",
+    "performed_via_github_app": null,
+    "state_reason": null
+  }
+]

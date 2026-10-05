@@ -1,0 +1,89 @@
+[
+  {
+    "sha": "5ed8e9850d23515c424abc62fbca498e6da52f27",
+    "node_id": "C_kwDOTrN4PNoAKDVlZDhlOTg1MGQyMzUxNWM0MjRhYmM2MmZiY2E0OThlNmRhNTJmMjc",
+    "commit": {
+      "author": {
+        "name": "Nikhil Shahane",
+        "email": "nikhil.shahane@gmail.com",
+        "date": "2026-09-30T19:31:20Z"
+      },
+      "committer": {
+        "name": "GitHub",
+        "email": "noreply@github.com",
+        "date": "2026-09-30T19:31:20Z"
+      },
+      "message": "Merge pull request #75 from Bingeljell/fix/viewer-syntax-error\n\nfix(viewer): the app did not load in 0.3.5; release 0.3.6",
+      "tree": {
+        "sha": "b9c6de3ebaff30bf019307008d731aa8cf07ecd9",
+        "url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/git/trees/b9c6de3ebaff30bf019307008d731aa8cf07ecd9"
+      },
+      "url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/git/commits/5ed8e9850d23515c424abc62fbca498e6da52f27",
+      "comment_count": 0,
+      "verification": {
+        "verified": true,
+        "reason": "valid",
+        "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqvWOICRC1aQ7uu5UhlAAAERcQAGlr/ujZ2wMz2b8VlCrCBD8g\n3cb5kMShmxNjmRM4DryGyxzSNdZtKJwKwoSrkFC8A/89aAmQ2/oxDzMwX/006g8h\nW7zvgT4oaeJxnkQl72WuGMUtTDKsfWZDD3kXBAw2DnyoFdAs/OB0TlasBZvsDLf3\nayrOP+mUzBGRlZbaAQ55o2aU1UyXJs7/WUkbK1D8PpSFvTxLyVqbdLtdqdjyhBll\nVdOoeDGDAAoziI/uAfxp+KYUoYMm617rS7aqqrd0C7wQpQn7dhxsfBxtwlvNL2QF\nQCVSXwMLiMHYHEihz7UveYV+FYuJxC4ANb6DkLim2aDKgcNdu/GRTYsRLN86mdFA\njVhQsD6emSp5pvZWiQf+E44ynrSwfevJe1IiEB7b9Xj7orXyZblpOzUh3AkROnXg\nDoVHLRZ88RQiPPvPR/GUYZulszvsfeNram938RjXwT7IDxnBB5fxfYlYg5tBYY91\nsxG2OrpsplinrjB1KMCCutD8ESyRk6khCtGN1YMzg0CzDXlhlIQ7xXAo2IU99ezq\nFehqoqfIhtrKQnBZyrAAgvXO0MHcKrDJzieFarqGpQCKjTGMiixF5flqLQf1QvEZ\nk4Fpkx+qdajBYHYgOBXVuWNCdHMK6dBUU7C8meSBaGbFaV4D0QM8ZD7SwOYYbSkr\nukfaUTn8Fx0B5dXt5UZ+\n=FAaV\n-----END PGP SIGNATURE-----\n",
+        "payload": "tree b9c6de3ebaff30bf019307008d731aa8cf07ecd9\nparent 4b9ed38639668a7045219f7d6122999e1222dfba\nparent 339d506c4031eefe4246acdf98c7a4689250d6c2\nauthor Nikhil Shahane <nikhil.shahane@gmail.com> 1790796680 +0530\ncommitter GitHub <noreply@github.com> 1790796680 +0530\n\nMerge pull request #75 from Bingeljell/fix/viewer-syntax-error\n\nfix(viewer): the app did not load in 0.3.5; release 0.3.6",
+        "verified_at": "2026-09-30T19:31:20Z"
+      }
+    },
+    "url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/commits/5ed8e9850d23515c424abc62fbca498e6da52f27",
+    "html_url": "https://github.com/Bingeljell/image-to-3dlab/commit/5ed8e9850d23515c424abc62fbca498e6da52f27",
+    "comments_url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/commits/5ed8e9850d23515c424abc62fbca498e6da52f27/comments",
+    "author": {
+      "login": "Bingeljell",
+      "id": 2819267,
+      "node_id": "MDQ6VXNlcjI4MTkyNjc=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2819267?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/Bingeljell",
+      "html_url": "https://github.com/Bingeljell",
+      "followers_url": "https://api.github.com/users/Bingeljell/followers",
+      "following_url": "https://api.github.com/users/Bingeljell/following{/other_user}",
+      "gists_url": "https://api.github.com/users/Bingeljell/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/Bingeljell/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/Bingeljell/subscriptions",
+      "organizations_url": "https://api.github.com/users/Bingeljell/orgs",
+      "repos_url": "https://api.github.com/users/Bingeljell/repos",
+      "events_url": "https://api.github.com/users/Bingeljell/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/Bingeljell/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "web-flow",
+      "id": 19864447,
+      "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/web-flow",
+      "html_url": "https://github.com/web-flow",
+      "followers_url": "https://api.github.com/users/web-flow/followers",
+      "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+      "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+      "organizations_url": "https://api.github.com/users/web-flow/orgs",
+      "repos_url": "https://api.github.com/users/web-flow/repos",
+      "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/web-flow/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "4b9ed38639668a7045219f7d6122999e1222dfba",
+        "url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/commits/4b9ed38639668a7045219f7d6122999e1222dfba",
+        "html_url": "https://github.com/Bingeljell/image-to-3dlab/commit/4b9ed38639668a7045219f7d6122999e1222dfba"
+      },
+      {
+        "sha": "339d506c4031eefe4246acdf98c7a4689250d6c2",
+        "url": "https://api.github.com/repos/Bingeljell/image-to-3dlab/commits/339d506c4031eefe4246acdf98c7a4689250d6c2",
+        "html_url": "https://github.com/Bingeljell/image-to-3dlab/commit/339d506c4031eefe4246acdf98c7a4689250d6c2"
+      }
+    ]
+  }
+]

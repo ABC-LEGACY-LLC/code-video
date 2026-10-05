@@ -1,0 +1,7 @@
+--- 2105304109997830215 @mirrash7 Wed Sep 30 14:29:49 +0000 2026 likes=601 reply_to= media=videos quote=
+I just labelled over 1000 segmentation masks for utility poles in under 90 s 🤯
+
+-GPT Astra for box detections
+-SAM3 for masks on those boxes
+
+How long would it take a human to do the same??

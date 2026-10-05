@@ -1,0 +1,8 @@
+s13: 361 frames; runs of >=12 frames with three still dividers: 1
+
+frames 172-280 (t 7.167-11.667 s), dividers at x = [237, 480, 720] of 960
+panel  mean_luma  max|step|  mean|2nd diff|  pix2nd
+  1     122.04      1.34     0.540       7.891
+  2      70.65      5.93     2.006       6.185
+  3     111.92      1.45     0.146       0.840
+  4     116.55      0.50     0.187       0.610

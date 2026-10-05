@@ -1,0 +1,1281 @@
+arXiv:2506.02359v1  [cs.CV]  3 Jun 2025
+Auto-Labeling Data for Object Detection
+Brent A. Griffin1 Manushree Gangwar1 Jacob Sela1 Jason J. Corso1,2
+1 V oxel51 2 University of Michigan
+{brent,manushree,jacob,jason}@voxel51.com
+Abstract
+Great labels make great models. However, traditional la-
+beling approaches for tasks like object detection have sub-
+stantial costs at scale. Furthermore, alternatives to fully-
+supervised object detection either lose functionality or re-
+quire larger models with prohibitive computational costs
+for inference at scale. To that end, this paper addresses
+the problem of training standard object detection mod-
+els without any ground truth labels. Instead, we config-
+ure previously-trained vision-language foundation models
+to generate application-specific pseudo “ground truth” la-
+bels. These auto-generated labels directly integrate with
+existing model training frameworks, and we subsequently
+train lightweight detection models that are computationally
+efficient. In this way, we avoid the costs of traditional label-
+ing, leverage the knowledge of vision-language models, and
+keep the efficiency of lightweight models for practical ap-
+plication. We perform exhaustive experiments across multi-
+ple labeling configurations, downstream inference models,
+and datasets to establish best practices and set an extensive
+auto-labeling benchmark. From our results, we find that our
+approach is a viable alternative to standard labeling in that
+it maintains competitive performance on multiple datasets
+and substantially reduces labeling time and costs.
+1. Introduction
+Since the introduction of modern deep learning [17],
+groundbreaking visual AI models like ViT and DALL-E
+increasingly rely on massive datasets for training [6, 25].
+In fact, the computational cost to train a single state-of-
+the-art deep learning model in various fields doubles every
+3.4 months due to increasingly large models and datasets
+[1, 37]. Similarly, object detection, i.e., predicting bound-
+ing boxes and category labels for objects in an RGB image
+or video frames, has seen remarkable methodological ad-
+vances [3, 26, 30, 38] largely thanks to an abundance of an-
+notated training and evaluation data in high-quality datasets
+[7, 10, 18, 20]. Furthermore, we can improve detection per-
+formance for various applications by training on expansive
+data sources from the web or deployed robot and A V sys-
+tems [8]. However, traditional image labeling approaches
+have substantial costs at scale, with annotation taking any-
+where between 7 seconds per bounding box to 1.5 hours for
+full semantic segmentation [5, 13].
+There have been tremendous efforts to mitigate annota-
+tion costs to enable data on demand and training at scale.
+For object detection, weakly superivsed detectors learn
+from low-cost but coarse annotations like image-level labels
+[2, 27], semi-supervised detectors learn on a combination of
+labeled and unlabeled data [36, 40], and, remarkably, unsu-
+pervised detectors learn without any labeled data [12, 32].
+Another approach to achieve training at scale is through the
+use of a vision-language model (VLM). After pre-training
+on large-scale image-text pair datasets [39], VLMs have
+demonstrated success in downstream tasks like image clas-
+sification [24], object detection [9], and segmentation [29].
+Our current work is inspired by the success of this previ-
+ous object detection and VLM work. However, there are
+a number of trade offs associated with these approaches
+that we aim to address. First, weakly- and semi-supervised
+methods reduce the cost and amount of annotation needed,
+but they still require labeled data. Second, unsupervised
+object detectors train without labeled data, but they are
+unable to identify application-specific object classes. On
+the other hand, VLMs are pre-trained and can detect nu-
+merous classes specified via a text-prompt. However, due
+to the large size of the combined general purpose image
+and langauge models, VLMs are computationally cost pro-
+hibitive for many conventional detection applications, e.g.,
+real-time inference on robot hardware or processing mas-
+sive data. Furthermore, VLM performance is highly sensi-
+tive to changes in configuration and application.
+To that end, this paper addresses the problem of training
+conventional object detection models without any ground
+truth labels. Instead, we use previously-trained VLMs as
+foundation models that, given an application-specific text
+prompt, generate pseudo ground truth labels for previously
+unlabeled data. We call this process Auto-Labeling (AL).
+As we will show, AL is much more time and cost effec-
+tive than traditional labeling given the correct configuration.
+1
+Figure 1. Auto-Labeling Data for Object Detection Overview. Visualizations generated using the FiftyOne Library [22].
+After auto-labeling a training dataset, we train lightweight
+detection models that are computationally efficient for con-
+ventional detection applications. In this way, we avoid the
+time and costs of traditional labeling (e.g., 2.5K hours &
+$46.3K for BDD [35]), leverage the knowledge of VLMs,
+and keep the efficiency of lightweight detection models.
+To our knowledge, the closest existing work to our ap-
+proach is Nagase et al. [23]. In their recent experiments,
+they use a VLM ensemble of Grounding DINO-T [21] &
+GLIP-Large [19] to label VOC [7] & COCO [20]. They
+then perform 14 downstream model training experiments
+and find improved average recall over standard label train-
+ing on the VOC validation and COCO test sets. While we
+celebrate the success of this previous work, we also empha-
+size that there remain an abundance of open questions in
+regards to auto-labeling for object detection and beyond.
+In our work, we uniquely focus on the selection and con-
+figuration of individual vision-language foundation models,
+which is computationally more efficient than using an en-
+semble. We also incorporate more recent advancements in
+foundation models [4, 31], and find that we are able to per-
+form auto-labeling 12-300× faster than with the Ground-
+ing DINO-T model and with greater reliability. We also
+expand experiments to include more challenging datasets
+across multiple application domains to better understand the
+current limits of auto-labeling. Overall, we conduct experi-
+ments across three foundation models with multiple config-
+urations (Tab. 1), six different downstream inference model
+architectures (Tab. 2), and four datasets (Tab. 3). In total,
+this entails 445 separate model training experiments using
+169 unique sets of labels. From our experiments and subse-
+quent analysis, we explicitly answer the following:
+1. What costs are associated with auto-labeling? (Sec. 3.2)
+2. How different is AL from human labels? (Sec. 3.3)
+3. In what scenarios are AL-trained models competitive
+with those trained on traditional annotation? (Sec. 3.4)
+4. What are best practices for general use? (Sec. 3.5)
+From the results, we find that AL is a viable alternative to
+standard labeling approaches with substantial time and cost
+benefits and competitive performance in many scenarios.
+Furthermore, this paper provides a practical guide for vi-
+sual AI developers and an expansive benchmark for future
+auto-labeling research.
+2. Auto-Labeling Methodology
+2.1. Problem Formulation
+Here, we define the problem of Auto-Labeling (AL) data.
+Formally, we are given an unlabeled dataset S ={xi}N
+i=1
+withN examples drawn i.i.d. from an underlying distribu-
+tionP , where xi are the data. Traditionally, human anno-
+tators provide a set of ground truth labels yi for each xi,
+resulting in labeled dataset SL = {(xi, yi)}N
+i=1, which is
+subsequently used to train models. Alternatively, our goal
+is to reduce annotation time and costs byautomatically gen-
+erating pseudo ground truth labels yA
+i for each xi, resulting
+in AL dataset SA ={(xi, yA
+i )}N
+i=1. Notably, we structure SA
+the same as SL to enable direct replacement and integration
+with existing model training frameworks.
+We formulate the auto-labeling problem as
+arg min
+SA
+Ex,y∼P [ℓ(x, y;f(SA))], (1)
+where ℓ is the task-specific loss function and f(SA) is a
+model trained on SA. In plain words, the goal of Eq. (1) is
+to automatically generate labels ( SA) to train a downstream
+model (f) that accurately predicts ground truth labels ( y)
+2
+Table 1. Foundation Models used for Auto-Labeling.
+All paper experiments and runtimes use an NVIDIA L40S GPU.
+Auto- Number Runtime VOC F1 Score @
+Labeling of to Label Confidence (α)
+Model Training Datasets Params VOC (s) 0.5 0.9
+YOLOW O365, GQA, Flickr30k 72.9 M 197.2 0.785 0.482
+YOLOE O365, GQA, Flickr30k 35.2 M 204.9 0.761 0.433
+GDINO O365, GoldG, Cap4M 172.2 M 2,290.3 0.759 0.034
+for unseen images (x) drawn from the expected underlying
+data distribution (P ).
+2.2. Auto-Labeling via Foundation Models
+To generate auto-labels yA, we use existing, off-the-shelf
+foundation models in a zero-shot manner. Specifically, we
+generate object detection labels using
+f
+A
+(xi,α, T) :=
+
+
+b1,c 1
+... ...
+bj,cj
+... ...
+bn,cn
+
+
+= y
+A
+i, (2)
+where f A is a previously-trained foundation model; α ∈
+[0, 1] is a fixed threshold that determines the model
+confidence required to output object labels; T =
+{text prompt for classi}M
+i=1 is an ordered set of text prompts
+that map M class names or descriptions to predicted class
+indices cj ∈ N; bj = [ xj,yj,wj,hj] ∈ R4 is the cor-
+responding bounding box center, width, and height for a
+predicted object label of class cj with confidence>α ; and
+yA
+i∈ Rn×5 is the complete set of object labels for imagexi.
+Using Eq. (2), we update our AL formulation from Sec. 2.1
+to explicitly include f A as SA = {(xi,f A(xi,α, T))}N
+i=1.
+Notably, T is determined on a per-dataset basis, but we test
+manyf A,α configurations to understand best AL practices.
+We evaluate Eq. (2) via precision, recall, andF1 metrics
+relative to previously annotated data (x, y) using
+arg max
+f A,α
+Ex,y∼P [F1
+ 
+y;f
+A
+(x,α, T)
+
+],
+F1 = 2
+precision· recall
+precision + recall
+=
+2TP
+2TP + FP + FN
+,
+(3)
+where true positives (TP) is the number of auto-labels with
+the correct class label and bounding box Intersection over
+Union (IoU) > 0.5 relative to y, false positives ( FP) is the
+number of auto-labels failing the TP criteria, and false nega-
+tives (FN) is the number of y labels without a corresponding
+TP. Notably, F1 ∈ [0, 1] is the harmonic mean of pre-
+cision ( TP
+TP+FP ∈ [0, 1]) and recall ( TP
+TP+FN ∈ [0, 1]). In plain
+words, precision is the frequency of AL being correct, re-
+call is the frequency of ground truth objects being correctly
+auto-labeled, and theF1 score emphasizes AL performance
+Table 2. Inference Models used for AL-based Training. Base-
+line performance results from training on human labels. Inference
+runtime uses 80 classes and is averaged over the COCO train set.
+Inference # of Inference Baseline VOC Validation Performance
+Model Params Runtime mAP50 mAP75 mAP50-95
+YOLO11n 2.6 M 0.51 ms 0.756 0.605 0.549
+YOLO11s 9.5 M 1.03 ms 0.817 0.672 0.613
+YOLO11m 20.1 M 2.55 ms 0.844 0.714 0.652
+YOLO11l 25.4 M 3.13 ms 0.855 0.736 0.673
+YOLO11x 57.0 M 5.78 ms 0.860 0.744 0.681
+RT-DETR 33.0 M 4.51 ms 0.775 0.641 0.587
+across both metrics, where anF1 = 1 indicates perfect pre-
+cision and recall. Using Eq. (3), we directly compare AL to
+human labels prior to any downstream model training.
+We includef A in Eq. (3) to account for choosing the best
+available foundation model for auto-labeling. For our ex-
+periments, we use the foundation models listed in Tab. 1.
+YOLO-World (YOLOW) [4] and YOLOE [31] are both pre-
+trained on Objects365 [28], GQA [11], and Flickr30k [34]
+and implemented via Ultralytics [15]. Grounding DINO-T
+(GDINO) [21] is pre-trained on Objects365, GoldG [16],
+and Cap4M [19] and implemented via HuggingFace [33].
+Notably, the VOCF1 score dramatically changes with foun-
+dation model (f A) and confidence threshold (α).
+2.3. Downstream Inference Model Training
+Lightweight inference models are commonly used for edge
+deployments where compute resources or network capabil-
+ities are limited. State-of-the-art inference model perfor-
+mance for application-specific tasks like object detection
+typically results from supervised learning with annotated la-
+bels. To validate if AL is a viable alternative to traditional
+annotation, we evaluate AL via downstream model training
+and subsequent validation performance. Using Eq. (2) in
+Eq. (1), we formalize the AL model training task as
+arg min
+f A,α
+Ex,y∼P [ℓ(x, y;f(S,f A,α,T))], (4)
+where downstream inference modelf trains on application-
+specific dataset S, which is labeled only by a foundation
+modelf A with application-specific text prompt T and con-
+fidence threshold α. Using Eq. (4), we can compare AL
+to human labels for actual downstream model training and
+validation across various applications. Note that training an
+inference model f for each f A,α configuration in Eq. (4)
+requires more time than the label-only evaluation in Eq. (3).
+For AL model training experiments, we use the inference
+models listed in Tab. 2. We use several YOLO11 variants
+[14] to understand AL performance across different model
+sizes as well as transformer-based RT-DETR [38] to under-
+stand AL performance across different model architectures.
+We train all inference models via Ultralytics for 100 epochs
+without any pre-trained weights, ensuring that validation
+performance is from either pure AL or human labels.
+3
+Table 3. Experiment Datasets.
+# of # of Images
+Dataset Classes Train Val. Application
+VOC 20 16,551 4,952 Basic object categories for web images
+COCO 80 118,287 5,000 Common objects, moderate complexity
+LVIS 1,203 100,170 19,809 Large vocabulary, high complexity
+BDD 10 70,000 10,000 Autonomous driving views & objects
+After training, we evaluate inference model performance
+on the validation set using the mean average precision,
+mAP50 = 1
+M
+PM
+c=1 AP50, where the average precision
+AP50 is taken over a discretized precision/recall curve with
+IoU> 0.5 for each of theM object classes [7].
+3. Auto-Labeling Evaluation
+3.1. Dataset Selection
+For Auto-Labeling (AL) experiments and evaluation, we
+use the datasets listed in Tab. 3, which vary in terms of ap-
+plication complexity and domain. Notably, there is no leak-
+age between these datasets and the AL foundation models
+[4, 21, 31]. For the PASCALVisual Object Classes Dataset
+(VOC) [7], we combine the original train & validation splits
+from the 2007 & 2012 challenges as a single train set for AL
+(16,551 images); after training inference models via AL,
+we then use the original 2007 test split (4,952 images) for
+validation. For the Microsoft Common Objects in Context
+(COCO) [20], Large Vocabulary Instance Segmentation
+(LVIS) [10], and Berkeley DeepDrive (BDD) datasets [35],
+we use the standard train splits for AL and downstream in-
+ference model training then the standard validation splits for
+inference model evaluation.
+All four datasets were originally labeled by human an-
+notators, which enables us to directly compare AL to hu-
+man labels and compare inference model performance after
+training on AL or human labels. For our detection-based
+comparison, we do not use COCO crowd instances and all
+segmentation labels are converted to bounding boxes.
+Remarks on LVIS. Two properties unique to LVIS require
+accommodation. First, of the 1,203 train split classes, only
+1,035 are in the validation split. Thus, we auto-label all
+1,203 classes for training, but downstream inference model
+mAP evaluation is only on the 1,035 validation classes.
+Second, LVIS uses verbose descriptions to differentiate
+its 1,203 classes. For example, class 242 is “chili/chili veg-
+etable/chili pepper/chili pepper vegetable/chilli/chilli veg-
+etable/chilly/chilly vegetable/chile/chile vegetable.” Unfor-
+tunately, when prompted by LVIS’s 1,203 verbose class
+descriptions, GDINO runs out of memory due to archi-
+tectural constraints. We tested customized splitting of the
+class descriptions across 30 individual forward-passes (i.e.,
+T1,··· , T30 in Eq. (2)), but this still results in≈ 300× in-
+crease in AL time relative to YOLOW & YOLOE. For this
+reason, we omit GDINO from LVIS experiments.
+Table 4. Labeling Cost Comparison.
+# of Human Labeling Annotation Auto-Labeling
+Dataset Classes Objects Hours Service Cost Hours Cost
+VOC 20 40,058 78 $1,442.09 0.06 $0.05
+COCO 80 849,945 1,653 $30,598.02 0.45 $0.42
+LVIS 1,203 1,270,141 2,470 $45,725.08 0.45 $0.42
+BDD 10 1,286,871 2,502 $46,327.36 0.31 $0.29
+Total − 3,447,015 6,703 $124,092.54 1.27 $1.18
+3.2. Auto-Labeling Costs
+We compare estimated costs for auto-labeling, human la-
+beling, and using annotation services for each dataset train
+set in Tab. 4. Human labeling time is based on the number
+of object instances and an estimated 7 seconds per bounding
+box for annotation [13]. Annotation service cost is based on
+AWS SageMaker’s price of $0.036 per bounding box, which
+is currently among the least expensive annotation services.
+Finally, auto-labeling cost is based on the time YOLOW
+(α = 0.2) takes to generate labels for an entire train set on
+a single NVIDIA L40S GPU and the cost of renting that
+GPU, which is currently $0.93 per hour at the high range
+(https://vast.ai/pricing/gpu/L40S).
+Using compute-based AL in place of human labeling or
+an annotation service results in a substantial time and cost
+reduction. Overall, AL approximately takes 1
+5K the time of
+human labeling at 1
+100K the cost of an annotation service.
+3.3. Auto-Label Evaluation with Human Labels
+We compare auto-labels to human labels across all AL mod-
+els, confidence thresholds (α), and datasets. Our evaluation
+metrics include the relative number of object labels, preci-
+sion, recall, andF1 scores, which we compare in Fig. 2.
+In general, all AL models can generate a higher, equal,
+or lower number of labels than humans by varying confi-
+dence threshold α (Fig. 2, left). In terms of accuracy, at
+lowerα values, AL models generate more labels and recall
+is higher (column 3). On the other hand, at higher α val-
+ues, AL models generate less labels but those labels have a
+higher precision (column 2).
+Our primary metric to evaluate AL relative to human la-
+bels is theF1 score. The F1 score is the harmonic mean of
+precision and recall (Eq. (3)) and correspondingly peaks at
+α settings between highest precision and recall. In Fig. 2
+(right), all F1 peaks occur at mid-to-low α values with an
+average of 0.33, which particularly emphasizes α selection
+for high recall near the expected number of overall labels.
+On the other hand, high α values achieve the objective of
+precise labels but with increasingly fewer labels being gen-
+erated. Thus, although practitioners will intuitively want
+high precision, we caution against using high confidence
+thresholds that leave too many objects unlabeled.
+In terms of relative dataset auto-labeling difficulty ,
+VOC has the highest F1 scores (Fig. 2, top) followed by
+COCO (row 2), BDD (bottom), and LVIS (row 3). These
+4
+0 0.2 0.4 0.6 0.8 110
+100
+1,000
+10K
+40K100K
+1M
+VOC
+Number of Objects Labels
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+Precision
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+Recall
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+F1 Score
+0 0.2 0.4 0.6 0.8 110
+100
+1,000
+10K
+100K
+850K
+10M A
+COCO
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+0 0.2 0.4 0.6 0.8 1
+1,000
+10K
+100K
+1.3M
+10M A
+LVIS
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+0 0.2 0.4 0.6 0.8 11
+10
+100
+1,000
+10K
+100K
+1.3M
+10M
+A
+BDD
+Human Labels
+GDINO
+YOLOE
+YOLOW
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+Confidence Threshold
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+A
+0 0.2 0.4 0.6 0.8 10
+0.2
+0.4
+0.6
+0.8
+1
+A
+Figure 2. Human Label-based Evaluation of Auto-Labels across all Confidence Thresholds and Datasets. For number of object labels
+andF1 score, the AL results closest to human labels are individually marked. For number of object labels and precision, dashed vertical
+lines indicate where a final confidence threshold (α) precedes zero label generation thereafter. The number of object labels are in log scale.
+increases in AL difficulty make intuitive sense. COCO has
+4× the number of classes as VOC, including more nuanced
+class labels like “hair drier.” BDD consists entirely of au-
+tonomous driving viewpoint images that are not represen-
+tative of the original AL model training data distribution
+(Tab. 1). Finally, LVIS has 60× the number of classes as
+VOC, including rare classes like “eye dropper” and “car bat-
+tery” that make high recall particularly challenging.
+In terms of relative performance between AL models,
+each model achieves a top F1 score on at least one dataset
+(Fig. 2, right). For VOC, YOLOW-0.5 ( α = 0.5) has the
+highest F1 score of 0.785. For COCO, YOLOW-0.4 &
+GDINO-0.4 share the highestF1 score of 0.640. Finally, for
+the more challenging datasets, YOLOE-0.3 has the highest
+F1 score of 0.215 on LVIS and YOLOW-0.05 has the high-
+estF1 score of 0.499 on BDD. Notably, the peakF1 scores
+of all AL models are relatively close.
+The relative consequence of changing confidence
+threshold α varies dramatically between AL models.
+GDINO has the greatest sensitivity to changes in α, with
+dramatic increases and decreases to the number of labels at
+low and highα values respectively. Consequently, YOLOW
+& YOLOE both have a wider α range for peak F1 perfor-
+mance. Additionally, YOLOW & YOLOE both have much
+higher precision andF1 scores at lowerα values, likely due
+to better internal non-maximum suppression of predicted
+labels. In all cases, using high α causes a collapse of F1
+scores, which validates the significance of correctly config-
+uring confidence thresholdα for auto-labeling.
+3.4. Auto-Labeling Evaluation via Downstream
+Model Training and Validation
+To supplement the direct label evaluation in Sec. 3.3, we
+now evaluate the efficacy of auto-labeling in terms of
+downstream inference model training and validation perfor-
+mance. These experiments uniquely test an important func-
+tion of AL in practice, i.e., training a downstream model for
+a specific application.
+Our overall study includes 445 model training and vali-
+dation experiments to evaluate the numerous configurations
+of AL model, confidence threshold α, and inference model
+(Eq. (4)). In each experiment, we first auto-label one of the
+train sets detailed in Sec. 3.1 using a specific AL model and
+α. Next, we use the AL train set to train an inference model
+(Tab. 2) for 100 epochs without any pre-trained weights. Fi-
+nally, we find the inference model’s mean average precision
+(mAP50) on the corresponding validation set to quantify the
+effectiveness of AL-based training for that specific dataset
+and application.
+We compare AL-based training across all AL models,α
+5
+0 0.2 0.4 0.6 0.8 10
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+A
+mAP50
+YOLO11n
+Human Labels
+GDINO
+YOLOE
+YOLOW
+0.2 0.4 0.6 0.8 1
+A
+YOLO11s
+0.2 0.4 0.6 0.8 1
+Confidence Threshold
+YOLO11m
+0.2 0.4 0.6 0.8 1
+A
+YOLO11l
+0.2 0.4 0.6 0.8 1
+A
+YOLO11x
+0.2 0.4 0.6 0.8 10
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+A
+RT-DETR
+Figure 3. Comparison of All AL-Trained Inference Models on VOC Validation. Marks indicate best performance from each AL model.
+0 0.2 0.4 0.6 0.8 10
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+Confidence Threshold
+mAP50
+YOLO11n
+Human Labels
+GDINO
+YOLOE
+YOLOW
+0 0.2 0.4 0.6 0.8 1
+A
+YOLO11s
+Figure 4. Comparison of AL Training on COCO Validation.
+settings, and inference models on VOC in Fig. 3. For all
+inference models, the top mAP50 results corresponding to
+each AL model are relatively close, but training on YOLOW
+labels achieves the best mAP50 results. Notably, YOLOW
+had the best AL F1 score at α = 0.5 (Fig. 2) but the best
+mAP50 results at α ∈ [0.1, 0.2]. Thus, the best down-
+stream model performance is closer to peak auto-label
+recall than best auto-labelF1 score. Specifically, the best
+mAP50 results for each inference model are 0.718 for n-
+YW-0.15 (YOLO11n trained on YOLOW,α = 0.15 labels),
+0.768 for s-YW-0.2, 0.791 for m-YW-0.15, 0.800 for l-YW-
+0.2, 0.802 for x-YW-0.1, and 0.706 for RT-DETR-YW-0.2.
+In regards to inference model selection , mAP50 in-
+creases with architecture size on VOC (Fig. 3), although
+this performance comes at the cost of a higher runtime
+(Tab. 2). The only exception to this trend is the transformer-
+based RT-DETR model architecture, which is the second
+largest model with the second slowest runtime but the worst
+mAP50. RT-DETR particularly performs worse than the
+YOLO11 architectures at lower α settings with high AL
+recall but low AL precision (Fig. 3, right). Finally, each
+inference model architecture’s best performance uses the
+same AL model at a relatively consistent α (YOLOW,α∈
+[0.1, 0.2]), which indicates that inference model selection
+can be decoupled from auto-label model configuration.
+We compare AL-based training on COCO in Fig. 4.
+Similar to VOC, the top COCO mAP50 corresponding to
+each AL model is relatively close, but the best mAP50
+results from training on YOLOW labels, which had tied
+Table 5. AL, Human Labels, & Inference Model Performance.
+All YOLOW labels useα = 0.2 confidence threshold. Bold font is
+best dataset AL & human label validation performance. Notably,
+inference model determines rank order more than label source.
+Inference # of Label Validation Performance
+Dataset Model Params Source mAP50 mAP75 mAP50-95
+YOLO11s 9.5 M Human 0.817 0.672 0.613
+VOC YOLO11s 9.5 M YOLOW 0.768 0.636 0.577
+YOLO11n 2.6 M Human 0.756 0.605 0.549
+YOLO11n 2.6 M YOLOW 0.715 0.573 0.519
+YOLO11s 9.5 M Human 0.588 0.463 0.428
+COCO YOLO11s 9.5 M YOLOW 0.538 0.419 0.386
+YOLO11n 2.6 M Human 0.496 0.378 0.349
+YOLO11n 2.6 M YOLOW 0.460 0.345 0.320
+GDINO for the highest ALF1 score (Fig. 2). As with VOC,
+the top mAP50 results for each AL model use relatively low
+α settings between peak AL recall and AL F1 score, and
+mAP50 increases with inference model size. Specifically,
+training on YOLOW-0.2 labels achieves the best mAP50 re-
+sults of 0.460 for YOLO11n and 0.538 for YOLO11s.
+Although the AL-trained inference model performance
+on COCO is lower than VOC, AL performance is com-
+petitive with human labels on both datasets . We com-
+pare training on a single AL model and α setting to human
+label-based training in Tab. 5, which shows that the infer-
+ence model architecture itself determines the ranked order
+of performance more than the decision to use AL or human
+labels. This result presents an interesting tradeoff in terms
+of cost and performance. That is, if we save costs by using
+AL instead of an annotation service (Tab. 4) and redirect our
+budget to accommodate a larger inference model, the net
+result is higher overall performance. Specifically, switching
+from YOLO11n with human labels to YOLO11s with AL
+increases VOC mAP 2–5% and COCO mAP 9–11%.
+We compare AL-based training on LVIS and BDD in
+Fig. 5. Each dataset provides unique challenges, and we
+find that object detection onLVISwith 1,203 unique classes
+is the most challenging. In fact, none of the inference mod-
+els achieve an mAP50 > 0.09, even when training on hu-
+man labels. For AL specifically, inference models trained
+on YOLOE labels have a higher mAP50 than those trained
+on YOLOW labels except when α > 0.9, which causes
+YOLOE to generate dramatically fewer labels (Fig. 2).
+For AL-based training on BDD, the best mAP50 of
+6
+Table 6. Label Evaluation Metrics vs. AL-Trained Inference Model Validation . Results are organized by confidence threshold α =
+{0.2, 0.5, 0.8}. Green and red highlighting indicate the “best” and “worst” result for a metric, while bold font indicates the α setting leading
+to the best downstream YOLO11n model performance. Notably,α = 0.8 has highest precision but worst model performance in every row.
+AL Number of Train Labels Train Label Precision Train Labels Recall Train Label F1 Score Validation mAP50
+Dataset Model 0.2 0.5 0.8 0.2 0.5 0.8 0.2 0.5 0.8 0.2 0.5 0.8 0.2 0.5 0.8
+YOLOW 60,026 40,028 23,872 0.596 0.786 0.937 0.893 0.785 0.558 0.715 0.785 0.700 0.715 0.681 0.612
+VOC YOLOE 62,349 38,964 21,411 0.563 0.771 0.927 0.876 0.750 0.495 0.685 0.761 0.646 0.709 0.682 0.613
+GDINO 147,976 37,800 8,507 0.243 0.781 0.970 0.899 0.737 0.206 0.383 0.759 0.340 0.637 0.674 0.314
+YOLOW 1,013,600 557,894 267,692 0.563 0.787 0.940 0.671 0.517 0.296 0.612 0.624 0.450 0.460 0.445 0.404
+COCO YOLOE 946,312 487,148 218,291 0.559 0.792 0.941 0.623 0.454 0.242 0.589 0.577 0.384 0.458 0.441 0.387
+GDINO 2,232,127 479,099 108,240 0.281 0.826 0.983 0.739 0.466 0.125 0.408 0.595 0.222 0.424 0.432 0.244
+LVIS YOLOW 1,701,295 610,040 135,523 0.165 0.262 0.331 0.221 0.126 0.035 0.189 0.170 0.064 0.059 0.050 0.031
+YOLOE 1,311,999 486,847 145,360 0.208 0.346 0.496 0.215 0.133 0.057 0.211 0.192 0.102 0.064 0.057 0.040
+YOLOW 401,485 148,782 21,053 0.804 0.910 0.945 0.251 0.105 0.015 0.382 0.189 0.030 0.271 0.259 0.247
+BDD YOLOE 449,403 170,489 27,507 0.766 0.889 0.936 0.267 0.118 0.020 0.396 0.208 0.039 0.255 0.244 0.240
+GDINO 1,381,568 190,577 655 0.478 0.867 0.963 0.513 0.128 0.000 0.495 0.224 0.001 0.280 0.278 0.000
+0 0.2 0.4 0.6 0.8 10
+0.02
+0.04
+0.06
+0.08
+0.10
+Confidence Threshold
+mAP50
+LVIS
+Human Labels
+GDINO
+YOLOE
+YOLOW
+0 0.2 0.4 0.6 0.8 10
+0.1
+0.2
+0.3
+0.4
+0.5
+A
+BDD
+Figure 5. Comparison of AL Training on LVIS & BDD Valida-
+tion. Inference training and validation uses YOLO11n model.
+0.298 results from training on GDINO labels. Interestingly,
+GDINO had a lower AL F1 score than YOLOW (Fig. 2),
+which demonstrates that labels with the bestF1 score rel-
+ative to human labels are not necessarily the best la-
+bels for downstream model training. Notably, the perfor-
+mance gap between inference models trained on auto-labels
+vs. human labels is greater on BDD than any other dataset,
+which indicates a deficiency in label quality rather than ob-
+ject detection difficulty. This likely occurs because BDD
+consists entirely of autonomous driving viewpoints that are
+atypical of the original AL model training data (Tab. 1).
+3.5. Detailed Comparison of Auto-Label and
+Downstream Inference Model Metrics
+To establish best auto-labeling practices , we perform a
+combined analysis of label evaluation metrics (Sec. 3.3) and
+model performance metrics (Sec. 3.4) using a representa-
+tive subset of auto-labeling configurations in Tab. 6. Note
+that each of the 11 rows in Tab. 6 corresponds to a unique
+AL model-dataset pair with corresponding results for three
+confidence thresholds,α ={0.2, 0.5, 0.8}. From this anal-
+ysis, we find the single auto-labeling configuration that best
+trains downstream inference models across all datasets.
+We start by sharing a few general findings from the re-
+sults in Tab. 6. First, α = 0.2 results in the best AL recall
+for all rows, best mAP50 for 9 rows, and best AL F1 score
+for 6 rows. Second,α = 0.5 results in the best ALF1 score
+for 5 rows and best mAP50 for 2 rows. Finally,α = 0.8 re-
+sults in the best AL precision and the worst mAP50 for all
+rows. Thus, for experiments in Tab. 6, we can conclude the
+following. First, α = 0.2 is the best confidence threshold
+for AL recall, ALF1 score, and downstream model perfor-
+mance. Second, α = 0.8 is the worst confidence threshold
+for all metrics except for AL precision. Finally, high auto-
+label recall is the best single predictor of downstream
+model performance followed by high auto-labelF1 score.
+We now compare the general performance of each
+AL model in Tab. 6. All AL models trains an inference
+model with a top mAP50 result on at least one dataset, but
+the relative consistency of AL models differs. For perfor-
+mance across datasets and confidence thresholds, YOLOW
+& YOLOE labels train inference models with relatively
+consistent mAP50 at all threeα settings (except forα = 0.8
+on LVIS), while GDINO mAP50 results dramatically de-
+crease at α = 0.8 on all datasets. For performance across
+datasets when using a single confidence threshold, YOLOW
+& YOLOE are consistent in that a single α = 0.2 setting
+always results in their best downstream inference model
+mAP50, while the best mAP50 setting for GDINO varies
+betweenα = 0.2 (BDD) andα = 0.5 (VOC & COCO).
+Finally, we compare the performance of individual AL
+configurations in Tab. 6. As further evidence to avoid
+high confidence threshold configurations, inference mod-
+els with the worst mAP50 for each dataset train on G-0.8
+labels (GDINO, α = 0.8) for VOC, COCO, & BDD and
+YW-0.8 labels (YOLOW) for LVIS. In contrast, inference
+models with the best mAP50 for each dataset train on YW-
+0.2 labels for VOC & COCO, YE-0.2 labels (YOLOE) for
+LVIS, and G-0.2 labels for BDD (α = 0.2 in all cases). No-
+tably, models trained on YW-0.2 labels are close to the best
+mAP50 for LVIS and BDD. Thus, for experiments in Tab. 6,
+we find that YOLOW with a confidence threshold of 0.2
+is the single most reliable auto-labeling configuration to
+train downstream inference models across all datasets.
+7
+car traffic sign traffic light person truck bus bike rider motor train
+10
+100
+1,000
+10K
+100K
+750KBDD
+Human Labels YOLOW YOLOE GDINO
+banana book carrot apple pole telephoto lens crowbar sling car battery steak knife
+10
+100
+1,000
+10K
+50K
+LVIS
+person car chair book bottle scissors bear parking meter toaster hair drier
+10
+100
+1,000
+10K
+100K
+750KCOCO
+person car chair dog bottle train cow dining table bus sofa
+10
+100
+1,000
+10K
+50K
+Object Class
+VOC
+Figure 6. Number of Labels for the Five Most (left) and Least (right) Frequent Object Classes across all Datasets. Each object class
+includes results for three confidence thresholds of 0.2, 0.5, & 0.8 (left to right with increasing transparency) for each AL model.
+Table 7. Inference Model Class AP50 on VOC Validation .
+Classes are five most (top) and least (bottom) frequent in train set
+(see Fig. 6). % Diff. is the mAP50 change from 5 Most to 5 Least.
+Bold font is best AL-trained YOLO11n result.
+YOLOW /α YOLOE /α GDINO /α Human
+Class 0.2 0.5 0.8 0.2 0.5 0.8 0.2 0.5 0.8 Label
+person 0.840 0.841 0.816 0.828 0.834 0.823 0.826 0.832 0.757 0.855
+car 0.877 0.863 0.830 0.856 0.831 0.785 0.808 0.812 0.240 0.886
+chair 0.442 0.483 0.469 0.447 0.449 0.434 0.326 0.489 0.034 0.560
+dog 0.772 0.765 0.746 0.765 0.758 0.722 0.744 0.758 0.380 0.779
+bottle 0.586 0.578 0.512 0.593 0.578 0.521 0.429 0.592 0.142 0.602
+train 0.841 0.859 0.834 0.845 0.856 0.814 0.773 0.826 0.083 0.856
+cow 0.706 0.706 0.706 0.703 0.638 0.633 0.639 0.710 0.263 0.727
+dining table 0.706 0.475 0.000 0.563 0.572 0.428 0.285 0.120 0.000 0.756
+bus 0.842 0.827 0.818 0.834 0.833 0.781 0.792 0.825 0.650 0.825
+sofa 0.585 0.608 0.654 0.621 0.658 0.584 0.615 0.692 0.235 0.725
+Mean Average Precision (mAP50)
+5 Most 0.703 0.706 0.675 0.698 0.690 0.657 0.627 0.697 0.311 0.736
+5 Least 0.736 0.695 0.603 0.713 0.711 0.648 0.621 0.635 0.246 0.778
+% Diff. 5% -2% -11% 2% 3% -1% -1% -9% -21% 6%
+All 20 0.715 0.681 0.612 0.709 0.682 0.613 0.637 0.674 0.314 0.756
+3.6. Class Level Evaluation
+Sec. 3.3-3.5 evaluate auto-labeling at the dataset level.
+However, we find that auto-labeling performance varies
+across individual object classes within datasets as well.
+We compare the number of objects labels for the five
+most and least frequent classes across all datasets and AL
+models in Fig. 6. Notably, baseline label frequency is deter-
+mined using human labels of each dataset train split, which
+Table 8. Inference Model Class AP50 on COCO Validation.
+YOLOW /α YOLOE /α GDINO /α Human
+Class 0.2 0.5 0.8 0.2 0.5 0.8 0.2 0.5 0.8 Label
+person 0.693 0.695 0.643 0.694 0.680 0.612 0.679 0.711 0.603 0.729
+car 0.524 0.507 0.440 0.492 0.430 0.352 0.515 0.492 0.329 0.537
+chair 0.301 0.325 0.254 0.333 0.332 0.258 0.107 0.306 0.110 0.359
+book 0.076 0.052 0.049 0.060 0.046 0.035 0.086 0.049 0.000 0.179
+bottle 0.405 0.372 0.280 0.403 0.368 0.276 0.210 0.386 0.177 0.411
+scissors 0.195 0.231 0.187 0.133 0.202 0.208 0.145 0.166 0.060 0.277
+bear 0.831 0.815 0.781 0.813 0.787 0.731 0.800 0.818 0.706 0.822
+parking meter 0.282 0.247 0.319 0.302 0.250 0.279 0.263 0.228 0.169 0.535
+toaster 0.483 0.190 0.461 0.201 0.315 0.300 0.253 0.287 0.000 0.297
+hair drier 0.003 0.000 0.000 0.004 0.000 0.000 0.058 0.000 0.000 0.001
+Mean Average Precision (mAP50)
+5 Most 0.400 0.390 0.333 0.397 0.371 0.307 0.319 0.389 0.244 0.443
+5 Least 0.359 0.296 0.349 0.290 0.311 0.304 0.304 0.300 0.187 0.386
+% Difference -10% -24% 5% -27% -16% -1% -5% -23% -23% -13%
+All 80 0.460 0.445 0.404 0.458 0.441 0.387 0.424 0.432 0.244 0.496
+we compare to AL frequency across confidence thresholds
+α = {0.2, 0.5, 0.8}. As expected, the number of auto-
+labels decreases with increasing confidence threshold (espe-
+cially for GDINO), but there is generally less variation for
+common classes like “person” (VOC, COCO, & BDD) and
+more variation for rarer classes like “hair drier” (COCO)
+or “steak knife” (LVIS). Furthermore, several classes with
+somewhat ambiguous class names like “rider” (BDD) or
+“sling” (LVIS) are left entirely unlabeled by some AL mod-
+els regardless of α. Overall, the number of auto-labels
+and human labels best match on VOC, COCO, and the five
+most frequent BDD classes but have greater discrepancies
+8
+Table 9. Inference Model Class AP50 on LVIS Validation.
+LVIS only uses 1,035 of the 1,203 training classes for validation,
+so we include results for the five most (top) and least (bottom)
+frequent train set classes that are also in validation (see Fig. 6).
+YOLOW /α YOLOE /α Human
+Class 0.2 0.5 0.8 0.2 0.5 0.8 Label
+banana 0.098 0.068 0.049 0.079 0.060 0.059 0.508
+book 0.029 0.018 0.025 0.025 0.017 0.022 0.201
+carrot 0.228 0.159 0.100 0.211 0.151 0.097 0.358
+apple 0.299 0.137 0.080 0.309 0.210 0.128 0.417
+pole/post 0.009 0.011 0.009 0.010 0.008 0.008 0.016
+subwoofer 0.017 0.030 0.016 0.013 0.055 0.000 0.000
+string cheese 0.000 0.000 0.000 0.000 0.000 0.000 0.000
+milkshake 0.000 0.000 0.000 0.000 0.000 0.000 0.000
+vinegar 0.000 0.000 0.000 0.000 0.000 0.000 0.000
+eye dropper 0.000 0.000 0.000 0.000 0.000 0.000 0.000
+Mean Average Precision (mAP50)
+5 Most 0.133 0.079 0.053 0.127 0.089 0.063 0.300
+5 Least 0.003 0.006 0.003 0.003 0.011 0.000 0.000
+% Difference -97% -92% -94% -98% -88% -100% -100%
+All 1,035 in Val. 0.059 0.050 0.031 0.064 0.057 0.040 0.087
+on LVIS and the five least frequent BDD classes.
+To understand the effect of label frequency on down-
+stream inference model performance, we compare the av-
+erage precision (AP50, Sec. 2.3) of the five most and least
+frequent object classes of each dataset in Tab. 7-10.
+For VOC (Tab. 7), the difference in AP50 for frequent
+and infrequent classes are relatively similar. In fact, multi-
+ple YOLOW-, YOLOE-, and human label-trained inference
+models perform better on the infrequent classes. Notably,
+some YOLOW- & YOLOE-trained inference models out-
+perform human label training on the infrequent “train” and
+“bus” classes.
+For COCO (Tab. 8), the AP50 is higher for all frequent
+classes relative to infrequent classes, except for YOLOW-
+0.8. This change from VOC is likely due to COCO includ-
+ing rarer object classes. Notably, the inference models with
+the best AP50 for the infrequent “bear,” “toaster,” and “hair
+drier” classes all train on auto-labels.
+For LVIS (Tab. 9), which has the most classes of any
+dataset, the relative performance decrease between the five
+most and least frequent classes is greater than on any other
+dataset. Furthermore, the AP50 for basically all of the 1,203
+object classes is lower than with VOC and COCO. For fre-
+quent classes, human label training has an AP50 > 0.2 for
+4 classes, while AL-based training has an AP50 > 0.2 for
+only 2 classes. For infrequent classes, the only AP50 > 0
+is from AL-trained models for the “subwoofer” class.
+For BDD (Tab. 10), the absolute AP50 decrease between
+the frequent and infrequent classes is greater than on any
+other dataset. This is particularly the case for AL-trained in-
+ference models on the “rider,” “motor,” and “train” classes,
+which are completely unlabeled in the train set for some
+AL configurations (Fig. 6). Notably, this lower AP50 on
+infrequent BDD classes helps explain the mAP50 perfor-
+mance gap between the AL- and human label-trained infer-
+Table 10. Inference Model Class AP50 on BDD Validation .
+Classes ordered by decreasing frequency in train set (see Fig. 6).
+YOLOW /α YOLOE /α GDINO /α Human
+Class 0.2 0.5 0.8 0.2 0.5 0.8 0.2 0.5 0.8 Label
+car 0.524 0.493 0.488 0.531 0.508 0.505 0.607 0.465 0.000 0.739
+traffic sign 0.373 0.328 0.373 0.353 0.331 0.375 0.456 0.360 0.000 0.544
+traffic light 0.278 0.274 0.277 0.246 0.243 0.271 0.365 0.358 0.000 0.501
+person 0.427 0.390 0.319 0.395 0.355 0.311 0.327 0.400 0.000 0.511
+truck 0.407 0.428 0.422 0.390 0.408 0.407 0.417 0.438 0.000 0.556
+bus 0.448 0.430 0.407 0.394 0.388 0.372 0.340 0.421 0.000 0.528
+bike 0.249 0.247 0.185 0.209 0.204 0.164 0.251 0.251 0.000 0.333
+rider 0.000 0.000 0.000 0.000 0.000 0.000 0.031 0.044 0.000 0.313
+motor 0.000 0.000 0.000 0.030 0.000 0.000 0.006 0.044 0.000 0.320
+train 0.001 0.000 0.000 0.001 0.000 0.000 0.001 0.001 0.000 0.000
+Mean Average Precision (mAP50)
+5 Most 0.402 0.383 0.376 0.383 0.369 0.374 0.435 0.404 0.000 0.570
+5 Least 0.140 0.135 0.118 0.127 0.119 0.107 0.126 0.152 0.000 0.299
+% Diff. -65% -65% -69% -67% -68% -71% -71% -62% - -48%
+All 10 0.271 0.259 0.247 0.255 0.244 0.240 0.280 0.278 0.000 0.434
+ence models in Fig. 5. In practice, missing auto-labels could
+likely be addressed by using more descriptive class names
+for the AL model input text prompt (T in Eq. (4)).
+3.7. Qualitative Auto-Labeling Evaluation
+We provide qualitative auto-labeling results across all
+datasets in Fig. 7-8. All images include objects that are the
+least frequent class of their respective dataset (Fig. 6), and
+we use a single confidence threshold setting (α) for each AL
+model (YOLOW-0.2, YOLOE-0.2, and GDINO-0.5).
+From the VOC examples, we find that auto-labeling in-
+cludes a few objects missed by human labeling. For exam-
+ple, the person behind the desk, the bottles attached to bicy-
+cles, and the tv monitor in Fig. 7, top. On the other hand, a
+few auto-labels have incorrect class labels, such as the din-
+ing table (row 2, column 2,α = 0.2) and cat (row 2, column
+3, α = 0.2), but this is less common with a higher α set-
+ting (row 2, column 4,α = 0.5). Nonetheless, our previous
+experiments show that setting a lower confidence threshold
+(increasing recall, even with such errors) measurably and
+consistently improves downstream model performance.
+From the COCO examples, we find that the infrequent
+hair drier class is accurately labeled by YOLOW, unlabeled
+by YOLOE, and labeled by GDINO when prominent but
+unlabeled when occurring in an abnormal outdoor context
+(Fig. 7, rows 3-4).
+From the LVIS examples, which are labeled for 1,203
+classes, AL includes objects that human labeling does not
+but with mixed accuracy. For example, both AL models
+correctly add the pizza on a plate (Fig. 8, top) and the promi-
+nent rowboat (row 2). On the other hand, YOLOW incor-
+rectly labels a bullhorn, glasses, flipper, and ottoman (row
+2, column 2) while YOLOE incorrectly labels a mallet and
+water jug (row 2, column 3). For the very rare steak knife
+and car battery classes, AL models label the steak knife in-
+correctly as a knife (top) and label the car battery as a box
+or leave it unlabeled (row 2). Notably, there are also exam-
+9
+Figure 7. Qualitative Comparison of Auto-Labels with Least Frequent Classes on VOC & COCO. All images include least frequent
+train set class for VOC (sofa, top two rows) and COCO (hair drier, rows 3-4). Label sources are (left to right) human (grey), YOLOW-0.2
+(0.2 confidence threshold, orange), YOLOE-0.2 (blue), and GDINO-0.5 (green). Visualizations generated using the FiftyOne Library [22].
+ples where human labels are corrected by AL, such as the
+wine glass in the top row. Given the number of mistakes
+with AL and human labels, we find that LVIS is by far the
+most challenging dataset to annotate.
+From the BDD examples, we find that AL is overall
+fairly accurate but leaves small or partially occluded ob-
+jects in heavy traffic unlabeled. In the daytime driving
+scene (Fig. 8, row 3), we find that YOLOW labels are more
+accurate than YOLOE, GDINO, or human labels. In the
+nighttime driving scene (row 4), the only inaccurate label is
+YOLOE labeling the train on the left as a bus, but AL leaves
+a few cars and a bus that are partially occluded by several
+rows of traffic unlabeled. Given these unique challenges of
+the driving domain, we find that BDD is the second most
+challenging dataset to annotate.
+4. Conclusions
+We propose a general approach to auto-labeling data for ob-
+ject detection. Specifically, we label data for a given appli-
+cation using previously-trained foundational models, which
+incorporate knowledge from massive amounts of data. We
+10
+Figure 8. Qualitative Comparison of Auto-Labels with Least Frequent Classes on LVIS & BDD . All images include least frequent
+train set class for LVIS (steak knife & car battery, top two rows) and BDD (train, rows 3-4). We include two LVIS classes since each class
+has only one corresponding train image. Label sources are (left to right) human, YOLOW-0.2 (0.2 confidence threshold), YOLOE-0.2, and
+GDINO-0.5. Due to architecture constraints, there are no GDINO labels on LVIS (see Sec. 3.1), but we leave blank images for reference.
+then use the auto-labeled data to train lightweight inference
+models that are computationally efficient for practical ap-
+plication, e.g., real-time inference on deployed A V systems.
+In this way, our approach trains detection models without
+conventional annotation, which is cost prohibitive at scale.
+To establish best practices for auto-labeling, we conduct
+an exhaustive series of auto-labeling and downstream model
+training experiments across four unique datasets. Notably,
+faulty configuration of auto-labeling degrades downstream
+model performance and a few of our findings are counter
+intuitive. For example, the configurations with the highest
+precision relative to human labels result in the worst down-
+stream model performance. Furthermore, the models with
+the best performance do not necessarily have the closest re-
+semblance to human labels. Nonetheless, we find a single
+auto-labeling configuration that is reliable across a wide va-
+riety of applications (YOLOW-0.2, Sec. 3.5).
+In regards to the viability of auto-labeling as a re-
+Table 11. Single Auto-Label Configuration vs. Human Labels.
+YOLOW uses constantα = 0.2 confidence threshold. All mAP50
+results use YOLO11n inference model for training and validation.
+Label Validation mAP50 Total Label
+Source VOC COCO LVIS BDD Average Cost Hours
+Human 0.756 0.496 0.087 0.434 0.443 $1,240,92.54 6,702.53
+YOLOW-0.2 0.715 0.460 0.059 0.271 0.376 $1.18 1.27
+Difference 0.041 0.035 0.028 0.164 0.067 $124,091.36 6,701.26
+Ratio 1.057 1.077 1.484 1.605 1.178 105,105.49 5,279.60
+placement for conventional labeling, we summarize a few
+key findings from our experiments in Tab. 11. First, a
+lightweight YOLO11n model trained on YOLOW-0.2 la-
+bels achieves a mean average precision (mAP50) of 0.715,
+0.460, 0.059, & 0.271 on the VOC, COCO, LVIS, & BDD
+validation sets respectively. For comparison, the same
+model trained on standard labels achieves an mAP50 of
+0.756, 0.496, 0.087, & 0.434 on the same datasets. Thus,
+auto-label-trained model performance is competitive on
+11
+VOC & COCO but less so on LVIS & BDD. However,
+our study also accounts for time and cost, and it is im-
+portant to acknowledge that auto-labeling all the train sets
+takes 1.27 hours and costs $1.18 while human labeling takes
+6,703 hours and using an annotation service currently costs
+$124,092.54 (Sec. 3.2). When jointly considering average
+performance and cost, the mAP50 per dollar spent is 0.319
+for auto-labeling and 0.357×10−5 for standard annotation.
+Given the competitive performance and cost and time
+savings on VOC & COCO, we find that auto-labeling is ab-
+solutely viable for these datasets and similar applications.
+Furthermore, we show that if cost savings are redirected
+to accommodate a larger inference model, the net result is
+higher performance on these datasets (Tab. 5). On the other
+hand, for challenge applications closer to the LVIS & BDD
+datasets, visual AI developers need to carefully consider
+the cost-performance trade offs. Nonetheless, given its in-
+credibly low cost, we believe auto-labeling data is the best
+starting point for most object detection applications. Fur-
+thermore, our approach is broadly applicable, integrates di-
+rectly with existing training frameworks, and will improve
+with future research advancements of foundation models.
+References
+[1] Dario Amodei, Danny Hernandez, GirishSastry, Jack Clark,
+Greg Brockman, and Ilya Sutskeverx. Ai and compute. 2018.
+1
+[2] Hakan Bilen and Andrea Vedaldi. Weakly supervised deep
+detection networks. In Proceedings of the IEEE Conference
+on Computer Vision and Pattern Recognition (CVPR), 2016.
+1
+[3] Nicolas Carion, Francisco Massa, Gabriel Synnaeve, Nicolas
+Usunier, Alexander Kirillov, and Sergey Zagoruyko. End-to-
+end object detection with transformers. In European Confer-
+ence on Computer Vision (ECCV), 2020. 1
+[4] Tianheng Cheng, Lin Song, Yixiao Ge, Wenyu Liu, Xing-
+gang Wang, and Ying Shan. Yolo-world: Real-time
+open-vocabulary object detection. In Proceedings of the
+IEEE/CVF Conference on Computer Vision and Pattern
+Recognition (CVPR), 2024. 2, 3, 4
+[5] Marius Cordts, Mohamed Omran, Sebastian Ramos, Timo
+Rehfeld, Markus Enzweiler, Rodrigo Benenson, Uwe
+Franke, Stefan Roth, and Bernt Schiele. The cityscapes
+dataset for semantic urban scene understanding. In Proceed-
+ings of the IEEE Conference on Computer Vision and Pattern
+Recognition (CVPR), 2016. 1
+[6] Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov,
+Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner,
+Mostafa Dehghani, Matthias Minderer, Georg Heigold, Syl-
+vain Gelly, Jakob Uszkoreit, and Neil Houlsby. An image is
+worth 16x16 words: Transformers for image recognition at
+scale. In International Conference on Learning Representa-
+tions (ICLR), 2021. 1
+[7] Mark Everingham, Luc Van Gool, Christopher K. I.
+Williams, John Winn, and Andrew Zisserman. The pascal
+visual object classes (voc) challenge. International Journal
+of Computer Vision (IJCV), 2010. 1, 2, 4
+[8] Brent Griffin. Mobile robot manipulation using pure object
+detection. In IEEE/CVF Winter Conference on Applications
+of Computer Vision (WACV), 2023. 1
+[9] Xiuye Gu, Tsung-Yi Lin, Weicheng Kuo, and Yin Cui.
+Open-vocabulary object detection via vision and language
+knowledge distillation. In International Conference on
+Learning Representations (ICLR), 2022. 1
+[10] Agrim Gupta, Piotr Dollar, and Ross Girshick. Lvis: A
+dataset for large vocabulary instance segmentation. In Pro-
+ceedings of the IEEE/CVF Conference on Computer Vision
+and Pattern Recognition (CVPR), 2019. 1, 4
+[11] Drew A. Hudson and Christopher D. Manning. Gqa: A
+new dataset for real-world visual reasoning and composi-
+tional question answering. In Proceedings of the IEEE/CVF
+Conference on Computer Vision and Pattern Recognition
+(CVPR), 2019. 3
+[12] Taoseef Ishtiak, Qing En, and Yuhong Guo. Exemplar-
+freesolo: Enhancing unsupervised instance segmentation
+with exemplars. In Proceedings of the IEEE/CVF Confer-
+ence on Computer Vision and Pattern Recognition (CVPR) ,
+2023. 1
+[13] Suyog Dutt Jain and Kristen Grauman. Predicting suffi-
+cient annotation strength for interactive foreground segmen-
+tation. In IEEE International Conference on Computer Vi-
+sion (ICCV), 2013. 1, 4
+[14] Glenn Jocher and Jing Qiu. Ultralytics yolo11. https://
+github.com/ultralytics/ultralytics, 2024. 3
+[15] Glenn Jocher, Ayush Chaurasia, and Jing Qiu. Yolo by
+ultralytics. https://github.com/ultralytics/
+ultralytics, 2023. 3
+[16] Aishwarya Kamath, Mannat Singh, Yann LeCun, Gabriel
+Synnaeve, Ishan Misra, and Nicolas Carion. Mdetr - mod-
+ulated detection for end-to-end multi-modal understanding.
+In Proceedings of the IEEE/CVF International Conference
+on Computer Vision (ICCV), 2021. 3
+[17] Alex Krizhevsky, Ilya Sutskever, and Geoffrey E Hinton.
+Imagenet classification with deep convolutional neural net-
+works. In Advances in Neural Information Processing Sys-
+tems (NeurIPS), 2012. 1
+[18] Alina Kuznetsova, Hassan Rom, Neil Alldrin, Jasper Ui-
+jlings, Ivan Krasin, Jordi Pont-Tuset, Shahab Kamali, Stefan
+Popov, Matteo Malloci, Alexander Kolesnikov, et al. The
+open images dataset v4: Unified image classification, object
+detection, and visual relationship detection at scale. Interna-
+tional Journal of Computer Vision (IJCV), 2020. 1
+[19] Liunian Harold Li, Pengchuan Zhang, Haotian Zhang, Jian-
+wei Yang, Chunyuan Li, Yiwu Zhong, Lijuan Wang, Lu
+Yuan, Lei Zhang, Jenq-Neng Hwang, Kai-Wei Chang, and
+Jianfeng Gao. Grounded language-image pre-training. In
+Proceedings of the IEEE/CVF Conference on Computer Vi-
+sion and Pattern Recognition (CVPR), 2022. 2, 3
+[20] Tsung-Yi Lin, Michael Maire, Serge Belongie, James Hays,
+Pietro Perona, Deva Ramanan, Piotr Doll´ar, and C. Lawrence
+Zitnick. Microsoft coco: Common objects in context. In The
+European Conference on Computer Vision (ECCV), 2014. 1,
+2, 4
+12
+[21] Shilong Liu, Zhaoyang Zeng, Tianhe Ren, Feng Li, Hao
+Zhang, Jie Yang, Qing Jiang, Chunyuan Li, Jianwei Yang,
+Hang Su, Jun Zhu, and Lei Zhang. Grounding dino: Marry-
+ing dino with grounded pre-training for open-set object de-
+tection. In The European Conference on Computer Vision
+(ECCV), 2024. 2, 3, 4
+[22] B. E. Moore and J. J. Corso. Fiftyone.
+https://github.com/voxel51/fiftyone, 2020. 2, 10
+[23] Yasuto Nagase, Yasunori Babazaki, and Takashi Shibata.
+Annotation-free object detection by knowledge-extraction
+training from visual-language models. In International Con-
+ference on Pattern Recognition (ICPR), 2025. 2
+[24] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya
+Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry,
+Amanda Askell, Pamela Mishkin, Jack Clark, Gretchen
+Krueger, and Ilya Sutskever. Learning transferable visual
+models from natural language supervision. In Proceedings
+of the 38th International Conference on Machine Learning
+(ICML), 2021. 1
+[25] Aditya Ramesh, Prafulla Dhariwal, Alex Nichol, Casey Chu,
+and Mark Chen. Hierarchical text-conditional image gen-
+eration with clip latents. arXiv preprint arXiv:2204.06125,
+2022. 1
+[26] Shaoqing Ren, Kaiming He, Ross Girshick, and Jian Sun.
+Faster r-cnn: Towards real-time object detection with region
+proposal networks. IEEE Transactions on Pattern Analysis
+and Machine Intelligence (TPAMI), 2016. 1
+[27] Jinhwan Seo, Wonho Bae, Danica J Sutherland, Junhyug
+Noh, and Daijin Kim. Object discovery via contrastive learn-
+ing for weakly supervised object detection. In European
+Conference on Computer Vision (ECCV), 2022. 1
+[28] Shuai Shao, Zeming Li, Tianyuan Zhang, Chao Peng, Gang
+Yu, Xiangyu Zhang, Jing Li, and Jian Sun. Objects365:
+A large-scale, high-quality dataset for object detection. In
+Proceedings of the IEEE/CVF International Conference on
+Computer Vision (ICCV), 2019. 3
+[29] Cheng Shi and Sibei Yang. The devil is in the object bound-
+ary: Towards annotation-free instance segmentation using
+foundation models. In The Twelfth International Conference
+on Learning Representations (ICLR), 2024. 1
+[30] Ao Wang, Hui Chen, Lihao Liu, Kai Chen, Zijia Lin, Jun-
+gong Han, and Guiguang Ding. Yolov10: Real-time end-
+to-end object detection. In Advances in Neural Information
+Processing Systems (NeurIPS), 2024. 1
+[31] Ao Wang, Lihao Liu, Hui Chen, Zijia Lin, Jungong Han, and
+Guiguang Ding. Yoloe: Real-time seeing anything. arXiv
+preprint arXiv:2503.07465, 2025. 2, 3, 4
+[32] Xudong Wang, Rohit Girdhar, Stella X. Yu, and Ishan Misra.
+Cut and learn for unsupervised object detection and instance
+segmentation. In Proceedings of the IEEE/CVF Conference
+on Computer Vision and Pattern Recognition (CVPR), 2023.
+1
+[33] Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chau-
+mond, Clement Delangue, Anthony Moi, Pierric Cistac, Tim
+Rault, R ´emi Louf, Morgan Funtowicz, Joe Davison, Sam
+Shleifer, Patrick von Platen, Clara Ma, Yacine Jernite, Julien
+Plu, Canwen Xu, Teven Le Scao, Sylvain Gugger, Mariama
+Drame, Quentin Lhoest, and Alexander M. Rush. Transform-
+ers: State-of-the-art natural language processing. In Pro-
+ceedings of the 2020 Conference on Empirical Methods in
+Natural Language Processing: System Demonstrations. As-
+sociation for Computational Linguistics, 2020. 3
+[34] Peter Young, Alice Lai, Micah Hodosh, and Julia Hocken-
+maier. From image descriptions to visual denotations: New
+similarity metrics for semantic inference over event descrip-
+tions. Transactions of the Association for Computational
+Linguistics, 2014. 3
+[35] Fisher Yu, Haofeng Chen, Xin Wang, Wenqi Xian, Yingying
+Chen, Fangchen Liu, Vashisht Madhavan, and Trevor Dar-
+rell. Bdd100k: A diverse driving dataset for heterogeneous
+multitask learning. In Proceedings of the IEEE/CVF Confer-
+ence on Computer Vision and Pattern Recognition (CVPR) ,
+2020. 2, 4
+[36] Jiacheng Zhang, Xiangru Lin, Wei Zhang, Kuo Wang, Xiao
+Tan, Junyu Han, Errui Ding, Jingdong Wang, and Guanbin
+Li. Semi-detr: Semi-supervised object detection with detec-
+tion transformers. In Proceedings of the IEEE/CVF Confer-
+ence on Computer Vision and Pattern Recognition (CVPR) ,
+2023. 1
+[37] Bo Zhao and Hakan Bilen. Dataset condensation with dis-
+tribution matching. In Proceedings of the IEEE/CVF Win-
+ter Conference on Applications of Computer Vision (WACV),
+2023. 1
+[38] Yian Zhao, Wenyu Lv, Shangliang Xu, Jinman Wei,
+Guanzhong Wang, Qingqing Dang, Yi Liu, and Jie Chen.
+Detrs beat yolos on real-time object detection. In Proceed-
+ings of the IEEE/CVF Conference on Computer Vision and
+Pattern Recognition (CVPR), 2024. 1, 3
+[39] Luowei Zhou, Hamid Palangi, Lei Zhang, Houdong Hu, Ja-
+son Corso, and Jianfeng Gao. Unified vision-language pre-
+training for image captioning and vqa. In Proceedings of the
+AAAI Conference on Artificial Intelligence, 2020. 1
+[40] Qiang Zhou, Chaohui Yu, Zhibin Wang, Qi Qian, and Hao
+Li. Instant-teaching: An end-to-end semi-supervised ob-
+ject detection framework. In Proceedings of the IEEE/CVF
+Conference on Computer Vision and Pattern Recognition
+(CVPR), 2021. 1
+13
