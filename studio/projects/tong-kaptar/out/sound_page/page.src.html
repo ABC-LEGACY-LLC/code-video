@@ -1,4 +1,4 @@
-<title>Tong · kaptar ovozi</title>
+<title>The sound of Tong · kaptar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Alegreya+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -6,7 +6,7 @@
 :root {
   --bg: #f3eff6; --panel: #fbf9fc; --ink: #1d1b3b; --muted: #625c80; --line: #dcd4e7; --soft: #ebe5f2;
   --accent: #5c4596; --warm: #c8573f; --ok: #2f7d5b; --warn: #a86a12; --bad: #b23a48;
-  --l-muhit: #7c86a8; --l-qanot: #4d63c9; --l-qonish: #d0703f; --l-ku: #b0507f; --l-latta: #8e2f5a; --l-bola: #b8862e; --l-kamera: #8a8699;
+  --l-ambience: #7c86a8; --l-wings: #4d63c9; --l-landing: #d0703f; --l-coo: #b0507f; --l-rag: #8e2f5a; --l-boy: #b8862e; --l-camera: #8a8699;
   --display: "Alegreya", "Iowan Old Style", Georgia, serif;
   --body: "Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -16,14 +16,14 @@
     color-scheme: dark;
     --bg: #11132c; --panel: #191c3d; --ink: #eee7f2; --muted: #a59dc2; --line: #2e3160; --soft: #22264b;
     --accent: #b9a4ec; --warm: #f0a98b; --ok: #7fcfa6; --warn: #f0c46e; --bad: #f59aa6;
-    --l-muhit: #9aa3c8; --l-qanot: #8fa2ff; --l-qonish: #f0a070; --l-ku: #e58fb8; --l-latta: #d9709c; --l-bola: #ffd89c; --l-kamera: #a8a4b8;
+    --l-ambience: #9aa3c8; --l-wings: #8fa2ff; --l-landing: #f0a070; --l-coo: #e58fb8; --l-rag: #d9709c; --l-boy: #ffd89c; --l-camera: #a8a4b8;
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #11132c; --panel: #191c3d; --ink: #eee7f2; --muted: #a59dc2; --line: #2e3160; --soft: #22264b;
   --accent: #b9a4ec; --warm: #f0a98b; --ok: #7fcfa6; --warn: #f0c46e; --bad: #f59aa6;
-  --l-muhit: #9aa3c8; --l-qanot: #8fa2ff; --l-qonish: #f0a070; --l-ku: #e58fb8; --l-latta: #d9709c; --l-bola: #ffd89c; --l-kamera: #a8a4b8;
+  --l-ambience: #9aa3c8; --l-wings: #8fa2ff; --l-landing: #f0a070; --l-coo: #e58fb8; --l-rag: #d9709c; --l-boy: #ffd89c; --l-camera: #a8a4b8;
 }
 [hidden] { display: none !important; }
 body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.5; }
@@ -131,74 +131,74 @@ footer a { color: var(--accent); }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">21,0 s · 24 kadr/s · B tahrir · ovoz, 3-versiya</div>
+    <div class="eyebrow">21.0 s · 24 fps · edit B · sound, version 3</div>
     <h1>Tong <span class="dot">·</span> kaptar</h1>
-    <p class="lede">Filmni ovozi bilan ko‘ring. Har bir ovoz rasmning o‘zidan chiqadi: qanot qoqishi qanotning chizilgan fazasidan, qo‘nish oyoq tekkan paytdan, hushtak bolaning puflash egri chizig‘idan, latta uni chizadigan mato simulyatsiyasidan. Yangi va eski ovozni bir joyda solishtiring, yoqmagan joyni belgilang.</p>
+    <p class="lede">Watch the film with its sound. Every sound comes from the picture itself: a wingbeat from the wing's drawn phase, the landing from the moment the feet touch, the whistle from the boy's blowing curve, the rag from the cloth simulation that draws it. Compare the new and the old sound in one place, and mark the spots you don't like.</p>
   </header>
 
   <section class="player" aria-label="Film">
     <div class="screen">
       <video id="film" src="film.mp4" poster="poster.jpg" preload="auto" playsinline></video>
-      <button class="bigplay" id="bigplay" aria-label="Ijro etish"><span><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M10 6 L24 15 L10 24 Z" fill="#ffd89c"/></svg></span></button>
+      <button class="bigplay" id="bigplay" aria-label="Play"><span><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M10 6 L24 15 L10 24 Z" fill="#ffd89c"/></svg></span></button>
     </div>
     <div class="bar">
-      <button class="btn" id="play"><svg id="picon" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5 L12 7 L3 12.5 Z" fill="currentColor"/></svg><span id="plabel">Ijro</span></button>
-      <span class="clock" id="clock">0.00 s · kadr 0 · <b>1 · uloqtirish</b></span>
-      <span class="mode" id="mode">to‘liq miks · yangi</span>
+      <button class="btn" id="play"><svg id="picon" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5 L12 7 L3 12.5 Z" fill="currentColor"/></svg><span id="plabel">Play</span></button>
+      <span class="clock" id="clock">0.00 s · frame 0 · <b>1 · throw</b></span>
+      <span class="mode" id="mode">full mix · new</span>
       <span class="grow"></span>
-      <span class="seg" role="group" aria-label="Ovoz versiyasi">
-        <span class="seglabel">Versiya</span>
-        <button id="ver-v3" aria-pressed="true">Yangi (3)</button>
-        <button id="ver-v2" aria-pressed="false">Eski (2)</button>
+      <span class="seg" role="group" aria-label="Sound version">
+        <span class="seglabel">Version</span>
+        <button id="ver-v3" aria-pressed="true">New (3)</button>
+        <button id="ver-v2" aria-pressed="false">Old (2)</button>
       </span>
-      <button class="btn mark" id="markbtn" aria-expanded="false" aria-controls="composer">Belgilash <span class="kbd" aria-hidden="true">M</span></button>
+      <button class="btn mark" id="markbtn" aria-expanded="false" aria-controls="composer">Mark <span class="kbd" aria-hidden="true">M</span></button>
     </div>
     <div class="composer" id="composer" hidden>
       <div class="where" id="cwhere"></div>
-      <div class="chips" id="chips" role="group" aria-label="Nima bo‘ldi"></div>
-      <textarea id="cnote" placeholder="Nima eshitildi, nima bo‘lishi kerak edi? (ixtiyoriy)" aria-label="Izoh"></textarea>
+      <div class="chips" id="chips" role="group" aria-label="What happened"></div>
+      <textarea id="cnote" placeholder="What did you hear, and what should it have been? (optional)" aria-label="Note"></textarea>
       <div class="row">
-        <button class="btn" id="csave">Saqlash</button>
-        <button class="btn ghost" id="ccancel">Bekor qilish</button>
+        <button class="btn" id="csave">Save</button>
+        <button class="btn ghost" id="ccancel">Cancel</button>
         <span class="status" id="cstatus" aria-live="polite"></span>
       </div>
     </div>
-    <canvas class="timeline" id="tl" aria-label="Ovoz xaritasi: qatlamlar bo‘yicha balandlik, urg‘ular va belgilar"></canvas>
-    <p class="caption">Har bir qator bitta qatlamning balandligi (50 ms oynada, −70…−10 dBFS), tepada kadrlar, qizil uchburchaklar sizning belgilaringiz. Qator ustidagi chiziqchalar alohida urg‘ular: qarsak, oyoq tegishi, ku-ku, hushtak. Xaritani bosing yoki suring: film o‘sha joyga o‘tadi. Probel ijro etadi yoki to‘xtatadi, to‘xtab turganda ← → bir kadr yuradi, V versiyani almashtiradi, M belgi qo‘yadi.</p>
+    <canvas class="timeline" id="tl" aria-label="Sound map: level by layer, accents and marks"></canvas>
+    <p class="caption">Each row is one layer's level (in 50 ms windows, −70…−10 dBFS); the shots run along the top; the red triangles are your marks. The ticks above a row are single accents: a clap, a foot touching down, a coo, the whistle. Click or drag on the map: the film goes to that point. Space plays or pauses; while paused, ← → step one frame, V switches the version, M places a mark.</p>
   </section>
 
   <section aria-labelledby="mixh">
-    <h2 id="mixh">Qatlamlar</h2>
-    <p class="caption" style="margin-bottom:8px">Biror qatlamni o‘chirsangiz yoki eski versiyaga o‘tsangiz, ovoz alohida qatlamlardan yig‘iladi (birinchi marta bir-ikki soniya yuklanadi). “Yakka” faqat shu qatlamni qoldiradi: bitta qatlamni yakka qilib, versiyani almashtirsangiz, o‘sha qatlamning eski va yangisini eshitasiz.</p>
+    <h2 id="mixh">Layers</h2>
+    <p class="caption" style="margin-bottom:8px">If you turn a layer off or switch to the old version, the sound is put together from the separate layers (the first time, it takes a second or two to load). “Solo” keeps only that layer: solo one layer and switch the version, and you hear that layer's old and new.</p>
     <div class="mixer" id="mixer"></div>
   </section>
 
   <section aria-labelledby="markh">
     <div class="row" style="justify-content:space-between; margin-bottom:6px">
-      <h2 id="markh" style="margin:0">Belgilar</h2>
+      <h2 id="markh" style="margin:0">Marks</h2>
       <div class="row">
-        <span class="status" id="mstatus" aria-live="polite">Belgilar yuklanmoqda…</span>
-        <button class="linkbtn" id="mcopy" hidden>Matn sifatida nusxalash</button>
+        <span class="status" id="mstatus" aria-live="polite">Loading marks…</span>
+        <button class="linkbtn" id="mcopy" hidden>Copy as text</button>
       </div>
     </div>
     <div class="marks" id="marks"></div>
-    <textarea id="mcopytext" aria-label="Belgilar matni" hidden readonly></textarea>
+    <textarea id="mcopytext" aria-label="Marks as text" hidden readonly></textarea>
   </section>
 
   <section aria-labelledby="chh">
-    <h2 id="chh">2 → 3: nima o‘zgardi</h2>
-    <p class="lead">Siz 3-kadr ovozi rasmga mos emasligini aytdingiz. O‘lchov sababni ko‘rsatdi: qanot donasida 14 Hz lik tasodifiy titrash, tor tasma (energiyaning 93 % i 1,2 kHz dan past) va fokusdan tashqaridagi uch qushning qoqishlari oq kaptar qoqishlari orasini to‘ldirib turardi. Endi har qoqish qanot tezligi bilan ko‘tarilib-tushadigan “vush”, ichida sekinlashgan pat chirsillashi, ostida past havo; atrofdagi xira qushlar 20 dB past va bo‘g‘iq; sekinlashgan dunyoning aks-sadosi 1,6 s.</p>
-    <div class="s3" aria-label="3-kadr, 2 va 3-versiya">
-      <div><span class="k">Oq kaptar qoqishiga bog‘lanish</span><span class="v"><del>17,1</del> → 20,2 dB</span></div>
-      <div><span class="k">Qoqish cho‘qqisi (qanot eng tez: 0,29)</span><span class="v"><del>0,30</del> → 0,28</span></div>
-      <div><span class="k">Tez titrash, tremologa teng</span><span class="v"><del>42 %</del> → 5 %</span></div>
-      <div><span class="k">1,2 kHz dan past energiya</span><span class="v"><del>93 %</del> → 52 %</span></div>
-      <div><span class="k">Tagger nima deb eshitadi</span><span class="v"><del>Battle cry</del> → Whoosh 0,21</span></div>
+    <h2 id="chh">2 → 3: what changed</h2>
+    <p class="lead">You said the sound of shot 3 did not fit the picture. Measuring showed why: a random 14 Hz flutter in the wing grains, a narrow band (93 % of the energy below 1.2 kHz), and the beats of three out-of-focus birds filling the gaps between the white pigeon's beats. Now each beat is a “whoosh” that rises and falls with the wing's speed, with slowed feather crackle inside it and low air beneath it; the blurred birds around it are 20 dB lower and muffled; the echo of the slowed world is 1.6 s.</p>
+    <div class="s3" aria-label="Shot 3, versions 2 and 3">
+      <div><span class="k">Coupling to the white pigeon's beats</span><span class="v"><del>17.1</del> → 20.2 dB</span></div>
+      <div><span class="k">Peak of the beat (wing fastest: 0.29)</span><span class="v"><del>0.30</del> → 0.28</span></div>
+      <div><span class="k">Fast flutter, tremolo-equivalent</span><span class="v"><del>42 %</del> → 5 %</span></div>
+      <div><span class="k">Energy below 1.2 kHz</span><span class="v"><del>93 %</del> → 52 %</span></div>
+      <div><span class="k">What the tagger hears</span><span class="v"><del>Battle cry</del> → Whoosh 0.21</span></div>
     </div>
-    <p class="lead">Quloq o‘rnida AudioSet taggeri ishladi (527 sinf, 2 mln inson belgilagan klip). U noto‘g‘ri toifani yaxshi topadi, lekin sintez qilingan qanot yoki kukulashni hech qachon “qanot qoqishi” yoki “kaptar” deb tanimadi: qanotlarni noto‘g‘ri o‘qishdan tozalay oladi, to‘g‘riligini isbotlay olmaydi. Bir xil qoida bilan: 2-versiya <b>4 to‘g‘ri, 4 noaniq, 8 noto‘g‘ri</b>; 3-versiya <b>8 to‘g‘ri, 7 noaniq, 1 noto‘g‘ri</b>.</p>
+    <p class="lead">An AudioSet tagger stood in for an ear (527 classes, 2 million clips labelled by people). It is good at finding a wrong category, but it has never recognized a synthesized wing or coo as “wing flapping” or “pigeon”: it can clear the wings of a wrong reading, it cannot prove them right. Under the same rule: version 2 <b>4 right, 4 unclear, 8 wrong</b>; version 3 <b>8 right, 7 unclear, 1 wrong</b>.</p>
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Joy</th><th>2-versiya eshitilishi</th><th>3-versiya eshitilishi</th></tr></thead>
+        <thead><tr><th>Where</th><th>Heard in version 2</th><th>Heard in version 3</th></tr></thead>
         <tbody id="eartable"></tbody>
       </table>
     </div>
@@ -206,56 +206,56 @@ footer a { color: var(--accent); }
 
   <section class="two">
     <div>
-      <h2>O‘lchovlar</h2>
+      <h2>Measurements</h2>
       <div class="tablewrap">
         <table>
-          <thead><tr><th>Kadr</th><th>RMS</th><th>Bo‘rtish</th><th>Eng baland lahza</th></tr></thead>
+          <thead><tr><th>Shot</th><th>RMS</th><th>Relief</th><th>Loudest moment</th></tr></thead>
           <tbody>
-            <tr><td>1 · uloqtirish</td><td class="num">−29,0 dBFS</td><td class="num">20,2 dB</td><td>uchish qarsaklari, −15,7 LUFS</td></tr>
-            <tr><td>burilish</td><td class="num">−32,2 dBFS</td><td class="num">5,1 dB</td><td>0,4 s, galaga burilish</td></tr>
-            <tr><td>2 · gala</td><td class="num">−32,3 dBFS</td><td class="num">5,4 dB</td><td>gala yaqinlashadi, −25,3 LUFS</td></tr>
-            <tr><td>3 · quyosh oldida</td><td class="num">−29,0 dBFS</td><td class="num">15,4 dB</td><td>sekin qanot qoqishlari, −20,5 LUFS</td></tr>
-            <tr><td>4 · latta, hushtak</td><td class="num">−23,5 dBFS</td><td class="num">23,5 dB</td><td>hushtak, −9,1 LUFS</td></tr>
-            <tr><td>5 · qaytish</td><td class="num">−28,7 dBFS</td><td class="num">19,6 dB</td><td>qo‘nish, −15,6 LUFS</td></tr>
+            <tr><td>1 · throw</td><td class="num">−29.0 dBFS</td><td class="num">20.2 dB</td><td>take-off claps, −15.7 LUFS</td></tr>
+            <tr><td>turn</td><td class="num">−32.2 dBFS</td><td class="num">5.1 dB</td><td>0.4 s, the turn to the flock</td></tr>
+            <tr><td>2 · flock</td><td class="num">−32.3 dBFS</td><td class="num">5.4 dB</td><td>the flock comes closer, −25.3 LUFS</td></tr>
+            <tr><td>3 · against the sun</td><td class="num">−29.0 dBFS</td><td class="num">15.4 dB</td><td>slow wingbeats, −20.5 LUFS</td></tr>
+            <tr><td>4 · rag, whistle</td><td class="num">−23.5 dBFS</td><td class="num">23.5 dB</td><td>the whistle, −9.1 LUFS</td></tr>
+            <tr><td>5 · return</td><td class="num">−28.7 dBFS</td><td class="num">19.6 dB</td><td>the landing, −15.6 LUFS</td></tr>
           </tbody>
         </table>
       </div>
       <ul class="checks">
-        <li><span class="pill ok">ok</span><span>Sinxron: 252 urg‘uning hammasi o‘z sababini ko‘rsatgan birinchi kadrdan bir kadr ichida.</span></li>
-        <li><span class="pill ok">ok</span><span>3-kadr: har qoqish chizilgan qanot bilan bog‘langan (20 dB chuqur, cho‘qqisi 0,28 da), ritmi 1,25 Hz, rasmdagi 1,24 Hz. Tez titrash 5 % tremolo qadar: bunday tremolo shovqinda eshitilish chegarasida.</span></li>
-        <li><span class="pill ok">ok</span><span>Butun film −19,9 LUFS, eng yuqori nuqta −2,6 dBFS (AAC’dan keyin −3,1). Limiter bosmaydi.</span></li>
-        <li><span class="pill ok">ok</span><span>Hushtak filmdagi eng baland ovoz: qo‘nishdan 6,6 LU yuqori.</span></li>
-        <li><span class="pill ok">ok</span><span>Doimiy fon shivirlamaydi: spektral tekislik 0,02–0,11 (chegara 0,12).</span></li>
-        <li><span class="pill ok">ok</span><span>Kesimlar: sekin kadrga kirishda boshqa dunyo 34 dB tushadi, chiqishda 36 dB. Kesim oldida sakrash yo‘q: ilgari 2-kadrning ikki ko‘tarilishi ustma-ust tushib, sekin kadrdan oldin 10 ms +8 dB berardi, tuzatildi.</span></li>
-        <li><span class="pill ok">ok</span><span>Telefon karnayi sinovi (450 Hz dan past kesilganda) 1,4 dB dan ko‘p yo‘qotmaydi, mono’ga yig‘ilganda 0,8 dB dan ko‘p pasaymaydi. Kadrlar orasidagi RMS farqi 8,8 dB (tavsiya 4–9).</span></li>
-        <li><span class="pill warn">chegarada</span><span>Qo‘nishda oq kaptar qoqishlarining ritmini o‘lchab bo‘lmaydi: o‘sha soniyada yana 8 qush 7–8 Hz da tormozlaydi. Bog‘lanishning o‘zi 15 dB.</span></li>
-        <li><span class="pill bad">zaif</span><span>Ku-ku hali “kaptar” emas: tagger 1-kadrdagisini “hayvon, mushuk” deb eshitadi (2-versiyada “teremin”). Shahar fonini “oq shovqin, shamol” deydi.</span></li>
+        <li><span class="pill ok">ok</span><span>Sync: all 252 accents fall within one frame of the first frame that shows their cause.</span></li>
+        <li><span class="pill ok">ok</span><span>Shot 3: each beat is tied to the drawn wing (20 dB deep, peaking at 0.28), its rhythm 1.25 Hz against 1.24 Hz in the picture. The fast flutter amounts to a 5 % tremolo: a tremolo like that, in noise, is at the threshold of hearing.</span></li>
+        <li><span class="pill ok">ok</span><span>The whole film −19.9 LUFS, highest peak −2.6 dBFS (−3.1 after AAC). The limiter does not engage.</span></li>
+        <li><span class="pill ok">ok</span><span>The whistle is the loudest sound in the film: 6.6 LU above the landing.</span></li>
+        <li><span class="pill ok">ok</span><span>The steady background does not hiss: spectral flatness 0.02–0.11 (limit 0.12).</span></li>
+        <li><span class="pill ok">ok</span><span>Cuts: going into the slow shot the rest of the world drops 34 dB, coming out of it 36 dB. No jump before a cut: shot 2's two rises used to land on top of each other and give +8 dB for 10 ms before the slow shot; fixed.</span></li>
+        <li><span class="pill ok">ok</span><span>The phone speaker test (everything below 450 Hz cut) loses no more than 1.4 dB; summed to mono it drops no more than 0.8 dB. The RMS difference between shots is 8.8 dB (recommended 4–9).</span></li>
+        <li><span class="pill warn">marginal</span><span>At the landing the rhythm of the white pigeon's beats cannot be measured: in that same second 8 more birds are braking at 7–8 Hz. The coupling itself is 15 dB.</span></li>
+        <li><span class="pill bad">weak</span><span>The coo is not a “pigeon” yet: the tagger hears the one in shot 1 as “animal, cat” (in version 2, “theremin”). It calls the town background “white noise, wind”.</span></li>
       </ul>
     </div>
     <div class="ear">
-      <h2>Qulog‘ingiz hal qiladi</h2>
-      <p>Raqamlar ovozning noto‘g‘ri joyini topadi, yoqimli ekanini isbotlay olmaydi. Men ovozni eshitmayman, faqat o‘lchayman. Har savolda Yangi/Eski tugmasi bilan solishtiring, yoqmagan joyda <b>M</b> ni bosing:</p>
+      <h2>Your ear decides</h2>
+      <p>The numbers find where a sound is wrong; they cannot prove that it is pleasant. I do not hear the sound, I only measure it. For each question compare with the New/Old buttons, and press <b>M</b> where you don't like it:</p>
       <ol>
-        <li>3-kadr (7,0–9,75 s): endi har qoqish rasmdagi qanot bilan birga “vuuh” bo‘lib eshitiladimi?</li>
-        <li>Uchish (0,9 s): qarsaklar qog‘ozsimon, pat g‘uvillashi 6 dB past. Haqiqiy kaptar ko‘tarilishiga o‘xshaydimi?</li>
-        <li>Gala (4,2–7 s): mayin pirillash, mashina shovqiniga o‘xshamaydimi?</li>
-        <li>Ku-ku (0,1 s, 5,6 s, 19,6 s): kaptarga o‘xshaydimi?</li>
-        <li>Umumiy ohang: 3-versiyada past chastotalar kamroq. Ingichka yoki quruq tuyulyaptimi?</li>
+        <li>Shot 3 (7.0–9.75 s): does each beat now sound as a “whooh” together with the wing in the picture?</li>
+        <li>Take-off (0.9 s): the claps are papery, the feather hum 6 dB lower. Does it sound like a real pigeon taking off?</li>
+        <li>Flock (4.2–7 s): a soft flutter, or does it sound like car noise?</li>
+        <li>Coo (0.1 s, 5.6 s, 19.6 s): does it sound like a pigeon?</li>
+        <li>Overall tone: version 3 has less in the low frequencies. Does it feel thin or dry?</li>
       </ol>
-      <p class="caption">Shartli qarorlar, fizikadan emas: burilishdagi havo shovqini (kamera harakati), 2-kadrning 4 dB ko‘tarilishi, 3-kadrdagi xira qushlarning 20 dB pastligi. Kaptar kukulashi katak ichidan keladi, chunki rasmda hech bir kaptar kukulamaydi.</p>
+      <p class="caption">Choices by convention, not from physics: the air noise on the turn (a camera move), shot 2's 4 dB rise, the blurred birds in shot 3 being 20 dB lower. The pigeons' cooing comes from inside the coop, because no pigeon in the picture coos.</p>
     </div>
   </section>
 
   <section>
-    <h2>Har bir ovoz nimadan</h2>
+    <h2>What each sound comes from</h2>
     <div class="srcs" id="srcrows">
-      <div class="srow shead"><span>Qatlam</span><span>Rasmda uni nima qiladi</span><span>Asos</span></div>
+      <div class="srow shead"><span>Layer</span><span>What makes it in the picture</span><span>Basis</span></div>
     </div>
   </section>
 
   <footer>
-    <span>Manbalar: <a href="https://journals.biologists.com/jeb/article/219/14/2173/15376/Specialized-primary-feathers-produce-tonal-sounds" target="_blank" rel="noopener">Niese &amp; Tobalske 2016, J Exp Biol</a> · <a href="https://openresearch-repository.anu.edu.au/items/f2659537-7919-4c8a-8f06-edd4f3c40b4a" target="_blank" rel="noopener">Fletcher va boshq. 2004, JASA</a> · <a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2017.00025/full" target="_blank" rel="noopener">Meyer va boshq. 2017</a> · <a href="http://emmanuelvirot.free.fr/virot2013flutteringflags.pdf" target="_blank" rel="noopener">Virot va boshq. 2013</a> · Viemeister 1979, JASA 66:1364 · Farnell, <i>Designing Sound</i> · <a href="https://en.wikipedia.org/wiki/House_sparrow" target="_blank" rel="noopener">House sparrow</a> · <a href="https://en.wikipedia.org/wiki/Rock_dove" target="_blank" rel="noopener">Rock dove</a> · ISO 9613-1 · Tagger: EfficientAT mn40_as_ext (AudioSet)</span>
-    <span>Ovoz 48 kHz stereo, kod bilan sintez qilingan; har bir urg‘u o‘z urug‘i bilan, takrorlanuvchi namuna yo‘q.</span>
+    <span>Sources: <a href="https://journals.biologists.com/jeb/article/219/14/2173/15376/Specialized-primary-feathers-produce-tonal-sounds" target="_blank" rel="noopener">Niese &amp; Tobalske 2016, J Exp Biol</a> · <a href="https://openresearch-repository.anu.edu.au/items/f2659537-7919-4c8a-8f06-edd4f3c40b4a" target="_blank" rel="noopener">Fletcher et al. 2004, JASA</a> · <a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2017.00025/full" target="_blank" rel="noopener">Meyer et al. 2017</a> · <a href="http://emmanuelvirot.free.fr/virot2013flutteringflags.pdf" target="_blank" rel="noopener">Virot et al. 2013</a> · Viemeister 1979, JASA 66:1364 · Farnell, <i>Designing Sound</i> · <a href="https://en.wikipedia.org/wiki/House_sparrow" target="_blank" rel="noopener">House sparrow</a> · <a href="https://en.wikipedia.org/wiki/Rock_dove" target="_blank" rel="noopener">Rock dove</a> · ISO 9613-1 · Tagger: EfficientAT mn40_as_ext (AudioSet)</span>
+    <span>Sound 48 kHz stereo, synthesized in code; every accent with its own seed, no repeated sample.</span>
   </footer>
 </div>
 
@@ -265,27 +265,27 @@ const DATA_V2 = /*@DATA_V2@*/null;
 const EAR = /*@EAR@*/null;
 const FPS = 24, DUR = 21.0;
 const SHOTS = [
-  { a: 0, b: 91 / 24, name: '1 · uloqtirish' }, { a: 91 / 24, b: 101 / 24, name: 'burilish' }, { a: 101 / 24, b: 7.0, name: '2 · gala' },
-  { a: 7.0, b: 9.75, name: '3 · quyosh oldida' }, { a: 9.75, b: 13.5, name: '4 · latta, hushtak' }, { a: 13.5, b: 21.0, name: '5 · qaytish' },
+  { a: 0, b: 91 / 24, name: '1 · throw' }, { a: 91 / 24, b: 101 / 24, name: 'turn' }, { a: 101 / 24, b: 7.0, name: '2 · flock' },
+  { a: 7.0, b: 9.75, name: '3 · against the sun' }, { a: 9.75, b: 13.5, name: '4 · rag, whistle' }, { a: 13.5, b: 21.0, name: '5 · return' },
 ];
 const LAYERS = [
-  { id: 'muhit', name: 'Muhit', src: 'Uzoq shahar g‘uvillashi, hovli daraxtlarida chumchuqlar, bayroq shamolda.',
-    what: 'Uzoq ko‘chalar: past g‘uvillash va shinalar shovqini, o‘nlab soniyalarda sekin quyuqlashib-siyraklashadi (200 m dagi mashina 30 s da o‘tadi). Chumchuqlar tonggi chirillashi, 3–7 kHz, 0,12 s. Bayroq: mato shitirlashi chizilgan to‘lqini va shamol bilan; erkin cheti eng keskin silkingan joyda yumshoq “pat”.', why: 'Chumchuq chirillashi o‘lchovlari; bayroq fL/U = 0,2–0,6 (Virot 2013); erkin chetining 17 rad/s silkinishi rasmning o‘zidan' },
-  { id: 'qanot', name: 'Qanotlar', src: 'Gala va oq kaptarning har bir qanot qoqishi, rasmdagi qanot fazasidan.',
-    what: 'Qanot pastga tushganda havo: tasma qanot tezligi bilan ko‘tarilib tushadi, ichida pat chirsillashi, yuqoriga qaytishda yengil shitirlash. Uchishda qanotlar tepada tegib qog‘ozsimon “pat” etadi, tashqi pati 700 Hz atrofida g‘uvillaydi. Uzoqdagi gala tor tasmali. Sekin kadrda har qoqish 5 marta cho‘ziq, 0,7 balandlikda, ostida past havo; atrofdagi xira qushlar 20 dB past.', why: 'Niese & Tobalske 2016: qarsak va 700 Hz pat ohangi faqat uchishda; cho‘qqi qanot eng tez paytda (0,28 va 0,29)' },
-  { id: 'qonish', name: 'Qo‘nish', src: 'Tormoz qoqishlari, oyoq tekkan paytdagi “tup”, qanot yig‘ish shitirlashi.',
-    what: 'Oxirgi 4 qoqish tormoz uchun tezroq (7–8,4 Hz). Oyoq tekkan kadrda ikki oyoq: yumshoq “tup” va taxtaning past, bo‘g‘iq taqillashi (g‘ishtda deyarli yo‘q), keyin tirnoqlar ilinishi va qanot yig‘ilishining pat shitirlashi. Oq kaptar qo‘nganda qolganlar bir zum pasayadi.', why: 'Filmning o‘z qo‘nish rejasi (Berg & Biewener 2010; Provini 2014)' },
-  { id: 'ku', name: 'Ku-ku', src: 'Katak ichidagi kaptarlar kukulashi.',
-    what: 'Past, 361–400 Hz, “krruu-u”: boshi dumalab, 2- va 3-garmonikasi bilan, ovozi biroz g‘adir-budur va nafasli. Katak ichidan, taxta orqali bo‘g‘iq. Oxirgisi chapda, kadrdan tashqaridagi katakdan.', why: 'Fletcher va boshq. 2004; rock pigeon kukulashi 0,5 kHz dan past. Tagger “hayvon” deydi, “kaptar” emas' },
-  { id: 'latta', name: 'Latta', src: 'Tayoqdagi atlas latta: mato simulyatsiyasidagi havo va chetining silkinishi.',
-    what: 'Mato uchragan havodan “vush”: tasma tezlik bilan ko‘tariladi (250 Hz + 170 Hz har m/s), ichida tola chirsillashi. Mato o‘z tezligida sayoz silkinadi, cheti keskin otilgan joyda yumshoq “pat” (2 ms, 20–30 ms). Kadrdan chiqsa pasayadi.', why: 'Filmning o‘z mato simulyatsiyasi, har kichik qadamda qayta o‘qilgan' },
-  { id: 'bola', name: 'Bola', src: 'Barmoq hushtagi, undan oldingi nafas, kiyim shitirlashi, oxirida xo‘rsinish.',
-    what: 'Qo‘l tezligidan ko‘ylak shitirlashi (chizilgan qo‘l tezligining kadrdan-kadrga sakrashi silliqlangan); hushtakdan oldin nafas (yelkalar ko‘tarilishi bilan); ikki barmoq hushtagi 2,95 kHz, boshida ko‘tariladi, oxirida tushadi, mahalla devorlaridan aks-sado; oxirida yelkalar tushganda mamnun xo‘rsinish.', why: 'Hushtak 1–3,7 kHz, uzoqqa yetkazish uchun baland (Meyer 2017)' },
-  { id: 'kamera', name: 'Kamera', src: 'Tez burilishdagi havo shovqini. Shartli, past.',
-    what: 'Burilish (whip pan) tezligi bilan ko‘tarilib-tushadigan havo shovqini. Bu rasmdagi narsa emas, kamera harakati: shartli usul, past ovozda.', why: 'Shartli (kino odati)' },
+  { id: 'ambience', name: 'Ambience', src: 'The distant town humming, sparrows in the courtyard trees, a flag in the wind.',
+    what: 'Distant streets: a low hum and tyre noise, slowly thickening and thinning over tens of seconds (a car 200 m away takes 30 s to pass). Sparrows chirping at dawn, 3–7 kHz, 0.12 s. The flag: the cloth rustles with its drawn wave and with the wind; a soft “pat” where its free edge flaps hardest.', why: 'Measurements of sparrow chirps; flag fL/U = 0.2–0.6 (Virot 2013); the 17 rad/s flapping of its free edge from the picture itself' },
+  { id: 'wings', name: 'Wings', src: 'Every wingbeat of the flock and of the white pigeon, from the wing phase in the picture.',
+    what: 'Air on the downstroke: the band rises and falls with the speed of the wing, with feather crackle inside it, and a light rustle on the way back up. At take-off the wings touch at the top and make a papery “pat”, and the outer feather hums around 700 Hz. The distant flock is narrow-band. In the slow shot each beat is stretched 5 times, at 0.7 of its pitch, with low air beneath it; the blurred birds around are 20 dB lower.', why: 'Niese & Tobalske 2016: the clap and the 700 Hz feather tone only at take-off; the peak when the wing is fastest (0.28 and 0.29)' },
+  { id: 'landing', name: 'Landing', src: 'The braking beats, the “thud” as the feet touch down, the rustle of folding wings.',
+    what: 'The last 4 beats are faster, for braking (7–8.4 Hz). On the frame where the feet touch, two feet: a soft “thud” and a low, muffled knock of the boards (almost none on brick), then the claws catching and the feather rustle of the wings folding. When the white pigeon lands, the others get quieter for a moment.', why: 'The film\'s own landing plan (Berg & Biewener 2010; Provini 2014)' },
+  { id: 'coo', name: 'Coo', src: 'Pigeons cooing inside the coop.',
+    what: 'Low, 361–400 Hz, “krroo-oo”: a rolling start, with its 2nd and 3rd harmonics, the voice a little rough and breathy. From inside the coop, muffled through the boards. The last one on the left, from a coop out of frame.', why: 'Fletcher et al. 2004; a rock pigeon coos below 0.5 kHz. The tagger says “animal”, not “pigeon”' },
+  { id: 'rag', name: 'Rag', src: 'The atlas silk rag on the pole: the air in the cloth simulation and the flapping of its edge.',
+    what: 'A “whoosh” from the air the cloth meets: the band rises with speed (250 Hz + 170 Hz per m/s), with fibre crackle inside it. The cloth flutters shallowly at its own speed; a soft “pat” where its edge snaps out sharply (2 ms, 20–30 ms). It gets quieter when it leaves the frame.', why: 'The film\'s own cloth simulation, read again at every small step' },
+  { id: 'boy', name: 'Boy', src: 'The finger whistle, the breath before it, the rustle of clothes, a sigh at the end.',
+    what: 'Shirt rustle from the speed of the hand (the frame-to-frame jumps in the drawn hand\'s speed smoothed out); a breath before the whistle (with the shoulders rising); a two-finger whistle at 2.95 kHz that rises at the start and falls at the end, with an echo off the neighbourhood walls; at the end, a contented sigh as the shoulders drop.', why: 'Whistles 1–3.7 kHz, loud so they carry far (Meyer 2017)' },
+  { id: 'camera', name: 'Camera', src: 'Air noise on the fast turn. A convention, kept low.',
+    what: 'Air noise that rises and falls with the speed of the turn (the whip pan). It is not a thing in the picture but the camera moving: a convention, kept low.', why: 'A convention (a film habit)' },
 ];
-const VERS = { v3: { dir: '', data: DATA, name: 'yangi' }, v2: { dir: 'v2/', data: DATA_V2, name: 'eski' } };
-const TAGS = ['mos emas', 'noto‘g‘ri ovoz', 'juda baland', 'juda past', 'kech / erta', 'yoqdi'];
+const VERS = { v3: { dir: '', data: DATA, name: 'new' }, v2: { dir: 'v2/', data: DATA_V2, name: 'old' } };
+const TAGS = ['does not fit', 'wrong sound', 'too loud', 'too quiet', 'late / early', 'liked it'];
 const video = document.getElementById('film');
 const tl = document.getElementById('tl');
 const g2 = tl.getContext('2d');
@@ -294,7 +294,7 @@ let soloId = null, version = 'v3';
 let W = 0, Hc = 0;          // (the map's size: declared before anything can draw)
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const fmt = (x, d = 2) => x.toFixed(d).replace('.', ',');
+const fmt = (x, d = 2) => x.toFixed(d);
 function shotAt(t) { for (const s of SHOTS) if (t >= s.a && t < s.b) return s.name; return SHOTS[SHOTS.length - 1].name; }
 const frameAt = (t) => Math.min(Math.floor(t * FPS + 1e-6), DUR * FPS - 1);
 
@@ -306,14 +306,14 @@ for (const l of LAYERS) {
   row.id = 'row-' + l.id;
   row.innerHTML = `<label class="sw"><input type="checkbox" id="on-${l.id}" checked aria-label="${l.name}"><span class="knob"></span></label>
     <span class="lname"><span class="swatch" style="background:var(--l-${l.id})"></span>${l.name}</span>
-    <button class="solo" id="solo-${l.id}" aria-pressed="false">yakka</button>
+    <button class="solo" id="solo-${l.id}" aria-pressed="false">solo</button>
     <span class="lsrc">${l.src}</span>`;
   mixer.appendChild(row);
 }
 {
   const cell = document.createElement('div');
   cell.className = 'allcell';
-  cell.innerHTML = '<button class="btn ghost" id="allon">Hammasini yoqish</button>';
+  cell.innerHTML = '<button class="btn ghost" id="allon">Turn all on</button>';
   mixer.appendChild(cell);
 }
 const srcrows = document.getElementById('srcrows');
@@ -326,11 +326,11 @@ for (const l of LAYERS) {
 
 // ---- what the tagger heard, before and after
 {
-  const NAMES = { 's1 take-off wings': 'Uchish qanotlari · 1', 's2 flock wings': 'Gala · 2', 's3 slow wings': 'Sekin qanotlar · 3', 's5 landing': 'Qo‘nish · 5',
-    's1 coo': 'Ku-ku · 1', 's2 coo': 'Ku-ku · 2', 's5 coo': 'Ku-ku · 5', 's1-s2 flag': 'Bayroq · 1–2', 's4 rag circles': 'Latta aylanishi · 4',
-    's1-s2 town': 'Shahar · 1–2', 's5 town': 'Shahar · 5', 'sparrows': 'Chumchuqlar', 'whistle': 'Hushtak', 'sigh': 'Xo‘rsinish',
-    'throw clothes': 'Kiyim, uloqtirish', 'turn clothes': 'Kiyim, burilish' };
-  const PILL = { PASS: ['ok', 'to‘g‘ri'], WARN: ['warn', 'noaniq'], FAIL: ['bad', 'noto‘g‘ri'] };
+  const NAMES = { 's1 take-off wings': 'Take-off wings · 1', 's2 flock wings': 'Flock · 2', 's3 slow wings': 'Slow wings · 3', 's5 landing': 'Landing · 5',
+    's1 coo': 'Coo · 1', 's2 coo': 'Coo · 2', 's5 coo': 'Coo · 5', 's1-s2 flag': 'Flag · 1–2', 's4 rag circles': 'Rag circling · 4',
+    's1-s2 town': 'Town · 1–2', 's5 town': 'Town · 5', 'sparrows': 'Sparrows', 'whistle': 'Whistle', 'sigh': 'Sigh',
+    'throw clothes': 'Clothes, throw', 'turn clothes': 'Clothes, turn' };
+  const PILL = { PASS: ['ok', 'right'], WARN: ['warn', 'unclear'], FAIL: ['bad', 'wrong'] };
   const cell = (v) => {
     const [cls, word] = PILL[v.status] || PILL.WARN;
     const heard = (v.top || []).slice(0, 3).map(([l, p]) => `${esc(l.split(',')[0])} ${fmt(p)}`).join(', ');
@@ -359,7 +359,7 @@ function ensureCtx() {
 }
 function loadStems(v) {
   if (loading[v]) return loading[v];
-  setMode(`${VERS[v].name} qatlamlar yuklanmoqda…`);
+  setMode(`loading the ${VERS[v].name} layers…`);
   loading[v] = Promise.all(LAYERS.map(async (l) => {
     const r = await fetch(VERS[v].dir + l.id + '.mp3');
     if (!r.ok) throw new Error('fetch');
@@ -367,7 +367,7 @@ function loadStems(v) {
     buffers[v][l.id] = await new Promise((res, rej) => actx.decodeAudioData(ab, res, rej));
   })).then(() => { applyMode(); }).catch(() => {
     loading[v] = null;
-    setMode('qatlamlarni yuklab bo‘lmadi');
+    setMode('could not load the layers');
     if (v === 'v2') setVersion('v3'); else enableAll();
   });
   return loading[v];
@@ -400,8 +400,8 @@ function syncRows() {
 function applyMode() {
   syncRows();
   if (actx) for (const l of LAYERS) gains[l.id].gain.setTargetAtTime(enabled[l.id] ? 1 : 0, actx.currentTime, 0.01);
-  if (useFilm()) { stopStems(); video.muted = false; setMode('to‘liq miks · yangi'); return; }
-  if (!ensureCtx()) { video.muted = false; setMode('bu brauzerda qatlamlar ishlamaydi'); return; }
+  if (useFilm()) { stopStems(); video.muted = false; setMode('full mix · new'); return; }
+  if (!ensureCtx()) { video.muted = false; setMode('layers do not work in this browser'); return; }
   if (!ready(version)) {
     // (while the new layers load, the film's own mix plays; the old ones are silent until ready)
     video.muted = version !== 'v3';
@@ -411,7 +411,7 @@ function applyMode() {
   }
   video.muted = true;
   const on = LAYERS.filter((l) => enabled[l.id]).map((l) => l.name);
-  setMode(`${VERS[version].name} · ` + (allOn() ? 'hamma qatlam' : on.length ? on.join(', ') : 'hech narsa'), true);
+  setMode(`${VERS[version].name} · ` + (allOn() ? 'all layers' : on.length ? on.join(', ') : 'nothing'), true);
   if (!video.paused) startStems();
 }
 function enableAll() { for (const l of LAYERS) enabled[l.id] = true; soloId = null; applyMode(); }
@@ -448,8 +448,8 @@ function togglePlay() {
 playBtn.addEventListener('click', togglePlay);
 big.addEventListener('click', togglePlay);
 video.addEventListener('click', togglePlay);
-video.addEventListener('play', () => { big.hidden = true; document.getElementById('plabel').textContent = 'To‘xtatish'; document.getElementById('picon').innerHTML = '<rect x="2.5" y="1.5" width="3" height="11" fill="currentColor"/><rect x="8.5" y="1.5" width="3" height="11" fill="currentColor"/>'; if (!useFilm() && ready(version)) startStems(); });
-video.addEventListener('pause', () => { document.getElementById('plabel').textContent = 'Ijro'; document.getElementById('picon').innerHTML = '<path d="M3 1.5 L12 7 L3 12.5 Z" fill="currentColor"/>'; stopStems(); });
+video.addEventListener('play', () => { big.hidden = true; document.getElementById('plabel').textContent = 'Pause'; document.getElementById('picon').innerHTML = '<rect x="2.5" y="1.5" width="3" height="11" fill="currentColor"/><rect x="8.5" y="1.5" width="3" height="11" fill="currentColor"/>'; if (!useFilm() && ready(version)) startStems(); });
+video.addEventListener('pause', () => { document.getElementById('plabel').textContent = 'Play'; document.getElementById('picon').innerHTML = '<path d="M3 1.5 L12 7 L3 12.5 Z" fill="currentColor"/>'; stopStems(); });
 video.addEventListener('ended', () => { big.hidden = false; stopStems(); });
 video.addEventListener('seeking', stopStems);
 video.addEventListener('seeked', () => { if (!video.paused && !useFilm() && ready(version)) startStems(); });
@@ -476,12 +476,12 @@ for (const t of TAGS) {
   b.addEventListener('click', () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'));
   chips.appendChild(b);
 }
-function layersNow() { return allOn() ? 'hammasi' : LAYERS.filter((l) => enabled[l.id]).map((l) => l.id).join(', ') || '—'; }
+function layersNow() { return allOn() ? 'all' : LAYERS.filter((l) => enabled[l.id]).map((l) => l.id).join(', ') || '—'; }
 function openComposer() {
   video.pause();
   const t = video.currentTime || 0;
   draft = { t: Math.round(t * 1000) / 1000, frame: frameAt(t), shot: shotAt(t), version, layers: allOn() ? [] : LAYERS.filter((l) => enabled[l.id]).map((l) => l.id), solo: soloId };
-  document.getElementById('cwhere').innerHTML = `<b>${fmt(t)} s</b> · kadr ${draft.frame} · ${esc(draft.shot)} · ${VERS[version].name} versiya · qatlamlar: ${esc(layersNow())}`;
+  document.getElementById('cwhere').innerHTML = `<b>${fmt(t)} s</b> · frame ${draft.frame} · ${esc(draft.shot)} · ${VERS[version].name} version · layers: ${esc(layersNow())}`;
   for (const b of chips.children) b.setAttribute('aria-pressed', 'false');
   document.getElementById('cnote').value = '';
   document.getElementById('cstatus').textContent = '';
@@ -499,17 +499,17 @@ async function saveDraft() {
   const tags = [...chips.children].filter((b) => b.getAttribute('aria-pressed') === 'true').map((b) => b.textContent);
   const note = document.getElementById('cnote').value.trim().slice(0, 2000);
   const st = document.getElementById('cstatus');
-  if (!tags.length && !note) { st.textContent = 'Bitta belgi tanlang yoki izoh yozing.'; st.classList.add('err'); return; }
+  if (!tags.length && !note) { st.textContent = 'Pick a tag or write a note.'; st.classList.add('err'); return; }
   const m = { ...draft, tags, note, createdAt: new Date().toISOString() };
   st.classList.remove('err');
   if (db) {
-    st.textContent = 'Saqlanmoqda…';
+    st.textContent = 'Saving…';
     try { await db.collection('marks').add(m); closeComposer(); return; }
     catch (e) {
       const code = e && e.code;
       if (code === 'unavailable') { try { await new Promise((r) => setTimeout(r, 600 + Math.random() * 600)); await db.collection('marks').add(m); closeComposer(); return; } catch (e2) {} }
       st.classList.add('err');
-      st.textContent = code === 'quota_exceeded' ? 'Joy tugadi: eski belgilarni o‘chiring.' : code === 'invalid_argument' ? 'Bu sahifada yozish huquqingiz yo‘q; belgi faqat shu oynada qoladi.' : 'Saqlab bo‘lmadi; belgi faqat shu oynada qoladi.';
+      st.textContent = code === 'quota_exceeded' ? 'Out of space: delete old marks.' : code === 'invalid_argument' ? 'You have no permission to write on this page; the mark stays only in this window.' : 'Could not save; the mark stays only in this window.';
       marks.push({ id: 'local-' + Date.now(), ...m, local: true }); renderMarks(); return;
     }
   }
@@ -518,27 +518,28 @@ async function saveDraft() {
   renderMarks();
 }
 function markText(m) {
-  const lay = m.layers && m.layers.length ? m.layers.join(', ') : 'hammasi';
-  return `${fmt(m.t)} s (kadr ${m.frame}, ${m.shot}) [${VERS[m.version] ? VERS[m.version].name : m.version}; qatlamlar: ${lay}] ${(m.tags || []).join(', ')}${m.note ? ' — ' + m.note : ''}`;
+  const lay = m.layers && m.layers.length ? m.layers.join(', ') : 'all';
+  return `${fmt(m.t)} s (frame ${m.frame}, ${m.shot}) [${VERS[m.version] ? VERS[m.version].name : m.version}; layers: ${lay}] ${(m.tags || []).join(', ')}${m.note ? ' — ' + m.note : ''}`;
 }
 function renderMarks() {
   const box = document.getElementById('marks');
   const list = [...marks].sort((a, b) => a.t - b.t);
   const status = document.getElementById('mstatus');
   const anyLocal = list.some((m) => m.local);
-  status.textContent = dbState === 'db' ? `${list.length} ta belgi · filmni yaratuvchi ham ko‘radi` + (anyLocal ? ' (ba’zilari faqat shu oynada)' : '')
-    : dbState === 'loading' ? 'Belgilar yuklanmoqda…' : `${list.length} ta belgi · faqat shu oynada; nusxalab menga yuboring`;
+  const count = `${list.length} mark${list.length === 1 ? '' : 's'}`;
+  status.textContent = dbState === 'db' ? `${count} · the maker of the film sees them too` + (anyLocal ? ' (some only in this window)' : '')
+    : dbState === 'loading' ? 'Loading marks…' : `${count} · only in this window; copy them and send them to me`;
   document.getElementById('mcopy').hidden = !(list.length && (dbState !== 'db' || anyLocal));
-  if (!list.length) { box.innerHTML = '<div class="empty">Hali belgi yo‘q. Filmni ko‘ring va mos kelmagan joyda <b>M</b> ni bosing: vaqt, kadr, versiya va yoqilgan qatlamlar o‘zi yoziladi.</div>'; if (W) draw(); return; }
+  if (!list.length) { box.innerHTML = '<div class="empty">No marks yet. Watch the film and press <b>M</b> where something does not fit: the time, the frame, the version and the layers that are on are recorded automatically.</div>'; if (W) draw(); return; }
   box.innerHTML = list.map((m) => {
-    const lay = m.layers && m.layers.length ? m.layers.join(', ') : 'hammasi';
+    const lay = m.layers && m.layers.length ? m.layers.join(', ') : 'all';
     return `<div class="mk" data-id="${esc(m.id)}">
       <div>
-        <div class="meta"><b>${fmt(m.t)} s</b> · kadr ${m.frame} · ${esc(m.shot)} · ${esc(VERS[m.version] ? VERS[m.version].name : m.version)} · qatlamlar: ${esc(lay)}${m.local ? ' · faqat shu oynada' : ''}</div>
+        <div class="meta"><b>${fmt(m.t)} s</b> · frame ${m.frame} · ${esc(m.shot)} · ${esc(VERS[m.version] ? VERS[m.version].name : m.version)} · layers: ${esc(lay)}${m.local ? ' · only in this window' : ''}</div>
         <div class="tags">${(m.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</div>
         ${m.note ? `<div class="note">${esc(m.note)}</div>` : ''}
       </div>
-      <div class="acts"><button class="linkbtn" data-act="go">O‘tish</button><button class="linkbtn danger" data-act="del">O‘chirish</button></div>
+      <div class="acts"><button class="linkbtn" data-act="go">Go to</button><button class="linkbtn danger" data-act="del">Delete</button></div>
     </div>`;
   }).join('');
   if (W) draw();
@@ -559,19 +560,19 @@ document.getElementById('marks').addEventListener('click', async (e) => {
     return;
   }
   if (b.dataset.confirm !== '1') {
-    b.dataset.confirm = '1'; b.textContent = 'Rostdan o‘chirish?';
-    setTimeout(() => { if (b.isConnected) { b.dataset.confirm = ''; b.textContent = 'O‘chirish'; } }, 3500);
+    b.dataset.confirm = '1'; b.textContent = 'Really delete?';
+    setTimeout(() => { if (b.isConnected) { b.dataset.confirm = ''; b.textContent = 'Delete'; } }, 3500);
     return;
   }
   if (m.local || !db) { marks = marks.filter((x) => x.id !== id); renderMarks(); return; }
   try { await db.collection('marks').doc(id).delete(); }
-  catch (err) { document.getElementById('mstatus').textContent = 'O‘chirib bo‘lmadi: ' + ((err && err.code) || 'xato'); }
+  catch (err) { document.getElementById('mstatus').textContent = 'Could not delete: ' + ((err && err.code) || 'error'); }
 });
 document.getElementById('mcopy').addEventListener('click', async () => {
   const text = [...marks].sort((a, b) => a.t - b.t).map(markText).join('\n');
   const ta = document.getElementById('mcopytext');
-  try { await navigator.clipboard.writeText(text); document.getElementById('mstatus').textContent = 'Nusxalandi: menga yuboring.'; }
-  catch (e) { ta.hidden = false; ta.value = text; ta.focus(); ta.select(); document.getElementById('mstatus').textContent = 'Matnni belgilab nusxalang.'; }
+  try { await navigator.clipboard.writeText(text); document.getElementById('mstatus').textContent = 'Copied: send it to me.'; }
+  catch (e) { ta.hidden = false; ta.value = text; ta.focus(); ta.select(); document.getElementById('mstatus').textContent = 'Select the text and copy it.'; }
 });
 (async () => {
   let got = null;
@@ -610,7 +611,7 @@ function draw() {
     g2.fillStyle = css('--muted'); if (label) g2.fillText(label, X(s.a) + 4, pad + band / 2);
   });
   g2.fillStyle = css('--muted');
-  g2.fillText(version === 'v3' ? 'yangi' : 'eski', 6, pad + band / 2);
+  g2.fillText(version === 'v3' ? 'new' : 'old', 6, pad + band / 2);
   LAYERS.forEach((l, i) => {
     const y0 = pad + band + 6 + i * rh, col = css('--l-' + l.id), env = D.env[l.id], hop = D.hop;
     g2.fillStyle = css('--muted'); g2.globalAlpha = enabled[l.id] ? 1 : 0.4;
@@ -632,7 +633,7 @@ function draw() {
   const px = X(t);
   g2.strokeStyle = css('--warm'); g2.lineWidth = 2;
   g2.beginPath(); g2.moveTo(px, pad); g2.lineTo(px, Hc - pad); g2.stroke();
-  document.getElementById('clock').innerHTML = `${t.toFixed(2)} s · kadr ${frameAt(t)} · <b>${shotAt(t)}</b>`;
+  document.getElementById('clock').innerHTML = `${t.toFixed(2)} s · frame ${frameAt(t)} · <b>${shotAt(t)}</b>`;
 }
 function loop() {
   // keep the layers on the picture's clock

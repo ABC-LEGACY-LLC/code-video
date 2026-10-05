@@ -139,5 +139,9 @@ silent: the sound is made in Python, outside the browser.
 
 `.gitignore` keeps rendered media out, as the rest of the repo does. Two things in the zip cannot
 be rebuilt exactly from this source, so keep the zip: `sound/out/v2/film_v2.mp4` (the review film
-with v2 audio) and `out/sound_page/v2/*.mp3` (v2's layers, for the page's V switch). v2's mixed
-stems were not kept, and `mix.py` has changed since v2.
+with v2 audio) and `out/sound_page/v2/*.mp3` (v2's layers for the page's V switch: `ambience`,
+`wings`, `landing`, `coo`, `rag`, `boy`, `camera`). v2's mixed stems were not kept, and `mix.py`
+has changed since v2. The v2 layer MP3s kept in `code-video-v2.zip` still carry the old Uzbek group
+names (`muhit.mp3` → `ambience.mp3`, `qanot` → `wings`, `qonish` → `landing`, `ku` → `coo`,
+`latta` → `rag`, `bola` → `boy`, `kamera` → `camera`) and must be renamed when copied into
+`out/sound_page/v2/`.

@@ -13,8 +13,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SND = f'{ROOT}/sound/out'
 SR = 48000
 HOP = 0.05
-GROUPS = {'muhit': ['amb', 'sparrow', 'flag'], 'qanot': ['wings', 'air'], 'qonish': ['land'], 'ku': ['coo'], 'latta': ['rag'],
-          'bola': ['whistle', 'breath', 'foley'], 'kamera': ['whip']}
+GROUPS = {'ambience': ['amb', 'sparrow', 'flag'], 'wings': ['wings', 'air'], 'landing': ['land'], 'coo': ['coo'], 'rag': ['rag'],
+          'boy': ['whistle', 'breath', 'foley'], 'camera': ['whip']}
 LAYER_OF = {k: g for g, ks in GROUPS.items() for k in ks}
 
 
