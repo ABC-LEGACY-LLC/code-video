@@ -10,3 +10,7 @@ studio/projects/*/private/
 
 # agents' git worktrees
 .claude/worktrees/
+
+# uploads dropped at the root (they can carry private reference data)
+/*.zip
+/v2-qoshimcha*
