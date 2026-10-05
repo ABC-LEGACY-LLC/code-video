@@ -1,0 +1,36 @@
+{
+ "name": "example -- the face in shot 1, frame by frame",
+ "note": "Paths are relative to this file. The sample frames are not added to the repository: they are a measurement source, not our work.",
+ "sample": "../sample/k%02d.png", "sample_first": 1,
+ "ours": "../ff/%02d.png", "ours_first": 0,
+ "before": "../ff-before/%02d.png", "before_first": 0,
+ "before_note": "the images of the file DELIVERED in the previous pass -- not a re-render from the old sources (a render also reads the files that changed later; METHOD 11)",
+ "size": [320, 180],
+ "frames": 22,
+ "groups": {"shot-1": [1, 11], "shot-2": [12, 13], "shot-3": [14, 22]},
+ "transform": "transform.json",
+ "anchor": {"name": "near_eye", "kind": "component", "polarity": "dark", "threshold": 36,
+   "box": [82, 36, 124, 60],
+   "seed": {"1": [97, 47], "6": [95, 47], "11": [111, 54]},
+   "note": "The anchor is measured on the SAMPLE; relative probes are computed from it. The gaps between sparse seeds are filled linearly. Do not use a feature whose shape changes (an eye, a place where tears gather) for the head TRACK -- take the track from rigid landmarks (an edge, the chin, the jaw)."},
+ "probes": [
+  {"name": "far_eye", "kind": "component", "polarity": "dark", "threshold": 22, "darkest": true,
+   "box": [16, -4, 28, 10], "relative": true, "frames": "1-9",
+   "note": "the core of the iris. At L<30 it joined the temple line above and pulled the centre up by 3 px -- threshold 22."},
+  {"name": "chin_front_y52", "kind": "edge", "start": [15, 52], "direction": [1, 0], "length": 25, "condition": "<50",
+   "relative": true, "frames": "1-11", "note": "a rigid landmark: in the held images it must stay the same to within 0.1 px"},
+  {"name": "band", "kind": "count", "box": [35, 16, 47, 50], "L": [30, 55], "relative": true, "frames": "1-11", "tol": 25},
+  {"name": "face_tone", "kind": "area", "box": [8, 18, 22, 34], "relative": true, "colour": true, "frames": "1-11", "tol": 3},
+  {"name": "jaw_tear", "kind": "component", "polarity": "light", "threshold": 45, "brightest": true,
+   "box": {"6": [100, 103, 112, 115], "11": [118, 150, 131, 165]}, "frames": "6,11",
+   "note": "each frame its own box. 'brightest' takes the BRIGHTEST thing in the box -- if a snow particle is brighter than the ring's glint, it takes the particle. Keep the box tight and check the result on a sheet."},
+  {"name": "hand_tip", "kind": "tip", "box": [140, 118, 200, 180], "condition": "<20", "median": 5,
+   "seed": [126, 150], "extreme": "right", "frames": "1-11",
+   "note": "choose the threshold FAR from the background: at <26 the mask leaked into the sky of L 17..30 and the 'tip' was found on the edge of the box."}
+ ],
+ "silhouettes": [
+  {"name": "body_right", "box": [100, 100, 215, 180], "seed": [126, 150], "condition": "<20", "median": 5,
+   "edge": "right", "frames": "1-11",
+   "note": "the right edge of the figure in every row. The seed -- the darkest spot of the body (if it lands on a particle, the largest component in the 9x9 window is taken)."}
+ ]
+}

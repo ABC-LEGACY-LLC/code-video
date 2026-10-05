@@ -5,10 +5,10 @@ description: "code-video project only: bring a code-drawn animation toward a ref
 
 # Media Match — reference
 
-> **code-video project skill · `media-match-reference` v1.4.0**
+> **code-video project skill · `media-match-reference` v1.4.1**
 > Scope: the code-video repository only — bringing its code-drawn animation toward a reference clip. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web or dashboard work, and do not add it to that repository.
 > Source of truth: `.claude/skills/media-match-reference/SKILL.md` in <https://github.com/ABC-LEGACY-LLC/code-video>.
-> A calibrated reference implementation (Python: numpy, scipy, Pillow) is the `taqqos/` folder of that repository; where only this file is available, fetch it from there. Everything below also works with your own code — the method is what matters, not the tool.
+> A calibrated reference implementation (Python: numpy, scipy, Pillow) is the `tools/compare/` folder of that repository; where only this file is available, fetch it from there. Everything below also works with your own code — the method is what matters, not the tool.
 
 Use this when someone gives you a reference clip and asks to get closer to it: "make it 1:1", "check every frame", "what is still different". It pairs with `media-audit-reality`, which asks *would this be true in the world*; this skill asks *where exactly does ours differ from that clip, and why*.
 
@@ -23,7 +23,7 @@ Every detail must be **measured or counted**, never invented. Two plausible "loo
 ## Setup
 
 1. **One working size, one loader, both sides.** Resize reference and render to the same size with the same filter (LANCZOS), THEN take luminance. Line width, highlight peaks and particle size all depend on scale; comparing a 540 px render with a 320 px reference measures the resize.
-2. **A project file, no paths in code.** Frame patterns and first indices, working size, shot groups, the anchor, the probes, the silhouettes, an optional "previous" render for before/after. Give every probe an `izoh`/`note` field: why it sits there and what it got wrong before.
+2. **A project file, no paths in code.** Frame patterns and first indices, working size, shot groups, the anchor, the probes, the silhouettes, an optional "previous" render for before/after. Give every probe a `note` field: why it sits there and what it got wrong before.
 3. **Calibrate every instrument first.** Each gets a synthetic case whose answer is known and a deliberately broken one: a disc moved by (+3,+2) must read (+3.00,+2.00); an edge moved 2 px must read 2.00; a limb shortened 10 px must read −10 on its own rows; a rigid 1 px shift must give boil ≈ 0 and per-block random shifts must not; a uniform motion must give trend ≈ 0 and an accelerating one a positive trend. An instrument that cannot separate its pair is UNPROVEN and its numbers are not measurements.
 4. **Check the test, too.** Two tests in one run failed for the test's own reasons — edge cells of a small rectangle capped a transform test's IoU at 0.90; an overlay test demanded more contrast than its synthetic image could produce (max 50). Make the test fair; do not bend the instrument to pass it.
 
@@ -54,7 +54,7 @@ Every detail must be **measured or counted**, never invented. Two plausible "loo
 | occlusion map | where is the dark figure behind dark weather? | particles move: a block that never shows a moving particle has something in front (4 iterations of history are in the tool's docstring) |
 | unwarp | shape independent of pose | map both frames into subject space with the frame's centre, roll, scale |
 
-With `taqqos/` (run `python3 -m taqqos <command> project.json`; the tool speaks Uzbek): `kalibr` calibrates every instrument, `zond` = probes and the ranked table, `varaq` = sheets (`--qatorlar misol,eski,biz,ustma`: reference, previous, ours, overlay), `setka` = gridded zoom, `jadval` = luminance table, `siluet` = silhouette profile, `harakat` = pair motion and boil, `xarita` = difference maps, `ritm` = rhythm, `yopilish` = occlusion map, `yoyish` = unwarp. A sample project file with every key explained sits beside the code.
+With `tools/compare/` (run `cd tools/compare && python3 -m compare <command> project.json`): `calibrate` calibrates every instrument, `probe` = probes and the ranked table, `sheet` = sheets (`--rows sample,before,ours,overlay`: reference, previous, ours, overlay), `grid` = gridded zoom, `table` = luminance table, `silhouette` = silhouette profile, `motion` = pair motion and boil, `diffmap` = difference maps, `rhythm` = rhythm, `occlusion` = occlusion map, `unwarp` = unwarp. An example project file with every key explained (`example-config.json`) sits beside the code, and the method with its findings is `METHOD.md`.
 
 A minimal silhouette profile, enough to rebuild the idea without the tool:
 
