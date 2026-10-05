@@ -1,63 +1,91 @@
-# Kod bilan chizilgan filmlar — va ularning o'lchovi
+# Films drawn with code — and their measurement
 
-Beshta qisqa asar, bittasi WebGL masofa maydonida, to'rttasi Canvas ustida. Va
-ularning yonida ikkita narsa, ular aslida asosiy narsa:
+Five short works, one on a WebGL distance field and four on Canvas. And beside them two things,
+which are really the main thing:
 
-- **har asar o'zining tekshiruv to'plamini olib yuradi**, va har tekshiruv ataylab
-  buzilgan holatini ham olib yuradi;
-- **har asar bir xil ma'lumot blokini olib yuradi**, va blok manba bilan rozi
-  bo'lmay qolsa, qurish yiqiladi.
+- **every work carries its own suite of checks**, and every check also carries its deliberately
+  broken case;
+- **every work carries the same block of data**, and when the block stops agreeing with the
+  source, the build fails.
 
-Bu bezak emas. Butun loyihaning markaziy da'vosi shu: **o'tayotgan, lekin hech
-narsani ushlab turmaydigan tekshiruv — eng yomon tekshiruv**, chunki u ishonch
-beradi va hech narsa qaytarmaydi. Shuning uchun har tekshiruv o'zini buzilgan
-holatga qarshi isbotlaydi; isbotlay olmasa `UNPROVEN` bo'ladi va qurish to'xtaydi.
+This is not decoration. It is the central claim of the whole project: **a check that passes and
+holds nothing is the worst check**, because it gives confidence and returns nothing. So every
+check proves itself against its broken case; if it cannot, it is `UNPROVEN` and the build stops.
 
-## Nima bor
+## What is here
 
-| papka | nima | tekshiruv |
+Every work sits in its own folder, `studio/projects/<work>/`, with its page, source, tests and
+build. Only shared things stay at the root: `studio/`, `harness/`, `catalog/`, `skills/`,
+`abc-labs/`.
+
+| folder | what | checks |
 |---|---|---|
-| `oq-kocha/` | 15,6 s film. Chizilgan kadr yo'q: 16 poza JSON'da, rasm har pikselda masofa maydonini nurlab yechiladi. Ikki uslub — `oq-qalam` va `tekis-cel` | **41** |
-| `loyihalar/` | Arxitektura: manbani sanaydigan va kadrni o'lchaydigan toollar, beshta karta, katalog generatori | **14** |
-| `whiteout/` | 4 poza qo'lda yozilgan, ko'zguda 8 ta, 3·2·1·2 varaqasi. **Oq Ko'chaning otasi** — o'sha varaqa, boshqa mashina | karta |
-| `bir-tomchi/` | 8 sahna × 9 s, kadrda 379 chizish buyrug'i — eng zichi | karta |
-| `mushuk/` | Mushuk uchta yo'l bilan, shahar halftone bilan; bosilganda javob beradi | karta |
-| `not-a-measurement/` | 8 kesim, butun film 39 chizish buyrug'ida | karta |
-| `masofa-maydoni/` | SDF qumloq — primitivlar, birlashmalar, marching | — |
-| `skills/` | Shu ishlar qaysi ko'rsatmalar ostida qilinganining qaydi | — |
+| `studio/projects/oq-kocha/` | A 350-frame film, 14.58 s at 24 fps. No drawn frame: 16 poses in JSON, the picture solved by marching a distance field at every pixel. Two styles — `oq-qalam` and `tekis-cel` | **43** |
+| `studio/projects/whiteout/` | 4 poses written by hand, 8 in the mirror, a 3·2·1·2 sheet. **Oq Ko'cha's father** — the same sheet, another machine | card |
+| `studio/projects/bir-tomchi/` | 8 scenes × 9 s, 379 draw calls a frame — the densest | card |
+| `studio/projects/mushuk/` | A cat in three paths, a city in halftone; it answers a click | card |
+| `studio/projects/not-a-measurement/` | 8 cuts, the whole film in 39 draw calls | card |
+| `studio/projects/zarra/` | A particle layer measured from a sample GIF: two layers at the GIF's speeds; the check measures the speed again from the screen | **4** |
+| `studio/projects/masofa-maydoni/` | An SDF sandbox — primitives, unions, marching | — |
+| `studio/` | A person and an AI on the same piece: live viewing, frame scrubbing, card and checks, notes on a frame and the AI's answers; a timeline of each film's own tables; what the AI changes shows at once | **30** |
+| `catalog/` | The architecture: tools that count the source and measure frames, five cards, the catalog generator | **15** |
+| `skills/` | A record of the instructions this work was done under | — |
 
-## Nega bu tadqiqot
+## Why this is research
 
-Ko'z bilan ko'rib bo'lmaydigan narsalar bu yerda **topildi**, va har biri
-o'lchovning o'zidan chiqdi:
+Things that cannot be seen by eye were **found** here, and each one came out of the measurement
+itself:
 
-- Rim atamasi polni «mendan burilayotgan yuza» deb o'qidi va **yerni oqqa
-  aylantirdi**: yo'l 0,61 deb yozilgan, 250 o'lchandi. Har ko'cha kadrining 15% i
-  o'chirilgan yo'l edi.
-- Filmni arzon qilgan chegaralash (`uBound`) **soyani buzardi**: maydon qobiqda
-  jarlikka uchraydi, yumshoq soya jarlikni yuza deb o'qiydi. Tejash birinchi kundan
-  o'lchangan; rasmga ta'siri hech qachon.
-- **Ko'cha yo'lovchidan qochib ketardi.** Bitta ishora: 1,23 birlik yurganda bino
-  24,35 dan 25,91 ga uzoqlashardi.
-- `contact-shadow` tekshiruvi boshi ustidagi qatorlarni o'qirdi va ochiq qorning
-  yorqinligini — **254,95 / 255** — «oyoq ostida shuncha daraja qorong'i» deb
-  hisobotga berardi. Kontakt soyasi 255 daraja chuqur bo'lolmaydi.
-- `bounds-save-work` **chuqurlikni o'qib kelgan**, va zond to'yingan edi: `2,85×`
-  hech qachon o'lchov emas, quyi chegara edi. Haqiqiysi **3,72×**.
-- O'lchov tooli chetlarni faqat **birinchi** kadrdan olardi, va shu asosda chop
-  etilgan xulosa noto'g'ri chiqdi. Xulosa qaytarib olindi.
+- The rim term read the floor as "a surface turning away from me" and **turned the ground
+  white**: the road was written as 0.61 and measured as 250. 15% of every street frame was a
+  road wiped out.
+- The bounding (`uBound`) that made the film cheap **broke the shadow**: the field drops off a
+  cliff at the shell, and the soft shadow reads the cliff as a surface. The saving was measured
+  from the first day; its effect on the picture never was.
+- **The street ran away from the walker.** One sign: after walking 1.23 units, a building moved
+  from 24.35 to 25.91 away.
+- The `contact-shadow` check read the rows above the head and reported the brightness of open
+  snow — **254.95 / 255** — as "this many levels darker under the feet". A contact shadow cannot
+  be 255 levels deep.
+- `bounds-save-work` **had been reading depth**, and the probe was saturated: `2.85×` was never a
+  measurement but a floor. The real one is **3.72×**.
+- The measuring tool took edges from the **first** frame only, and a conclusion published on
+  that basis came out wrong. The conclusion was withdrawn.
+- **The film played one frame more than its list.** The page added time up 1/24 at a time: 72
+  additions give **2.999999999999998**, so the first cut fell on frame 73, not 72, and the film
+  looped after 351 frames while the sound was 350. Shots are written in frames now, and
+  `cut-frames` asks the page itself about every cut.
+- While `card/matches-count` was passing, Oq Ko'cha's card said **"15.6 s in total"** and the
+  film was 14.6 s: that line was bound to the number of shots, not to their sum. Now the total
+  is in the count and the line is bound to it.
 
-Ro'yxat uzun, va u qasddan uzun: bu loyihaning haqiqiy natijasi — **o'tib ketgan,
-lekin ko'r bo'lgan mezonlar ro'yxati**.
+The list is long, and long on purpose: it is this project's real result — **a list of criteria
+that passed while they were blind**.
 
-## Ishga tushirish
+## Running
+
+`make` lists everything. The studio runs as a service:
 
 ```bash
-cd oq-kocha  && npm i && npm run build && npm run audit   # 41 tekshiruv
-cd loyihalar && npm i && node test/run.mjs                # 14 tekshiruv
-cd loyihalar && node tools/karta.mjs                      # kartalar manba bilan rozimi
-cd loyihalar && node tools/katalog.mjs out.html           # katalog sahifasi
+make start      # the studio at http://127.0.0.1:4321/
+make status     # is it up, does it answer
+make stop       # stop it
+make install    # keep it running as a systemd user service (survives reboots)
+make expose     # put it on https://code-video.abclegacyllc.com, login through the Telegram bot
+make audit-fast # the quick checks
 ```
 
-Render qilingan video va ovoz fayllari bu yerda saqlanmaydi — ularni kod qaytadan
-yasaydi.
+Or by hand, suite by suite:
+
+```bash
+cd studio/projects/oq-kocha && npm i && npm run build && npm run audit   # 43 checks
+cd studio/projects/oq-kocha && npm run audio                             # the sound, offline: build/film.pcm
+cd catalog && npm i && node test/run.mjs                                 # 15 checks
+cd catalog && node tools/card.mjs                                        # do the cards agree with their sources
+cd catalog && node tools/catalog.mjs out.html                            # the catalog page
+cd studio/projects/zarra && npm i && npm run audit                       # 4 checks
+cd studio && npm i && npm run audit && npm run audit:ui                  # 15 checks, then 15 in a browser
+node studio/server.mjs                                                   # the studio: http://127.0.0.1:4321/
+```
+
+Rendered video and sound files are not kept here — the code makes them again.

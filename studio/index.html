@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>code-video studio</title>
+<link rel="icon" href="data:,">
+<!-- tokens.css -->
+<style>
+ /* Every value below comes from tokens.css (the server puts it above this block);
+    studio/DESIGN.md says which token is for what. No colour is written here. */
+ html,body{height:100%}
+ body{display:grid;grid-template-rows:auto minmax(0,1fr);height:100vh;overflow:hidden}
+ header{display:flex;align-items:center;gap:var(--s-3);padding:var(--s-2) var(--s-4);min-height:44px;
+  border-bottom:1px solid var(--rule);white-space:nowrap;min-width:0}
+ header h1{font:600 var(--fs-4)/1 var(--sans);margin:0}
+ .status{display:inline-flex;align-items:center;gap:var(--s-1);color:var(--mut);font-size:var(--fs-2);min-width:0}
+ .who{color:var(--mut);font-size:var(--fs-2);overflow:hidden;text-overflow:ellipsis}
+ .sp{flex:1}
+ .dot{width:8px;height:8px;border-radius:50%;background:var(--mut);flex:none;display:inline-block}
+ .dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)}
+ .mut{color:var(--mut)}
+ .id{font-family:var(--mono);font-size:var(--fs-2)}          /* identifiers: names of checks, keys, paths */
+ .linkish{font:inherit;color:var(--acc);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+ .linkish:disabled{color:var(--mut);text-decoration:none;cursor:default}
+
+ main{display:grid;grid-template-columns:232px minmax(0,1fr) 380px;min-height:0}
+
+ /* ---- the works ---- */
+ nav{border-right:1px solid var(--rule);overflow:auto;padding:var(--s-2)}
+ nav ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:2px}   /* a long name ellipsises, it does not widen the list */
+ .work{display:flex;align-items:flex-start;border-radius:var(--r-2)}
+ .work:hover{background:var(--panel)}
+ .work.on{background:var(--panel);box-shadow:inset 3px 0 0 var(--acc)}
+ .work a.open{flex:1;min-width:0;display:block;padding:var(--s-2) var(--s-3);color:inherit;text-decoration:none;border-radius:var(--r-2)}
+ .work .name{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .work .how,.work .health{display:flex;align-items:center;gap:var(--s-1);font-size:var(--fs-2);color:var(--mut)}
+ .health.bad{color:var(--bad);font-weight:600} .health.warn{color:var(--warn)}
+ .work a.notes{flex:none;margin:var(--s-2) var(--s-2) 0 0;font-size:var(--fs-2);color:var(--acc);padding:2px var(--s-1);
+  border:1px solid var(--acc);border-radius:var(--r-1);text-decoration:none;white-space:nowrap}
+
+ /* ---- the stage and its transport ---- */
+ .center{display:grid;grid-template-rows:minmax(0,1fr) auto auto auto;min-height:0;min-width:0}
+ .stage{position:relative;background:var(--stage);min-height:0}
+ .stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:var(--stage)}
+ .veil{position:absolute;inset:0;display:grid;place-items:center;background:var(--stage);color:var(--stage-ink);padding:var(--s-5);text-align:center}
+ .veil[hidden]{display:none}
+ .veil p{margin:0 0 var(--s-3);max-width:560px}
+ .veil .why{color:var(--stage-mut);font-size:var(--fs-2)}
+ .veil .row{justify-content:center}
+ .transport{display:grid;gap:var(--s-2) var(--s-2);align-items:center;padding:var(--s-2) var(--s-4) var(--s-1);border-top:1px solid var(--rule);
+  grid-template-columns:auto auto minmax(0,1fr) auto auto auto;
+  grid-template-areas:"play back scrub fwd reload build" "out out out out out out"}
+ #playBtn{grid-area:play;min-width:64px;justify-content:center} #backBtn{grid-area:back} #fwdBtn{grid-area:fwd}
+ #reloadBtn{grid-area:reload} #buildBtn{grid-area:build}
+ .scrub{grid-area:scrub;display:grid;grid-template-columns:minmax(0,1fr);gap:3px;min-width:0;contain:inline-size}   /* the shot names never widen the page */
+ .scrub input{width:100%;margin:0}
+ .shots{display:flex;gap:1px;padding:0 7px;height:18px}                  /* under the track, inside the thumb's reach */
+ .shots[hidden]{display:none}
+ .shot{flex:1 1 0;min-width:0;font:500 var(--fs-1)/1 var(--sans);color:var(--mut);background:var(--panel);
+  border:1px solid var(--rule);border-radius:2px;padding:0 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+ .shot:hover{color:var(--ink);border-color:var(--edge)}
+ .shot[aria-current="true"]{color:var(--ink);border-color:var(--acc);box-shadow:inset 0 -2px 0 var(--acc)}
+ .out{grid-area:out;display:flex;align-items:center;gap:var(--s-3);min-height:28px;font-size:var(--fs-2);color:var(--mut);
+  font-variant-numeric:tabular-nums;min-width:0}
+ #info{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ #info b{color:var(--ink);font-weight:600}
+ .pending{display:inline-flex;align-items:center;gap:var(--s-2);color:var(--warn);white-space:nowrap}
+ .pending[hidden]{display:none}
+ /* ---- the timeline: the work's own tables, drawn as tracks. Read-only: a clip goes to
+    its frame and says where in the code it is declared ---- */
+ .timeline{border-top:1px solid var(--rule);min-width:0;contain:inline-size}
+ .timeline[hidden]{display:none}
+ .tl-bar{display:flex;align-items:center;gap:var(--s-2);padding:var(--s-1) var(--s-4);font-size:var(--fs-2);flex-wrap:wrap}
+ .tl-bar .btn{padding:var(--s-1) var(--s-2);min-height:24px}
+ .tl-bar .btn[aria-pressed="false"]{color:var(--mut);text-decoration:line-through}
+ .tl-bar select{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--edge);border-radius:var(--r-2);padding:2px var(--s-1)}
+ .tl-body{--lab:168px;position:relative;display:grid;grid-template-columns:var(--lab) minmax(0,1fr);gap:2px 0;max-height:176px;overflow-y:auto;
+  padding:0 var(--s-4) var(--s-1)}
+ .tl-body[hidden]{display:none}
+ .tl-label{font:inherit;font-size:var(--fs-1);line-height:18px;color:var(--ink);background:none;border:0;padding:0 var(--s-2) 0 0;text-align:left;
+  cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .tl-label i{font-style:normal;color:var(--mut)}
+ .tl-lane{position:relative;height:18px;background:var(--panel);border-radius:2px;cursor:pointer;overflow:hidden}
+ .tl-item{position:absolute;top:1px;bottom:1px;min-width:3px;font:500 var(--fs-1)/1 var(--sans);color:var(--ink);background:var(--pa);
+  border:1px solid var(--edge);border-radius:2px;padding:0 2px;overflow:hidden;white-space:nowrap;text-align:left;cursor:pointer}
+ .tl-item.ev{width:3px;padding:0;background:var(--ink);border-color:var(--ink)}
+ .tl-item.derived{border-style:dashed}
+ .tl-item.ev.derived{background:var(--mut);border-color:var(--mut);border-style:solid}
+ .tl-item:hover,.tl-item.sel{border-color:var(--acc);box-shadow:inset 0 -2px 0 var(--acc)}
+ .tl-grip{position:absolute;right:0;top:0;bottom:0;width:6px;cursor:ew-resize;background:var(--edge)}
+ .tl-item:hover .tl-grip{background:var(--acc)}
+ .tl-edit{display:inline-flex;flex-wrap:wrap;align-items:center;gap:var(--s-2);margin-left:var(--s-2);color:var(--ink)}
+ .tl-edit input{width:76px;font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--edge);border-radius:var(--r-1);padding:1px var(--s-1)}
+ .tl-edit .btn,.tl-bar #tlUndo{padding:var(--s-1) var(--s-2);min-height:24px}
+ .tl-head{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--acc);pointer-events:none;
+  left:calc(var(--s-4) + var(--lab) + (100% - 2*var(--s-4) - var(--lab))*var(--p,0))}
+ .tl-info{padding:0 var(--s-4) var(--s-2);font-size:var(--fs-2);color:var(--mut);min-height:20px}
+ .tl-info b{color:var(--ink);font-weight:600}
+ .log{font-size:var(--fs-1);line-height:1.6;color:var(--mut);padding:var(--s-1) var(--s-4) var(--s-2);border-top:1px solid var(--rule);
+  max-height:94px;overflow:auto}
+ .log time{font-variant-numeric:tabular-nums;margin-right:var(--s-2)}
+ .log .error{color:var(--bad)}
+ .log pre,.panel pre{font:var(--fs-1)/1.5 var(--mono);white-space:pre-wrap;margin:var(--s-1) 0 0;background:var(--panel);
+  padding:var(--s-2);border-radius:var(--r-2);border:1px solid var(--rule);color:var(--ink)}
+
+ /* ---- the side: card, checks, changes, notes ---- */
+ aside{border-left:1px solid var(--rule);display:grid;grid-template-rows:auto minmax(0,1fr);min-height:0;min-width:0}
+ .tabs{display:flex;border-bottom:1px solid var(--rule)}
+ .tab{flex:1;font:500 var(--fs-2)/1 var(--sans);color:var(--mut);background:none;border:0;border-bottom:2px solid transparent;
+  padding:var(--s-3) var(--s-1);cursor:pointer}
+ .tab:hover{color:var(--ink)}
+ .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--acc)}
+ .panel{overflow:auto;padding:var(--s-3) var(--s-4) var(--s-5)}
+ .panel h3{font:600 var(--fs-1)/1 var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin:var(--s-5) 0 var(--s-2)}
+ .panel h3:first-child{margin-top:0}
+ .panel p{margin:0 0 var(--s-2)}
+ .small{font-size:var(--fs-2)}
+ table{width:100%;border-collapse:collapse;font-size:var(--fs-2)}
+ td,th{text-align:left;padding:var(--s-1) var(--s-2);border-bottom:1px solid var(--rule);vertical-align:top}
+ th{color:var(--mut);font-weight:500;white-space:nowrap}
+ td:first-child,th:first-child{padding-left:0} td:last-child,th:last-child{padding-right:0}
+ .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+ .sub{font-size:var(--fs-1);color:var(--mut);margin-top:2px}
+ .sub.error{color:var(--bad)}
+ .st{font-weight:600;white-space:nowrap}
+ .st.PASS,.st.met{color:var(--ok)} .st.FAIL,.st.ERROR,.st.UNPROVEN{color:var(--bad)} .st.UNCALIBRATED,.st.open{color:var(--warn)}
+ .badge{display:inline-block;font-size:var(--fs-1);line-height:1.4;border:1px solid var(--warn);color:var(--warn);border-radius:var(--r-1);padding:0 var(--s-1);margin-left:var(--s-1)}
+ .legend{font-size:var(--fs-1);color:var(--mut);display:flex;flex-wrap:wrap;gap:2px var(--s-3);margin:0 0 var(--s-3)}
+ .checks td:first-child .id{overflow-wrap:anywhere}
+ .notice{font-size:var(--fs-2);border:1px solid var(--warn);border-radius:var(--r-2);padding:var(--s-2) var(--s-3);margin:0 0 var(--s-3)}
+ ul.method{margin:0;padding-left:18px} ul.method li{margin-bottom:var(--s-2)}
+ .palette{display:flex;height:22px;border-radius:var(--r-1);overflow:hidden;border:1px solid var(--rule)}
+ .commit{display:grid;grid-template-columns:auto 1fr;gap:0 var(--s-2);padding:var(--s-1) 0;border-bottom:1px solid var(--rule);font-size:var(--fs-2)}
+
+ .note{padding:var(--s-2) 0;border-bottom:1px solid var(--rule)}
+ .note-head{display:flex;gap:var(--s-2);align-items:flex-start}
+ .note-head input{margin-top:3px}
+ .note.done .note-text{color:var(--mut);text-decoration:line-through}
+ .note-meta{font-size:var(--fs-2);color:var(--mut);margin:2px 0 0 22px;display:flex;gap:var(--s-2);flex-wrap:wrap}
+ .reply{margin:var(--s-1) 0 0 22px;padding-left:var(--s-2);border-left:2px solid var(--acc);font-size:var(--fs-2)}
+ .reply .who{font-weight:600}
+ textarea{width:100%;min-height:76px;font:var(--fs-3)/1.45 var(--sans);color:var(--ink);background:var(--panel);
+  border:1px solid var(--edge);border-radius:var(--r-2);padding:var(--s-2);resize:vertical}
+ .row{display:flex;gap:var(--s-2);align-items:center;margin-top:var(--s-2);flex-wrap:wrap}
+
+ dialog{max-width:820px;width:calc(100% - 32px);border:1px solid var(--rule);border-radius:var(--r-3);background:var(--pa);color:var(--ink);padding:0}
+ dialog::backdrop{background:var(--shade)}
+ dialog .inner{padding:var(--s-4) var(--s-5);max-height:82vh;overflow:auto}
+ dialog h2{font:600 var(--fs-4)/1.2 var(--sans);margin:0}
+ dialog h3{font:600 var(--fs-3)/1.2 var(--sans);margin:var(--s-5) 0 var(--s-2)}
+ .md ol,.md ul{margin:0;padding-left:22px} .md li{margin-bottom:var(--s-2)} .md p{margin:0 0 var(--s-2)}
+ .md code,.answer code{font-family:var(--mono);font-size:var(--fs-2)}
+ .answer{display:flex;gap:var(--s-2);align-items:center;flex-wrap:wrap;background:var(--panel);border:1px solid var(--rule);
+  border-radius:var(--r-2);padding:var(--s-2) var(--s-3);font-size:var(--fs-2);margin-top:var(--s-2)}
+ .answer code{overflow-wrap:anywhere}
+
+ /* ---- narrower: the side panel goes under the stage, then the list goes on top ---- */
+ @media (max-width:1100px){
+  body{height:auto;min-height:100vh;overflow:auto}
+  main{grid-template-columns:200px minmax(0,1fr);grid-template-rows:minmax(70vh,auto) auto}
+  aside{grid-column:1/-1;border-left:0;border-top:1px solid var(--rule)}
+  .panel{overflow:visible}
+ }
+ @media (max-width:700px){
+  header{gap:var(--s-2);padding:var(--s-2) var(--s-3)}
+  .who{display:none}
+  main{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(60vh,auto) auto}
+  nav{border-right:0;border-bottom:1px solid var(--rule);overflow-x:auto;overflow-y:hidden}
+  nav ul{display:flex;gap:var(--s-1)}
+  .work{flex:0 0 auto}
+  .tl-body{--lab:96px}
+  .transport{grid-template-columns:auto auto auto minmax(0,1fr) auto auto;padding:var(--s-2) var(--s-3) var(--s-1);
+   grid-template-areas:"scrub scrub scrub scrub scrub scrub" "play back fwd . reload build" "out out out out out out"}
+ }
+</style>
+</head>
+<body>
+<header>
+ <h1>code-video studio</h1>
+ <span class="status" role="status"><span class="dot" id="linkDot"></span><span id="linkText">connecting…</span></span>
+ <span class="sp"></span>
+ <button class="btn" id="decisionsBtn">Decisions</button>
+ <span class="who" id="who" hidden></span>
+ <button class="btn" id="logoutBtn" hidden>Log out</button>
+</header>
+<main>
+ <nav aria-label="Works"><ul id="list"></ul></nav>
+ <section class="center" aria-label="Stage">
+  <div class="stage">
+   <iframe id="stage" title="the work"></iframe>
+   <div class="veil" id="veil"><div><p id="veilText">Loading…</p><p class="why" id="veilWhy" hidden></p>
+    <div class="row" id="veilActions" hidden><button class="btn" id="veilReload">Reload</button><button class="btn" id="veilShow">Show it anyway</button></div></div></div>
+  </div>
+  <div class="transport">
+   <button class="btn" id="playBtn" disabled>Pause</button>
+   <button class="btn" id="backBtn" aria-label="One frame back" disabled>−1</button>
+   <div class="scrub">
+    <input type="range" id="frame" min="0" max="0" value="0" aria-label="Frame" disabled>
+    <div class="shots" id="shots" role="toolbar" aria-label="Shots" hidden></div>
+   </div>
+   <button class="btn" id="fwdBtn" aria-label="One frame forward" disabled>+1</button>
+   <button class="btn" id="reloadBtn">Reload</button>
+   <button class="btn" id="buildBtn">Rebuild</button>
+   <div class="out"><span id="info"></span><span class="sp"></span>
+    <span class="pending" id="pending" hidden><span id="pendingText">Updated — it reloads when you stop</span><button class="btn" id="pendingBtn">Reload now</button></span></div>
+  </div>
+  <section class="timeline" id="timeline" aria-label="Timeline" hidden>
+   <div class="tl-bar"><button class="btn" id="tlToggle" aria-expanded="true" aria-controls="tlBody">Tracks</button>
+    <span class="mut" id="tlCount"></span><button class="btn" id="tlUndo" hidden>Undo</button><span class="sp"></span>
+    <span id="tlLayers" role="group" aria-label="Layers"></span>
+    <select id="tlView" aria-label="View" hidden></select></div>
+   <div class="tl-body" id="tlBody"></div>
+   <div class="tl-info" id="tlInfo"><span id="tlText"></span><span id="tlSrc"></span><span class="tl-edit" id="tlEdit"></span></div>
+  </section>
+  <div class="log" id="log" role="log" aria-label="What happened"></div>
+ </section>
+ <aside aria-label="About this work">
+  <div class="tabs" role="tablist" aria-label="About this work">
+   <button class="tab" role="tab" id="tab-card" data-tab="card" aria-controls="panel" aria-selected="true">Card</button>
+   <button class="tab" role="tab" id="tab-checks" data-tab="checks" aria-controls="panel" aria-selected="false" tabindex="-1">Checks</button>
+   <button class="tab" role="tab" id="tab-changes" data-tab="changes" aria-controls="panel" aria-selected="false" tabindex="-1">Changes</button>
+   <button class="tab" role="tab" id="tab-notes" data-tab="notes" aria-controls="panel" aria-selected="false" tabindex="-1">Notes</button>
+  </div>
+  <div class="panel" id="panel" role="tabpanel" aria-labelledby="tab-card" tabindex="0"></div>
+ </aside>
+</main>
+<dialog id="decisions" aria-labelledby="decisionsTitle"><div class="inner" id="decisionsInner"></div></dialog>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const TABS=['card','checks','changes','notes'];
+const HOW={frameTo:'scrub by frame',seek:'scrub by time',live:'watch only',sandbox:'sandbox'};
+const READY_WAIT=10000;                 // after this a work that is not ready says why it may not be
+const BUSY_MS=2000;                     // an update waits this long after the last scrub
+let WORKS=[], AUDITS={}, current=null, tab='card';
+const drafts=new Map();                 // work id -> the note being written, kept across every redraw
+
+/* relative URLs, so the studio also works behind a path prefix */
+async function api(p,o){ const r=await fetch(p,o); const j=await r.json(); if(!r.ok) throw new Error(j.error||r.status); return j; }
+const post=(p,b)=>api(p,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)});
+
+/* ---- what happened: the AI's changes, builds, failures ---- */
+function log(text,{error=false,detail=''}={}){
+ const el=$('#log'), row=document.createElement('div');
+ if(error) row.className='error';
+ row.innerHTML=`<time>${new Date().toTimeString().slice(0,8)}</time>${esc(text)}${detail?`<pre>${esc(detail)}</pre>`:''}`;
+ el.prepend(row); while(el.children.length>40) el.lastChild.remove();
+}
+
+/* ---- ages: every result says how old it is ---- */
+function ago(t){
+ const s=(Date.now()-t)/1000; if(!(s>=0)) return '';
+ return s<60?'just now':s<3600?`${Math.round(s/60)} min ago`:s<172800?`${Math.round(s/3600)} h ago`:`${Math.round(s/86400)} d ago`;
+}
+const when=t=>{ const d=new Date(t); return isNaN(d)?'':d.toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); };
+
+/* ---- the checks that belong to a work, and what they add up to ---- */
+function workChecks(w){
+ const o=[];
+ for(const s of w.suites||[]){ const A=AUDITS[s]; if(A) for(const [n,r] of Object.entries(A.checks)) o.push({suite:s,name:n,...r}); }
+ const C=AUDITS.catalog;
+ if(C&&w.card) for(const [n,r] of Object.entries(C.checks)) if(n.startsWith('claim/'+w.card.name+'/')) o.push({suite:'catalog',name:n,...r});
+ return o;
+}
+const BAD=new Set(['FAIL','ERROR','UNPROVEN']);
+const stale=(w,r)=>!!(w.sourcesChangedAt&&r.time&&Date.parse(r.time)<w.sourcesChangedAt);
+function health(w){
+ const t=workChecks(w); if(!t.length) return {cls:'',dot:'',text:'no checks'};
+ const bad=t.filter(r=>BAD.has(r.status)).length, unc=t.filter(r=>r.status==='UNCALIBRATED').length,
+  pass=t.filter(r=>r.status==='PASS').length, old=t.filter(r=>stale(w,r)).length;
+ const parts=[bad?`${bad} failing`:`${pass} pass`]; if(!bad&&unc) parts.push(`${unc} uncalibrated`); if(old) parts.push(`${old} stale`);
+ const cls=bad?'bad':(unc||old)?'warn':'';
+ return {cls, dot:bad?'bad':(unc||old)?'warn':'ok', text:parts.join(' · ')};
+}
+
+/* ---- the list: drawn once, then updated in place, so focus stays where it was ---- */
+function renderList(){
+ const ul=$('#list'), ids=WORKS.map(w=>w.id).join('\n');
+ if(ul.dataset.ids!==ids){
+  ul.dataset.ids=ids;
+  ul.innerHTML=WORKS.map(w=>`<li class="work" data-id="${esc(w.id)}"><a class="open" href="#${esc(w.id)}"><span class="name"></span>
+   <span class="how"></span><span class="health"><span class="dot"></span><span class="ht"></span></span></a>
+   <a class="notes" href="#${esc(w.id)}/notes" hidden></a></li>`).join('');
+ }
+ for(const w of WORKS){
+  const li=[...ul.children].find(x=>x.dataset.id===w.id); if(!li) continue;
+  const on=!!current&&current.id===w.id, h=health(w);
+  li.classList.toggle('on',on);
+  const a=li.querySelector('a.open'); if(on) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+  li.querySelector('.name').textContent=w.name;
+  li.querySelector('.how').textContent=HOW[w.control]||w.control;
+  const he=li.querySelector('.health'); he.className='health '+h.cls;
+  he.querySelector('.dot').className='dot '+h.dot; he.querySelector('.dot').hidden=!h.dot;
+  he.querySelector('.ht').textContent=h.text;
+  const n=li.querySelector('a.notes'); n.hidden=!w.openNotes;
+  n.textContent=w.openNotes?`${w.openNotes} note${w.openNotes>1?'s':''}`:'';
+  n.setAttribute('aria-label',`${w.name}: ${w.openNotes} open note${w.openNotes>1?'s':''}`);
+ }
+}
+async function load(){
+ [WORKS,AUDITS]=await Promise.all([api('api/works'),api('api/audits')]);
+ if(current) current=WORKS.find(w=>w.id===current.id)||current;
+ renderList();
+}
+
+/* ===== THE STAGE =====
+   A work page shares this page's main thread (same origin), so the studio never waits
+   on its `load` event: it asks the page whether it is ready (__ready, or the end of
+   parsing for a page that does not say), and after ten seconds it says why it may not
+   be. The page's own controls step aside under ?embed; the transport here is the one. */
+let S={gen:0}, gen=0;
+const win=()=>$('#stage').contentWindow;
+function veil(text,why='',actions=false){
+ $('#veil').hidden=false; $('#veilText').textContent=text;
+ $('#veilWhy').hidden=!why; $('#veilWhy').textContent=why; $('#veilActions').hidden=!actions;
+}
+function loadStage(restore=null,reload=false){
+ const w=current, g=++gen, frameEl=$('#stage');
+ let oldDoc=null; try{ oldDoc=frameEl.contentWindow.document; }catch(e){}
+ S={gen:g, ready:false, hooks:{}, total:0, fps:24, shots:[], tracks:[], mode:'play', frame:0, shot:null, restore, pending:false};
+ frameEl.title=w.name;
+ whereCache.clear();
+ veil(`Loading ${w.name}…`); renderShots(); renderTimeline(); setTransport();
+ if(reload&&oldDoc&&oldDoc.URL!=='about:blank') frameEl.contentWindow.location.reload();
+ else frameEl.src='w/'+w.page.split('/').map(encodeURIComponent).join('/')+'?embed=1';
+ const t0=performance.now(); let slow=false;
+ (function poll(){
+  if(g!==gen) return;
+  let state='wait', why='';
+  try{
+   const W=win(), d=W.document;
+   if(d&&d!==oldDoc&&d.URL!=='about:blank'){
+    if(W.__failed) { state='failed'; why=String(W.__failed); }
+    else if(W.__ready===true) state='ready';
+    else if(W.__ready===undefined&&d.readyState!=='loading') state='ready';     // a page with no readiness flag
+   }
+  }catch(e){ state='failed'; why='the page cannot be read: '+e.message; }
+  if(state==='ready'){ if(slow) log(`${w.name}: ready after ${((performance.now()-t0)/1000).toFixed(1)} s`); return stageReady(g); }
+  if(state==='failed'){ veil(`${w.name} could not start.`,why,true); log(`${w.name}: could not start — ${why}`,{error:true}); return; }
+  if(!slow&&performance.now()-t0>READY_WAIT){ slow=true;
+   veil(`${w.name} is not ready after ${READY_WAIT/1000} s.`,
+    'It is still loading or busy: a long task in the page, or a request it waits for (a font, say) that does not answer. The browser console shows what it is doing.',true);
+   log(`${w.name}: not ready after ${READY_WAIT/1000} s`,{error:true}); }
+  setTimeout(poll,150);
+ })();
+}
+function stageReady(g){
+ if(g!==gen) return;
+ const w=current, W=win(), val=v=>typeof v==='function'?v():v, H={};
+ try{
+  H.frameTo=w.control==='frameTo'&&typeof W.__frameTo==='function';
+  H.seek=w.control==='seek'&&typeof W.__seek==='function';
+  H.frame=typeof W.__frame==='function'; H.pause=typeof W.__pause==='function'; H.play=typeof W.__play==='function';
+  S.fps=+val(W.__fps)||24;
+  if(H.frameTo||H.seek) S.total=Number.isInteger(W.__totalFrames)?W.__totalFrames
+   :W.__total!=null?Math.round(val(W.__total)*S.fps):(w.frameCount||0);
+  if(Array.isArray(W.__shots)&&S.total){
+   let f=0; const L=W.__shots.map(s=>{ const o={k:String(s.k),f:Number.isInteger(s.f)?s.f:f}; f=o.f+(Number.isInteger(s.df)?s.df:0); return o; });
+   if(L.every((s,i)=>i===0||s.f>L[i-1].f)) S.shots=L.map((s,i)=>({...s,n:(i+1<L.length?L[i+1].f:S.total)-s.f}));
+  }
+ }catch(e){ log(`${w.name}: its hooks could not be read — ${e.message}`,{error:true}); }
+ /* the work's tracks, layers and views, where it has them */
+ try{ if(S.total&&typeof W.__tracks==='function'){ const T=W.__tracks();
+   if(Array.isArray(T)) S.tracks=T.filter(t=>t&&Array.isArray(t.items)&&t.items.length); } }
+ catch(e){ log(`${w.name}: its tracks could not be read — ${e.message}`,{error:true}); }
+ S.hooks=H; S.ready=true; $('#veil').hidden=true;
+ renderShots(); renderTimeline();
+ const r=S.restore; S.restore=null;
+ if(r&&S.total){
+  if(r.mode==='frame') goTo(r.frame);
+  else if(H.play&&r.frame>0){ try{ W.__play(r.frame); }catch(e){} }
+ }
+ setTransport();
+}
+const scrubbable=()=>S.ready&&S.total>0&&(S.hooks.frameTo||S.hooks.seek);
+const clampF=n=>Math.max(0,Math.min(S.total-1,n));
+function pauseStage(){
+ const W=win();
+ if(S.hooks.pause) W.__pause();
+ else if(S.hooks.frameTo) W.requestAnimationFrame=()=>0;    // a page with no __pause: its own loop is stopped
+ if(S.hooks.frame){ const r=W.__frame()||{}; if(Number.isInteger(r.frame)) S.frame=clampF(r.frame); S.shot=r.shot??S.shot; }
+ S.mode='frame';
+}
+function togglePlay(){
+ if(!scrubbable()) return;
+ try{
+  if(S.mode==='play') pauseStage();
+  else if(S.hooks.play){ win().__play(S.frame); S.mode='play'; }
+ }catch(e){ log(`${current.name}: ${e.message}`,{error:true}); }
+ setTransport();
+}
+let want=null, raf=0, busyUntil=0;
+const busy=()=>{ busyUntil=performance.now()+BUSY_MS; };
+function goTo(n){
+ if(!scrubbable()) return;
+ want=Math.max(0,Math.min(S.total-1,Math.round(n))); $('#frame').value=want; busy();
+ if(raf) return;
+ /* many input events, one drawing per screen frame */
+ raf=requestAnimationFrame(()=>{ raf=0; const n=want; want=null; if(n==null||!scrubbable()) return;
+  const W=win();
+  try{
+   if(S.mode==='play') pauseStage();
+   let r={};
+   if(S.hooks.frameTo) r=W.__frameTo(n)||{};
+   else { W.__seek(n/S.fps); r=S.hooks.frame?W.__frame()||{}:{}; }
+   S.frame=n; S.shot=r.shot??null; S.mode='frame';
+  }catch(e){ log(`${current.name}: frame ${n} was not drawn — ${e.message}`,{error:true}); }
+  setTransport();
+ });
+}
+/* while it plays, the readout follows the frame the page reports, or says it cannot */
+setInterval(()=>{
+ if(!S.ready||S.mode!=='play'||!S.hooks.frame) return;
+ try{ const r=win().__frame()||{}; if(Number.isInteger(r.frame)){ S.frame=clampF(r.frame); S.shot=r.shot??null; setTransport(); } }catch(e){}
+},250);
+
+function renderShots(){
+ const el=$('#shots');
+ el.hidden=!S.shots.length;
+ el.innerHTML=S.shots.map((s,i)=>`<button class="shot" tabindex="${i?-1:0}" data-f="${s.f}" style="flex-grow:${s.n}"
+  aria-label="Shot ${esc(s.k)}, frames ${s.f} to ${s.f+s.n-1}">${esc(s.k)}</button>`).join('');
+}
+function setTransport(){
+ const w=current, can=scrubbable(), sl=$('#frame'), info=$('#info');
+ sl.disabled=!can; sl.max=Math.max(0,S.total-1); if(document.activeElement!==sl||S.mode==='play') sl.value=S.frame;
+ $('#backBtn').disabled=$('#fwdBtn').disabled=!can;
+ const pb=$('#playBtn'); pb.disabled=!can||(S.mode==='play'?!(S.hooks.pause||S.hooks.frameTo):!S.hooks.play);
+ pb.textContent=S.mode==='play'?'Pause':'Play';
+ $('#buildBtn').style.visibility=w&&w.build?'visible':'hidden';
+ for(const b of $('#shots').children){ const f=+b.dataset.f, n=S.shots.find(s=>s.f===f)?.n||0;
+  b.setAttribute('aria-current',String(S.frame>=f&&S.frame<f+n)); }
+ let t='';
+ if(!w) t='';
+ else if(!S.ready) t=`Loading ${w.name}…`;
+ else if(w.control==='sandbox') t='Sandbox — its own controls are on the stage.';
+ else if(!can) t='Watch only — this work plays in its own time and does not report its frame.';
+ else {
+  const at=`frame <b>${S.frame}</b> / ${S.total} · ${(S.frame/S.fps).toFixed(2)} s${S.shot?` · shot <b>${esc(S.shot)}</b>`:''}`;
+  t=S.mode==='play'?(S.hooks.frame?`Playing · ${at}`:'Playing — this work does not report its frame while it plays'):`Paused at ${at}`;
+ }
+ info.innerHTML=t;
+ const nf=$('#noteFrame'), nt=$('#noteFrameText');
+ if(nf&&nt){ const known=can&&(S.mode==='frame'||S.hooks.frame);
+  nf.disabled=!known; if(!known) nf.checked=false;
+  nt.textContent=known?`attach to frame ${S.frame}${S.mode==='play'?' (playing)':''}`:'this work does not report its frame'; }
+ $('#pending').hidden=!S.pending;
+ if(S.total) $('#tlBody').style.setProperty('--p',String(S.frame/S.total));
+}
+
+/* ===== THE TIMELINE ===== the tables the work runs on, as tracks. It is a view of the
+   code, not a second copy: a clip goes to its frame and names the line that declares it.
+   What the film derives (a footfall, from the drawing) is drawn dashed and says why. */
+let tlOpen=true; try{ tlOpen=localStorage.getItem('tracks')!=='closed'; }catch(e){}
+function renderTimeline(){
+ const el=$('#timeline'), body=$('#tlBody'), T=S.tracks||[];
+ let hasLayers=false; try{ hasLayers=S.ready&&typeof win().__layers==='function'; }catch(e){}
+ el.hidden=!T.length&&!hasLayers; if(el.hidden){ body.innerHTML=''; return; }
+ const pct=v=>(100*v/S.total).toFixed(3)+'%';
+ body.innerHTML=T.map((t,ti)=>`<button class="tl-label" data-t="${ti}">${esc(t.name)}${t.derived?' <i>· derived</i>':''}</button>
+  <div class="tl-lane" data-t="${ti}">${t.items.map((it,ii)=>`<button tabindex="-1" class="tl-item${t.kind==='events'?' ev':''}${t.derived?' derived':''}" data-t="${ti}" data-i="${ii}"
+   style="left:${pct(it.f)}${t.kind==='events'?'':`;width:${pct(it.n||1)}`}" aria-label="${esc(t.name)}: ${esc(it.label||'event')}, frame ${it.f}">${t.kind==='events'?'':esc(it.label||'')}${(it.edit||[]).some(e=>e.drag)?'<span class="tl-grip" title="Drag to change the length"></span>':''}</button>`).join('')}</div>`).join('')
+  +'<div class="tl-head"></div>';
+ const can=T.some(t=>t.items.some(it=>it.edit&&it.edit.length));
+ $('#tlCount').textContent=`${T.length} tracks · read from the code${can?'; a change here is written to the source':''}`;
+ $('#tlText').textContent='Click a clip to go to its frame and see where it is declared.'; $('#tlSrc').textContent=''; $('#tlEdit').innerHTML='';
+ $('#tlUndo').hidden=!undo.some(u=>u.work===current.id);
+ body.hidden=!tlOpen; $('#tlInfo').hidden=!tlOpen; $('#tlToggle').setAttribute('aria-expanded',String(tlOpen));
+ renderLayers();
+}
+function renderLayers(){
+ const W=win(); let L=[], V=[];
+ try{ if(typeof W.__layers==='function') L=W.__layers()||[]; if(typeof W.__views==='function') V=W.__views()||[]; }catch(e){}
+ $('#tlLayers').innerHTML=L.map(l=>`<button class="btn" data-layer="${esc(l.id)}" aria-pressed="${!!l.on}">${esc(l.name)}</button>`).join(' ');
+ const sel=$('#tlView'), was=sel.value; sel.hidden=!V.length; sel.innerHTML=V.map(v=>`<option value="${esc(v.id)}">${esc(v.name)}</option>`).join('');
+ if(S.view!=null) sel.value=S.view;
+}
+const whereCache=new Map();
+async function trackInfo(ti,ii=null){
+ const t=S.tracks[ti]; if(!t) return; const it=ii==null?null:t.items[ii], w=current;
+ document.querySelectorAll('.tl-item.sel').forEach(x=>x.classList.remove('sel'));
+ if(it) document.querySelector(`.tl-item[data-t="${ti}"][data-i="${ii}"]`)?.classList.add('sel');
+ const head=`<b>${esc(t.name)}</b>${it?` · ${esc(it.label||'event')} · frame ${it.f}${it.n>1?`–${it.f+it.n-1}`:''}`:` · ${t.items.length} ${t.kind==='events'?'events':'clips'}`}`;
+ const why=t.derived?` · derived, not placed by hand: ${esc(t.why||'')}`:' · authored';
+ const paint=src=>{ $('#tlSrc').innerHTML=src?` · <span class="id">${esc(src)}</span>`:''; };
+ $('#tlText').innerHTML=head+why; paint('');
+ /* what this clip lets a person change: numbers that are rows of the film's own tables */
+ $('#tlEdit').innerHTML=((it&&it.edit)||[]).map((e,k)=>`<label>${esc(e.name)} <input type="number" data-k="${k}" value="${e.value}" min="${e.min}" max="${e.max}" step="${e.step}"> ${esc(e.unit||'')}</label>`).join('')
+  +(it&&it.edit&&it.edit.length?'<button class="btn" id="tlApply">Apply</button>':'');
+ const ap=$('#tlApply'); if(ap) ap.onclick=async()=>{ for(const inp of $('#tlEdit').querySelectorAll('input')){ const e=it.edit[+inp.dataset.k], v=+inp.value;
+   if(inp.value!==''&&v!==e.value) await applyEdit(t,it,e,v); } };
+ const at=(it&&it.src)||t.src;                    // a clip may name its own line
+ if(at&&at.file&&at.find){
+  const key=w.id+'|'+at.file+'|'+at.find;
+  if(!whereCache.has(key)) whereCache.set(key,api(`api/where?work=${encodeURIComponent(w.id)}&file=${encodeURIComponent(at.file)}&find=${encodeURIComponent(at.find)}`).then(r=>`${r.file}:${r.line}`,()=>''));
+  const src=await whereCache.get(key); if(current===w&&S.tracks[ti]===t) paint(src);
+ }
+}
+/* a change is one number in one row of the source; the server writes it, the watcher
+   rebuilds and reloads, and the checks then say what the change did */
+const undo=[];
+async function applyEdit(t,it,e,value,as=null){ const isUndo=as!=null;
+ const w=current;
+ if(!Number.isFinite(value)||value<e.min||value>e.max){ log(`${w.name}: ${e.name} must be between ${e.min} and ${e.max}`,{error:true}); return false; }
+ try{
+  const r=await post('api/edit',{work:w.id,file:e.file,row:e.row,key:e.key,value,...(isUndo?{as}:{})});
+  log(`${w.name}: ${t.name} · ${it.label||''} · ${e.name} ${r.from} → ${r.to} · ${r.file}:${r.line}`);
+  if(!isUndo) undo.push({work:w.id,t:{name:t.name},it:{label:it.label},e:{...e},value:r.from,as:r.fromText});
+  e.value=r.to; whereCache.clear(); $('#tlUndo').hidden=!undo.some(u=>u.work===w.id);
+  return true;
+ }catch(err){ log(`${w.name}: not changed — ${err.message}`,{error:true}); return false; }
+}
+$('#tlUndo').onclick=async()=>{ let i=undo.length-1; while(i>=0&&undo[i].work!==current.id) i--; if(i<0) return;
+ const u=undo.splice(i,1)[0]; await applyEdit(u.t,u.it,u.e,u.value,u.as); $('#tlUndo').hidden=!undo.some(x=>x.work===current.id); };
+/* dragging a clip's right edge changes its length; the number is written on release */
+$('#tlBody').addEventListener('pointerdown',ev=>{
+ const grip=ev.target.closest('.tl-grip'); if(!grip) return; ev.preventDefault();
+ const item=grip.parentElement, t=S.tracks[+item.dataset.t], it=t.items[+item.dataset.i], e=it.edit.find(x=>x.drag);
+ const laneW=item.parentElement.getBoundingClientRect().width, x0=ev.clientX, n0=it.n||1; let n=n0;
+ const lim=v=>Math.max(Math.ceil(e.min/e.per),Math.min(Math.floor(e.max/e.per),v));
+ grip.setPointerCapture(ev.pointerId); busy();
+ const move=m=>{ n=lim(n0+Math.round((m.clientX-x0)/laneW*S.total)); item.style.width=(100*n/S.total).toFixed(3)+'%'; busy();
+  $('#tlText').innerHTML=`<b>${esc(t.name)}</b> · ${esc(it.label||'')} · ${n0} → <b>${n}</b> frames`; };
+ const up=async()=>{ grip.removeEventListener('pointermove',move); grip.removeEventListener('pointerup',up);
+  if(n!==n0&&!await applyEdit(t,it,e,+(n*e.per).toFixed(4))) item.style.width=(100*n0/S.total).toFixed(3)+'%'; };
+ grip.addEventListener('pointermove',move); grip.addEventListener('pointerup',up);
+});
+$('#tlBody').addEventListener('click',e=>{
+ if(e.target.closest('.tl-grip')) return;
+ const item=e.target.closest('.tl-item'), label=e.target.closest('.tl-label'), lane=e.target.closest('.tl-lane');
+ if(item){ const t=S.tracks[+item.dataset.t], it=t.items[+item.dataset.i]; goTo(it.f); trackInfo(+item.dataset.t,+item.dataset.i); }
+ else if(label) trackInfo(+label.dataset.t);
+ else if(lane){ const r=lane.getBoundingClientRect(); goTo(Math.floor(S.total*(e.clientX-r.left)/r.width)); }
+});
+$('#tlToggle').onclick=()=>{ tlOpen=!tlOpen; try{ localStorage.setItem('tracks',tlOpen?'open':'closed'); }catch(e){}
+ $('#tlBody').hidden=!tlOpen; $('#tlInfo').hidden=!tlOpen; $('#tlToggle').setAttribute('aria-expanded',String(tlOpen)); };
+$('#tlLayers').addEventListener('click',e=>{ const b=e.target.closest('[data-layer]'); if(!b) return;
+ try{ win().__layer(b.dataset.layer,b.getAttribute('aria-pressed')!=='true'); }catch(err){ log(err.message,{error:true}); } renderLayers(); });
+$('#tlView').addEventListener('change',e=>{ try{ const v=e.target.value; S.view=v; win().__view(isNaN(+v)?v:+v); }catch(err){ log(err.message,{error:true}); } });
+
+/* ===== UPDATES ===== when the AI saves, the work reloads at once -- unless the person is
+   scrubbing or writing a note, then it waits until they stop, and says so */
+const drafting=()=>document.activeElement&&document.activeElement.id==='noteText';
+function reloadStage(){ if(!current) return; loadStage({mode:S.mode,frame:S.frame},true); }
+function updateArrived(){
+ if(drafting()||performance.now()<busyUntil){ S.pending=true; setTransport(); return; }
+ reloadStage();
+}
+setInterval(()=>{ if(S.pending&&!drafting()&&performance.now()>=busyUntil) reloadStage(); },500);
+
+$('#frame').addEventListener('input',e=>goTo(+e.target.value));
+$('#backBtn').onclick=()=>goTo(S.frame-1); $('#fwdBtn').onclick=()=>goTo(S.frame+1);
+$('#playBtn').onclick=togglePlay;
+$('#reloadBtn').onclick=reloadStage; $('#pendingBtn').onclick=reloadStage; $('#veilReload').onclick=reloadStage;
+$('#veilShow').onclick=()=>{ $('#veil').hidden=true; };
+$('#shots').addEventListener('click',e=>{ const b=e.target.closest('.shot'); if(b) goTo(+b.dataset.f); });
+$('#shots').addEventListener('keydown',e=>{
+ const L=[...$('#shots').children], i=L.indexOf(document.activeElement); if(i<0) return;
+ const j=e.key==='ArrowRight'?i+1:e.key==='ArrowLeft'?i-1:e.key==='Home'?0:e.key==='End'?L.length-1:null;
+ if(j==null) return; e.preventDefault(); const k=Math.max(0,Math.min(L.length-1,j));
+ L.forEach((b,x)=>b.tabIndex=x===k?0:-1); L[k].focus();
+});
+addEventListener('keydown',e=>{
+ if(e.altKey||e.ctrlKey||e.metaKey||e.defaultPrevented) return;
+ if(e.target.closest('textarea,input:not([type=range]),select,dialog,[role=tablist],[role=toolbar]')) return;
+ if(e.key==='ArrowLeft'||e.key==='ArrowRight'){ if(!scrubbable()) return; goTo(S.frame+(e.key==='ArrowLeft'?-1:1)); e.preventDefault(); }
+ if(e.key===' '&&!e.target.closest('button,a')){ togglePlay(); e.preventDefault(); }
+});
+$('#buildBtn').onclick=async()=>{ const b=$('#buildBtn'); b.disabled=true;
+ try{ const r=await post('api/build',{work:current.id}); if(!r.ok) log(`${current.name}: the build failed`,{error:true,detail:r.output.slice(-1500)}); }
+ catch(e){ log(e.message,{error:true}); } b.disabled=false; };
+
+/* ===== THE SIDE ===== ARIA tabs: one tab stop, arrows move between them */
+function setTab(t,focus){
+ tab=t;
+ for(const b of document.querySelectorAll('.tab')){ const on=b.dataset.tab===t;
+  b.setAttribute('aria-selected',String(on)); b.tabIndex=on?0:-1; if(on&&focus) b.focus(); }
+ $('#panel').setAttribute('aria-labelledby','tab-'+t);
+}
+document.querySelector('.tabs').addEventListener('click',e=>{ const b=e.target.closest('.tab'); if(!b) return;
+ setTab(b.dataset.tab); if(current) history.replaceState(null,'',`#${current.id}/${tab}`); panel(); });
+document.querySelector('.tabs').addEventListener('keydown',e=>{
+ const i=TABS.indexOf(tab), j=e.key==='ArrowRight'?i+1:e.key==='ArrowLeft'?i-1:e.key==='Home'?0:e.key==='End'?TABS.length-1:null;
+ if(j==null) return; e.preventDefault(); setTab(TABS[(j+TABS.length)%TABS.length],true);
+ if(current) history.replaceState(null,'',`#${current.id}/${tab}`); panel();
+});
+
+const read=(o,key)=>key==='value.range'?o.value[1]-o.value[0]:key==='value.low'?o.value[0]:o[key];
+const num=v=>typeof v==='number'?(Number.isInteger(v)?String(v):Math.abs(v)>=1000?String(Math.round(v))
+  :v!==0&&Math.abs(v)<0.001?v.toExponential(2):(+v.toFixed(3)).toString())
+ :v==null?'—':typeof v==='object'?esc(JSON.stringify(v).slice(0,60)):esc(v);
+/* what an evidence key is bound to in the card's count, shown beside the key */
+function bound(c,key){
+ let v=c.count; for(const k of String(key).split('.')){ if(v==null) break; v=v[k]; }
+ if(v==null) return '';
+ return ' = '+(Array.isArray(v)?esc(v.length<=4?v.join(', '):`${v.length} items`):typeof v==='object'?`${Object.keys(v).length} keys`:num(v));
+}
+const RUN={'oq-kocha':'make audit-oq-kocha',catalog:'make audit-catalog',zarra:'make audit-zarra',studio:'make audit-studio'};
+let panelGen=0;
+async function panel(){
+ const w=current, el=$('#panel'), g=++panelGen; if(!w){ el.innerHTML=''; return; }
+ try{
+ if(tab==='card'){
+  const c=w.card;
+  if(!c){ el.innerHTML=`<h3>${esc(w.name)}</h3><p class="mut">This work has no card yet. With a card, its count and its measurements would be here.</p><p class="small mut">Page: <span class="id">${esc(w.page)}</span></p>`; return; }
+  const rows=(obj,goal)=>Object.entries(obj||{}).map(([key,[op,lim,what]])=>{ const v=c.measure?read(c.measure,key):null;
+   const ok=v!=null&&(op==='>'?v>lim:v<lim), st=goal?(ok?'met':'open'):(ok?'PASS':'FAIL');
+   return `<tr><td>${esc(what)}<div class="sub"><span class="id">${esc(key)}</span> ${esc(op)} ${lim}</div></td>
+    <td class="num">${num(v)}</td><td class="st ${st}">${goal?(ok?'met':'not yet'):(ok?'holds':'fails')}</td></tr>`; }).join('');
+  el.innerHTML=`<h3>Look</h3><p>${esc(c.look)}</p>
+   <h3>Method, bound to the source</h3><ul class="method">${c.method.map(u=>`<li>${esc(u.text)}<div class="sub"><span class="id">${esc(u.evidence)}</span>${bound(c,u.evidence)}</div></li>`).join('')}</ul>
+   <h3>Claims</h3><table><thead><tr><th>Claim</th><th class="num">Measured</th><th>Result</th></tr></thead><tbody>${rows(c.claims,false)||'<tr><td class="mut" colspan="3">none</td></tr>'}</tbody></table>
+   <h3>Goals</h3><table><thead><tr><th>Goal</th><th class="num">Measured</th><th>Result</th></tr></thead><tbody>${rows(c.goals,true)||'<tr><td class="mut" colspan="3">none</td></tr>'}</tbody></table>
+   ${c.measure?`<h3>Palette</h3><div class="palette">${c.measure.palette.map(p=>`<i title="${esc(p.hex)} · ${p.share}%" style="width:${p.share}%;background:${esc(p.hex)}"></i>`).join('')}</div>`:''}
+   <h3>Count</h3><p class="small mut">${esc(c.count.renderer)} · ${c.count.lines} lines · ${c.count.files} file${c.count.files>1?'s':''}${c.count.totalFrames?' · '+c.count.totalFrames+' frames':''}</p>`;
+ } else if(tab==='checks'){
+  const t=workChecks(w), suites=(w.suites||[]).concat(w.card?['catalog']:[]);
+  const old=t.filter(r=>stale(w,r)).length;
+  const runs=suites.map(n=>{ const A=AUDITS[n]; if(!A) return `<li><span class="id">${esc(n)}</span> · not run yet · <span class="id">${esc(RUN[n]||'')}</span></li>`;
+   const part=A.last.argv.length?` · partial run (<span class="id">${esc(A.last.argv.join(' '))}</span>): the other checks keep their own older times`:'';
+   return `<li><span class="id">${esc(n)}</span> · last run ${ago(Date.parse(A.last.time))} (${when(A.last.time)})${part}</li>`; }).join('');
+  el.innerHTML=`<p class="legend"><span><b class="st PASS">PASS</b> inside its limit, and its known-bad case is not</span>
+    <span><b class="st FAIL">FAIL</b> outside its limit</span> <span><b class="st ERROR">ERROR</b> the check broke</span>
+    <span><b class="st UNPROVEN">UNPROVEN</b> its known-bad case passed too</span> <span><b class="st UNCALIBRATED">UNCALIBRATED</b> no known-bad case</span></p>
+   ${old?`<p class="notice">${old} result${old>1?'s are':' is'} older than the last change to this work's files (${when(w.sourcesChangedAt)}): ${old>1?'they do':'it does'} not describe the work as it is now. Run ${suites.map(n=>`<span class="id">${esc(RUN[n]||n)}</span>`).join(' and ')}.</p>`:''}
+   <ul class="small mut" style="padding-left:18px;margin:0 0 var(--s-3)">${runs||'<li>this work has no check suite</li>'}</ul>`+
+   (t.length?`<table class="checks"><thead><tr><th>Check</th><th>Result</th><th class="num">Measured</th></tr></thead><tbody>
+   ${t.map(r=>`<tr><td><span class="id">${esc(r.name)}</span>${r.unit?`<div class="sub">${esc(r.unit)}</div>`:''}${r.error?`<div class="sub error">${esc(String(r.error).split('\n')[0])}</div>`:''}${r.note?`<div class="sub">${esc(r.note)}</div>`:''}
+    <div class="sub">${r.time?`ran ${ago(Date.parse(r.time))}`:'time unknown'}${stale(w,r)?'<span class="badge">stale</span>':''}</div></td>
+    <td class="st ${esc(r.status)}">${esc(r.status)}</td><td class="num">${num(r.value)}<div class="sub">known-bad ${num(r.cal)}</div></td></tr>`).join('')}</tbody></table>`
+   :'<p class="mut">No results yet. When the checks run they land here.</p>');
+ } else if(tab==='changes'){
+  el.innerHTML='<p class="mut">Loading…</p>';
+  const o=await api('api/changes?work='+encodeURIComponent(w.id)); if(g!==panelGen) return;
+  const files=o.files.map(f=>`<tr><td><span class="id">${esc(f.path)}</span><div class="sub">${esc(f.words.join(' · '))}${f.from?` — from <span class="id">${esc(f.from)}</span>`:''}${f.staged?'':' · not staged'}</div></td>
+   <td class="num">${f.add==null?'binary':`+${f.add} −${f.del??0}`}</td></tr>`).join('');
+  el.innerHTML=`<h3>Not committed</h3>${files?`<p class="small mut">Paths are inside <span class="id">${esc(o.dir)}</span> unless written whole; lines against the last commit.</p>
+   <table><thead><tr><th>File</th><th class="num">Lines</th></tr></thead><tbody>${files}</tbody></table>`:'<p class="mut">Nothing: every file of this work is committed.</p>'}
+   <h3>Last commits</h3>${o.commits.map(c=>`<div class="commit"><span class="id">${esc(c.hash)}</span><span>${esc(c.subject)}<div class="sub">${esc(c.time)}</div></span></div>`).join('')||'<p class="mut">None yet.</p>'}`;
+ } else if(tab==='notes'){
+  el.innerHTML=`<p class="small mut">The AI reads these from <span class="id">studio/notes/${esc(w.id)}.md</span>, answers under a note, and ticks it when it is done.</p>
+   <div id="noteList"><p class="mut">Loading…</p></div>
+   <h3>New note</h3>
+   <textarea id="noteText" aria-label="New note" placeholder="For example: the snow is too bright here, the figure's foot is lost"></textarea>
+   <div class="row"><label><input type="checkbox" id="noteFrame"> <span id="noteFrameText"></span></label><span class="sp"></span>
+    <button class="btn primary" id="noteBtn">Add note</button></div>`;
+  const ta=$('#noteText'); ta.value=drafts.get(w.id)||'';
+  ta.addEventListener('input',()=>drafts.set(w.id,ta.value));
+  /* writing about the picture stops it: the note is about the frame that is on screen */
+  ta.addEventListener('focus',()=>{ if(scrubbable()&&S.mode==='play'&&S.hooks.frame){ try{ pauseStage(); }catch(e){} $('#noteFrame').checked=true; }
+   else if(scrubbable()&&S.mode==='frame') $('#noteFrame').checked=true; setTransport(); });
+  $('#noteBtn').onclick=async()=>{ const m=ta.value.trim(); if(!m){ ta.focus(); return; }
+   const at=$('#noteFrame').checked&&!$('#noteFrame').disabled?S.frame:null;
+   try{ renderNotes(await post('api/note',{work:w.id,text:m,frame:at})); ta.value=''; drafts.delete(w.id);
+    log(`${w.name}: note added${at!=null?' on frame '+at:''}`); load(); }
+   catch(e){ log(e.message,{error:true}); } };
+  setTransport();
+  renderNotes(await api('api/notes?work='+encodeURIComponent(w.id)), g);
+ }
+ }catch(e){ if(g===panelGen) el.innerHTML=`<p class="st FAIL">${esc(e.message)}</p>`; }
+}
+/* only the list is redrawn when a note changes; the note being written is not touched */
+function renderNotes(L,g=panelGen){
+ const el=$('#noteList'); if(!el||g!==panelGen) return;
+ const w=current, frames=scrubbable();
+ el.innerHTML=L.map(n=>`<div class="note ${n.done?'done':''}"><div class="note-head">
+   <input type="checkbox" id="note-${n.line}" data-line="${n.line}" ${n.done?'checked':''} aria-label="done">
+   <label class="note-text" for="note-${n.line}">${esc(n.text)}</label></div>
+   <div class="note-meta">${n.time?`<span>${esc(n.time)}</span>`:''}${n.frame!=null?`<button class="linkish" data-frame="${n.frame}" ${frames?'':'disabled'}>frame ${n.frame}</button>`:''}<span>${n.done?'done':'open'}</span></div>
+   ${n.replies.map(r=>`<div class="reply">${r.who?`<span class="who">${esc(r.who)}</span> `:''}${r.time?`<span class="mut">${esc(r.time)}</span> — `:''}${esc(r.text)}</div>`).join('')}
+  </div>`).join('')||'<p class="mut">No notes yet.</p>';
+ el.querySelectorAll('input[data-line]').forEach(c=>c.onchange=async()=>{
+  try{ renderNotes(await post('api/note/state',{work:w.id,line:+c.dataset.line,done:c.checked})); load(); }catch(e){ log(e.message,{error:true}); } });
+ el.querySelectorAll('[data-frame]').forEach(b=>b.onclick=()=>goTo(+b.dataset.frame));
+}
+
+/* ===== DECISIONS ===== the open questions the Labs lines left for the owner, as text,
+   with how to answer each line under it */
+function md(src){
+ const inline=s=>esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>')
+  .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+ const out=[]; let list=null, item=null, para=null;
+ const close=()=>{ if(para){ out.push(`<p>${inline(para)}</p>`); para=null; }
+  if(item!=null){ list.items.push(item); item=null; } if(list){ out.push(`<${list.tag}>${list.items.map(i=>`<li>${inline(i)}</li>`).join('')}</${list.tag}>`); list=null; } };
+ for(const line of String(src).split('\n')){
+  const o=line.match(/^\s*\d+\.\s+(.*)$/), u=line.match(/^\s*[-*]\s+(.*)$/);
+  if(o||u){ const tag=o?'ol':'ul'; if(para){ out.push(`<p>${inline(para)}</p>`); para=null; }
+   if(list&&list.tag!==tag) close(); if(!list) list={tag,items:[]}; if(item!=null) list.items.push(item); item=(o||u)[1]; continue; }
+  if(!line.trim()){ if(item==null) close(); continue; }
+  if(item!=null&&/^\s+/.test(line)){ item+=' '+line.trim(); continue; }
+  close(); para=(para?para+' ':'')+line.trim();
+ }
+ close(); return out.join('');
+}
+$('#decisionsBtn').onclick=async()=>{
+ let q=[]; try{ q=await api('api/decisions'); }catch(e){ log(e.message,{error:true}); }
+ $('#decisionsInner').innerHTML=`<div class="row" style="margin:0"><h2 id="decisionsTitle">Questions a person decides</h2><span class="sp"></span><button class="btn" id="decisionsClose">Close</button></div>
+  <p class="small mut">What the Labs lines are waiting on. Answer a line from this repository, or tell the AI in a chat and it sends the answer.</p>`+
+  (q.map(x=>{ const cmd=`node abc-labs/labs.mjs rooms ask ${x.line} "1: …" --wait`;
+   return `<section><h3>${esc(x.title)} <span class="mut small">· line ${esc(x.line)}</span></h3><div class="md">${md(x.text)}</div>
+    <div class="answer"><span>Answer:</span><code>${esc(cmd)}</code><span class="sp"></span><button class="btn" data-copy="${esc(cmd)}">Copy</button></div></section>`; }).join('')
+   ||'<p class="mut">No open questions.</p>');
+ $('#decisionsClose').onclick=()=>$('#decisions').close();
+ $('#decisionsInner').querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{
+  try{ await navigator.clipboard.writeText(b.dataset.copy); b.textContent='Copied'; }catch(e){ b.textContent='Select and copy'; } });
+ $('#decisions').showModal();
+};
+
+/* ===== THE LINK TO THE SERVER ===== when the AI changes a file, the studio shows it */
+function setLink(dot,text){ $('#linkDot').className='dot '+dot; $('#linkText').textContent=text; }
+function connect(){
+ const es=new EventSource('api/events'); let wasDown=false;
+ es.onopen=()=>{ setLink('ok','connected'); if(wasDown){ wasDown=false; load().then(()=>panel()).catch(()=>{}); } };
+ es.onerror=()=>{ wasDown=true;
+  if(es.readyState===EventSource.CLOSED) setLink('bad','disconnected — reload the studio'); else setLink('warn','reconnecting…'); };
+ es.onmessage=async e=>{ const ev=JSON.parse(e.data);
+  const name=(WORKS.find(w=>w.id===ev.work)||{}).name||ev.work||'';
+  if(ev.type==='building') log(`${name}: ${ev.files.join(', ')||'by hand'} · building…`);
+  if(ev.type==='updated'){
+   if(ev.built&&!ev.built.ok){ log(`${name}: the build failed, the page stays as it was`,{error:true,detail:ev.built.output.slice(-1200)}); return; }
+   log(`${name}: ${ev.files.join(', ')||'rebuilt'}${ev.built&&ev.built.ms?` · built in ${(ev.built.ms/1000).toFixed(1)} s`:''} · updated`);
+   await load().catch(()=>{});
+   if(current&&ev.work===current.id){ updateArrived(); if(tab==='changes'||tab==='checks') panel(); }
+  }
+  if(ev.type==='card'){ log(`${name}: the card changed`); await load(); if(tab==='card'&&current&&ev.work===current.id) panel(); }
+  if(ev.type==='audit'){ log('check results updated'); await load(); if(tab==='checks') panel(); }
+  if(ev.type==='note'){ await load(); if(tab==='notes'&&current&&ev.work===current.id) renderNotes(await api('api/notes?work='+encodeURIComponent(current.id))); }
+ };
+}
+
+/* ===== WHERE WE ARE ===== the address says the work and the tab: #whiteout/notes */
+function route(){
+ const [id,t]=decodeURIComponent(location.hash.slice(1)).split('/');
+ const w=WORKS.find(x=>x.id===id)||WORKS[0]; if(!w) return;
+ if(t&&TABS.includes(t)&&t!==tab) setTab(t);
+ if(!current||current.id!==w.id){ current=w; renderList(); loadStage(); }
+ panel();
+}
+addEventListener('hashchange',route);
+/* from outside the studio is behind a login: who is in, and a way out */
+api('api/me').then(me=>{ if(me.outside&&me.user){ $('#who').hidden=false; $('#who').textContent=`Telegram ${me.user}`;
+ const b=$('#logoutBtn'); b.hidden=false; b.onclick=async()=>{ await fetch('logout',{method:'POST'}); location.href='login'; }; } }).catch(()=>{});
+load().then(()=>{ route(); connect(); }).catch(e=>log('the studio did not load: '+e.message,{error:true}));
+</script>
+</body>
+</html>

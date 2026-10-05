@@ -8,16 +8,36 @@ jobs:
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
       - run: npm i && npx playwright install --with-deps chromium
-        working-directory: oq-kocha
+        working-directory: studio/projects/oq-kocha
       - run: npm run build && npm run audit
-        working-directory: oq-kocha
-  loyihalar:
+        working-directory: studio/projects/oq-kocha
+  catalog:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
       - run: npm i playwright && npx playwright install --with-deps chromium
-        working-directory: loyihalar
-      - run: node tools/karta.mjs && node test/run.mjs
-        working-directory: loyihalar
+        working-directory: catalog
+      - run: node tools/card.mjs && node test/run.mjs
+        working-directory: catalog
+  zarra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm i && npx playwright install --with-deps chromium
+        working-directory: studio/projects/zarra
+      - run: npm run audit
+        working-directory: studio/projects/zarra
+  studio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm i && npx playwright install --with-deps chromium
+        working-directory: studio
+      - run: npm run audit && npm run audit:ui
+        working-directory: studio
