@@ -1,5 +1,5 @@
 # For code-video, from the line voice
-(written 2026-10-04 against your `ff977c2`, still the head of the workshop's clone that night; from rooms 5 (Cuelume UI sounds), 12 (Retro note app, item 3's bed rule), 19 (Gapirov rain sound, with its policy pass of that evening), 32 (Eleven v4) and 41 (parakeet.cpp); items 1–5 from entries e0084–e0087, items 6–8 and 10 from e0004–e0006, a wide bed's check in items 5 and 8 from e0168, item 9 from e0087, e0092 and e0093, with e0090 and e0091 behind its "not worth taking"; on 2026-10-05 one "not worth taking" from room 29 (Cactus Whistle), e0222 and e0223, and later that day whisper `small`'s Uzbek in it, e0225)
+(rewritten 2026-10-05 against your `f1340bf`, the head of the workshop's clone that morning: your works now live under `studio/projects/` and your cards under `catalog/cards/`, so every path below was found again there; the advice is the page of 2026-10-04 against `ff977c2`, and none of items 1–10 is done in `f1340bf`. From rooms 5 (Cuelume UI sounds), 12 (Retro note app, item 3's bed rule), 19 (Gapirov rain sound, with its policy pass), 29 (Cactus Whistle), 32 (Eleven v4) and 41 (parakeet.cpp); items 1–5 from entries e0084–e0087, items 6–8 and 10 from e0004–e0006, a wide bed's check in items 5 and 8 from e0168, item 9 from e0087, e0092 and e0093, with e0090 and e0091 behind its "not worth taking"; one "not worth taking" from e0222, e0223 and e0225)
 
 ## What this line has for you
 
@@ -24,9 +24,11 @@ meet. Nothing in your suite becomes a dependency, and nothing is a recording.
 Where to start: item 1 (the door: a voice or a bus alone, both channels, a seed), then item 2 (the repeat hash) and item 3 (the onset, which is the video line's item 9 as well); items 4 and 5 after those; item 6 when a work has a texture to hold, which today means after item 7, and item 10 beside it in the audit; item 9 only when a work speaks (question 5).
 
 How to read it. `[room 5 s3]` is room 5's source s3. `src/…`, `test/…` and promo paths beside
-[room 5 s3] are Cuelume's at `caf1548`; `work/trial/…` is room 19's trial [room 19 s19]; every
-other path is yours at `ff977c2`. The rooms read your code and ran none of it; your working
-tree as you reported it to the video line may differ. Numbers for `metal` in item 4 are
+[room 5 s3] are Cuelume's at `caf1548`; `work/trial/…` is room 19's trial [room 19 s19]. Every
+other path is yours at `f1340bf`: `oq-kocha/…`, `mushuk/…`, `whiteout/…`, `bir-tomchi/…` and
+`not-a-measurement/…` stand for `studio/projects/<work>/…`, and a bare file name inside an item
+is the file that item named in full. The rooms read your code and ran none of it, and the line
+found every line again on 2026-10-05 by reading, not by running. Numbers for `metal` in item 4 are
 arithmetic from your code, the numbers in items 6 to 8 come from two synthetic rains that nobody
 has listened to (room 19's trial and room 41's rebuild of it) and, for item 6's check, from five
 recorded rains measured and not heard; item 10's from eleven clips on one CPU, none of them heard;
@@ -42,17 +44,17 @@ makes it.
    `OfflineAudioContext` (promo `scripts/audio.mjs:36-49`) [room 5 s3]; room 19's trial renders
    any layer alone, `render(recipe, only)`, and draws each layer from a stream of its own so
    that adding a layer moves no other (`work/trial/rain.mjs:43-48`) [room 19 s19]. Every
-   measurement below needs the same: your `__renderAudio(seconds, sr)` renders the whole mix,
-   averages L and R before it returns (`oq-kocha/tools/mkfilm.py:370-372`), and the noise seed
-   is a literal (`oq-kocha/src/sound.mjs:18`).
+   measurement below needs the same: your `__renderAudio(seconds, sr)` renders the whole mix
+   into two channels and averages L and R before it returns (`oq-kocha/tools/mkfilm.py:443-444`,
+   `:459-461`), and the noise seed is a literal (`oq-kocha/src/sound.mjs:18`).
    → How: a third argument, `__renderAudio(seconds, sr, {beds:true, only:null, seed:22222,
-   stereo:false})`, whose defaults leave today's four numbers where they are. `beds:false` skips
-   the `beds.set` loop (`mkfilm.py:360-363`); every bed then stays at its initial gain 0
+   stereo:false})`, whose defaults leave today's numbers where they are. `beds:false` skips
+   the `beds.set` loop (`mkfilm.py:449-452`); every bed then stays at its initial gain 0
    (`sound.mjs:56`, `:73`, `:76`) and the events render alone. `only:['step']` filters the event
-   loop (`mkfilm.py:364-368`). `seed` goes to `noiseBuffer(ctx, seconds, seed)`. `stereo:true`
-   returns `{sr, L, R}` in place of `pcm`. `oq-kocha/tools/render-audio.mjs:16` is the only
-   other caller and needs no change.
-   → Where: `oq-kocha/tools/mkfilm.py:354-373`, `oq-kocha/src/sound.mjs:15-21`.
+   loop (`mkfilm.py:453-457`). `seed` goes to `noiseBuffer(ctx, seconds, seed)`. `stereo:true`
+   returns `{sr, L, R}` in place of `pcm`. Its two callers, `oq-kocha/test/checks-audio.mjs:13`
+   and `oq-kocha/tools/render-audio.mjs:17`, need no change.
+   → Where: `oq-kocha/tools/mkfilm.py:442-462`, `oq-kocha/src/sound.mjs:15-21`.
    → Effort: S.
 
 2. **The same samples every time, proved by a hash that survives a reload** (e0087 —
@@ -69,7 +71,12 @@ makes it.
    19's trial does exactly this in Node: one hash twice under seed 19, another under seed 20
    [room 19 s19]. Write the hash and `browser.version()` into the card, so a Chromium that moves
    the samples (the compressor and the biquads are the engine's) shows up as a stated fact.
-   → Where: `oq-kocha/test/checks-audio.mjs`; item 1's `seed`.
+   → The card first: oq-kocha's card says `"audio": false` (`catalog/cards/1-oq-kocha.json:65`).
+   The count is a test for `AudioContext` over the card's sources
+   (`catalog/tools/count.mjs:45`), and those sources leave out `src/sound.mjs` and
+   `tools/mkfilm.py` (`1-oq-kocha.json:3-10`). So the one work with a measured soundtrack is
+   counted silent. Add the two files to its sources before a hash is written beside that line.
+   → Where: `oq-kocha/test/checks-audio.mjs`; item 1's `seed`; `catalog/cards/1-oq-kocha.json`.
    → Effort: S.
 
 3. **A footstep's onset read from the samples, not from the schedule** (e0085 — as it is: the
@@ -92,7 +99,7 @@ makes it.
    arithmetic, not a measurement, and room 5's 120 ms was too short by it.) `measure` = the
    worst |onset − t| in ms; pass under half a frame, 21 ms, as the video line has it.
    `calibrate`: the same render with every step started one frame late inside the graph, which
-   must read about 42 ms; it is the slip your comment at `mkfilm.py:214-218` describes, moved to
+   must read about 42 ms; it is the slip your comment at `mkfilm.py:253-256` describes, moved to
    where `footfall-sync` cannot see it.
    → Print the median offset as well. The step rises in 4 ms (`sound.mjs:99-100`), so room 5
    expects it within 3 ms. Every voice also passes a `DynamicsCompressor` (`sound.mjs:43-46`),
@@ -110,12 +117,12 @@ makes it.
    In the film's sound the property itself is measurable: the modes at 392, 1080 and 2116 Hz
    fall at 134, 235 and 292 dB/s, ratios 2.755 and 5.397, through AAC at 128 kb/s [room 5 s2].
    Your `metal()` is the same bar with its table inline: `[[1,1],[2.76,0.5],[5.40,0.22]]`, 430
-   Hz, decay `0.55/Math.sqrt(r)`, floor 0.0003 (`sound.mjs:135-140`).
+   Hz, decay `0.55/Math.sqrt(r)`, floor 0.0003 (`oq-kocha/src/sound.mjs:135-140`).
    → How, the table: export `METAL = {f0:430, modes:[[1,1],[2.76,0.5],[5.40,0.22]], ring:0.55,
    law:0.5, attack:0.003, floor:0.0003}` and let `metal()` read it, `T = ring / r^law`. It is
    your card rule (a work's data agrees with its source) applied to one voice.
    → How, the check `audio/metal-modes`: render `{beds:false, only:['metal']}`; the events are
-   17 frames apart (`mkfilm.py:223`) and a voice stops at `t+0.7` (`sound.mjs:141`), so each
+   17 frames apart (`oq-kocha/tools/mkfilm.py:261`) and a voice stops at `t+0.7` (`sound.mjs:141`), so each
    sits in its own window, and alone no footstep drives the limiter under it. For each mode,
    the level of its ±3 % band in 20 ms windows every 5 ms, a line fitted over the first 40 dB;
    room 5's `band_decay` does it in about 20 lines of numpy (`sources/s2/analyse.py`) [room 5
@@ -123,7 +130,7 @@ makes it.
    below it and each measured ratio is within 1 % of `METAL.modes`.
    → The broken state is real, not invented. A ramp to an absolute floor falls at
    20·log10(peak/floor)/T dB/s, so a mode's slope depends on its level as well as its time
-   [room 5 s3, `src/audio/engine.ts:49-53`]. At the event gain 0.045 (`mkfilm.py:223`) the peaks
+   [room 5 s3, `src/audio/engine.ts:49-53`]. At the event gain 0.045 (`mkfilm.py:261`) the peaks
    are 0.108, 0.054 and 0.0238 and the slopes 93, 136 and 160 dB/s. With one T for all modes
    (`law: 0`, the natural mistake) they are 93, 82 and 69: the order reverses, because the
    quieter modes have fewer dB to fall. Calibrate twice: `law: 0` must fail the order, and
@@ -139,8 +146,8 @@ makes it.
    how the room knew the posted film was not the repository's mono capture [room 5 s2, s3].
    Your own skill says "Capture in stereo" and defines mono collapse
    (`skills/media-audit-reality/SKILL.md:253`, `:258`), and every voice has a `StereoPanner`
-   (`sound.mjs:91`), but the measured render is the average of L and R (`mkfilm.py:370-372`), so
-   no check can see a pan.
+   (`oq-kocha/src/sound.mjs:91`), but the measured render is the average of L and R
+   (`oq-kocha/tools/mkfilm.py:459-461`), so no check can see a pan.
    → How: a check `audio/mono-collapse` on item 1's `stereo:true`: 20·log10(RMS((L+R)/2) /
    √mean(L², R²)), as the skill defines it; pass above −3 dB; calibrate with R's polarity
    inverted, which cancels and must fail.
@@ -174,13 +181,13 @@ makes it.
    run at: a window pane 17.7–32.7, a light rain 23.1–55.3, rain on leaves 8.1–14.9, and the one
    lossless file, rain in a wood, 5.49–7.20; every twin reads 3.19–3.31 [room 19 s22, s24, s25,
    s26, s27].
-   → How: four functions in `dsp.mjs` on the `fft` already there (`:2-22`), about 30 lines,
+   → How: four functions in `oq-kocha/test/dsp.mjs` on the `fft` already there (`:2-22`), about 30 lines,
    written out in room 19's `work/trial/dsp.mjs:45-81` and `work/trial/measure-real.mjs:24-30`,
    which you may copy as they are:
    `bandEnvelope(S, sr, lo, hi)` (keep the band's positive frequencies, double them, inverse FFT,
    magnitude), `kurtosis(env)` (m4/m2²), `kurtosis1s(env, sr)` (the band's envelope of the whole
    render cut into whole seconds, the kurtosis of each, their median), `phaseTwin(x, seed)`. Then
-   a check in the shape of `checks-audio.mjs:18-22` on the texture's bus rendered alone:
+   a check in the shape of `oq-kocha/test/checks-audio.mjs:18-22` on the texture's bus rendered alone:
    `{name:'audio/rain-is-drops', unit:'4–8 kHz envelope kurtosis, median of 1 s blocks, 3 = hiss',
    measure, pass: v => v > 5, calibrate: () => kurtosis1s(bandEnvelope(spectrum(phaseTwin(X)), sr,
    4000, 7900), sr)}`.
@@ -228,33 +235,41 @@ makes it.
    rain generators room 19 read are a shaped-noise bed and random decaying bursts, and every
    one draws from `Math.random`, the one with an `OfflineAudioContext` path included [room 19
    s15, s16, s17, s18]. `mushuk` is the same family and has the same gap. Its picture has a
-   seeded generator (`mushuk/mushuk.html:45`); its sound uses `Math.random` for the noise and
-   pink buffers (`:76`, `:130`), the tap buffers (`:93`, `:132-133`), the reverb (`:105`) and
-   every tap's time, buffer, rate, gain and pan (`:201-209`). The taps are started from the
-   frame loop's `dt` (`:197`, `:515`), through a live `AudioContext` only (`:111`), and the card
-   says `"ovoz": true` and nothing else about it (`loyihalar/kartalar/4-mushuk.json:51`). The
-   code makes a rain again, never the same one, and no check would notice the taps gone.
+   seeded generator (`mushuk/mushuk.html:51`); its sound uses `Math.random` for the noise and
+   pink buffers (`:82`, `:136`), the tap buffers (`:99`, `:138-139`), the reverb (`:111`) and
+   every tap's time, buffer, rate, gain and pan (`:207-215`). The taps are started from the
+   frame loop's `dt` (`:203`, `:521`), through a live `AudioContext` only (`:117`; the studio
+   lists it as `"control": "live"`, `studio/works.json:7`). Its card says `"audio": true` and
+   nothing else about the sound (`catalog/cards/4-mushuk.json:51`), and that line is a test for
+   the word `AudioContext` in its source (`catalog/tools/count.mjs:45`). The code makes a rain
+   again, never the same one, and no check would notice the taps gone.
    → How, in this order. A generator for the sound, seeded apart from the picture's, one stream
    per layer as the trial has it (`work/trial/rain.mjs:48`) [room 19 s19]; it is the stream
    "for what is heard" in the video line's item 26, which asks it of every work and of whiteout
    first, in its item 6; build it once. The taps from a timeline built once, as your footsteps
-   are (`oq-kocha/tools/mkfilm.py:210-232`), with the live loop only scheduling from it. The
+   are (`oq-kocha/tools/mkfilm.py:248-270`), with the live loop only scheduling from it. The
    graph built by a function that takes the context, as `buildBeds(ctx, …)` does
    (`oq-kocha/src/sound.mjs:49`), so a `__renderAudio(seconds, sr, {only:['rain']})` can run
    it offline. Then item 2's hash and item 6's check on the rain bus.
+   → The same gap, in your three other works with sound: each fills its noise buffer from
+   `Math.random` and plays through a live context only (`whiteout/whiteout.html:913`, `:918`;
+   `bir-tomchi/bir-tomchi.html:912`, `:939`, `:961`; `not-a-measurement/not-a-measurement.html:354`,
+   `:360`). bir-tomchi also fires its accents from `Math.random()<dt*rate` (`:155`, `:447`,
+   `:556`, `:743`, `:834`). The same three steps serve each, in the order the video line's
+   item 5 gives their offline renders. Only oq-kocha renders offline today (`mkfilm.py:444`).
    → What the check will read is not known. The trial's 10.3 is for 105 drops a second 10 dB
    under its bed, and recorded rains read 5.5 to 55 [room 19 s19, s27]; mushuk's taps are about
-   16 a second (one every 30–95 ms, `:201`) at a level nobody has measured against its bed, and
-   most of its bed sits behind a 3 kHz low-pass (`:136-138`) while the taps do not (`:209`).
-   Check the band by item 6's procedure.
+   16 a second (one every 30–95 ms, `mushuk/mushuk.html:207`) at a level nobody has measured
+   against its bed, and most of its bed sits behind a 3 kHz low-pass (`:142-144`) while the taps
+   do not (`:215`). Check the band by item 6's procedure.
    → Its taps are already short, which is what item 6's new limit asks. A drop tap decays as
-   `exp(-t·7/dur)` over `dur` 16–40 ms (`:92`, `:132`), so τ is 2.3–5.7 ms, and 1.7–7.1 ms after
-   a `playbackRate` of 0.8–1.35 (`:206`). Room 19's leaf is 2–8 ms. Unlike the leaf, they are
-   broadband: a one-pole low-pass of white noise (`:93`), not one band of Q 2. The sill taps,
-   12 % of them (`:203`), ring 10–20 ms at 200–420 Hz (`:133`), below the band. This is the
+   `exp(-t·7/dur)` over `dur` 16–40 ms (`:98`, `:138`), so τ is 2.3–5.7 ms, and 1.7–7.1 ms after
+   a `playbackRate` of 0.8–1.35 (`:212`). Room 19's leaf is 2–8 ms. Unlike the leaf, they are
+   broadband: a one-pole low-pass of white noise (`:99`), not one band of Q 2. The sill taps,
+   12 % of them (`:209`), ring 10–20 ms at 200–420 Hz (`:139`), below the band. This is the
    line's arithmetic from your code, not a measurement. At about 16 a second they cannot
    overlap the way 105 long drops did.
-   → Where: `mushuk/mushuk.html:61-213`, `loyihalar/kartalar/4-mushuk.json`.
+   → Where: `mushuk/mushuk.html:67-219`, `catalog/cards/4-mushuk.json`.
    → Effort: M. It is the offline render the video line's item 5 says each Canvas work needs.
 
 8. **The rain as a recipe that is data: a rate, a size range, layers** (e0004 — inspiration:
@@ -280,19 +295,20 @@ makes it.
    yours. If the bed is ever meant wide: a recorded rain's two channels are nearly unrelated,
    the side +0.2 to −1.5 dB against the centre in 1–8 kHz in two recordings [room 19 s25, s26,
    s27], so a wide bed is one render per channel from two seeds, not one mono loop panned as each
-   of mushuk's bed layers is (`mushuk/mushuk.html:139-145`), and not one render delayed between
+   of mushuk's bed layers is (`mushuk/mushuk.html:145-151`), and not one render delayed between
    the channels. Item 5's events check then leaves the bed out, and the bed takes e0168's fold
    and correlation check instead.
    → How: mushuk's bed and taps already are this recipe without its fields: three noise bands
-   and a hiss (`mushuk/mushuk.html:141-151`), taps of a noise burst plus a sine at 1300–3200 Hz
-   (`:88-99`, `:132`), sill taps at 200–420 Hz (`:133`). Write them as one `RAIN` object the
+   and a hiss (`mushuk/mushuk.html:147-157`), taps of a noise burst plus a sine at 1300–3200 Hz
+   (`:94-105`, `:138`), sill taps at 200–420 Hz (`:139`). Write them as one `RAIN` object the
    graph reads and the card counts, so the tap rate, the bands and the gains are declared
    values a check can read, as `METAL` is in item 4. For scale: 16 taps a second is what lands
    on about 76 cm² at 5 mm/h (16 / 2 109, the line's arithmetic), and the open generators run 6
    to 100 drops a second in bands from 300 Hz to 5.6 kHz [room 19 s15, s17]. If a film in
-   oq-kocha's pipeline ever rains, the same object is a `rain` beside `snd:{wind,city,mute}`
-   (`oq-kocha/src/shots.mjs:5`), built like the wind bed (`oq-kocha/src/sound.mjs:49-88`).
-   → Where: `mushuk/mushuk.html:132-213`.
+   oq-kocha's pipeline ever rains, the same object is a `rain` beside each shot's
+   `snd:{wind,city,mute}` (`oq-kocha/src/shots.mjs:7`, and every shot after it), built like the
+   wind bed (`oq-kocha/src/sound.mjs:49-88`).
+   → Where: `mushuk/mushuk.html:138-219`.
    → Effort: S once item 7 exists.
 
 9. **The day a work speaks: an open voice pinned by its file with its noise off, cleared by its
@@ -300,8 +316,9 @@ makes it.
    rebuilt in your own step; room 32's `replay.sh` and its numbers are ours, as they are; the
    Piper engine, GPL-3.0, run unmodified as a separate program, never vendored or imported.
    e0092 — not to be used: the voice tested, in anything published. e0093 — as it is: the
-   caption rule is ours). No work of yours speaks today (the video line passes captions until
-   one does). If one does, a neural voice is a sampler. Piper's `en_US-lessac-medium`, its
+   caption rule is ours). No work of yours speaks today: none calls a speech engine or holds a
+   voice file in `f1340bf`, and the video line passes captions until one does. If one does, a
+   neural voice is a sampler. Piper's `en_US-lessac-medium`, its
    `.onnx` pinned by sha256, said one line four ways in four fresh processes, 2.97 to 3.08 s
    long. With `SynthesisConfig(noise_scale=0.0, noise_w_scale=0.0)` two takes were
    byte-identical, 2.844 s each (piper-tts 1.8.0, onnxruntime 1.30.0, `sources/s23/replay.sh`)
@@ -345,7 +362,7 @@ makes it.
    → Piper has Russian voices and no Uzbek one [room 32 s20]. Their cards were not read. That
    is question 5.
    → Where: a new step in `oq-kocha/tools/` or in the speaking work's folder; the finder in
-   `oq-kocha/test/dsp.mjs`; the hashes in the work's card under `loyihalar/kartalar/`.
+   `oq-kocha/test/dsp.mjs`; the hashes in the work's card under `catalog/cards/`.
    → Effort: M, and nothing to do until a work speaks.
 
 10. **A second opinion on a rain bed, from a model trained on recorded sound: CED in your audit**
@@ -360,27 +377,28 @@ makes it.
    the same at 1 thread as at 4. ced-tiny costs 115 ms per 10 s clip at 2 threads and 55 MB, from
    a 6.2 MB model. The bed alone reads like the twin, so it is the drops the model hears, not the
    bed's colour.
-   → How: in your audit's bed question (`skills/media-audit-reality/SKILL.md:375-381`, §2i,
-   "a vacuum cleaner with a different nozzle"), beside item 6's number, for a bed that is meant
+   → How: in your audit's bed question (`skills/media-audit-reality/SKILL.md:375-385`, §2i,
+   "a vacuum cleaner with a different nozzle" at `:377`), beside item 6's number, for a bed that is meant
    to be rain. Render the rain bus alone (item 1's `only`) and its seeded phase twin (item 6's
-   `phaseTwin`). `ced-cli` reads WAV, and your render step writes raw Float32
-   (`oq-kocha/tools/render-audio.mjs:23-25`), so add a 44-byte IEEE-float WAV header (format
+   `phaseTwin`). `ced-cli` reads WAV, and your render step writes headerless mono Float32
+   (`oq-kocha/tools/render-audio.mjs:1`, `:28-29`), so add a 44-byte IEEE-float WAV header (format
    3). Then run `ced-cli classify ced-tiny-q8_0.gguf <bus>.wav --top-k 10` on both, in a
    container where ced.cpp is built at `61dec2a` (about 90 s, cmake) and the model is fetched
    from `mudler/ced-gguf` at revision `b5e9a4a`, its sha256 starting `48bee4e2fc3c`. The bus
    passes when *Rain*, *Raindrop* or *Rain on surface* is first at ≥ 0.3, and none of the three
    is in the twin's top 5. Today's margin on a made rain is 0.43–0.59 against ≤ 0.015. Write
    into the audit's table the ranks, the three scores, the commit and the revision. Never write
-   floats as an expected value: byte-identity was shown on one machine only.
+   floats as an expected value: byte-identity was shown on one machine only. ced.cpp's one
+   later commit (`736a4ee`, loading a model from memory) changes nothing of this (e0006).
    → What it adds over item 6: an opinion that does not read the 4–8 kHz band item 6 reads.
    When the two disagree, that bed is the one to put in front of an ear first. For mushuk's
    rain, what it will say is unknown until item 7 renders it; its bed sits behind a 3 kHz
    low-pass, and the model was never asked about a rain heard through glass.
    → Why the audit and not the suite: it brings a C++ build and a model download into a suite
    that is JavaScript on its own FFT (`oq-kocha/test/dsp.mjs:2-22`). And it gives a model's
-   opinion, which belongs beside §2j's "what none of this can see" rather than in a card's
-   pass. Where between hiss and rain its opinion turns was not measured: the rain that read
-   3.46 in item 6's new limit was never put to it.
+   opinion, which belongs beside §2j's "what none of this can see" (`SKILL.md:387-391`) rather
+   than in a card's pass. Where between hiss and rain its opinion turns was not measured: the
+   rain that read 3.46 in item 6's new limit was never put to it.
    → Where: `skills/media-audit-reality/SKILL.md` §2i, and a script beside
    `oq-kocha/tools/render-audio.mjs`.
    → Effort: S once items 1 and 6 exist.
@@ -394,7 +412,7 @@ makes it.
   UI's tool, and the interface line keeps it as one (e0083).
 - **Its shared room** (0.25 s of stereo noise as an impulse response, `src/audio/engine.ts:120-172`)
   [room 5 s3]. oq-kocha is outdoors in snow, and the impulse is `Math.random` per page. If a
-  room is ever wanted, seed it; mushuk's reverb has the same fault (`mushuk/mushuk.html:101-107`).
+  room is ever wanted, seed it; mushuk's reverb has the same fault (`mushuk/mushuk.html:107-113`).
 - **Rendering to files and embedding them**, as Vercel's fx does with Cuelume's recipes
   (`src/core/notifications/sound.zig:18-26`) [room 5 s8], and as Cuelume's author now does in
   their own Claude Code plugin: eight 48 kHz WAVs from a renderer that is not in the repository
@@ -462,7 +480,8 @@ makes it.
 - **parakeet.cpp for anything else** (words, who spoke, named voices) (e0007, e0008). Your films
   hold no speech; none of its models hears Uzbek [room 41 s5]; its word times do not change item
   9's rule; and naming a voice keeps a voiceprint, from a feature measured on one fixture
-  [room 41 s2 `docs/speaker.md:283-337`].
+  [room 41 s2 `docs/speaker.md:283-337`]. Its new one-file bundles change none of this: they
+  carry the same speaker encoder (e0007).
 - **A small recogniser to make or check captions against a script, such as Cactus Whistle**
   (e0223 — run only, pinned, its wrapper with telemetry off; e0222 — not to be used where Uzbek
   arrives). Your words are Uzbek, and Whistle hears seven European languages and no Uzbek. Given
@@ -473,7 +492,7 @@ makes it.
   language, and with Uzbek forced it was still at WER 93 % (e0225, e0222 —
   [room 29 `work/results/score-whisper-ru-uz.md:5-6`]). No local recogniser has been shown to
   hear Uzbek, so none can check an Uzbek line of yours. Your films hold no speech today
-  (`oq-kocha/tools/mkfilm.py:70`, "Ovoz: o'chiq — sintez, 0 bayt namuna"), and the day one
+  (`oq-kocha/tools/mkfilm.py:87`, "Ovoz: o'chiq — sintez, 0 bayt namuna"), and the day one
   speaks, item 9 times captions from the voice, never from a recogniser (e0093). Before any
   recogniser enters a check of yours, give it one clip in a language it does not claim (e0222).
 - **The ad's recipe: the voice first, a generated picture driven by it as a black video, the
