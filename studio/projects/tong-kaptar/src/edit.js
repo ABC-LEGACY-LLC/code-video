@@ -131,7 +131,7 @@ function renderFilmFrame(n) {
 // slow-motion shot), so "play" draws the next frame as soon as the last one is done.
 let playing = false;
 window.__frameTo = (n) => { playing = false; return renderFilmFrame(n); };
-window.__frame = () => ({ frame: filmFrame, shot: FILM[filmFrame].shot });
+window.__frame = () => ({ frame: filmFrame, shot: FILM[filmFrame].shot, playing });   // it does not start on its own
 window.__pause = () => { playing = false; };
 window.__play = (f) => {
   if (Number.isInteger(f)) filmFrame = f;

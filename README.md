@@ -29,8 +29,9 @@ build. Only shared things stay at the root: `studio/`, `harness/`, `catalog/`, `
 | `studio/projects/tong-kaptar/` | A 21 s film, five shots: at dawn on a Tashkent rooftop a boy throws a pigeon up to the flock, and the flock comes back down. Canvas 2D, every frame from code; edit B (504 frames) cut with a whip pan and fades, drawn by the page and by `audit/assemble.py` for the master; the sound synthesized from the picture's own state (Python) | **3** |
 | `studio/projects/masofa-maydoni/` | An SDF sandbox — primitives, unions, marching | — |
 | `studio/` | A person and an AI on the same piece: live viewing, frame scrubbing, card and checks, notes on a frame and the AI's answers; a timeline of each film's own tables; what the AI changes shows at once; export to mp4 in the browser, with sound | **33** |
-| `catalog/` | The architecture: tools that count the source and measure frames, six cards, the catalog generator | **15** |
+| `catalog/` | The architecture: tools that count the source and measure frames, six cards, the catalog generator | **18** |
 | `tools/compare/` | Code-drawn frames compared with a sample clip **frame by frame, with the same code on both sides**: probes, silhouettes, motion and boil, difference maps, rhythm, occlusion. `METHOD.md` is the method and its findings | **13** (`calibrate`) |
+| `tools/gpu/` | SAM 2 and CoTracker3 for the laptop with the GPU (Windows, CUDA): one shared environment, one folder per project; the projects' frames, prompts and masks stay off git | — |
 | `skills/` → `.claude/skills/` | The instructions this work was done under: project skills, for this repository only (not part of the abc UX-audit family) | — |
 
 ## Why this is research
@@ -89,7 +90,7 @@ Or by hand, suite by suite:
 ```bash
 cd studio/projects/oq-kocha && npm i && npm run build && npm run audit   # 43 checks
 cd studio/projects/oq-kocha && npm run audio                             # the sound, offline: build/film.pcm
-cd catalog && npm i && node test/run.mjs                                 # 15 checks
+cd catalog && npm i && node test/run.mjs                                 # 18 checks
 cd catalog && node tools/card.mjs                                        # do the cards agree with their sources
 cd catalog && node tools/catalog.mjs out.html                            # the catalog page
 cd studio/projects/zarra && npm i && npm run audit                       # 4 checks

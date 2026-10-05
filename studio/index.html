@@ -380,6 +380,9 @@ function stageReady(g){
  try{ if(S.total&&typeof W.__tracks==='function'){ const T=W.__tracks();
    if(Array.isArray(T)) S.tracks=T.filter(t=>t&&Array.isArray(t.items)&&t.items.length); } }
  catch(e){ log(`${w.name}: its tracks could not be read — ${e.message}`,{error:true}); }
+ /* a page that does not start on its own says so (__frame().playing === false): it is shown as
+    paused, not as playing */
+ try{ if(H.frame){ const f=W.__frame()||{}; if(f.playing===false){ S.mode='frame'; if(Number.isInteger(f.frame)) S.frame=f.frame; S.shot=f.shot??null; } } }catch(e){}
  S.hooks=H; S.ready=true; $('#veil').hidden=true;
  renderShots(); renderTimeline();
  const r=S.restore; S.restore=null;
@@ -428,7 +431,8 @@ function goTo(n){
 /* while it plays, the readout follows the frame the page reports, or says it cannot */
 setInterval(()=>{
  if(!S.ready||S.mode!=='play'||!S.hooks.frame) return;
- try{ const r=win().__frame()||{}; if(Number.isInteger(r.frame)){ S.frame=clampF(r.frame); S.shot=r.shot??null; setTransport(); } }catch(e){}
+ try{ const r=win().__frame()||{}; if(r.playing===false) S.mode='frame';
+  if(Number.isInteger(r.frame)){ S.frame=clampF(r.frame); S.shot=r.shot??null; setTransport(); } }catch(e){}
 },250);
 
 function renderShots(){
@@ -599,7 +603,7 @@ async function exportVideo({from=0,to=S.total-1,width=null,sound=true,onStep=()=
   if(record){ W.__soundRecord(false); audio=await exportAudio(from,to,fps); }
   if(enc.codec==='avc'&&!description) throw new Error('the encoder gave no stream description');
   return MP4.file({codec:enc.codec,description,width:w,height:h,fps,samples,audio});
- } finally { try{ encoder.close(); }catch(e){} try{ W.__soundRecord&&W.__soundRecord(false); }catch(e){} exporting=null; }
+ } finally { try{ encoder.close(); }catch(e){} try{ W.__soundRecord&&W.__soundRecord(false); }catch(e){} exporting=null; setTransport(); }
 }
 function saveBlob(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
  document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),60000); }

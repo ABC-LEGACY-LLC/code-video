@@ -79,6 +79,9 @@ the v2 film's picture, which is the same picture.
 
 ## Verified from a clean unzip (2026-10-04)
 
+As the work was then, before its review page was translated: `build.py` now writes the English page
+and the layers' English names, so its page no longer matches the published one byte for byte.
+
 Unpacked into an empty folder and run exactly as above:
 
 - `make_film.sh`: all 504 frames of edit B identical to the frames the review film was cut from

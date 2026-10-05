@@ -143,7 +143,7 @@ gets and says what it does not.
 | `__failed` | a message, when the page cannot run (a shader that did not compile, say) |
 | `__frameTo(n)` | draws frame `n` and holds it; returns `{frame, shot?}` (works.json `control: "frameTo"`). With `__sizable = true` it also takes a size, `__frameTo(n, w, h)`, and an export is drawn at its own size instead of scaled |
 | `__seek(seconds)` | the same by time (`control: "seek"`) |
-| `__frame()` | `{frame, shot?}`: the frame on screen now, playing or not |
+| `__frame()` | `{frame, shot?, playing?}`: the frame on screen now; `playing: false` from a page that does not start on its own, so the studio shows it paused |
 | `__pause()`, `__play(fromFrame?)` | stop on the frame on screen; go on, from a frame if given |
 | `__totalFrames`, or `__total` and `__fps` | the length (`__total` in seconds, a number or a function; `__fps` 24 if absent) |
 | `__shots` | the shots, `[{k, df}]` (length in frames) or `[{k, f}]` (first frame) |
