@@ -1,0 +1,1 @@
+window.headBox = (i) => { const t = S5.t0 + i / FPS; Z5 = zoom5At(i / FPS); setBoyView(Z5.k > 1.0005 ? view5(t) : null); BOY_POSE = boyPose5; try { const R = rig(t, t); const p = projB(R.H.pivot, t); return [Math.round(p.x), Math.round(p.y), +(Z5.k).toFixed(3)]; } finally { BOY_POSE = null; setBoyView(null); } };

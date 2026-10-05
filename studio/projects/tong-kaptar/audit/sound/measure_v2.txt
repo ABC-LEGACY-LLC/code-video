@@ -1,0 +1,71 @@
+== per shot (solo windows)
+shot     RMS   pk98 relief  floor  bands% 20-120/120-400/400-1.2k/1.2-4k/4-10k   corr  mono   HP450 dRMS dPk98  sharp rough
+s1     -29.4  -19.0   17.2  -37.2   3.0/14.0/36.5/36.8/ 9.7    0.84  -0.5     -0.8   -0.8   1.80 0.033
+whip   -32.2  -29.0    3.7  -33.2   3.4/ 8.8/38.7/42.1/ 6.9    0.79  -0.5     -0.7   -0.5   1.97   nan
+s2     -32.7  -27.9    5.3  -33.7   6.4/14.7/54.7/22.3/ 1.9    0.64  -0.9     -1.8   -2.0   1.58 -0.004
+s3     -28.6  -19.7   15.9  -37.1   3.6/28.5/61.1/ 5.7/ 1.1    0.90  -0.2     -2.8   -2.8   1.60 0.100
+s4     -23.5  -14.2   22.6  -38.0   0.5/ 1.3/ 5.4/91.9/ 0.8    0.82  -0.6     -0.1   -0.0   1.91 -0.079
+s5     -28.1  -17.6   19.0  -39.0   2.1/10.9/20.0/56.3/10.7    0.81  -0.5     -0.7   -0.8   2.04 0.039
+RMS spread across shots (whip excluded): 9.1 dB
+loudness range (95-10 pct, 0.4 s): 17.3 dB
+integrated loudness: -20.3 LUFS
+  momentary max take-off         -17.3 LUFS
+  momentary max shot 2 flock     -26.5 LUFS
+  momentary max slow wings       -20.3 LUFS
+  momentary max rag circles      -21.0 LUFS
+  momentary max whistle           -9.1 LUFS
+  momentary max landing          -15.4 LUFS
+  momentary max white one down   -23.6 LUFS
+  momentary max sigh             -25.2 LUFS
+  momentary max end coo          -31.8 LUFS
+sample peak max -1.00 dBFS, 99.99th pct -4.86
+after AAC 192k: max -0.88 dBFS, 99.99th pct -5.00 dBFS
+limiter: max reduction 2.20 dB, on 3.438 % of samples
+
+== bed hiss (flatness of the continuous layers, accents muted) and each stem alone
+shot  bed flat     amb sparrow    flag     coo   wings    land     air     rag   foley  breath whistle    whip
+s1       0.157   0.000   0.012   0.137   0.000   0.159   0.384       -       -   0.411       -       -       -
+whip     0.090   0.000   0.005   0.131       -   0.087       -       -       -       -       -       -   0.246
+s2       0.079   0.000   0.006   0.125   0.000   0.079       -   0.092       -       -       -       -       -
+s3       0.041   0.000       -       -       -   0.041       -       -       -       -       -       -       -
+s4       0.110   0.000   0.005       -   0.000   0.067       -   0.101   0.119   0.410   0.384   0.001       -
+s5       0.066   0.000   0.010   0.144   0.000   0.070   0.290       -       -   0.389   0.245       -       -
+
+== what never stops: resting floor per shot (dB), and how far muting each stem drops it
+shot   floor     amb sparrow    flag     coo   wings    land     air     rag   foley  breath whistle    whip
+s1     -37.2    -1.8    -0.0    -0.1    -0.1    -4.7     0.0     0.0     0.0    -0.2     0.0     0.0     0.0
+whip   -33.2    -0.4    -0.0    -0.1     0.0    -5.4     0.0     0.0     0.0     0.0     0.0     0.0    -3.2
+s2     -33.7    -0.9    -0.0    -0.1    -0.2    -6.8     0.0     0.0     0.0     0.0     0.0     0.0     0.0
+s3     -37.1     0.1     0.0     0.0     0.0   -25.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0
+s4     -38.0    -2.1     0.0     0.0    -0.7    -1.1     0.0    -1.2    -2.8    -0.0    -0.1    -0.9     0.0
+s5     -39.0    -3.2    -0.2     0.0    -0.5    -0.3    -1.7     0.0     0.0    -0.7    -2.9     0.0     0.0
+all stems muted: peak 0.00e+00
+
+== accents: audible over the rest (audible_at on the best 0.5 s), sharpness, roughness
+whistle 2950 Hz: audible_at  52.5 dB  sharpness 2.11  rough index -0.16  (whistle stem alone -0.16)
+take-off (0.92..1.42 s): flutter 700 Hz audible_at  21.3 dB  sharpness 1.95  rough index 0.14
+landing (s5 1.4..2.8 s): sharpness 2.05  rough index 0.10
+
+== event log: per layer, shot -- fires, fires/s, on screen at onset, onset lag (ms), smallest gap per source (ms), fires inside their own tail
+breath   s4    n    1    0.3/s  on 100.0%  lag    0.0..  0.0  gap min    nan  inside 0
+breath   s5    n    2    0.3/s  on 100.0%  lag    0.0.. 10.5  gap min  760.5  inside 0
+coo      s1    n    1    0.3/s  on 100.0%  lag    nan..  nan  gap min    nan  inside 0
+coo      s2    n    1    0.4/s  on 100.0%  lag    nan..  nan  gap min    nan  inside 0
+coo      s4    n    1    0.3/s  on 100.0%  lag    nan..  nan  gap min    nan  inside 0
+coo      s5    n    1    0.2/s  on   0.0%  lag    nan..  nan  gap min    nan  inside 0
+flag     s1    n    3    1.0/s  on 100.0%  lag  -20.8..  0.0  gap min 1083.3  inside 0
+flag     s5    n    2    0.3/s  on 100.0%  lag    0.0..  0.0  gap min 1583.4  inside 0
+land     s1    n    2    0.6/s  on 100.0%  lag  -20.9.. 10.4  gap min  364.6  inside 0
+land     s5    n  184   29.2/s  on  68.5%  lag  -20.8.. 20.8  gap min   20.0  inside 165
+rag      s4    n   17    4.8/s  on  76.5%  lag  -20.8.. 15.7  gap min   57.2  inside 2
+sparrow  s1    n    8    2.6/s  on   nan%  lag    nan..  nan  gap min  215.8  inside 0
+sparrow  s2    n    4    1.5/s  on   nan%  lag    nan..  nan  gap min  288.4  inside 0
+sparrow  s4    n    2    0.6/s  on   nan%  lag    nan..  nan  gap min  278.5  inside 0
+sparrow  s5    n   14    2.2/s  on   nan%  lag    nan..  nan  gap min  205.1  inside 0
+sparrow  whip  n    1    2.4/s  on   nan%  lag    nan..  nan  gap min    nan  inside 0
+whip     whip  n    1    2.4/s  on   nan%  lag    0.0..  0.0  gap min    nan  inside 0
+whistle  s4    n    1    0.3/s  on 100.0%  lag   17.1.. 17.1  gap min    nan  inside 0
+wings    s1    n    8    2.6/s  on 100.0%  lag   -9.8.. 15.9  gap min  149.8  inside 6
+wings    s2    n    4    1.5/s  on 100.0%  lag  -18.8.. 13.8  gap min  149.7  inside 3
+wings    s3    n   11    4.3/s  on 100.0%  lag  -19.3.. 19.9  gap min  757.4  inside 5
+wings    whip  n    2    4.8/s  on  50.0%  lag  -17.6..  7.1  gap min  149.7  inside 1

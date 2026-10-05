@@ -1,0 +1,145 @@
+{
+ "name": "Tong · kaptar",
+ "sources": [
+  "../../studio/projects/tong-kaptar/scene.html",
+  "../../studio/projects/tong-kaptar/src/core.js",
+  "../../studio/projects/tong-kaptar/src/map.js",
+  "../../studio/projects/tong-kaptar/src/sky.js",
+  "../../studio/projects/tong-kaptar/src/city.js",
+  "../../studio/projects/tong-kaptar/src/pigeon.js",
+  "../../studio/projects/tong-kaptar/src/boy.js",
+  "../../studio/projects/tong-kaptar/src/props.js",
+  "../../studio/projects/tong-kaptar/src/frame.js",
+  "../../studio/projects/tong-kaptar/src/shot2.js",
+  "../../studio/projects/tong-kaptar/src/shot3.js",
+  "../../studio/projects/tong-kaptar/src/shot4.js",
+  "../../studio/projects/tong-kaptar/src/shot5.js",
+  "../../studio/projects/tong-kaptar/src/edit.js"
+ ],
+ "frame": {
+  "file": "../../studio/projects/tong-kaptar/scene.html",
+  "frames": [
+   12,
+   48,
+   90
+  ],
+  "hook": "__frameTo"
+ },
+ "method": [
+  {
+   "text": "No image file and no 3D model: every frame is drawn on Canvas from code — renderer canvas2d.",
+   "evidence": "renderer"
+  },
+  {
+   "text": "The source is 14 files: the scene page, 12 scripts that draw — sky, town, pigeon, boy and props apart, shots 2–5 each in its own file — and the edit.",
+   "evidence": "files"
+  },
+  {
+   "text": "Five shots, each on its own clock: shots 2–5 run 4 · 4 · 4 · 7.5 s. The film is cut from pieces of them (src/edit.js, edit B).",
+   "evidence": "durations"
+  },
+  {
+   "text": "220 functions: the sky, the town, the pigeon, the boy and each shot are drawn by their own.",
+   "evidence": "functions"
+  },
+  {
+   "text": "7853 lines, the scene page and the edit included.",
+   "evidence": "lines"
+  },
+  {
+   "text": "427 draw calls in the source; offscreen layers are put together with drawImage.",
+   "evidence": "drawCallsTotal"
+  }
+ ],
+ "look": "Dawn. A violet-blue sky turns pink and peach at the horizon, the sun stands low on the right, the clouds are lit pink from below. The town is a flat, hazy violet silhouette of domes and minarets; in front, a roof, wires and poles, a patterned flag, pigeons on the edge. The boy in a white shirt and a doppi, mostly from behind. Shot 3 is slowed down: dark pigeons in silhouette against an orange sun.",
+ "claims": {
+  "ink": [
+   "<",
+   5,
+   "dawn: almost no black, the frame is built of light"
+  ],
+  "value.low": [
+   ">",
+   25,
+   "dawn haze: even the darkest place is not black"
+  ],
+  "saturation": [
+   ">",
+   20,
+   "the colour of dawn: violet and pink, not black and white"
+  ]
+ },
+ "count": {
+  "files": 14,
+  "bytes": 456030,
+  "lines": 7853,
+  "renderer": "canvas2d",
+  "functions": 220,
+  "audio": false,
+  "events": [],
+  "fonts": [],
+  "drawCalls": {
+   "beginPath": 33,
+   "moveTo": 55,
+   "lineTo": 32,
+   "arc": 9,
+   "bezierCurveTo": 1,
+   "quadraticCurveTo": 24,
+   "ellipse": 9,
+   "rect": 18,
+   "fillRect": 86,
+   "drawImage": 57,
+   "createLinearGradient": 30,
+   "createRadialGradient": 20,
+   "clip": 50,
+   "putImageData": 3
+  },
+  "drawCallsTotal": 427,
+  "tables": {},
+  "durations": [
+   4,
+   4,
+   4,
+   7.5
+  ]
+ },
+ "measure": {
+  "palette": [
+   {
+    "hex": "#42385f",
+    "share": 25
+   },
+   {
+    "hex": "#595187",
+    "share": 25
+   },
+   {
+    "hex": "#94738e",
+    "share": 12.5
+   },
+   {
+    "hex": "#917baa",
+    "share": 12.5
+   },
+   {
+    "hex": "#ce9e9d",
+    "share": 12.5
+   },
+   {
+    "hex": "#d1a6b4",
+    "share": 12.5
+   }
+  ],
+  "value": [
+   41,
+   202
+  ],
+  "saturation": 34,
+  "hardEdges": 2.85,
+  "softEdges": 15.71,
+  "hardEdgeShare": 15.3,
+  "texture": 2.9,
+  "ink": 0.9
+ },
+ "goals": {}
+}

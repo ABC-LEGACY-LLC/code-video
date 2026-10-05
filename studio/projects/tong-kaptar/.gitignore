@@ -1,0 +1,12 @@
+# made again from the source: frames, the film, its sound, the review page built from them
+frames/
+sound/out/*
+!sound/out/v2/
+out/sound_page/index.html
+out/sound_page/data.json
+out/sound_page/poster.jpg
+*.mp4
+*.mp3
+*.wav
+*.npy
+tools/EfficientAT/

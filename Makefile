@@ -23,6 +23,7 @@ NODE        := $(shell command -v node)
 USERCTL      = XDG_RUNTIME_DIR=/run/user/$$(id -u) systemctl --user
 OQ           = studio/projects/oq-kocha
 ZARRA        = studio/projects/zarra
+TONG         = studio/projects/tong-kaptar
 
 # Bare `make` shows help.  `install` changes the system (a systemd unit), so
 # it must never be what an accidental `make` runs.
@@ -30,7 +31,7 @@ ZARRA        = studio/projects/zarra
 
 .PHONY: help start stop restart status logs install uninstall ports expose expose-dry unexpose \
         build build-if-needed deps deps-if-needed audio \
-        audit audit-fast audit-studio audit-oq-kocha audit-catalog audit-zarra \
+        audit audit-fast audit-studio audit-oq-kocha audit-catalog audit-zarra audit-tong-kaptar \
         cards catalog notes labs clean
 
 # ── help ─────────────────────────────────────────────
@@ -248,19 +249,19 @@ audio: build-if-needed deps-if-needed
 
 ## Install the browser the checks use (Playwright), in every suite that needs it.
 deps:
-	@for d in $(OQ) catalog $(ZARRA) studio; do \
+	@for d in $(OQ) catalog $(ZARRA) $(TONG) studio; do \
 		echo "   📦 $$d"; (cd $$d && npm install --silent && npx playwright install chromium) || exit 1; \
 	done
 
 ## Install dependencies only where node_modules is missing.
 deps-if-needed:
-	@missing=0; for d in $(OQ) catalog $(ZARRA) studio; do [ -d $$d/node_modules/playwright ] || missing=1; done; \
+	@missing=0; for d in $(OQ) catalog $(ZARRA) $(TONG) studio; do [ -d $$d/node_modules/playwright ] || missing=1; done; \
 	if [ $$missing -eq 1 ]; then $(MAKE) --no-print-directory deps; else echo "   📦 dependencies present"; fi
 
 # ── checks ───────────────────────────────────────────
 
 ## Every suite. Oq Ko'cha's renders take 45–75 minutes on a CPU-only machine.
-audit: audit-studio audit-catalog audit-zarra audit-oq-kocha
+audit: audit-studio audit-catalog audit-zarra audit-tong-kaptar audit-oq-kocha
 
 ## The quick checks: studio, the cards against their sources, Oq Ko'cha without a browser.
 audit-fast:
@@ -283,6 +284,10 @@ audit-catalog: deps-if-needed
 ## Zarra's particle layer (a minute or two).
 audit-zarra: deps-if-needed
 	@cd $(ZARRA) && node test/run.mjs
+
+## Tong kaptar: its edit against the master's, film frames against their shots, the fades (a minute).
+audit-tong-kaptar: deps-if-needed
+	@cd $(TONG) && node test/run.mjs
 
 ## Do the cards still agree with their sources?
 cards: deps-if-needed

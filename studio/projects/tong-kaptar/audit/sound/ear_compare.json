@@ -1,0 +1,1074 @@
+{
+ "old": "/home/claude/kaptar/sound/out/v2/mixed",
+ "new": "/home/claude/kaptar/sound/out/mixed",
+ "rows": [
+  {
+   "window": "s1 take-off wings",
+   "stem": "wings",
+   "t": [
+    0.85,
+    1.8
+   ],
+   "old": {
+    "status": "WARN",
+    "best": [
+     "Rustle",
+     0.045
+    ],
+    "worst": [
+     "Chop",
+     0.098
+    ],
+    "top": [
+     [
+      "Animal",
+      0.117
+     ],
+     [
+      "Chop",
+      0.098
+     ],
+     [
+      "Fire alarm",
+      0.073
+     ],
+     [
+      "Clapping",
+      0.061
+     ]
+    ]
+   },
+   "new": {
+    "status": "PASS",
+    "best": [
+     "Rustle",
+     0.214
+    ],
+    "worst": [
+     "Rattle",
+     0.198
+    ],
+    "top": [
+     [
+      "Sound effect",
+      0.34
+     ],
+     [
+      "Rustle",
+      0.214
+     ],
+     [
+      "Rattle",
+      0.198
+     ],
+     [
+      "Clatter",
+      0.161
+     ]
+    ]
+   }
+  },
+  {
+   "window": "s2 flock wings",
+   "stem": "wings",
+   "t": [
+    4.31,
+    6.9
+   ],
+   "old": {
+    "status": "FAIL",
+    "best": [
+     "Flap",
+     0.018
+    ],
+    "worst": [
+     "Vehicle",
+     0.167
+    ],
+    "top": [
+     [
+      "Vehicle",
+      0.167
+     ],
+     [
+      "Music",
+      0.06
+     ],
+     [
+      "Engine",
+      0.058
+     ],
+     [
+      "Eruption",
+      0.039
+     ]
+    ]
+   },
+   "new": {
+    "status": "WARN",
+    "best": [
+     "Rustle",
+     0.04
+    ],
+    "worst": [
+     "Music",
+     0.068
+    ],
+    "top": [
+     [
+      "Music",
+      0.068
+     ],
+     [
+      "Vehicle",
+      0.066
+     ],
+     [
+      "White noise",
+      0.059
+     ],
+     [
+      "Static",
+      0.045
+     ]
+    ]
+   }
+  },
+  {
+   "window": "s3 slow wings",
+   "stem": "wings",
+   "t": [
+    7.05,
+    9.7
+   ],
+   "old": {
+    "status": "WARN",
+    "best": [
+     "Rustle",
+     0.012
+    ],
+    "worst": [
+     "Battle cry",
+     0.06
+    ],
+    "top": [
+     [
+      "Battle cry",
+      0.06
+     ],
+     [
+      "Sine wave",
+      0.031
+     ],
+     [
+      "Animal",
+      0.028
+     ],
+     [
+      "Music",
+      0.025
+     ]
+    ]
+   },
+   "new": {
+    "status": "PASS",
+    "best": [
+     "Whoosh, swoosh, swish",
+     0.208
+    ],
+    "worst": [
+     "Music",
+     0.076
+    ],
+    "top": [
+     [
+      "Whoosh, swoosh, swish",
+      0.208
+     ],
+     [
+      "Sound effect",
+      0.084
+     ],
+     [
+      "Music",
+      0.076
+     ],
+     [
+      "Whip",
+      0.033
+     ]
+    ]
+   }
+  },
+  {
+   "window": "s5 landing",
+   "stem": "land",
+   "t": [
+    14.4,
+    16.4
+   ],
+   "old": {
+    "status": "WARN",
+    "best": [
+     "Flap",
+     0.033
+    ],
+    "worst": [
+     "Rattle",
+     0.062
+    ],
+    "top": [
+     [
+      "Rattle",
+      0.062
+     ],
+     [
+      "Crackle",
+      0.051
+     ],
+     [
+      "Vehicle",
+      0.035
+     ],
+     [
+      "Flap",
+      0.033
+     ]
+    ]
+   },
+   "new": {
+    "status": "WARN",
+    "best": [
+     "Rustle",
+     0.038
+    ],
+    "worst": [
+     "Music",
+     0.086
+    ],
+    "top": [
+     [
+      "Music",
+      0.086
+     ],
+     [
+      "Sound effect",
+      0.073
+     ],
+     [
+      "Clatter",
+      0.05
+     ],
+     [
+      "Rattle",
+      0.042
+     ]
+    ]
+   }
+  },
+  {
+   "window": "s1 coo",
+   "stem": "coo",
+   "t": [
+    0.06,
+    0.8
+   ],
+   "old": {
+    "status": "FAIL",
+    "best": [
+     "Bird",
+     0.013
+    ],
+    "worst": [
+     "Theremin",
+     0.424
+    ],
+    "top": [
+     [
+      "Theremin",
+      0.424
+     ],
+     [
+      "Music",
+      0.303
+     ],
+     [
+      "Synthesizer",
+      0.284
+     ],
+     [
+      "Sound effect",
+      0.086
+     ]
+    ]
+   },
+   "new": {
+    "status": "FAIL",
+    "best": [
+     "Bird",
+     0.026
+    ],
+    "worst": [
+     "Cat",
+     0.224
+    ],
+    "top": [
+     [
+      "Animal",
+      0.376
+     ],
+     [
+      "Cat",
+      0.224
+     ],
+     [
+      "Domestic animals, pets",
+      0.195
+     ],
+     [
+      "Caterwaul",
+      0.123
+     ]
+    ]
+   }
+  },
+  {
+   "window": "s2 coo",
+   "stem": "coo",
+   "t": [
+    5.5,
+    6.6
+   ],
+   "old": {
+    "status": "FAIL",
+    "best": [
+     "Bird",
+     0.01
+    ],
+    "worst": [
+     "Music",
+     0.122
+    ],
+    "top": [
+     [
+      "Music",
+      0.122
+     ],
+     [
+      "Sound effect",
+      0.12
+     ],
+     [
+      "Beatboxing",
+      0.095
+     ],
+     [
+      "Vocal music",
+      0.065
+     ]
+    ]
+   },
+   "new": {
+    "status": "WARN",
+    "best": [
+     "Bird",
+     0.021
+    ],
+    "worst": [
+     "Music",
+     0.057
+    ],
+    "top": [
+     [
+      "Animal",
+      0.121
+     ],
+     [
+      "Domestic animals, pets",
+      0.064
+     ],
+     [
+      "Music",
+      0.057
+     ],
+     [
+      "Sound effect",
+      0.043
+     ]
+    ]
+   }
+  },
+  {
+   "window": "s5 coo",
+   "stem": "coo",
+   "t": [
+    19.5,
+    20.4
+   ],
+   "old": {
+    "status": "FAIL",
+    "best": [
+     "Bird",
+     0.027
+    ],
+    "worst": [
+     "Music",
+     0.113
+    ],
+    "top": [
+     [
+      "Animal",
+      0.213
+     ],
+     [
+      "Domestic animals, pets",
+      0.135
+     ],
+     [
+      "Music",
+      0.113
+     ],
+     [
+      "Owl",
+      0.112
+     ]
+    ]
+   },
+   "new": {
+    "status": "WARN",
+    "best": [
+     "Bird",
+     0.04
+    ],
+    "worst": [
+     "Music",
+     0.079
+    ],
+    "top": [
+     [
+      "Animal",
+      0.228
+     ],
+     [
+      "Domestic animals, pets",
+      0.12
+     ],
+     [
+      "Music",
+      0.079
+     ],
+     [
+      "Cat",
+      0.065
+     ]
+    ]
+   }
+  },
+  {
+   "window": "s1-s2 flag",
+   "stem": "flag",
+   "t": [
+    0.6,
+    6.9
+   ],
+   "old": {
+    "status": "FAIL",
+    "best": [
+     "Whoosh, swoosh, swish",
+     0.012
+    ],
+    "worst": [
+     "Chop",
+     0.13
+    ],
+    "top": [
+     [
+      "Chop",
+      0.13
+     ],
+     [
+      "Whip",
+      0.053
+     ],
+     [
+      "Arrow",
+      0.048
+     ],
+     [
+      "Music",
+      0.024
+     ]
+    ]
+   },
+   "new": {
+    "status": "WARN",
+    "best": [
+     "Rustling leaves",
+     0.034
+    ],
+    "worst": [
+     "Tick",
+     0.023
+    ],
+    "top": [
+     [
+      "Rustling leaves",
+      0.034
+     ],
+     [
+      "Tick",
+      0.023
+     ],
+     [
+      "Eruption",
+      0.022
+     ],
+     [
+      "Tick-tock",
+      0.022
+     ]
+    ]
+   }
+  },
+  {
+   "window": "s4 rag circles",
+   "stem": "rag",
+   "t": [
+    9.8,
+    11.2
+   ],
+   "old": {
+    "status": "FAIL",
+    "best": [
+     "Rustle",
+     0.04
+    ],
+    "worst": [
+     "Music",
+     0.138
+    ],
+    "top": [
+     [
+      "Sound effect",
+      0.198
+     ],
+     [
+      "Music",
+      0.138
+     ],
+     [
+      "Musical instrument",
+      0.082
+     ],
+     [
+      "Drum",
+      0.052
+     ]
+    ]
+   },
+   "new": {
+    "status": "PASS",
+    "best": [
+     "Whoosh, swoosh, swish",
+     0.169
+    ],
+    "worst": [
+     "Music",
+     0.104
+    ],
+    "top": [
+     [
+      "Sound effect",
+      0.197
+     ],
+     [
+      "Whoosh, swoosh, swish",
+      0.169
+     ],
+     [
+      "Music",
+      0.104
+     ],
+     [
+      "Rustle",
+      0.055
+     ]
+    ]
+   }
+  },
+  {
+   "window": "s1-s2 town",
+   "stem": "amb",
+   "t": [
+    0.6,
+    6.9
+   ],
+   "old": {
+    "status": "FAIL",
+    "best": [
+     "Vehicle",
+     0.051
+    ],
+    "worst": [
+     "Eruption",
+     0.286
+    ],
+    "top": [
+     [
+      "Eruption",
+      0.286
+     ],
+     [
+      "White noise",
+      0.168
+     ],
+     [
+      "Wind noise (microphone)",
+      0.058
+     ],
+     [
+      "Vehicle",
+      0.051
+     ]
+    ]
+   },
+   "new": {
+    "status": "WARN",
+    "best": [
+     "Wind",
+     0.152
+    ],
+    "worst": [
+     "White noise",
+     0.159
+    ],
+    "top": [
+     [
+      "Wind noise (microphone)",
+      0.174
+     ],
+     [
+      "White noise",
+      0.159
+     ],
+     [
+      "Wind",
+      0.152
+     ],
+     [
+      "Eruption",
+      0.133
+     ]
+    ]
+   }
+  },
+  {
+   "window": "s5 town",
+   "stem": "amb",
+   "t": [
+    16.5,
+    19.9
+   ],
+   "old": {
+    "status": "FAIL",
+    "best": [
+     "Vehicle",
+     0.05
+    ],
+    "worst": [
+     "Eruption",
+     0.338
+    ],
+    "top": [
+     [
+      "Eruption",
+      0.338
+     ],
+     [
+      "White noise",
+      0.155
+     ],
+     [
+      "Wind noise (microphone)",
+      0.082
+     ],
+     [
+      "Vehicle",
+      0.05
+     ]
+    ]
+   },
+   "new": {
+    "status": "WARN",
+    "best": [
+     "Wind",
+     0.104
+    ],
+    "worst": [
+     "White noise",
+     0.203
+    ],
+    "top": [
+     [
+      "White noise",
+      0.203
+     ],
+     [
+      "Eruption",
+      0.177
+     ],
+     [
+      "Wind noise (microphone)",
+      0.14
+     ],
+     [
+      "Rustling leaves",
+      0.106
+     ]
+    ]
+   }
+  },
+  {
+   "window": "sparrows",
+   "stem": "sparrow",
+   "t": [
+    0.6,
+    7.0
+   ],
+   "old": {
+    "status": "PASS",
+    "best": [
+     "Bird",
+     0.269
+    ],
+    "worst": [
+     "Music",
+     0.035
+    ],
+    "top": [
+     [
+      "Bird",
+      0.269
+     ],
+     [
+      "Chirp, tweet",
+      0.204
+     ],
+     [
+      "Bird vocalization, bird call, bird song",
+      0.152
+     ],
+     [
+      "Music",
+      0.035
+     ]
+    ]
+   },
+   "new": {
+    "status": "PASS",
+    "best": [
+     "Bird",
+     0.275
+    ],
+    "worst": [
+     "Music",
+     0.035
+    ],
+    "top": [
+     [
+      "Bird",
+      0.275
+     ],
+     [
+      "Chirp, tweet",
+      0.211
+     ],
+     [
+      "Bird vocalization, bird call, bird song",
+      0.159
+     ],
+     [
+      "Music",
+      0.035
+     ]
+    ]
+   }
+  },
+  {
+   "window": "whistle",
+   "stem": "whistle",
+   "t": [
+    11.75,
+    12.6
+   ],
+   "old": {
+    "status": "PASS",
+    "best": [
+     "Whistle",
+     0.834
+    ],
+    "worst": [
+     "Steam whistle",
+     0.222
+    ],
+    "top": [
+     [
+      "Whistle",
+      0.834
+     ],
+     [
+      "Whistling",
+      0.374
+     ],
+     [
+      "Steam whistle",
+      0.222
+     ],
+     [
+      "Steam",
+      0.104
+     ]
+    ]
+   },
+   "new": {
+    "status": "PASS",
+    "best": [
+     "Whistle",
+     0.834
+    ],
+    "worst": [
+     "Steam whistle",
+     0.222
+    ],
+    "top": [
+     [
+      "Whistle",
+      0.834
+     ],
+     [
+      "Whistling",
+      0.374
+     ],
+     [
+      "Steam whistle",
+      0.222
+     ],
+     [
+      "Steam",
+      0.104
+     ]
+    ]
+   }
+  },
+  {
+   "window": "sigh",
+   "stem": "breath",
+   "t": [
+    17.7,
+    19.4
+   ],
+   "old": {
+    "status": "PASS",
+    "best": [
+     "Breathing",
+     0.235
+    ],
+    "worst": [
+     "Music",
+     0.023
+    ],
+    "top": [
+     [
+      "Snort",
+      0.322
+     ],
+     [
+      "Breathing",
+      0.235
+     ],
+     [
+      "Wheeze",
+      0.174
+     ],
+     [
+      "Gasp",
+      0.09
+     ]
+    ]
+   },
+   "new": {
+    "status": "PASS",
+    "best": [
+     "Breathing",
+     0.235
+    ],
+    "worst": [
+     "Music",
+     0.023
+    ],
+    "top": [
+     [
+      "Snort",
+      0.322
+     ],
+     [
+      "Breathing",
+      0.235
+     ],
+     [
+      "Wheeze",
+      0.174
+     ],
+     [
+      "Gasp",
+      0.09
+     ]
+    ]
+   }
+  },
+  {
+   "window": "throw clothes",
+   "stem": "foley",
+   "t": [
+    0.4,
+    1.2
+   ],
+   "old": {
+    "status": "WARN",
+    "best": [
+     "Rustle",
+     0.071
+    ],
+    "worst": [
+     "Clapping",
+     0.117
+    ],
+    "top": [
+     [
+      "Clapping",
+      0.117
+     ],
+     [
+      "Sound effect",
+      0.114
+     ],
+     [
+      "Tick",
+      0.106
+     ],
+     [
+      "Scissors",
+      0.091
+     ]
+    ]
+   },
+   "new": {
+    "status": "PASS",
+    "best": [
+     "Rustle",
+     0.285
+    ],
+    "worst": [
+     "Music",
+     0.24
+    ],
+    "top": [
+     [
+      "Rustle",
+      0.285
+     ],
+     [
+      "Sound effect",
+      0.276
+     ],
+     [
+      "Music",
+      0.24
+     ],
+     [
+      "Rattle",
+      0.146
+     ]
+    ]
+   }
+  },
+  {
+   "window": "turn clothes",
+   "stem": "foley",
+   "t": [
+    16.4,
+    17.6
+   ],
+   "old": {
+    "status": "PASS",
+    "best": [
+     "Rustle",
+     0.102
+    ],
+    "worst": [
+     "Whoosh, swoosh, swish",
+     0.047
+    ],
+    "top": [
+     [
+      "Sound effect",
+      0.313
+     ],
+     [
+      "Silence",
+      0.115
+     ],
+     [
+      "Rustle",
+      0.102
+     ],
+     [
+      "Whoosh, swoosh, swish",
+      0.047
+     ]
+    ]
+   },
+   "new": {
+    "status": "PASS",
+    "best": [
+     "Rustle",
+     0.101
+    ],
+    "worst": [
+     "Whoosh, swoosh, swish",
+     0.054
+    ],
+    "top": [
+     [
+      "Sound effect",
+      0.325
+     ],
+     [
+      "Rustle",
+      0.101
+     ],
+     [
+      "Silence",
+      0.096
+     ],
+     [
+      "Whoosh, swoosh, swish",
+      0.054
+     ]
+    ]
+   }
+  }
+ ],
+ "counts": {
+  "old": {
+   "PASS": 4,
+   "WARN": 4,
+   "FAIL": 8
+  },
+  "new": {
+   "PASS": 8,
+   "WARN": 7,
+   "FAIL": 1
+  }
+ }
+}

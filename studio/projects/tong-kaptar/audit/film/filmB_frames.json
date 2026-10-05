@@ -1,0 +1,1 @@
+{"shots": [{"dir": "frames/s1", "from": 0, "to": 95}, {"dir": "frames/s2", "from": 0, "to": 71}, {"dir": "frames/s3", "from": 30, "to": 95}, {"dir": "frames/s4", "from": 6, "to": 95}, {"dir": "frames/s5", "from": 0, "to": 179}], "joins": [{"whip": 5, "dx": 453, "dy": 93}, "cut", "cut", "cut"], "fadeIn": 12, "fadeOut": 24}

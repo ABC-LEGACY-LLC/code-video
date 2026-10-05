@@ -1,0 +1,389 @@
+<title>Tong · kaptar ovozi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Alegreya+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #f3eff6; --panel: #fbf9fc; --ink: #1d1b3b; --muted: #625c80; --line: #dcd4e7; --soft: #ebe5f2;
+  --accent: #5c4596; --warm: #c8573f; --ok: #2f7d5b; --warn: #a86a12;
+  --l-muhit: #7c86a8; --l-qanot: #4d63c9; --l-qonish: #d0703f; --l-ku: #b0507f; --l-latta: #8e2f5a; --l-bola: #b8862e; --l-kamera: #8a8699;
+  --display: "Alegreya", "Iowan Old Style", Georgia, serif;
+  --body: "Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #11132c; --panel: #191c3d; --ink: #eee7f2; --muted: #a59dc2; --line: #2e3160; --soft: #22264b;
+    --accent: #b9a4ec; --warm: #f0a98b; --ok: #7fcfa6; --warn: #f0c46e;
+    --l-muhit: #9aa3c8; --l-qanot: #8fa2ff; --l-qonish: #f0a070; --l-ku: #e58fb8; --l-latta: #d9709c; --l-bola: #ffd89c; --l-kamera: #a8a4b8;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11132c; --panel: #191c3d; --ink: #eee7f2; --muted: #a59dc2; --line: #2e3160; --soft: #22264b;
+  --accent: #b9a4ec; --warm: #f0a98b; --ok: #7fcfa6; --warn: #f0c46e;
+  --l-muhit: #9aa3c8; --l-qanot: #8fa2ff; --l-qonish: #f0a070; --l-ku: #e58fb8; --l-latta: #d9709c; --l-bola: #ffd89c; --l-kamera: #a8a4b8;
+}
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.5; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 34px; }
+header { display: grid; gap: 8px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(38px, 6vw, 60px); line-height: 1.02; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+h1 .dot { color: var(--warm); }
+.lede { max-width: 64ch; margin: 0; color: var(--muted); font-size: 18px; }
+h2 { font-family: var(--display); font-weight: 700; font-size: 27px; line-height: 1.15; margin: 0 0 12px; text-wrap: balance; }
+p { margin: 0; }
+.player { display: grid; gap: 12px; }
+.screen { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; background: #0b0c1a; border-radius: 6px; overflow: hidden; }
+.screen video { width: 100%; height: 100%; display: block; }
+.bigplay { position: absolute; inset: 0; display: grid; place-items: center; background: transparent; border: 0; cursor: pointer; color: #fff; }
+.bigplay span { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 50%; background: rgba(17, 19, 44, 0.62); border: 1.5px solid rgba(255, 216, 156, 0.8); }
+.bigplay:focus-visible span { outline: 3px solid var(--warm); outline-offset: 3px; }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+button { font: inherit; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; border: 1.5px solid var(--accent); background: var(--accent); color: var(--bg); font-weight: 700; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn:focus-visible, .solo:focus-visible, .sw input:focus-visible + .knob { outline: 3px solid var(--warm); outline-offset: 2px; }
+.clock { font-family: var(--mono); font-size: 14px; font-variant-numeric: tabular-nums; color: var(--ink); }
+.clock b { font-weight: 500; color: var(--warm); }
+.hint { font-size: 14px; color: var(--muted); }
+.mode { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.mode.stems { color: var(--warm); }
+.timeline { width: 100%; height: 190px; display: block; border-radius: 6px; background: var(--panel); border: 1px solid var(--line); cursor: pointer; touch-action: none; }
+.caption { font-size: 14px; color: var(--muted); max-width: 72ch; }
+.mixer { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 22px; }
+.allcell { display: flex; align-items: center; justify-content: flex-start; padding-block: 10px; border-top: 1px solid var(--line); }
+.layer { display: grid; grid-template-columns: auto 1fr auto; align-items: start; gap: 4px 12px; padding-block: 10px; border-top: 1px solid var(--line); }
+.layer.off .lname, .layer.off .lsrc { opacity: 0.45; }
+.lname { font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.lsrc { grid-column: 2 / 3; font-size: 14px; color: var(--muted); line-height: 1.35; }
+.sw { position: relative; display: inline-block; width: 40px; height: 22px; margin-top: 2px; }
+.sw input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.knob { position: absolute; inset: 0; border-radius: 999px; background: var(--soft); border: 1.5px solid var(--line); transition: background 0.15s; pointer-events: none; }
+.knob::after { content: ""; position: absolute; top: 2px; left: 2px; width: 15px; height: 15px; border-radius: 50%; background: var(--muted); transition: transform 0.15s, background 0.15s; }
+.sw input:checked + .knob { background: var(--accent); border-color: var(--accent); }
+.sw input:checked + .knob::after { transform: translateX(18px); background: var(--bg); }
+.solo { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; padding: 2px 10px; font-size: 13px; cursor: pointer; }
+.solo[aria-pressed="true"] { border-color: var(--warm); color: var(--warm); }
+.mixhead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 14px; white-space: nowrap; }
+.checks { display: grid; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; max-width: 78ch; }
+.checks li { display: grid; grid-template-columns: 74px 1fr; gap: 12px; font-size: 15px; }
+.pill { font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 999px; padding: 2px 8px; text-align: center; align-self: start; border: 1px solid currentColor; }
+.pill.ok { color: var(--ok); } .pill.warn { color: var(--warn); }
+.ear { display: grid; gap: 10px; max-width: 70ch; }
+.ear ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.srcs { display: grid; }
+.srow { display: grid; grid-template-columns: 130px minmax(0, 1fr) minmax(0, 250px); gap: 6px 18px; padding-block: 10px; border-bottom: 1px solid var(--line); font-size: 15px; }
+.srow .why { color: var(--muted); font-size: 14px; }
+.shead { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-block: 6px; }
+@media (max-width: 700px) { .srow { grid-template-columns: 1fr; gap: 4px; } .shead { display: none; } }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px 40px; align-items: start; }
+footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 14px; }
+footer a { color: var(--accent); }
+@media (max-width: 520px) { body { font-size: 16px; } .timeline { height: 170px; } .checks li { grid-template-columns: 64px 1fr; } }
+@media (prefers-reduced-motion: reduce) { .knob, .knob::after { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">21,0 s · 24 kadr/s · B tahrir · ovoz, 2-versiya</div>
+    <h1>Tong <span class="dot">·</span> kaptar</h1>
+    <p class="lede">Filmni ovozi bilan ko‘ring. Har bir ovoz rasmning o‘zidan chiqadi: qanot qoqishi qanotning chizilgan fazasidan, qo‘nish oyoq tekkan paytdan, hushtak bolaning puflash egri chizig‘idan, latta esa uni chizadigan mato simulyatsiyasidan.</p>
+  </header>
+
+  <section class="player" aria-label="Film">
+    <div class="screen">
+      <video id="film" src="film.mp4" poster="poster.jpg" preload="auto" playsinline></video>
+      <button class="bigplay" id="bigplay" aria-label="Ijro etish"><span><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M10 6 L24 15 L10 24 Z" fill="#ffd89c"/></svg></span></button>
+    </div>
+    <div class="bar">
+      <button class="btn" id="play"><svg id="picon" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5 L12 7 L3 12.5 Z" fill="currentColor"/></svg><span id="plabel">Ijro</span></button>
+      <span class="clock" id="clock">0.00 s · kadr 0 · <b>1 · uloqtirish</b></span>
+      <span class="mode" id="mode">to‘liq miks</span>
+    </div>
+    <canvas class="timeline" id="tl" aria-label="Ovoz xaritasi: qatlamlar bo‘yicha balandlik va urg‘ular"></canvas>
+    <p class="caption">Har bir qator bitta qatlamning balandligi (50 ms oynada, −70…−10 dBFS), tepada kadrlar. Qator ustidagi chiziqchalar alohida urg‘ular: qarsak, oyoq tegishi, ku-ku, hushtak. Xaritani bosing yoki suring: film o‘sha joyga o‘tadi. Probel ijro etadi yoki to‘xtatadi, to‘xtab turganda ← → bir kadr yuradi.</p>
+  </section>
+
+  <section aria-labelledby="mixh">
+    <h2 id="mixh">Qatlamlar</h2>
+    <p class="caption" style="margin-bottom:8px">Biror qatlamni o‘chirsangiz, ovoz alohida qatlamlardan yig‘iladi (birinchi marta bir-ikki soniya yuklanadi). “Yakka” faqat shu qatlamni qoldiradi.</p>
+    <div class="mixer" id="mixer"></div>
+  </section>
+
+  <section class="two">
+    <div>
+      <h2>O‘lchovlar</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Kadr</th><th>RMS</th><th>Bo‘rtish</th><th>Eng baland lahza</th></tr></thead>
+          <tbody>
+            <tr><td>1 · uloqtirish</td><td class="num">−29,4 dBFS</td><td class="num">17,2 dB</td><td>uchish qarsaklari, −17,3 LUFS</td></tr>
+            <tr><td>burilish</td><td class="num">−32,2 dBFS</td><td class="num">3,7 dB</td><td>0,4 s, galaga burilish</td></tr>
+            <tr><td>2 · gala</td><td class="num">−32,7 dBFS</td><td class="num">5,3 dB</td><td>gala yaqinlashadi, −26,5 LUFS</td></tr>
+            <tr><td>3 · quyosh oldida</td><td class="num">−28,6 dBFS</td><td class="num">15,9 dB</td><td>sekin qanot qoqishlari, −20,3 LUFS</td></tr>
+            <tr><td>4 · latta, hushtak</td><td class="num">−23,5 dBFS</td><td class="num">22,6 dB</td><td>hushtak, −9,1 LUFS</td></tr>
+            <tr><td>5 · qaytish</td><td class="num">−28,1 dBFS</td><td class="num">19,0 dB</td><td>qo‘nish, −15,4 LUFS</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="checks">
+        <li><span class="pill ok">ok</span><span>Sinxron: har bir urg‘u o‘z sababini ko‘rsatgan birinchi kadrdan ±21 ms ichida (yarim kadr).</span></li>
+        <li><span class="pill ok">ok</span><span>Butun film −20,3 LUFS, eng yuqori nuqta −1,0 dBFS (AAC’dan keyin −0,9). Limiter eng ko‘pi 2,2 dB bosadi.</span></li>
+        <li><span class="pill ok">ok</span><span>Hushtak filmdagi eng baland ovoz: qo‘nishdan 6,1 LU yuqori, uchishdan 8,2 LU.</span></li>
+        <li><span class="pill ok">ok</span><span>Doimiy fon shivirlamaydi: spektral tekislik 0,04–0,11 (chegara 0,12). 1-kadrning 0,157 lik qiymati uchish qarsaklaridan, fonning o‘zi 0,08.</span></li>
+        <li><span class="pill ok">ok</span><span>Telefon karnayi sinovi (450 Hz dan past kesilganda): har kadrda 2,8 dB dan ko‘p yo‘qolmaydi. Mono’ga yig‘ilganda 0,9 dB dan ko‘p pasaymaydi.</span></li>
+        <li><span class="pill ok">ok</span><span>Hech narsa tinmay yangramaydi: hamma qatlam o‘chirilganda chiqish nol; har kadrning tinch sathini qaysi qatlam belgilashi alohida o‘lchangan.</span></li>
+        <li><span class="pill warn">chegarada</span><span>Kadrlar orasidagi RMS farqi 9,1 dB (tavsiya 4–9). 2-kadr ataylab eng jim: gala 13–21 m uzoqda.</span></li>
+      </ul>
+    </div>
+    <div class="ear">
+      <h2>Qulog‘ingiz hal qiladi</h2>
+      <p>Raqamlar ovozning noto‘g‘ri joyini topadi, yoqimli ekanini isbotlay olmaydi. Men ovozni eshita olmayman, faqat o‘lchayman. Shu savollarga qulog‘ingiz bilan javob bering:</p>
+      <ol>
+        <li>Uchish (0,9 s): qarsak va g‘uvillash haqiqiy kaptar ko‘tarilishiga o‘xshaydimi?</li>
+        <li>Sekin kadr (7–9,7 s): chuqur, sekin “vuuh”lar yoqadimi yoki boshqacha bo‘lsinmi?</li>
+        <li>Hushtak (11,8 s): baland va ishonarli, lekin qulog‘ni teshmaydimi?</li>
+        <li>Qo‘nish (14,5–16,3 s): juda zich va shovqinli emasmi? Oq kaptarning qo‘nishi eshitiladimi?</li>
+        <li>Oxiri (18,4 s): xo‘rsinish tabiiy eshitiladimi?</li>
+      </ol>
+      <p class="caption">Ikki narsa shartli, fizikadan emas: burilishdagi havo shovqini (kamera harakati) va 2-kadrning 3 dB ko‘tarilishi. Kaptar kukulashi katak ichidan keladi, chunki rasmda hech bir kaptar kukulamaydi.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Har bir ovoz nimadan</h2>
+    <div class="srcs" id="srcrows">
+      <div class="srow shead"><span>Qatlam</span><span>Rasmda uni nima qiladi</span><span>Asos</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Manbalar: <a href="https://journals.biologists.com/jeb/article/219/14/2173/15376/Specialized-primary-feathers-produce-tonal-sounds" target="_blank" rel="noopener">Niese &amp; Tobalske 2016, J Exp Biol</a> · <a href="https://openresearch-repository.anu.edu.au/items/f2659537-7919-4c8a-8f06-edd4f3c40b4a" target="_blank" rel="noopener">Fletcher va boshq. 2004, JASA</a> · <a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2017.00025/full" target="_blank" rel="noopener">Meyer va boshq. 2017</a> · <a href="http://emmanuelvirot.free.fr/virot2013flutteringflags.pdf" target="_blank" rel="noopener">Virot va boshq. 2013</a> · <a href="https://en.wikipedia.org/wiki/House_sparrow" target="_blank" rel="noopener">House sparrow</a> · <a href="https://en.wikipedia.org/wiki/Rock_dove" target="_blank" rel="noopener">Rock dove</a> · ISO 9613-1</span>
+    <span>Ovoz 48 kHz stereo, kod bilan sintez qilingan; har bir urg‘u o‘z urug‘i bilan, takrorlanuvchi namuna yo‘q.</span>
+  </footer>
+</div>
+
+<script>
+const DATA = {"hop":0.05,"env":{"muhit":[-70,-64,-55,-51,-48,-46,-38,-40,-41,-41,-41,-39,-41,-42,-40,-41,-40,-40,-40,-40,-40,-39,-39,-41,-42,-41,-39,-37,-37,-40,-40,-40,-41,-40,-41,-40,-39,-39,-39,-44,-40,-40,-43,-42,-41,-41,-41,-41,-42,-41,-40,-39,-41,-41,-43,-43,-42,-43,-41,-42,-41,-41,-43,-41,-42,-40,-39,-40,-42,-43,-43,-42,-43,-43,-43,-43,-43,-42,-43,-41,-41,-41,-42,-40,-39,-40,-40,-41,-40,-41,-39,-40,-41,-40,-41,-41,-41,-42,-42,-42,-41,-41,-41,-40,-39,-39,-39,-41,-43,-40,-41,-40,-42,-41,-41,-39,-40,-41,-40,-40,-38,-41,-41,-40,-41,-40,-40,-39,-41,-40,-39,-41,-41,-40,-41,-39,-40,-40,-39,-40,-54,-58,-59,-60,-59,-59,-60,-61,-61,-62,-60,-59,-59,-60,-60,-61,-59,-60,-62,-64,-59,-61,-62,-61,-60,-62,-61,-61,-63,-62,-62,-62,-63,-61,-60,-62,-62,-63,-62,-62,-61,-62,-61,-62,-61,-62,-60,-62,-60,-62,-62,-61,-62,-60,-60,-46,-48,-46,-46,-45,-47,-45,-44,-44,-46,-45,-43,-45,-45,-45,-43,-44,-45,-44,-45,-43,-44,-43,-43,-43,-41,-44,-44,-42,-42,-42,-42,-42,-44,-42,-41,-40,-41,-43,-42,-43,-42,-43,-43,-41,-41,-42,-41,-41,-41,-42,-43,-39,-39,-42,-40,-43,-41,-40,-41,-43,-41,-41,-39,-42,-42,-42,-43,-41,-40,-41,-42,-42,-42,-42,-41,-42,-41,-43,-43,-41,-41,-41,-43,-40,-43,-40,-42,-41,-42,-41,-40,-41,-40,-38,-40,-41,-42,-41,-42,-42,-41,-43,-42,-42,-40,-41,-41,-42,-42,-41,-41,-43,-41,-42,-42,-41,-39,-42,-42,-40,-41,-41,-40,-40,-38,-36,-39,-42,-40,-40,-42,-42,-41,-42,-43,-40,-40,-40,-41,-39,-40,-42,-41,-39,-41,-39,-40,-40,-41,-41,-41,-42,-41,-41,-42,-40,-42,-42,-41,-41,-43,-43,-43,-43,-41,-41,-42,-42,-43,-44,-43,-44,-43,-42,-45,-41,-43,-44,-44,-43,-45,-44,-44,-44,-45,-43,-45,-44,-46,-46,-46,-45,-46,-46,-45,-46,-45,-46,-46,-45,-47,-45,-47,-45,-47,-47,-47,-48,-47,-47,-48,-50,-51,-51,-53,-55,-57,-57,-62,-64,-67,-70,-70,-70],"qanot":[-70,-70,-57,-51,-48,-44,-43,-43,-40,-41,-42,-41,-40,-41,-41,-42,-42,-43,-19,-17,-21,-30,-20,-18,-29,-28,-22,-31,-32,-29,-33,-37,-36,-34,-39,-41,-36,-39,-39,-38,-39,-38,-38,-39,-39,-39,-38,-37,-38,-37,-36,-37,-36,-36,-38,-38,-37,-41,-38,-37,-39,-40,-39,-40,-40,-39,-38,-41,-40,-40,-43,-40,-41,-39,-37,-36,-38,-36,-38,-37,-35,-35,-36,-33,-35,-33,-34,-35,-35,-34,-35,-35,-34,-34,-34,-34,-34,-36,-38,-35,-35,-36,-36,-36,-35,-33,-35,-36,-34,-33,-34,-34,-33,-34,-33,-33,-34,-33,-33,-34,-32,-32,-35,-35,-36,-36,-33,-32,-35,-35,-34,-34,-32,-31,-33,-34,-31,-30,-29,-27,-50,-55,-38,-37,-25,-28,-22,-24,-27,-34,-32,-36,-36,-39,-41,-47,-45,-41,-34,-34,-32,-30,-28,-31,-26,-34,-33,-41,-42,-39,-39,-36,-35,-37,-28,-30,-33,-28,-23,-19,-17,-27,-30,-37,-37,-40,-36,-35,-32,-33,-36,-35,-36,-30,-25,-60,-52,-50,-49,-45,-44,-46,-45,-44,-46,-46,-44,-46,-45,-47,-47,-46,-48,-46,-45,-48,-46,-43,-42,-43,-43,-43,-45,-43,-42,-44,-42,-41,-44,-43,-42,-44,-45,-42,-45,-47,-46,-45,-47,-46,-46,-47,-44,-46,-46,-45,-46,-45,-46,-44,-45,-44,-42,-42,-43,-40,-41,-40,-38,-39,-37,-36,-36,-36,-36,-37,-36,-36,-35,-36,-38,-43,-42,-44,-47,-44,-45,-47,-46,-45,-48,-46,-42,-45,-46,-43,-45,-45,-45,-45,-46,-45,-47,-44,-45,-48,-46,-46,-47,-47,-46,-47,-49,-48,-47,-49,-49,-47,-44,-48,-48,-48,-50,-49,-50,-54,-49,-47,-49,-47,-46,-50,-48,-48,-51,-50,-47,-49,-50,-45,-48,-51,-49,-49,-52,-54,-51,-54,-54,-57,-58,-57,-60,-58,-57,-60,-59,-54,-56,-58,-54,-54,-57,-54,-54,-56,-55,-58,-56,-54,-55,-55,-56,-56,-57,-53,-52,-54,-54,-53,-55,-54,-51,-51,-53,-52,-51,-54,-53,-53,-53,-53,-54,-53,-55,-56,-54,-54,-57,-57,-55,-58,-58,-60,-58,-56,-59,-58,-57,-59,-56,-57,-59,-58,-62,-64,-59,-61,-64,-62,-64,-67,-69,-69,-70,-70,-70,-70,-70,-70],"qonish":[-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-66,-61,-70,-70,-70,-70,-70,-70,-56,-68,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-48,-45,-42,-38,-40,-39,-38,-38,-39,-36,-37,-37,-36,-35,-36,-34,-36,-35,-24,-32,-29,-28,-31,-25,-28,-29,-23,-29,-25,-20,-27,-19,-20,-25,-20,-21,-19,-19,-26,-20,-19,-27,-17,-20,-24,-22,-21,-28,-19,-30,-23,-25,-30,-31,-40,-43,-55,-62,-69,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70],"ku":[-70,-70,-57,-47,-42,-38,-35,-33,-32,-34,-34,-40,-48,-44,-38,-41,-51,-58,-64,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-43,-33,-31,-30,-30,-30,-40,-43,-36,-43,-52,-61,-59,-38,-33,-33,-31,-32,-36,-47,-44,-37,-46,-55,-59,-68,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-53,-43,-39,-37,-34,-36,-36,-45,-58,-59,-64,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-56,-40,-36,-34,-34,-35,-34,-33,-33,-34,-42,-49,-45,-40,-40,-50,-58,-65,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70],"latta":[-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-60,-43,-55,-59,-55,-56,-55,-42,-44,-35,-33,-27,-27,-22,-21,-25,-25,-32,-38,-46,-50,-60,-67,-67,-63,-59,-70,-70,-58,-48,-51,-41,-45,-50,-47,-55,-44,-35,-41,-38,-43,-37,-45,-36,-42,-36,-42,-42,-41,-49,-42,-48,-46,-43,-51,-42,-46,-45,-43,-52,-45,-51,-41,-46,-39,-47,-45,-54,-47,-54,-47,-47,-39,-44,-45,-52,-62,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70],"bola":[-70,-70,-70,-70,-70,-70,-70,-70,-70,-58,-50,-48,-58,-70,-55,-42,-33,-32,-31,-45,-57,-65,-70,-56,-47,-42,-45,-41,-41,-41,-44,-49,-47,-68,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-65,-61,-61,-61,-66,-70,-70,-70,-70,-70,-65,-61,-61,-65,-66,-70,-70,-70,-70,-70,-68,-64,-63,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-65,-60,-58,-53,-40,-38,-43,-23,-15,-14,-15,-16,-15,-15,-15,-17,-16,-16,-19,-26,-33,-38,-45,-54,-53,-54,-57,-61,-64,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-66,-63,-63,-62,-64,-68,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-60,-52,-47,-45,-41,-39,-39,-39,-40,-41,-45,-48,-58,-70,-70,-70,-70,-70,-59,-50,-43,-40,-38,-38,-36,-36,-36,-38,-38,-40,-42,-47,-53,-53,-36,-29,-28,-29,-29,-31,-32,-33,-35,-36,-37,-37,-39,-40,-41,-43,-45,-50,-58,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70],"kamera":[-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-51,-41,-35,-32,-31,-32,-37,-47,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70,-70]},"ticks":{"muhit":[[0.312,0.16,"gust flap"],[0.612,0.126,"chirp"],[0.876,0.133,"chirp"],[1.092,0.139,"chirp"],[1.391,0.098,"chirp"],[1.396,0.16,"gust flap"],[1.644,0.142,"chirp"],[3.14,0.149,"chirp"],[3.292,0.16,"gust flap"],[3.44,0.099,"chirp"],[3.702,0.142,"chirp"],[3.959,0.099,"chirp"],[4.235,0.164,"chirp"],[5.171,0.118,"chirp"],[5.459,0.115,"chirp"],[6.697,0.122,"chirp"],[9.803,0.118,"chirp"],[10.082,0.111,"chirp"],[13.708,0.109,"chirp"],[13.924,0.137,"chirp"],[14.403,0.114,"chirp"],[14.458,0.16,"gust flap"],[14.688,0.131,"chirp"],[14.975,0.114,"chirp"],[16.042,0.16,"gust flap"],[16.701,0.139,"chirp"],[16.954,0.145,"chirp"],[17.184,0.108,"chirp"],[17.443,0.158,"chirp"],[17.984,0.118,"chirp"],[18.222,0.166,"chirp"],[18.463,0.1,"chirp"],[18.738,0.133,"chirp"],[18.943,0.116,"chirp"]],"qanot":[[0.943,0.183,"clap+beat"],[1.109,0.183,"clap+beat"],[1.276,0.183,"clap+beat"],[1.442,0.183,"clap+beat"],[1.609,0.183,"clap+beat"],[7.049,0.868,"beat"],[7.144,0.79,"beat"],[7.296,0.917,"beat"],[7.719,0.909,"beat"],[7.909,0.996,"beat"],[8.48,0.796,"beat"],[8.756,0.862,"beat"],[9.126,0.947,"beat"],[9.238,0.902,"beat"],[9.425,0.779,"beat"],[9.542,0.909,"beat"]],"qonish":[[0.99,0.16,"hop off"],[1.354,0.16,"hop down"],[14.971,0.16,"touchdown"],[15.071,0.16,"touchdown"],[15.141,0.16,"touchdown"],[15.241,0.16,"touchdown"],[15.301,0.16,"touchdown"],[15.381,0.16,"touchdown"],[15.471,0.16,"touchdown"],[15.501,0.16,"touchdown"],[15.601,0.16,"touchdown"],[15.621,0.16,"touchdown"],[15.741,0.16,"touchdown"],[15.761,0.16,"touchdown"],[15.861,0.16,"touchdown"],[15.921,0.16,"touchdown"],[16.001,0.16,"touchdown"],[16.121,0.16,"touchdown"],[16.181,0.16,"touchdown"],[16.261,0.16,"touchdown"]],"ku":[[0.06,0.802,"coo (perch)"],[5.55,1.173,"coo (double)"],[10.95,0.431,"coo (soft)"],[19.55,0.841,"coo (perch)"]],"latta":[[9.969,0.07,"snap"],[10.182,0.07,"snap"],[10.401,0.07,"snap"],[10.469,0.07,"snap"],[10.953,0.07,"snap"],[11.162,0.07,"snap"],[11.349,0.07,"snap"],[11.406,0.07,"snap"],[11.521,0.07,"snap"],[11.797,0.07,"snap"],[12.135,0.07,"snap"],[12.224,0.07,"snap"],[12.635,0.07,"snap"],[12.74,0.07,"snap"],[12.99,0.07,"snap"],[13.099,0.07,"snap"],[13.323,0.07,"snap"]],"bola":[[11.625,0.135,"in"],[11.816,0.591,"whistle"],[17.656,0.76,"in (nose)"],[18.417,1.021,"out (sigh)"]],"kamera":[[3.792,0.417,"whoosh"]]}};
+const FPS = 24, DUR = 21.0;
+const SHOTS = [
+  { a: 0, b: 91 / 24, name: '1 · uloqtirish' }, { a: 91 / 24, b: 101 / 24, name: 'burilish' }, { a: 101 / 24, b: 7.0, name: '2 · gala' },
+  { a: 7.0, b: 9.75, name: '3 · quyosh oldida' }, { a: 9.75, b: 13.5, name: '4 · latta, hushtak' }, { a: 13.5, b: 21.0, name: '5 · qaytish' },
+];
+const LAYERS = [
+  { id: 'muhit', name: 'Muhit', src: 'Ufqdagi binolardan uzoq shahar g‘uvillashi, hovli daraxtlarida chumchuqlar, bayroq shamolda.',
+    what: 'Uzoq shahar g‘uvillashi (ufqdagi binolar); hovli daraxtlarida chumchuqlar tonggi chirillashi, 3–7 kHz, 0,12 s; bayroq: chizilgan to‘lqini bilan shivirlaydi, shamol zarbasi cho‘qqisida pirillaydi.', why: 'Chumchuq chirillashi o‘lchovlari; bayroq tebranishi fL/U = 0,2–0,6 (Virot 2013)' },
+  { id: 'qanot', name: 'Qanotlar', src: 'Gala va oq kaptarning har bir qanot qoqishi, rasmdagi qanot fazasidan.',
+    what: 'Har bir qush qanoti yuqori nuqtadan o‘tgan paytda bitta qoqish. Oq kaptar uchayotganda qanotlar tepada urilib qarsak chaladi va tashqi pati 700 Hz atrofida g‘uvillaydi. Uzoqdagi gala mayin pirillash. Sekin kadrda har qoqish 5 marta cho‘ziq, bir oktava past.', why: 'Niese & Tobalske 2016: qarsak ko‘tarilish qoqishi oxirida, pat ohangi 700 ± 50 Hz faqat uchishda' },
+  { id: 'qonish', name: 'Qo‘nish', src: 'Tormoz qoqishlari, oyoq tekkan paytdagi taq-tuq, qanot yig‘ish shitirlashi.',
+    what: 'Oxirgi 4–5 qoqish tormoz uchun tezroq (7,6 Hz); oyoq tekkan kadrda ikki oyoq taq-tuq etadi (katak taxtasi yoki g‘isht), keyin qanot 0,13 s da yig‘iladi. Oq kaptar qo‘nganda qolganlar bir zum pasayadi.', why: 'Filmning o‘z qo‘nish rejasi (Berg & Biewener 2010; Provini 2014)' },
+  { id: 'ku', name: 'Ku-ku', src: 'Katak ichidagi kaptarlar kukulashi.',
+    what: 'Deyarli toza ohang, 405–455 Hz, “krruu-u”, qo‘sh va yumshoq turlari. Katak ichidan, taxta orqali bo‘g‘iq. Oxirgisi chapda, kadrdan tashqaridagi katakdan.', why: 'Fletcher va boshq. 2004: qizilo‘ngach garmonikalarni to‘sadi' },
+  { id: 'latta', name: 'Latta', src: 'Tayoqdagi atlas latta: mato simulyatsiyasidagi havo va chetining silkinishi.',
+    what: 'Mato uchragan havo tezligidan shovqin (aylanishda “vush”, tayoq to‘xtaganda mayin pirillash), cheti keskin silkingan joyda shaq-shuq. Kadrdan chiqsa pasayadi.', why: 'Filmning o‘z mato simulyatsiyasi, har kichik qadamda qayta o‘qilgan' },
+  { id: 'bola', name: 'Bola', src: 'Barmoq hushtagi, undan oldingi nafas, kiyim shitirlashi, oxirida xo‘rsinish.',
+    what: 'Qo‘l tezligidan ko‘ylak shitirlashi; hushtakdan oldin nafas olishi (yelkalar ko‘tarilishi bilan); ikki barmoq hushtagi 2,95 kHz, boshida ko‘tariladi, oxirida tushadi, mahalla devorlaridan aks-sado; oxirida yelkalar tushganda mamnun xo‘rsinish.', why: 'Hushtak tovushi 1–3,7 kHz, uzoqqa yetkazish uchun baland (Meyer 2017)' },
+  { id: 'kamera', name: 'Kamera', src: 'Tez burilishdagi havo shovqini. Shartli, past.',
+    what: 'Burilish (whip pan) tezligi bilan ko‘tarilib-tushadigan havo shovqini. Bu rasmdagi narsa emas, kamera harakati: shartli usul, past ovozda.', why: 'Shartli (kino odati)' },
+];
+const video = document.getElementById('film');
+const tl = document.getElementById('tl');
+const g2 = tl.getContext('2d');
+const enabled = Object.fromEntries(LAYERS.map((l) => [l.id, true]));
+let soloId = null;
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+// ---- the layer list and the sources table
+const mixer = document.getElementById('mixer');
+for (const l of LAYERS) {
+  const row = document.createElement('div');
+  row.className = 'layer';
+  row.id = 'row-' + l.id;
+  row.innerHTML = `<label class="sw"><input type="checkbox" id="on-${l.id}" checked aria-label="${l.name}"><span class="knob"></span></label>
+    <span class="lname"><span class="swatch" style="background:var(--l-${l.id})"></span>${l.name}</span>
+    <button class="solo" id="solo-${l.id}" aria-pressed="false">yakka</button>
+    <span class="lsrc">${l.src}</span>`;
+  mixer.appendChild(row);
+}
+{
+  const cell = document.createElement('div');
+  cell.className = 'allcell';
+  cell.innerHTML = '<button class="btn ghost" id="allon">Hammasini yoqish</button>';
+  mixer.appendChild(cell);
+}
+const srcrows = document.getElementById('srcrows');
+for (const l of LAYERS) {
+  const row = document.createElement('div');
+  row.className = 'srow';
+  row.innerHTML = `<span class="lname"><span class="swatch" style="background:var(--l-${l.id})"></span>${l.name}</span><span>${l.what}</span><span class="why">${l.why}</span>`;
+  srcrows.appendChild(row);
+}
+
+// ---- audio: the video's own mix when every layer is on; the layers through Web Audio otherwise
+let actx = null, comp = null, gains = {}, buffers = {}, loading = null, sources = [], started = null;
+const allOn = () => LAYERS.every((l) => enabled[l.id]);
+function ensureCtx() {
+  if (!actx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    actx = new AC();
+    comp = actx.createDynamicsCompressor();
+    comp.threshold.value = -3; comp.knee.value = 0; comp.ratio.value = 20; comp.attack.value = 0.002; comp.release.value = 0.12;
+    comp.connect(actx.destination);
+    for (const l of LAYERS) { const g = actx.createGain(); g.gain.value = enabled[l.id] ? 1 : 0; g.connect(comp); gains[l.id] = g; }
+  }
+  if (actx.state === 'suspended') actx.resume().catch(() => {});
+  return actx;
+}
+function loadStems() {
+  if (loading) return loading;
+  setMode('qatlamlar yuklanmoqda…');
+  loading = Promise.all(LAYERS.map(async (l) => {
+    const r = await fetch(l.id + '.mp3');
+    const ab = await r.arrayBuffer();
+    buffers[l.id] = await new Promise((res, rej) => actx.decodeAudioData(ab, res, rej));
+  })).then(() => { applyMode(); }).catch(() => { loading = null; setMode('qatlamlarni yuklab bo‘lmadi, to‘liq miks'); enableAll(); });
+  return loading;
+}
+const ready = () => LAYERS.every((l) => buffers[l.id]);
+function stopStems() { for (const s of sources) { try { s.stop(); } catch (e) {} } sources = []; started = null; }
+function startStems() {
+  stopStems();
+  if (!actx || !ready()) return;
+  const lat = actx.outputLatency || actx.baseLatency || 0;
+  const when = actx.currentTime + 0.04, off = Math.max(0, video.currentTime + 0.04 + lat);
+  if (off >= DUR - 0.02) return;
+  for (const l of LAYERS) {
+    const s = actx.createBufferSource();
+    s.buffer = buffers[l.id];
+    s.connect(gains[l.id]);
+    s.start(when, off);
+    sources.push(s);
+  }
+  started = { when, off, lat };
+}
+function setMode(t, stems) { const m = document.getElementById('mode'); m.textContent = t; m.classList.toggle('stems', !!stems); }
+function applyMode() {
+  for (const l of LAYERS) {
+    if (gains[l.id]) gains[l.id].gain.setTargetAtTime(enabled[l.id] ? 1 : 0, actx.currentTime, 0.01);
+    document.getElementById('row-' + l.id).classList.toggle('off', !enabled[l.id]);
+    document.getElementById('on-' + l.id).checked = enabled[l.id];
+    document.getElementById('solo-' + l.id).setAttribute('aria-pressed', soloId === l.id ? 'true' : 'false');
+  }
+  if (allOn()) { stopStems(); video.muted = false; setMode('to‘liq miks'); return; }
+  if (!ready()) { video.muted = false; ensureCtx() && loadStems(); return; }
+  video.muted = true;
+  setMode('qatlamlar: ' + LAYERS.filter((l) => enabled[l.id]).map((l) => l.name).join(', ') || '—', true);
+  if (!video.paused) startStems();
+}
+function enableAll() { for (const l of LAYERS) enabled[l.id] = true; soloId = null; if (actx) applyMode(); else { video.muted = false; for (const l of LAYERS) { document.getElementById('row-' + l.id).classList.remove('off'); document.getElementById('on-' + l.id).checked = true; document.getElementById('solo-' + l.id).setAttribute('aria-pressed', 'false'); } setMode('to‘liq miks'); } }
+for (const l of LAYERS) {
+  document.getElementById('on-' + l.id).addEventListener('change', (e) => { ensureCtx(); enabled[l.id] = e.target.checked; soloId = null; applyMode(); });
+  document.getElementById('solo-' + l.id).addEventListener('click', () => {
+    ensureCtx();
+    if (soloId === l.id) { enableAll(); return; }
+    soloId = l.id;
+    for (const m of LAYERS) enabled[m.id] = m.id === l.id;
+    applyMode();
+  });
+}
+document.getElementById('allon').addEventListener('click', enableAll);
+
+// ---- transport
+const playBtn = document.getElementById('play'), big = document.getElementById('bigplay');
+function togglePlay() {
+  ensureCtx();
+  if (video.paused) { if (video.currentTime >= DUR - 0.05) video.currentTime = 0; video.play().catch(() => {}); }
+  else video.pause();
+}
+playBtn.addEventListener('click', togglePlay);
+big.addEventListener('click', togglePlay);
+video.addEventListener('click', togglePlay);
+video.addEventListener('play', () => { big.hidden = true; document.getElementById('plabel').textContent = 'To‘xtatish'; document.getElementById('picon').innerHTML = '<rect x="2.5" y="1.5" width="3" height="11" fill="currentColor"/><rect x="8.5" y="1.5" width="3" height="11" fill="currentColor"/>'; if (!allOn() && ready()) startStems(); });
+video.addEventListener('pause', () => { document.getElementById('plabel').textContent = 'Ijro'; document.getElementById('picon').innerHTML = '<path d="M3 1.5 L12 7 L3 12.5 Z" fill="currentColor"/>'; stopStems(); });
+video.addEventListener('ended', () => { big.hidden = false; stopStems(); });
+video.addEventListener('seeking', stopStems);
+video.addEventListener('seeked', () => { if (!video.paused && !allOn() && ready()) startStems(); });
+document.addEventListener('keydown', (e) => {
+  if (e.target.closest('input, button') && e.code === 'Space') return;
+  if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+  if (video.paused && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+    e.preventDefault();
+    const f = Math.round(video.currentTime * FPS) + (e.key === 'ArrowRight' ? 1 : -1);
+    video.currentTime = Math.min(Math.max(0, f), DUR * FPS - 1) / FPS + 0.5 / FPS;
+  }
+});
+
+// ---- the map: each layer's level over the film, its accents, the shots, the playhead
+function shotAt(t) { for (const s of SHOTS) if (t >= s.a && t < s.b) return s.name; return SHOTS[SHOTS.length - 1].name; }
+let W = 0, Hc = 0;
+function size() {
+  const r = tl.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+  W = r.width; Hc = r.height;
+  tl.width = Math.round(W * d); tl.height = Math.round(Hc * d);
+  g2.setTransform(d, 0, 0, d, 0, 0);
+}
+function draw() {
+  const t = video.currentTime || 0;
+  const pad = 8, band = 20, rows = LAYERS.length, rh = (Hc - band - pad * 2) / rows, x0 = 70, x1 = W - 10;
+  const X = (s) => x0 + (x1 - x0) * (s / DUR);
+  g2.clearRect(0, 0, W, Hc);
+  g2.font = '12px ' + css('--mono');
+  g2.textBaseline = 'middle';
+  SHOTS.forEach((s, i) => {
+    g2.fillStyle = i % 2 ? css('--soft') : 'rgba(0,0,0,0)';
+    g2.fillRect(X(s.a), pad, X(s.b) - X(s.a), Hc - pad * 2);
+    g2.strokeStyle = css('--line'); g2.lineWidth = 1;
+    g2.beginPath(); g2.moveTo(X(s.a) + 0.5, pad); g2.lineTo(X(s.a) + 0.5, Hc - pad); g2.stroke();
+    const wd = X(s.b) - X(s.a) - 8;
+    const label = s.name.length * 7.3 < wd ? s.name : s.name.split(' · ')[0].length * 7.3 < wd ? s.name.split(' · ')[0] : '';
+    g2.fillStyle = css('--muted'); if (label) g2.fillText(label, X(s.a) + 4, pad + band / 2);
+  });
+  LAYERS.forEach((l, i) => {
+    const y0 = pad + band + i * rh, col = css('--l-' + l.id), env = DATA.env[l.id], hop = DATA.hop;
+    g2.fillStyle = css('--muted'); g2.globalAlpha = enabled[l.id] ? 1 : 0.4;
+    g2.fillText(l.name, 6, y0 + rh / 2);
+    g2.beginPath(); g2.moveTo(X(0), y0 + rh);
+    for (let k = 0; k < env.length; k++) { const v = Math.max(0, Math.min(1, (env[k] + 70) / 60)); g2.lineTo(X((k + 0.5) * hop), y0 + rh - v * (rh - 3)); }
+    g2.lineTo(X(DUR), y0 + rh); g2.closePath();
+    g2.fillStyle = col; g2.globalAlpha = enabled[l.id] ? 0.8 : 0.22; g2.fill();
+    g2.globalAlpha = enabled[l.id] ? 1 : 0.35;
+    g2.strokeStyle = css('--ink'); g2.lineWidth = 1;
+    for (const [tt] of DATA.ticks[l.id]) { const x = Math.round(X(tt)) + 0.5; g2.beginPath(); g2.moveTo(x, y0 + 1); g2.lineTo(x, y0 + 5); g2.stroke(); }
+    g2.globalAlpha = 1;
+  });
+  const px = X(t);
+  g2.strokeStyle = css('--warm'); g2.lineWidth = 2;
+  g2.beginPath(); g2.moveTo(px, pad); g2.lineTo(px, Hc - pad); g2.stroke();
+  const f = Math.min(Math.floor(t * FPS + 1e-6), DUR * FPS - 1);
+  document.getElementById('clock').innerHTML = `${t.toFixed(2)} s · kadr ${f} · <b>${shotAt(t)}</b>`;
+}
+function loop() {
+  // keep the layers on the picture's clock
+  if (started && !video.paused && actx) {
+    const heard = started.off + (actx.currentTime - started.when);
+    if (Math.abs(heard - (video.currentTime + started.lat)) > 0.06) startStems();
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+function seekTo(ev) {
+  const r = tl.getBoundingClientRect(), x0 = 70, x1 = r.width - 10;
+  const s = Math.max(0, Math.min(DUR - 0.01, ((ev.clientX - r.left - x0) / (x1 - x0)) * DUR));
+  video.currentTime = s;
+}
+let dragging = false;
+tl.addEventListener('pointerdown', (e) => { dragging = true; tl.setPointerCapture(e.pointerId); seekTo(e); });
+tl.addEventListener('pointermove', (e) => { if (dragging) seekTo(e); });
+tl.addEventListener('pointerup', () => { dragging = false; });
+window.addEventListener('resize', () => { size(); draw(); });
+size(); loop();
+</script>

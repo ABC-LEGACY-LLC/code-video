@@ -1,0 +1,69 @@
+PASS  SYNC    accents within one frame of their cause                            241/241
+PASS  BEAT    s1 take-off: the thrown pigeon                                     depth 15.9 dB, peak at 0.28 of the beat, rhythm 6.03 Hz vs drawn 6.00 Hz (x6.4)
+PASS  BEAT    s3 slow motion: the thrown pigeon                                  depth 23.1 dB, peak at 0.28 of the beat, rhythm 1.25 Hz vs drawn 1.24 Hz (x2.8)
+WARN  BEAT    s5 the white one braking                                           depth 15.0 dB, peak at 0.28 of the beat, rhythm 7.01 Hz vs drawn 8.39 Hz (x5.1)
+                                                                                (5 beats folded; PASS: depth >= 8 dB, peak in the downstroke (<= 0.62), rhythm within 15 % of the drawn rate)
+FAIL  MOTOR   s3 slow wings: fast tremolo (8-40 Hz vs 0.3-8 Hz of the envelope)  -20.3 dB
+                                                                                (calibrated: smooth slow beats -28.5 dB, with 11 Hz tremolo -13.2 dB; threshold -20.8)
+WARN  EAR     s1 take-off wings                                                  best right: Rustle 0.11 (rank 4); worst wrong: Music 0.13
+                                                                                (heard as: Sound effect 0.15, Music 0.13, Rattle 0.12, Rustle 0.11, Clatter 0.08)
+WARN  EAR     s2 flock wings                                                     best right: Rustle 0.02 (rank 14); worst wrong: Vehicle 0.07
+                                                                                (heard as: Vehicle 0.07, Eruption 0.05, Speech 0.04, Rain on surface 0.03, Rain 0.03)
+PASS  EAR     s3 slow wings                                                      best right: Whoosh, swoosh, swish 0.22 (rank 1); worst wrong: Music 0.06
+WARN  EAR     s5 landing                                                         best right: Rustle 0.04 (rank 3); worst wrong: Static 0.08
+                                                                                (heard as: Static 0.08, Sound effect 0.04, Rustle 0.04, Rattle 0.03, Music 0.03)
+FAIL  EAR     s1 coo                                                             best right: Animal 0.07 (rank 5); worst wrong: Theremin 0.42
+                                                                                (heard as: Theremin 0.42, Music 0.30, Synthesizer 0.28, Sound effect 0.09, Animal 0.07)
+FAIL  EAR     s2 coo                                                             best right: Animal 0.01 (rank 17); worst wrong: Music 0.12
+                                                                                (heard as: Music 0.12, Sound effect 0.12, Beatboxing 0.09, Vocal music 0.06, Humming 0.06)
+PASS  EAR     s5 coo                                                             best right: Animal 0.21 (rank 1); worst wrong: Music 0.11
+FAIL  EAR     s1-s2 flag                                                         best right: Rustling leaves 0.01 (rank 13); worst wrong: Chop 0.13
+                                                                                (heard as: Chop 0.13, Whip 0.05, Arrow 0.05, Music 0.02, Sine wave 0.02)
+FAIL  EAR     s4 rag circles                                                     best right: Rustle 0.04 (rank 6); worst wrong: Music 0.14
+                                                                                (heard as: Sound effect 0.20, Music 0.14, Musical instrument 0.08, Drum 0.05, Percussion 0.05)
+FAIL  EAR     s1-s2 town                                                         best right: Vehicle 0.05 (rank 4); worst wrong: Eruption 0.29
+                                                                                (heard as: Eruption 0.29, White noise 0.17, Wind noise (microphone) 0.06, Vehicle 0.05, Wind 0.03)
+FAIL  EAR     s5 town                                                            best right: Vehicle 0.05 (rank 4); worst wrong: Eruption 0.34
+                                                                                (heard as: Eruption 0.34, White noise 0.16, Wind noise (microphone) 0.08, Vehicle 0.05, Wind 0.05)
+PASS  EAR     sparrows                                                           best right: Bird 0.27 (rank 1); worst wrong: Music 0.04
+PASS  EAR     whistle                                                            best right: Whistle 0.83 (rank 1); worst wrong: Music 0.03
+PASS  EAR     sigh                                                               best right: Breathing 0.23 (rank 2); worst wrong: Music 0.02
+WARN  EAR     throw clothes                                                      best right: Rustle 0.07 (rank 5); worst wrong: Clapping 0.12
+                                                                                (heard as: Clapping 0.12, Sound effect 0.11, Tick 0.11, Scissors 0.09, Rustle 0.07)
+PASS  EAR     turn clothes                                                       best right: Rustle 0.10 (rank 3); worst wrong: Music 0.03
+PASS  MIX     s1 relief (97th - 35th pct of 30 ms)                               18.5 dB
+PASS  MIX     s1 phone speaker loss (HP 450 Hz, 4th order)                       0.3 dB
+PASS  MIX     s1 mono fold-down                                                  -0.4 dB
+PASS  MIX     s2 relief (97th - 35th pct of 30 ms)                               5.5 dB
+PASS  MIX     s2 phone speaker loss (HP 450 Hz, 4th order)                       1.3 dB
+PASS  MIX     s2 mono fold-down                                                  -0.8 dB
+PASS  MIX     s3 relief (97th - 35th pct of 30 ms)                               16.1 dB
+PASS  MIX     s3 phone speaker loss (HP 450 Hz, 4th order)                       0.5 dB
+PASS  MIX     s3 mono fold-down                                                  -0.4 dB
+PASS  MIX     s4 relief (97th - 35th pct of 30 ms)                               22.3 dB
+PASS  MIX     s4 phone speaker loss (HP 450 Hz, 4th order)                       0.1 dB
+PASS  MIX     s4 mono fold-down                                                  -0.6 dB
+PASS  MIX     s5 relief (97th - 35th pct of 30 ms)                               18.7 dB
+PASS  MIX     s5 phone speaker loss (HP 450 Hz, 4th order)                       0.2 dB
+PASS  MIX     s5 mono fold-down                                                  -0.5 dB
+WARN  MIX     RMS spread across shots                                            9.0 dB s1 -28.8 s2 -32.5 s3 -29.2 s4 -23.5 s5 -28.2
+                                                                                (4..9 dB)
+PASS  MIX     sample peak                                                        -2.23 dBFS
+PASS  MIX     integrated loudness                                                -20.0 LUFS
+FAIL  MIX     whistle over landing (momentary max)                               6.0 LU (-9.1 vs -15.1)
+                                                                                (>= 6 LU: the loudest real sound is the loudest)
+FAIL  MIX     s1 (after take-off) bed hiss (flatness, accents muted)             0.213
+                                                                                (<= 0.12)
+FAIL  MIX     s2 bed hiss (flatness, accents muted)                              0.221
+                                                                                (<= 0.12)
+FAIL  MIX     s3 bed hiss (flatness, accents muted)                              0.211
+                                                                                (<= 0.12)
+FAIL  MIX     s4 bed hiss (flatness, accents muted)                              0.146
+                                                                                (<= 0.12)
+FAIL  MIX     s5 bed hiss (flatness, accents muted)                              0.140
+                                                                                (<= 0.12)
+PASS  CUTS    into the slow motion at 7.0 s (wings+air+amb+sparrow+flag+coo)     32.2 dB drop
+PASS  CUTS    out of the slow motion at 9.75 s (wings)                           36.9 dB drop
+PASS  SILENCE every layer muted                                                  peak 0.0e+00
+
+29 pass, 6 warn, 13 fail

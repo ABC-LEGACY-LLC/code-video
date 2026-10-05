@@ -6,6 +6,7 @@
   {"id": "bir-tomchi", "dir": "studio/projects/bir-tomchi", "card": "3-bir-tomchi.json", "control": "seek", "suites": []},
   {"id": "mushuk", "dir": "studio/projects/mushuk", "card": "4-mushuk.json", "control": "live", "suites": []},
   {"id": "not-a-measurement", "dir": "studio/projects/not-a-measurement", "card": "5-not-a-measurement.json", "control": "live", "suites": []},
+  {"id": "tong-kaptar", "dir": "studio/projects/tong-kaptar", "card": "6-tong-kaptar.json", "control": "frameTo", "suites": ["tong-kaptar"]},
   {"id": "zarra", "dir": "studio/projects/zarra", "name": "Zarra qatlami", "page": "studio/projects/zarra/zarra.html", "control": "frameTo", "frameCount": 120, "suites": ["zarra"]},
   {"id": "masofa-maydoni", "dir": "studio/projects/masofa-maydoni", "name": "Masofa maydoni", "page": "studio/projects/masofa-maydoni/masofa-maydoni.html", "control": "sandbox", "suites": []}
  ]

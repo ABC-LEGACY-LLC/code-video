@@ -1,6 +1,6 @@
 # Films drawn with code — and their measurement
 
-Five short works, one on a WebGL distance field and four on Canvas. And beside them two things,
+Six short works, one on a WebGL distance field and five on Canvas. And beside them two things,
 which are really the main thing:
 
 - **every work carries its own suite of checks**, and every check also carries its deliberately
@@ -26,9 +26,10 @@ build. Only shared things stay at the root: `studio/`, `harness/`, `catalog/`, `
 | `studio/projects/mushuk/` | A cat in three paths, a city in halftone; it answers a click | card |
 | `studio/projects/not-a-measurement/` | 8 cuts, the whole film in 39 draw calls | card |
 | `studio/projects/zarra/` | A particle layer measured from a sample GIF: two layers at the GIF's speeds; the check measures the speed again from the screen | **4** |
+| `studio/projects/tong-kaptar/` | A 21 s film, five shots: at dawn on a Tashkent rooftop a boy throws a pigeon up to the flock, and the flock comes back down. Canvas 2D, every frame from code; edit B (504 frames) cut with a whip pan and fades, drawn by the page and by `audit/assemble.py` for the master; the sound synthesized from the picture's own state (Python) | **3** |
 | `studio/projects/masofa-maydoni/` | An SDF sandbox — primitives, unions, marching | — |
 | `studio/` | A person and an AI on the same piece: live viewing, frame scrubbing, card and checks, notes on a frame and the AI's answers; a timeline of each film's own tables; what the AI changes shows at once; export to mp4 in the browser, with sound | **33** |
-| `catalog/` | The architecture: tools that count the source and measure frames, five cards, the catalog generator | **15** |
+| `catalog/` | The architecture: tools that count the source and measure frames, six cards, the catalog generator | **15** |
 | `taqqos/` | Code-drawn frames compared with a sample clip **frame by frame, with the same code on both sides**: probes, silhouettes, motion and boil, difference maps, rhythm, occlusion. `METOD.md` is the method and its findings | **10** (`kalibr`) |
 | `skills/` → `.claude/skills/` | The instructions this work was done under: project skills, for this repository only (not part of the abc UX-audit family) | — |
 
@@ -93,6 +94,7 @@ cd catalog && node tools/card.mjs                                        # do th
 cd catalog && node tools/catalog.mjs out.html                            # the catalog page
 cd studio/projects/zarra && npm i && npm run audit                       # 4 checks
 cd taqqos && python3 -m taqqos kalibr                                    # 10 proofs of the measurements
+cd studio/projects/tong-kaptar && npm i && npm run audit                 # 3 checks
 cd studio && npm i && npm run audit && npm run audit:ui                  # 15 checks, then 18 in a browser
 node studio/server.mjs                                                   # the studio: http://127.0.0.1:4321/
 ```

@@ -1,0 +1,12 @@
+{
+  "name": "tong-kaptar",
+  "private": true,
+  "description": "Tong · kaptar — a 21 s film drawn in Canvas 2D, with its sound synthesized from the picture's own state",
+  "dependencies": {
+    "playwright": "1.56.0"
+  },
+  "scripts": {
+    "audit": "node test/run.mjs",
+    "film": "bash make_film.sh"
+  }
+}

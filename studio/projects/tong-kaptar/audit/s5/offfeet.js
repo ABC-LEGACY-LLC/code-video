@@ -1,0 +1,1 @@
+window.offFeet = () => LAND5.filter((e) => e.on === 'off').map((e) => { const p = landPlan(e); return { b: e.b, feet: [p.feet.x, p.feet.y, p.feet.z].map((v) => +v.toFixed(2)), P0: [p.P0.x, p.P0.y, p.P0.z].map((v) => +v.toFixed(2)), tg: +p.tg.toFixed(2) }; });

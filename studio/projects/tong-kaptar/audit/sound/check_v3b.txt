@@ -1,0 +1,43 @@
+PASS  SYNC    accents within one frame of their cause                            263/263
+PASS  BEAT    s1 take-off: the thrown pigeon                                     depth 16.0 dB, peak at 0.28 of the beat, rhythm 6.05 Hz vs drawn 6.00 Hz (x6.3)
+PASS  BEAT    s3 slow motion: the thrown pigeon                                  depth 23.4 dB, peak at 0.28 of the beat, rhythm 1.25 Hz vs drawn 1.24 Hz (x2.8)
+WARN  BEAT    s5 the white one braking                                           depth 15.2 dB, peak at 0.28 of the beat, rhythm 7.01 Hz vs drawn 8.39 Hz (x5.1)
+                                                                                (5 beats folded; PASS: depth >= 8 dB, peak in the downstroke (<= 0.62), rhythm within 15 % of the drawn rate)
+PASS  MOTOR   s3 slow wings: fast tremolo (8-40 Hz vs 0.3-8 Hz of the envelope)  -19.7 dB (its own spectrum as plain noise: -21.2; with an 11 Hz tremolo: -9.4)
+WARN  EAR     s1 take-off wings                                                  best right: Rustle 0.14 (rank 4); worst wrong: Music 0.17
+                                                                                (heard as: Sound effect 0.18, Music 0.17, Rattle 0.17, Rustle 0.14, Clatter 0.12)
+WARN  EAR     s2 flock wings                                                     best right: Rustle 0.02 (rank 6); worst wrong: Eruption 0.06
+                                                                                (heard as: Eruption 0.06, Vehicle 0.06, Music 0.04, Speech 0.03, Rustling leaves 0.03)
+PASS  EAR     s3 slow wings                                                      best right: Whoosh, swoosh, swish 0.11 (rank 1); worst wrong: Music 0.07
+WARN  EAR     s5 landing                                                         best right: Rustle 0.03 (rank 5); worst wrong: Music 0.08
+                                                                                (heard as: Music 0.08, Sound effect 0.04, Crackle 0.04, Clatter 0.03, Rustle 0.03)
+PASS  EAR     s1 coo                                                             best right: Animal 0.35 (rank 1); worst wrong: Cat 0.21
+PASS  EAR     s2 coo                                                             best right: Animal 0.10 (rank 1); worst wrong: Music 0.06
+PASS  EAR     s5 coo                                                             best right: Animal 0.25 (rank 1); worst wrong: Music 0.07
+PASS  EAR     s1-s2 flag                                                         best right: Rustling leaves 0.05 (rank 1); worst wrong: Eruption 0.02
+PASS  EAR     s4 rag circles                                                     best right: Whoosh, swoosh, swish 0.24 (rank 1); worst wrong: Music 0.10
+PASS  EAR     s1-s2 town                                                         best right: Wind 0.19 (rank 2); worst wrong: Waves, surf 0.18
+WARN  EAR     s5 town                                                            best right: Wind 0.09 (rank 4); worst wrong: White noise 0.16
+                                                                                (heard as: White noise 0.16, Eruption 0.14, Wind noise (microphone) 0.10, Wind 0.09, Waves, surf 0.09)
+PASS  EAR     sparrows                                                           best right: Bird 0.27 (rank 1); worst wrong: Music 0.04
+PASS  EAR     whistle                                                            best right: Whistle 0.83 (rank 1); worst wrong: Steam whistle 0.22
+WARN  EAR     sigh                                                               best right: Breathing 0.23 (rank 2); worst wrong: Snort 0.32
+                                                                                (heard as: Snort 0.32, Breathing 0.23, Wheeze 0.17, Gasp 0.09, Sigh 0.03)
+PASS  EAR     throw clothes                                                      best right: Rustle 0.29 (rank 1); worst wrong: Music 0.24
+PASS  EAR     turn clothes                                                       best right: Rustle 0.10 (rank 2); worst wrong: Whoosh, swoosh, swish 0.05
+WARN  MIX     RMS spread across shots                                            9.8 dB s1 -29.0 s2 -33.4 s3 -29.2 s4 -23.5 s5 -28.3
+                                                                                (4..9 dB)
+PASS  MIX     sample peak                                                        -2.28 dBFS
+PASS  MIX     integrated loudness                                                -19.6 LUFS
+PASS  MIX     whistle over landing (momentary max)                               6.1 LU (-9.1 vs -15.1)
+PASS  MIX     s1 (after take-off) bed hiss (flatness of the continuous layers)   0.111 (amb+wings)
+FAIL  MIX     s2 bed hiss (flatness of the continuous layers)                    0.122 (amb+flag+wings)
+                                                                                (<= 0.12)
+PASS  MIX     s3 bed hiss (flatness of the continuous layers)                    0.068 (amb)
+PASS  MIX     s4 bed hiss (flatness of the continuous layers)                    0.100 (amb+wings)
+PASS  MIX     s5 bed hiss (flatness of the continuous layers)                    0.085 (amb+wings)
+PASS  CUTS    into the slow motion at 7.0 s (wings+air+amb+sparrow+flag+coo)     25.0 dB drop
+PASS  CUTS    out of the slow motion at 9.75 s (wings)                           36.8 dB drop
+PASS  SILENCE every layer muted                                                  peak 0.0e+00
+
+40 pass, 7 warn, 1 fail

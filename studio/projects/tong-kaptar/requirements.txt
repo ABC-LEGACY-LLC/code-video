@@ -1,0 +1,16 @@
+# Python 3.11. The versions this film was made and checked with.
+# numpy / scipy / numba shape the synthesized sound sample by sample: keep them pinned, or expect a
+# master that differs in the last bits (check with sound_check.py, not by ear).
+numpy==2.4.4
+scipy==1.17.1
+numba==0.67.0
+pyloudnorm==0.2.0
+Pillow==12.2.0
+opencv-python==4.13.0.92
+matplotlib==3.10.9
+# the AudioSet tagger (audit/sound/ear.py, through tools/EfficientAT): CPU wheels are enough.
+# Measured with torch 2.14.0, torchaudio 2.11.0, torchvision 0.29.0; other versions can move the
+# tagger's probabilities in the last digits.
+torch
+torchaudio
+torchvision
