@@ -1,0 +1,71 @@
+shot 3 joriy: bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.276 | teriQ 0.148
+  ochA 0.500 : bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.277 | teriQ 0.148
+  ochA 0.500 : bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.277 | teriQ 0.148
+  ochA 0.500 : bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.277 | teriQ 0.148
+  ochA 0.515*: bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.276 | teriQ 0.148
+  ochA 0.665 : bosh 0.630 | bosh2 0.452 | fig 0.897 | kapF 0.276 | teriQ 0.148
+  ochA 0.815 : bosh 0.565 | bosh2 0.454 | fig 0.895 | kapF 0.266 | teriQ 0.148
+  ochA 0.965 : bosh 0.512 | bosh2 0.466 | fig 0.891 | kapF 0.149 | teriQ 0.148
+  ochB 0.625 : bosh 0.273 | bosh2 0.110 | fig 0.893 | kapF 0.630 | teriQ 0.006
+  ochB 0.775 : bosh 0.423 | bosh2 0.188 | fig 0.893 | kapF 0.494 | teriQ 0.008
+  ochB 0.925 : bosh 0.573 | bosh2 0.344 | fig 0.893 | kapF 0.313 | teriQ 0.065
+  ochB 1.075*: bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.276 | teriQ 0.148
+  ochB 1.225 : bosh 0.573 | bosh2 0.398 | fig 0.893 | kapF 0.273 | teriQ 0.358
+  ochB 1.375 : bosh 0.456 | bosh2 0.315 | fig 0.893 | kapF 0.270 | teriQ 0.469
+  ochB 1.525 : bosh 0.349 | bosh2 0.239 | fig 0.894 | kapF 0.267 | teriQ 0.479
+  ochiq 0.625 : bosh 0.176 | bosh2 0.066 | fig 0.882 | kapF 0.771 | teriQ 0.006
+  ochiq 0.835 : bosh 0.337 | bosh2 0.127 | fig 0.886 | kapF 0.618 | teriQ 0.006
+  ochiq 1.045 : bosh 0.531 | bosh2 0.305 | fig 0.890 | kapF 0.364 | teriQ 0.050
+  ochiq 1.255*: bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.276 | teriQ 0.148
+  ochiq 1.465 : bosh 0.547 | bosh2 0.387 | fig 0.896 | kapF 0.254 | teriQ 0.416
+  ochiq 1.675 : bosh 0.386 | bosh2 0.285 | fig 0.897 | kapF 0.233 | teriQ 0.509
+  ochiq 1.885 : bosh 0.300 | bosh2 0.236 | fig 0.895 | kapF 0.215 | teriQ 0.534
+  bur -0.064 : bosh 0.307 | bosh2 0.271 | fig 0.872 | kapF 0.282 | teriQ 0.470
+  bur 0.096 : bosh 0.404 | bosh2 0.323 | fig 0.878 | kapF 0.277 | teriQ 0.460
+  bur 0.256 : bosh 0.536 | bosh2 0.391 | fig 0.885 | kapF 0.277 | teriQ 0.348
+  bur 0.416*: bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.276 | teriQ 0.148
+  bur 0.576 : bosh 0.531 | bosh2 0.336 | fig 0.898 | kapF 0.308 | teriQ 0.065
+  bur 0.736 : bosh 0.292 | bosh2 0.196 | fig 0.896 | kapF 0.458 | teriQ 0.011
+  bur 0.800 : bosh 0.199 | bosh2 0.164 | fig 0.892 | kapF 0.472 | teriQ 0.010
+  butunZ -0.800 : bosh 0.552 | bosh2 0.383 | fig 0.868 | kapF 0.295 | teriQ 0.081
+  butunZ -0.800 : bosh 0.552 | bosh2 0.383 | fig 0.868 | kapF 0.295 | teriQ 0.081
+  butunZ -0.764 : bosh 0.584 | bosh2 0.401 | fig 0.874 | kapF 0.290 | teriQ 0.098
+  butunZ -0.604*: bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.276 | teriQ 0.148
+  butunZ -0.444 : bosh 0.559 | bosh2 0.412 | fig 0.903 | kapF 0.273 | teriQ 0.257
+  butunZ -0.284 : bosh 0.427 | bosh2 0.363 | fig 0.902 | kapF 0.257 | teriQ 0.397
+  butunZ -0.124 : bosh 0.342 | bosh2 0.329 | fig 0.896 | kapF 0.149 | teriQ 0.469
+  butunY -0.711 : bosh 0.515 | bosh2 0.310 | fig 0.893 | kapF 0.276 | teriQ 0.109
+  butunY -0.561 : bosh 0.576 | bosh2 0.363 | fig 0.895 | kapF 0.276 | teriQ 0.113
+  butunY -0.411 : bosh 0.630 | bosh2 0.417 | fig 0.896 | kapF 0.275 | teriQ 0.123
+  butunY -0.261*: bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.276 | teriQ 0.148
+  butunY -0.111 : bosh 0.636 | bosh2 0.446 | fig 0.888 | kapF 0.277 | teriQ 0.182
+  butunY 0.039 : bosh 0.600 | bosh2 0.430 | fig 0.881 | kapF 0.278 | teriQ 0.205
+  butunY 0.189 : bosh 0.562 | bosh2 0.412 | fig 0.875 | kapF 0.273 | teriQ 0.217
+  eg 0.021 : bosh 0.472 | bosh2 0.355 | fig 0.898 | kapF 0.286 | teriQ 0.123
+  eg 0.161 : bosh 0.531 | bosh2 0.384 | fig 0.900 | kapF 0.282 | teriQ 0.136
+  eg 0.301 : bosh 0.605 | bosh2 0.424 | fig 0.900 | kapF 0.279 | teriQ 0.146
+  eg 0.441*: bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.276 | teriQ 0.148
+  eg 0.581 : bosh 0.606 | bosh2 0.401 | fig 0.880 | kapF 0.272 | teriQ 0.146
+  eg 0.721 : bosh 0.519 | bosh2 0.329 | fig 0.863 | kapF 0.269 | teriQ 0.143
+  eg 0.861 : bosh 0.430 | bosh2 0.269 | fig 0.843 | kapF 0.269 | teriQ 0.137
+  ochV0 -0.058 : bosh 0.573 | bosh2 0.401 | fig 0.901 | kapF 0.276 | teriQ 0.148
+  ochV0 -0.003 : bosh 0.604 | bosh2 0.420 | fig 0.899 | kapF 0.276 | teriQ 0.148
+  ochV0 0.052 : bosh 0.638 | bosh2 0.441 | fig 0.896 | kapF 0.276 | teriQ 0.148
+  ochV0 0.107*: bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.276 | teriQ 0.148
+  ochV0 0.162 : bosh 0.632 | bosh2 0.430 | fig 0.891 | kapF 0.276 | teriQ 0.148
+  ochV0 0.217 : bosh 0.585 | bosh2 0.400 | fig 0.888 | kapF 0.276 | teriQ 0.148
+  ochV0 0.272 : bosh 0.532 | bosh2 0.374 | fig 0.886 | kapF 0.276 | teriQ 0.148
+  ochV1 0.159 : bosh 0.471 | bosh2 0.335 | fig 0.902 | kapF 0.276 | teriQ 0.148
+  ochV1 0.219 : bosh 0.517 | bosh2 0.364 | fig 0.901 | kapF 0.276 | teriQ 0.148
+  ochV1 0.279 : bosh 0.591 | bosh2 0.412 | fig 0.897 | kapF 0.276 | teriQ 0.148
+  ochV1 0.339*: bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.276 | teriQ 0.148
+  ochV1 0.399 : bosh 0.589 | bosh2 0.379 | fig 0.890 | kapF 0.276 | teriQ 0.148
+  ochV1 0.459 : bosh 0.508 | bosh2 0.315 | fig 0.887 | kapF 0.277 | teriQ 0.148
+  ochV1 0.519 : bosh 0.435 | bosh2 0.271 | fig 0.885 | kapF 0.282 | teriQ 0.138
+  surY 0.183 : bosh 0.579 | bosh2 0.385 | fig 0.903 | kapF 0.276 | teriQ 0.148
+  surY 0.353 : bosh 0.621 | bosh2 0.419 | fig 0.901 | kapF 0.276 | teriQ 0.148
+  surY 0.523 : bosh 0.648 | bosh2 0.442 | fig 0.898 | kapF 0.276 | teriQ 0.148
+  surY 0.693*: bosh 0.657 | bosh2 0.452 | fig 0.893 | kapF 0.276 | teriQ 0.148
+  surY 0.863 : bosh 0.656 | bosh2 0.453 | fig 0.888 | kapF 0.276 | teriQ 0.148
+  surY 0.900 : bosh 0.655 | bosh2 0.453 | fig 0.887 | kapF 0.276 | teriQ 0.148
+  surY 0.900 : bosh 0.655 | bosh2 0.453 | fig 0.887 | kapF 0.276 | teriQ 0.148

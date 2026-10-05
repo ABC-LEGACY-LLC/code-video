@@ -1,0 +1,37 @@
+BOSHLANG'ICH (hozirgi): yuz 4.51 px | bosh IoU 0.657 (nisbat 0.99) | figura 0.893 | kapF 0.276 teriQ 0.148 | 1-shot 10-11 bosh  figura 0.000
+  0: F 7.115 | yuz 4.51 | bosh 0.657 (0.99) | figura 0.893 | kapF 0.276 teriQ 0.148 | qor 0.000 | dEg 0.000 dBur 0.000 dYon 0.000 dD 0.000 dSx 0.000 dSy 0.000 dAz 0.000 dEl 0.000
+  6: F 6.949 | yuz 4.89 | bosh 0.658 (0.99) | figura 0.893 | kapF 0.233 teriQ 0.144 | qor 0.000 | dEg 0.000 dBur 0.000 dYon 0.000 dD 0.000 dSx 0.000 dSy 0.010 dAz 0.000 dEl 0.000
+  80: F 6.945 | yuz 4.74 | bosh 0.652 (0.95) | figura 0.894 | kapF 0.243 teriQ 0.134 | qor 0.000 | dEg 0.000 dBur 0.000 dYon 0.000 dD -0.001 dSx 0.000 dSy 0.008 dAz 0.020 dEl 0.020
+  81: F 6.936 | yuz 4.77 | bosh 0.650 (0.95) | figura 0.893 | kapF 0.243 teriQ 0.128 | qor 0.000 | dEg 0.001 dBur 0.001 dYon 0.001 dD 0.003 dSx 0.000 dSy 0.008 dAz 0.052 dEl 0.052
+  108: F 6.923 | yuz 4.78 | bosh 0.657 (0.99) | figura 0.894 | kapF 0.241 teriQ 0.137 | qor 0.000 | dEg 0.001 dBur -0.002 dYon 0.001 dD 0.001 dSx 0.000 dSy 0.008 dAz -0.049 dEl 0.101
+  117: F 6.914 | yuz 4.84 | bosh 0.653 (0.96) | figura 0.894 | kapF 0.237 teriQ 0.131 | qor 0.000 | dEg 0.001 dBur -0.002 dYon -0.000 dD -0.002 dSx 0.000 dSy 0.008 dAz 0.030 dEl 0.191
+  118: F 6.887 | yuz 4.88 | bosh 0.650 (0.95) | figura 0.894 | kapF 0.233 teriQ 0.123 | qor 0.000 | dEg 0.001 dBur -0.003 dYon -0.000 dD -0.004 dSx 0.000 dSy 0.008 dAz 0.046 dEl 0.287
+  124: F 6.883 | yuz 4.89 | bosh 0.650 (0.96) | figura 0.893 | kapF 0.232 teriQ 0.123 | qor 0.000 | dEg 0.001 dBur -0.003 dYon -0.000 dD -0.004 dSx 0.000 dSy 0.009 dAz 0.064 dEl 0.301
+  132: F 6.874 | yuz 4.89 | bosh 0.654 (0.97) | figura 0.894 | kapF 0.232 teriQ 0.127 | qor 0.000 | dEg 0.000 dBur -0.002 dYon -0.001 dD -0.004 dSx 0.000 dSy 0.009 dAz 0.076 dEl 0.302
+  140: F 6.863 | yuz 4.92 | bosh 0.650 (0.94) | figura 0.894 | kapF 0.230 teriQ 0.121 | qor 0.000 | dEg 0.001 dBur -0.002 dYon -0.001 dD -0.008 dSx 0.000 dSy 0.009 dAz -0.211 dEl 0.345
+  150: F 6.859 | yuz 4.92 | bosh 0.653 (0.97) | figura 0.895 | kapF 0.232 teriQ 0.123 | qor 0.000 | dEg 0.002 dBur -0.002 dYon 0.002 dD -0.003 dSx 0.000 dSy 0.009 dAz -0.034 dEl 0.293
+  159: F 6.855 | yuz 4.94 | bosh 0.651 (0.95) | figura 0.894 | kapF 0.230 teriQ 0.119 | qor 0.000 | dEg 0.001 dBur -0.003 dYon -0.000 dD -0.006 dSx 0.000 dSy 0.009 dAz 0.060 dEl 0.446
+  160: F 6.848 | yuz 4.98 | bosh 0.649 (0.95) | figura 0.893 | kapF 0.229 teriQ 0.114 | qor 0.000 | dEg 0.001 dBur -0.003 dYon -0.000 dD -0.007 dSx 0.000 dSy 0.009 dAz 0.062 dEl 0.541
+  168: F 6.846 | yuz 4.96 | bosh 0.651 (0.95) | figura 0.895 | kapF 0.229 teriQ 0.118 | qor 0.000 | dEg 0.001 dBur -0.003 dYon -0.000 dD -0.007 dSx 0.000 dSy 0.009 dAz 0.042 dEl 0.488
+  172: F 6.836 | yuz 4.96 | bosh 0.651 (0.95) | figura 0.895 | kapF 0.229 teriQ 0.117 | qor 0.000 | dEg 0.001 dBur -0.003 dYon 0.000 dD -0.006 dSx 0.001 dSy 0.009 dAz 0.050 dEl 0.526
+  206: F 6.834 | yuz 4.92 | bosh 0.651 (0.95) | figura 0.896 | kapF 0.233 teriQ 0.115 | qor 0.000 | dEg 0.001 dBur -0.005 dYon -0.000 dD 0.002 dSx 0.001 dSy 0.009 dAz -0.008 dEl 0.429
+  210: F 6.834 | yuz 4.96 | bosh 0.649 (0.95) | figura 0.896 | kapF 0.229 teriQ 0.114 | qor 0.000 | dEg -0.001 dBur -0.006 dYon -0.002 dD -0.008 dSx 0.001 dSy 0.009 dAz -0.016 dEl 0.599
+  214: F 6.830 | yuz 4.93 | bosh 0.652 (0.96) | figura 0.896 | kapF 0.231 teriQ 0.118 | qor 0.000 | dEg 0.001 dBur -0.003 dYon -0.001 dD -0.005 dSx 0.000 dSy 0.009 dAz -0.052 dEl 0.450
+  216: F 6.830 | yuz 4.93 | bosh 0.654 (0.96) | figura 0.896 | kapF 0.228 teriQ 0.123 | qor 0.000 | dEg 0.000 dBur -0.006 dYon -0.002 dD -0.005 dSx 0.000 dSy 0.009 dAz 0.075 dEl 0.449
+  219: F 6.826 | yuz 4.94 | bosh 0.652 (0.95) | figura 0.894 | kapF 0.230 teriQ 0.115 | qor 0.000 | dEg 0.000 dBur -0.004 dYon -0.000 dD -0.005 dSx 0.001 dSy 0.009 dAz -0.060 dEl 0.459
+  253: F 6.816 | yuz 4.92 | bosh 0.653 (0.96) | figura 0.896 | kapF 0.231 teriQ 0.118 | qor 0.000 | dEg -0.000 dBur -0.006 dYon -0.000 dD -0.004 dSx 0.001 dSy 0.008 dAz -0.027 dEl 0.527
+  266: F 6.815 | yuz 4.94 | bosh 0.653 (0.96) | figura 0.895 | kapF 0.230 teriQ 0.116 | qor 0.000 | dEg 0.001 dBur -0.007 dYon -0.000 dD -0.006 dSx 0.001 dSy 0.009 dAz -0.002 dEl 0.497
+  281: F 6.815 | yuz 4.93 | bosh 0.654 (0.96) | figura 0.895 | kapF 0.231 teriQ 0.117 | qor 0.000 | dEg -0.000 dBur -0.006 dYon -0.001 dD -0.004 dSx 0.000 dSy 0.009 dAz -0.042 dEl 0.511
+  285: F 6.813 | yuz 4.93 | bosh 0.654 (0.96) | figura 0.896 | kapF 0.231 teriQ 0.117 | qor 0.000 | dEg -0.000 dBur -0.005 dYon -0.001 dD -0.004 dSx 0.001 dSy 0.009 dAz -0.042 dEl 0.500
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at baholash (/home/claude/work/personaj3d/test/fit_poza11b.mjs:82:24)
+    at async f (/home/claude/work/personaj3d/test/fit_poza11b.mjs:94:15)
+    at async file:///home/claude/work/personaj3d/test/fit_poza11b.mjs:113:236 {
+  log: []
+}
+
+Node.js v22.22.2

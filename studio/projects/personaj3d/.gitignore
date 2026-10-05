@@ -1,0 +1,4 @@
+# the run logs are the record of the passes (the root ignores *.log)
+!*.log
+# renders: node render.mjs writes kadrlar*/ (hundreds of MB, made again from the code)
+kadrlar*/

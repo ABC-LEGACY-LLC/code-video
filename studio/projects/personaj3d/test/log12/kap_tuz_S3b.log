@@ -1,0 +1,28 @@
+  0: F 6.045 | 3: mos 0.735 bosh 0.488 ich 0.026 tashqi 0.847 fig 0.845 pen 0.000 boshF 0.422 tepa 0.100 ichF 0.029
+  1: F 6.022 | 3: mos 0.736 bosh 0.492 ich 0.026 tashqi 0.847 fig 0.843 pen 0.000 boshF 0.432 tepa 0.132 ichF 0.029
+  5: F 6.014 | 3: mos 0.738 bosh 0.497 ich 0.022 tashqi 0.845 fig 0.845 pen 0.000 boshF 0.431 tepa 0.110 ichF 0.031
+  7: F 5.958 | 3: mos 0.738 bosh 0.512 ich 0.025 tashqi 0.836 fig 0.844 pen 0.000 boshF 0.447 tepa 0.151 ichF 0.030
+  8: F 5.955 | 3: mos 0.736 bosh 0.524 ich 0.025 tashqi 0.818 fig 0.846 pen 0.000 boshF 0.446 tepa 0.182 ichF 0.028
+  10: F 5.920 | 3: mos 0.739 bosh 0.524 ich 0.028 tashqi 0.829 fig 0.843 pen 0.000 boshF 0.456 tepa 0.171 ichF 0.031
+  17: F 5.910 | 3: mos 0.741 bosh 0.526 ich 0.027 tashqi 0.831 fig 0.845 pen 0.000 boshF 0.458 tepa 0.170 ichF 0.030
+  18: F 5.893 | 3: mos 0.742 bosh 0.531 ich 0.028 tashqi 0.831 fig 0.846 pen 0.000 boshF 0.461 tepa 0.174 ichF 0.030
+  30: F 5.881 | 3: mos 0.744 bosh 0.536 ich 0.027 tashqi 0.830 fig 0.845 pen 0.000 boshF 0.464 tepa 0.187 ichF 0.029
+  38: F 5.877 | 3: mos 0.744 bosh 0.535 ich 0.026 tashqi 0.830 fig 0.845 pen 0.000 boshF 0.468 tepa 0.186 ichF 0.029
+  39: F 5.873 | 3: mos 0.744 bosh 0.540 ich 0.025 tashqi 0.827 fig 0.845 pen 0.000 boshF 0.467 tepa 0.189 ichF 0.029
+  43: F 5.865 | 3: mos 0.745 bosh 0.542 ich 0.032 tashqi 0.825 fig 0.844 pen 0.000 boshF 0.468 tepa 0.194 ichF 0.028
+  53: F 5.861 | 3: mos 0.747 bosh 0.544 ich 0.031 tashqi 0.825 fig 0.843 pen 0.000 boshF 0.469 tepa 0.191 ichF 0.028
+  57: F 5.859 | 3: mos 0.747 bosh 0.543 ich 0.032 tashqi 0.826 fig 0.843 pen 0.000 boshF 0.470 tepa 0.202 ichF 0.028
+  65: F 5.856 | 3: mos 0.746 bosh 0.543 ich 0.033 tashqi 0.826 fig 0.844 pen 0.000 boshF 0.469 tepa 0.199 ichF 0.029
+  78: F 5.855 | 3: mos 0.746 bosh 0.543 ich 0.033 tashqi 0.826 fig 0.844 pen 0.000 boshF 0.469 tepa 0.205 ichF 0.028
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at baho (/home/claude/work/personaj3d/test/fit_kap_tuz.mjs:56:22)
+    at f (/home/claude/work/personaj3d/test/fit_kap_tuz.mjs:100:42)
+    at /home/claude/work/personaj3d/test/fit_kap_tuz.mjs:112:242 {
+  log: []
+}
+
+Node.js v22.22.2

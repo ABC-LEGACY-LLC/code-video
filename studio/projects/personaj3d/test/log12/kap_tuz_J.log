@@ -1,0 +1,17 @@
+  0: F 15.742 | 1: mos 0.803 bosh 0.718 ich 0.109 tashqi 0.776 fig 0.915 pen 0.000 boshF 0.667 tepa 0.589 ichF 0.142 | 2: mos 0.864 bosh 0.795 ich 0.279 tashqi 0.800 fig 0.942 pen 0.000 boshF 0.739 tepa 0.810 ichF 0.255 | 3: mos 0.731 bosh 0.489 ich 0.022 tashqi 0.837 fig 0.843 pen 0.000 boshF 0.433 tepa 0.132 ichF 0.030
+  7: F 15.700 | 1: mos 0.804 bosh 0.720 ich 0.109 tashqi 0.777 fig 0.915 pen 0.000 boshF 0.671 tepa 0.596 ichF 0.143 | 2: mos 0.864 bosh 0.794 ich 0.281 tashqi 0.800 fig 0.942 pen 0.000 boshF 0.739 tepa 0.807 ichF 0.260 | 3: mos 0.731 bosh 0.489 ich 0.022 tashqi 0.837 fig 0.842 pen 0.000 boshF 0.436 tepa 0.129 ichF 0.030
+  30: F 15.699 | 1: mos 0.804 bosh 0.721 ich 0.109 tashqi 0.777 fig 0.915 pen 0.000 boshF 0.670 tepa 0.594 ichF 0.143 | 2: mos 0.864 bosh 0.794 ich 0.282 tashqi 0.799 fig 0.942 pen 0.000 boshF 0.740 tepa 0.811 ichF 0.260 | 3: mos 0.730 bosh 0.488 ich 0.022 tashqi 0.836 fig 0.843 pen 0.000 boshF 0.434 tepa 0.128 ichF 0.030
+  57: F 15.696 | 1: mos 0.804 bosh 0.720 ich 0.110 tashqi 0.776 fig 0.915 pen 0.000 boshF 0.670 tepa 0.594 ichF 0.143 | 2: mos 0.864 bosh 0.795 ich 0.282 tashqi 0.799 fig 0.942 pen 0.000 boshF 0.740 tepa 0.810 ichF 0.259 | 3: mos 0.730 bosh 0.489 ich 0.022 tashqi 0.836 fig 0.843 pen 0.000 boshF 0.436 tepa 0.128 ichF 0.030
+  59: F 15.693 | 1: mos 0.804 bosh 0.720 ich 0.109 tashqi 0.777 fig 0.915 pen 0.000 boshF 0.670 tepa 0.595 ichF 0.143 | 2: mos 0.864 bosh 0.794 ich 0.284 tashqi 0.800 fig 0.942 pen 0.000 boshF 0.740 tepa 0.810 ichF 0.259 | 3: mos 0.730 bosh 0.489 ich 0.022 tashqi 0.837 fig 0.843 pen 0.000 boshF 0.436 tepa 0.128 ichF 0.030
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Target page, context or browser has been closed
+    at baho (/home/claude/work/personaj3d/test/fit_kap_tuz.mjs:56:22)
+    at f (/home/claude/work/personaj3d/test/fit_kap_tuz.mjs:100:42)
+    at /home/claude/work/personaj3d/test/fit_kap_tuz.mjs:112:80 {
+  log: []
+}
+
+Node.js v22.22.2

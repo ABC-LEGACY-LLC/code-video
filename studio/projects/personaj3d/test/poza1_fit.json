@@ -1,0 +1,38 @@
+{
+ "3": {
+  "egilish": -0.32,
+  "burilish": -0.12,
+  "yonga": 0,
+  "rms": 0.97
+ },
+ "7": {
+  "egilish": -0.32,
+  "burilish": -0.1,
+  "yonga": -0.02,
+  "rms": 1.7
+ },
+ "8": {
+  "egilish": -0.34,
+  "burilish": -0.06,
+  "yonga": -0.02,
+  "rms": 2.25
+ },
+ "9": {
+  "egilish": -0.34,
+  "burilish": -0.02,
+  "yonga": -0.02,
+  "rms": 2.43
+ },
+ "10": {
+  "egilish": -0.28,
+  "burilish": 0.12,
+  "yonga": 0.24,
+  "rms": 1.51
+ },
+ "11": {
+  "egilish": -0.24,
+  "burilish": 0.2,
+  "yonga": 0.24,
+  "rms": 2.66
+ }
+}

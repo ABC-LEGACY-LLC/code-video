@@ -1,0 +1,12 @@
+== 1-shot: misol yuzi o'rtacha 2966 px
+   yalang'och             misol yuzida bizda: teri   96%  soch    0%  kapyushon/plash    0% | bizning teri misol yuzidan tashqarida  102%
+   + soch                 misol yuzida bizda: teri   79%  soch   18%  kapyushon/plash    0% | bizning teri misol yuzidan tashqarida   52%
+   + kapyushon (to'liq)   misol yuzida bizda: teri   79%  soch   18%  kapyushon/plash    1% | bizning teri misol yuzidan tashqarida   51%
+== 2-shot: misol yuzi o'rtacha 2000 px
+   yalang'och             misol yuzida bizda: teri   70%  soch    0%  kapyushon/plash    0% | bizning teri misol yuzidan tashqarida   70%
+   + soch                 misol yuzida bizda: teri   52%  soch   19%  kapyushon/plash    0% | bizning teri misol yuzidan tashqarida   33%
+   + kapyushon (to'liq)   misol yuzida bizda: teri   50%  soch   19%  kapyushon/plash   22% | bizning teri misol yuzidan tashqarida   28%
+== 3-shot: misol yuzi o'rtacha 1256 px
+   yalang'och             misol yuzida bizda: teri   87%  soch    0%  kapyushon/plash    0% | bizning teri misol yuzidan tashqarida  149%
+   + soch                 misol yuzida bizda: teri   84%  soch    5%  kapyushon/plash    0% | bizning teri misol yuzidan tashqarida   96%
+   + kapyushon (to'liq)   misol yuzida bizda: teri   83%  soch    5%  kapyushon/plash   11% | bizning teri misol yuzidan tashqarida   56%
