@@ -7,7 +7,7 @@ description: "code-video project only: before matching a reference clip's face o
 
 > **code-video project skill · `media-staging-audit` v1.1.0**
 > Scope: the code-video repository only — bringing its code-built (3D or drawn) animation toward a reference clip. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web or dashboard work, and do not add it to that repository.
-> Source of truth: `.claude/skills/media-staging-audit/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
+> Source of truth: `.claude/skills/media-staging-audit/SKILL.md` in <https://github.com/ABC-LEGACY-LLC/code-video>.
 > Pairs with `media-match-reference` (measuring details against the clip) and `media-audit-reality` (would it be true in the world). This one comes FIRST. In a 3D model, `media-3d-consistency-audit` decides what may differ between shots: only the camera.
 
 Use it before any detail matching (face, eyes, mouth, hair) against a reference, and whenever the reviewer says the result "looks the wrong way": "ours looks sideways, the reference looks down", "the camera is wrong", "she is looking up, not down".
@@ -71,4 +71,4 @@ If the reference's background gradient and particle motion are the same in every
 
 Reference implementation (`personaj3d/test`): `sahna_fit.mjs` (elevation scan), `sahna2_fit.mjs` (profile contour fit plus eye back-projection), `sahna3_fit.mjs` (low camera, elevation/azimuth scan with no-twist priors), `sahna3_harakat.mjs` (per-frame head offsets from the eye track), `fit_poza1c.mjs`, `sahna_oldin_hozir.mjs`, `sahifa_tekshir.mjs` (page versus node projection), `audit_misol/sahna_olch.py` (render-side contour and eye), `sahna_varaq.py` (sheet).
 
-<!-- SSOT: github.com/AlonurKomilov/code-video/.claude/skills/media-staging-audit -->
+<!-- SSOT: github.com/ABC-LEGACY-LLC/code-video/.claude/skills/media-staging-audit -->

@@ -7,7 +7,7 @@ description: "code-video project only (code-drawn films, animation, synthesized 
 
 > **code-video project skill · `media-audit-reality` v1.3.0**
 > Scope: the code-video repository only — code-drawn films, animation and synthesized sound. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web, dashboard or other non-video UX work, and do not add it to that repository.
-> Source of truth: `.claude/skills/media-audit-reality/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
+> Source of truth: `.claude/skills/media-audit-reality/SKILL.md` in <https://github.com/ABC-LEGACY-LLC/code-video>.
 
 The core problem this skill solves: in this environment you **cannot play video and cannot hear audio**. You see still frames and you read numbers. Every check you run answers "does this do what I told it to?" — none answers "would this be true in the real world?" That gap is where the errors live. They are individually correct and collectively false: a self-propelled swimming subject that faces the right way but slides like it is being towed; an empty landscape with a pure sine whistle that no visible object could produce; an emitting source that looks fine at 360px and bare at 1080px; a figure whose head and body are each drawn perfectly and meet at a notch no real join has.
 
@@ -459,4 +459,4 @@ When you cannot localise a fault by measurement, **build the A/B for them**: rem
 
 **When the user reports a fault you have already "verified" as fine, they are right and your check was wrong.** Do not re-run the check that passed; find the check you never ran. A facing test that passes says nothing about whether the front leads; a source-line test that passes says nothing about whether the source was on screen at that instant; a per-scene level table says nothing about what plays in every scene at once; and a dozen sampled frames say nothing about the four hundred you never rendered. Restate their complaint as a measurement and print the numbers.
 
-<!-- SSOT: github.com/AlonurKomilov/code-video/.claude/skills/media-audit-reality -->
+<!-- SSOT: github.com/ABC-LEGACY-LLC/code-video/.claude/skills/media-audit-reality -->

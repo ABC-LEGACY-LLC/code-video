@@ -1,18 +1,18 @@
 ---
 name: "media-match-reference"
-description: "code-video project only: bring a code-drawn animation toward a reference clip by measurement, frame by frame: the same code on both sides at one working size, calibrated probes anchored to rigid landmarks, every part (eyes, brows, nose, mouth, chin, jaw, hair, cloth) measured separately on the bare model first and then layer by layer, silhouette profiles, per-pair motion and boil, difference maps, rhythm; every probe hit verified on a sheet; shapes fitted from your own models, never traced. Only technique is taken from the reference, never its character or drawing."
+description: "code-video project only: bring a code-drawn animation toward a reference clip by measurement, frame by frame: the same code on both sides at one working size, calibrated probes anchored to rigid landmarks, silhouette profiles, per-pair motion and boil, difference maps, rhythm; every probe hit verified on a sheet; shapes fitted from your own models, never traced. Only technique is taken from the reference, never its character or drawing."
 ---
 
 # Media Match — reference
 
 > **code-video project skill · `media-match-reference` v1.4.0**
 > Scope: the code-video repository only — bringing its code-drawn animation toward a reference clip. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web or dashboard work, and do not add it to that repository.
-> Source of truth: `.claude/skills/media-match-reference/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
+> Source of truth: `.claude/skills/media-match-reference/SKILL.md` in <https://github.com/ABC-LEGACY-LLC/code-video>.
 > A calibrated reference implementation (Python: numpy, scipy, Pillow) is the `taqqos/` folder of that repository; where only this file is available, fetch it from there. Everything below also works with your own code — the method is what matters, not the tool.
 
 Use this when someone gives you a reference clip and asks to get closer to it: "make it 1:1", "check every frame", "what is still different". It pairs with `media-audit-reality`, which asks *would this be true in the world*; this skill asks *where exactly does ours differ from that clip, and why*.
 
-**The rule that governs everything here: a difference you did not measure is a guess, and a measurement you did not look at is a guess too.** Every number is produced by the same code on both sides, by an instrument proven against a known-bad case, and then checked on a sheet to see what it actually touched.
+**The rule that governs everything here: a difference you did not measure is a guess, and a measurement you did not look at is a guess too.** Every number is produced by the same code on both sides, by an instrument proven against a known-bad case, and then checked on a sheet to see what it actually touched. The one exception — features the two drawings define differently — is in *When the drawings differ*.
 
 ## Rule 0 — technique, never the character
 
@@ -99,6 +99,14 @@ Before shaping an object, establish where the camera is from what is visible, th
 
 A silhouette fit compared a median-5-filtered reference mask with an unfiltered model. The median erodes thin tips, so the fit placed the model's tip at the reference's *already eroded* tip, and the drawn limb came out 3–13 px short. Pass the model through the same filter before comparing; the tip difference dropped to −1..−4 px. Anything applied to one side — resize, filter, threshold, interpolation — is applied to the other, including inside optimisers.
 
+## When the drawings differ — each side against its own truth, and a person's marks on the reference
+
+Detectors on our render are calibrated against the model's known answer; on the reference they were checked only on sheets we judged ourselves — the same eye twice. A person marked the parts on eight reference frames, **only the reference**: an unfinished model has no "right place" to mark, and hand accuracy would mix with our 3D definition. Hand noise, from a drawing that appears twice: 0.4–1.3 px on points (σ ≈ 0.45), 5 px on brows (the person continues them under the hair).
+
+- The marks found detector errors no sheet had: a "chin" that was the face edge at mouth height, 24 px off — the previous round's pose fit had been pulled to it, so our chin read "6 px low" when it was 16 px high; a nose tip taken from the contour below the nose (13 px); an eye correction calibrated on our render (centroid → 3D centre, +3.8 px) that gave 4 px error on the reference.
+- Same code on both sides fails where the drawings define the feature differently: the reference's mouth stroke is darkest at its right end, ours at its left, and the same centroid code reported a 5 px gap with the wrong sign. For such features the reference side is the person's mark (else the corrected detector, with its definition offset measured against the marks — −2.5 px here) and our side is the model's own 3D point. Contours and silhouettes stay same-code.
+- Keep the marks as a permanent test: after every detector change, "found but far from the person" must stay 0 (it was 8), and the parts a detector cannot find are covered by the marks.
+
 ## Probe confounds — the difference is the probe's, not the drawing's
 
 Open the sheet for every large difference and see what the probe hit. Over two rounds with about twenty probes:
@@ -141,20 +149,6 @@ Result in one round, against the delivered previous round with the same pipeline
 
 When the model is 3D and the reference is drawn, only the camera belongs to a shot. Fit shape parameters to all shots together — one camera per shot, one objective. A shape, a feature's place on a surface, a cloth or a background fitted per shot, per view angle or per frame improves each shot and makes the model inconsistent. In one project six such fits passed every per-shot measure; a camera-only test (pose and time held, the camera moved between the reference positions) showed the hood popping by up to 159 px, the near eye by 36 px and a camera-carried snow layer drifting 138 px. The method, the test and its calibration are in `media-3d-consistency-audit`.
 
-## Separate the parts — the bare model first, then the layers
-
-A face "fitted down to the mouth" hides the chin. In one 3D round the ongoing probes covered the eyes, the mouth and three jaw-underside columns next to the chin in the 3/4 shot, and only the front contour and the eye in the other two shots; the brows and the nose tip were never measured, and the head fit held a single contour row of the chin. The user saw it before any number did: toward the ear the jaw sat up to 17 px low.
-
-- **Inventory first.** List the parts — hair, brows, eyes, nose, mouth, lip shadow, chin, jaw line, neck, ear, cloth — and, for each shot, the measurement that sees each one. A part with no measurement is not "fine"; it is unmeasured.
-- **You know the truth on your side — calibrate there.** Project named 3D landmarks of every part into every frame (checked against the renderer to 0.005 px) and run the detector meant for the reference on your own render. A constant offset (a dark eye component's centroid sat −1.6, −3.7 px from the iris centre) cancels on both sides; a large or varying one means the detector hit something else — a hair edge, or the lip shadow instead of the mouth. Review every frame's detections on a sheet; reject a detector where it picks a different mark each frame.
-- **Bare first, then the layers.** Render the model without hair, hood and cloak and measure the head's own outline (jaw trace per column, contour per row, the chin). Then add one layer at a time and measure what lands on the reference's *visible* skin: here our hair covered 16 / 18 / 10 % of it per shot, the hood another 2–17 %. A part hidden in the dressed render is unmeasured, not correct.
-- **The model's outline must equal the render's.** Silhouette points sampled from the front half only put the jaw trace 1.5–2.7 px above the render — in the 3/4 view the jaw underside came from the middle of the head. Full sampling and the pixel-centre rule (last covered row ≈ y − 1.0) brought it to 0.7–1.3 px.
-- **The pose swallows the shape.** With only lower-face targets and free poses, the head yaw of two shots ran to the 17° bound. Penalise pose change away from the values fitted with everything else.
-- **Equal shot weights can sacrifice the main shot.** A drawn reference is not one rigid object across views (the profile face was drawn ~20 % smaller relative to the head): equal weights lifted the chin 5–6 px in the 3/4 shot to suit the other two. Fit the main shot with a "no other shot gets worse" penalty and report the contradiction as a residual. Moving another shot's pose also moves any pose-driven rig keyed to it — here it brought back a scale jump in the main shot (1.008 → 1.057).
-- **When a number disagrees with the look, overlay the masks.** A hair-lock refit cut its cover of the visible face from 14 % to 2 %, but the reference/ours overlay showed the old lock lying exactly on the reference's lock in frames 1–9, and the new one had left the face edge. One lock cannot sit where the drawing puts it in both the 3/4 and the profile view; the refit was rejected.
-
-In that round: jaw-underside error in the main shot 3.9 → 1.3 px (max 17 → 7), chin unchanged; the chin residuals of the other shots traced to the drawing (profile face scale) and to pose (eye-to-chin 45 px in the reference, 61 px in ours).
-
 ## The fit breaks what it does not see
 
 An optimiser moves every free parameter toward its objective and is free wherever the objective is blind. In one hair round:
@@ -164,6 +158,11 @@ An optimiser moves every free parameter toward its objective and is free whereve
 - Independent per-frame fits swapped the hair chunk by chunk across held frames (large blobs in the difference map, occlusion map 0.95 → 0.88). A penalty on the change from the previous frame's parameters brought it back to 0.93–0.94.
 - A closed shell cannot switch off: where the fit set outer = inner radius, a 1–2 px light arc remained (L ≈ 75 — under the L > 85 threshold, and removed by the median anyway): invisible to the instrument, a glasses-like arc across the face on the sheet, with interior lines drawn from under it crossing the face. Drop what is thinner than the instrument sees — mask IoU was flat for cut-offs of 0.10–0.18 head radius, so the cut cost nothing — and clip interior lines to the mass.
 - A change made after the fit invalidates the fit's numbers: adding the hair boil after the fit moved one frame's brow zones from 0.82 / 0.38 to 0.46 / 0.17 (reference 0.60 / 0.38) while the log still said "exact" — and the 0.82 itself was the layer error above.
+
+In a later pose and hood round:
+
+- Points do not know what covers them. A pose, camera and hood fit brought a shot's face points to 1–7 px of the marks (from 9–16), while the hood came to cover 28 % of the reference's visible face (5 % before): the points sat under the hood. Measure layers as well — what covers the reference's visible skin in ours (hood, hair, background), and where our skin shows over the reference's lining or shadow.
+- A shared rig key leaks into its neighbours. A hood key blended by Gaussian weights of the head pose carried about a third of the weight into the previous shot; the guard there watched head IoU and figure only, and that shot's lining-band probe went from +2 % to +27 % (tolerance 25). A parameter that no measure sees drifts freely (a lining width moved 1.75 → 5.31 with no effect on any number). Guard every shot a parameter reaches, with the probes that see it.
 
 After every fit, run every probe on the real render and look at the sheet, not only the fitted measures. Every free parameter needs a measurement that sees its whole reach, and anything added later goes into the model and the fit is run again.
 
@@ -178,17 +177,20 @@ After the numbers pass, look at the sheet — and when a number improves, ask wh
 - A shot's acceleration trend matched the reference (+14.6% vs +14.3%) only because face boil in held frames stood in for the reference's hair motion. Removing the boil made it +39.4%: the number got worse and the truth came out; the fix belongs to the hair.
 - A two-point trend (last pair / first pair) is fragile; report every pair and the per-pair MAE. One change improved MAE 0.043 → 0.029 while the trend "worsened" +17.7% → +7.7%.
 - A shot's pair-difference MAE (0.0448) was helped by our head rising 15 px at the end of the shot, where the reference's brim holds. With the head held it read 0.0501. The missing change was a layer: the reference has snow falling in front of the cloak (46–65 specks in the lower-left; ours 0 — our snow is drawn behind the figure). Find the missing layer; do not add motion to restore the number.
+- A visible-head IoU counted the hood lining as head, because in one shot the reference shows it. In another shot the reference shows no lining but a large light hair mass beside the face, and a fit held the IoU (0.656 → 0.657) by spreading lining where our hair was missing: lining on the reference's head 18 % → 30 %, hair and skin 73 % → 54 %. Per-class IoU exposed it; with the lining excluded the fit opened the hood instead. The missing hair is the next round's job, not the lining's.
 
 ## Structure bugs show up as measurements
 
 Many frames in one document, each its own SVG: a clip id built from the rounded head centre collided whenever two frames' centres rounded to the same pixel, and six held frames shared one id. `url(#id)` resolves to the first element with that id — inside a hidden frame — and the visible frame silently dropped the clip: shadows spilled outside the body in frames 2–6. The silhouette profile showed a round bulge under the chin; nothing else did. Check: duplicate ids in the built document must be zero (`grep -o ' id="[^"]*"' out.html | sort | uniq -d`).
 
+**Out-of-order evaluation must reproduce the sequential render.** Pose fields that one shot sets and the others omit were merged into the running state: an optimiser that rendered the last shot and then restarted at frame 0 kept that shot's head offsets in the first (~1 px; a coverage measure read 0.019 instead of 0.030). Test the harness: evaluate the same point first and again after another shot — the numbers must be identical.
+
 ## Output
 
-A parts inventory (which measurement sees which part, per shot), a ranked per-frame table (probe × frame, ours − reference, flagged against tolerance), the sheets for the top items with the probe hits confirmed, before/after sheets (reference / previous as delivered / ours), and the project card updated with before → after numbers and what stays open. Say which differences were probe errors and how you know. Do not claim the clip was "watched"; say frames were measured.
+A ranked per-frame table (probe × frame, ours − reference, flagged against tolerance), the sheets for the top items with the probe hits confirmed, before/after sheets (reference / previous as delivered / ours), and the project card updated with before → after numbers and what stays open. Say which differences were probe errors and how you know. Do not claim the clip was "watched"; say frames were measured.
 
 ## Division of labour
 
 The user sees the clip in motion and knows the reference; you see numbers and still frames. Their "it's still not 1:1" is a request for a finer instrument, not a louder claim — check every frame, find the check you never ran, and show the numbers. When they name the next area, make the instrument complete and calibrated before starting on it.
 
-<!-- SSOT: github.com/AlonurKomilov/code-video/.claude/skills/media-match-reference -->
+<!-- SSOT: github.com/ABC-LEGACY-LLC/code-video/.claude/skills/media-match-reference -->

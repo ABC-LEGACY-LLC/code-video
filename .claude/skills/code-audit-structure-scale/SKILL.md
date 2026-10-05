@@ -7,7 +7,7 @@ description: "code-video project only (the source of code-drawn films and their 
 
 > **code-video project skill · `code-audit-structure-scale` v1.0.1**
 > Scope: the code-video repository only — the source of code-drawn films, animation and their tools. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web or dashboard projects, and do not add it to that repository.
-> Source of truth: `.claude/skills/code-audit-structure-scale/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
+> Source of truth: `.claude/skills/code-audit-structure-scale/SKILL.md` in <https://github.com/ABC-LEGACY-LLC/code-video>.
 
 Sibling of `media-audit-reality`. That skill checks whether the OUTPUT is
 true; this one checks whether the SOURCE can still be worked on.
@@ -238,4 +238,4 @@ in that order. A user who can feel a structural problem without being able
 to name it has given you real data; dismissing it because the name was
 wrong is the same error as accepting it because the name sounded right.
 
-<!-- SSOT: github.com/AlonurKomilov/code-video/.claude/skills/code-audit-structure-scale -->
+<!-- SSOT: github.com/ABC-LEGACY-LLC/code-video/.claude/skills/code-audit-structure-scale -->

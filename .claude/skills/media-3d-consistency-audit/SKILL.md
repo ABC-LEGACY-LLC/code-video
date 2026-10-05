@@ -1,13 +1,13 @@
 ---
 name: "media-3d-consistency-audit"
-description: "code-video project only: catch 2D thinking inside a 3D model matched to a drawn reference (shapes, feature placement, cloth or background keyed to shot, view angle or frame) with a calibrated camera-only test, then replace each patch with one world fitted jointly to all shots."
+description: "code-video only: catch 2D thinking in a 3D model matched to a drawn reference (shape, placement or background keyed to shot, view or frame) with a camera-only test; replace patches with one jointly fitted world."
 ---
 
 # Media 3D Consistency Audit
 
 > **code-video project skill · `media-3d-consistency-audit` v1.0.0**
 > Scope: the code-video repository only — code-built 3D animation brought toward a 2D (drawn) reference clip. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web or dashboard work, and do not add it to that repository.
-> Source of truth: `.claude/skills/media-3d-consistency-audit/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
+> Source of truth: `.claude/skills/media-3d-consistency-audit/SKILL.md` in <https://github.com/ABC-LEGACY-LLC/code-video>.
 > Pairs with `media-staging-audit` (where the camera is), `media-match-reference` (measuring against the clip) and `media-audit-reality` (would it be true in the world). Run it whenever a 3D model is fitted to a drawn reference shot by shot — before per-shot fixes pile up, and after every round.
 
 Use it when:
@@ -102,4 +102,4 @@ A drawn clip can hold things no single 3D world makes. In ours: the snow continu
 
 Reference implementation (`personaj3d`): `test/kamera_sinov9.mjs` (camera-only test; `--kalibr`), `src/film.js` (`kamYol` path and `orbita` test films, nearest-key rule), `src/main.js` (`window.obyekt` world sample points, `window.proj`, `?vaqt=` hold time, `?yamoq=0` freeze, `?suniy=` known displacement), `test/sinov9_varaq.py` (sheet and GIF).
 
-<!-- SSOT: github.com/AlonurKomilov/code-video/.claude/skills/media-3d-consistency-audit -->
+<!-- SSOT: github.com/ABC-LEGACY-LLC/code-video/.claude/skills/media-3d-consistency-audit -->
