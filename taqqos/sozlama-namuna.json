@@ -1,0 +1,36 @@
+{
+ "nom": "namuna -- 1-kadr yuzi, kadrma-kadr",
+ "izoh": "Yo'llar shu faylga nisbatan. Misol kadrlari repoga qo'shilmaydi: ular o'lchov manbai, bizning asar emas.",
+ "misol": "../misol/k%02d.png", "misol_boshi": 1,
+ "biz": "../ff/%02d.png", "biz_boshi": 0,
+ "eski": "../ff-oldingi/%02d.png", "eski_boshi": 0,
+ "eski_izoh": "oldingi o'tishda TOPSHIRILGAN faylning tasvirlari -- eski manbalardan qayta render emas (render keyin o'zgargan fayllarni ham o'qiydi; METOD 11)",
+ "olcham": [320, 180],
+ "kadrlar": 22,
+ "guruhlar": {"1-kadr": [1, 11], "2-kadr": [12, 13], "3-kadr": [14, 22]},
+ "transform": "transform.json",
+ "langar": {"nom": "yaqin_koz", "tur": "komponent", "qutb": "qorongi", "chegara": 36,
+   "quti": [82, 36, 124, 60],
+   "urug": {"1": [97, 47], "6": [95, 47], "11": [111, 54]},
+   "izoh": "Langar MISOLDA o'lchanadi, nisbiy zondlar undan hisoblanadi. Siyrak urug'lar orasi chiziqli to'ldiriladi. Shakli o'zgaradigan belgini (ko'z, yosh yig'ilgan joy) bosh IZI uchun ishlatmang -- izni qattiq nishonlardan (chet, iyak, jag') oling."},
+ "zondlar": [
+  {"nom": "uzoq_koz", "tur": "komponent", "qutb": "qorongi", "chegara": 22, "eng_qorongi": true,
+   "quti": [16, -4, 28, 10], "nisbiy": true, "kadrlar": "1-9",
+   "izoh": "kamalak o'zagi. L<30 da tepadagi chakka yo'li bilan qo'shilib markazni 3 px yuqoriga tortardi -- chegara 22."},
+  {"nom": "iyak_oldi_y52", "tur": "chet", "bosh": [15, 52], "yon": [1, 0], "uzunlik": 25, "shart": "<50",
+   "nisbiy": true, "kadrlar": "1-11", "izoh": "qattiq nishon: ushlangan tasvirlarda 0.1 px gacha bir xil bo'lishi kerak"},
+  {"nom": "tasma", "tur": "hisob", "quti": [35, 16, 47, 50], "L": [30, 55], "nisbiy": true, "kadrlar": "1-11", "tol": 25},
+  {"nom": "yuz_toni", "tur": "soha", "quti": [8, 18, 22, 34], "nisbiy": true, "rang": true, "kadrlar": "1-11", "tol": 3},
+  {"nom": "yosh_jag", "tur": "komponent", "qutb": "yorug", "chegara": 45, "eng_yorug": true,
+   "quti": {"6": [100, 103, 112, 115], "11": [118, 150, 131, 165]}, "kadrlar": "6,11",
+   "izoh": "har kadrga o'z qutisi. 'eng yorug'' qutidagi ENG yorug' narsani oladi -- qor zarrasi halqa yaltirog'idan yorug' bo'lsa, zarrani oladi. Qutini tor qiling va natijani varaqda tekshiring."},
+  {"nom": "qol_uchi", "tur": "uch", "quti": [140, 118, 200, 180], "shart": "<20", "median": 5,
+   "bog": [126, 150], "eng": "ong", "kadrlar": "1-11",
+   "izoh": "chegarani fondan UZOQ tanlang: <26 da niqob L 17..30 li osmonga oqdi va 'uch' quti chetida topildi."}
+ ],
+ "siluetlar": [
+  {"nom": "tana_ong", "quti": [100, 100, 215, 180], "bog": [126, 150], "shart": "<20", "median": 5,
+   "yon": "ong", "kadrlar": "1-11",
+   "izoh": "figura o'ng cheti har qatorda. Bog' -- tananing eng qorong'i joyi (zarra ustiga tushsa, 9x9 oynadagi eng katta komponenta olinadi)."}
+ ]
+}

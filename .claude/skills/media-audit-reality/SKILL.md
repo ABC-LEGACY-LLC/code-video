@@ -1,17 +1,17 @@
 ---
 name: "media-audit-reality"
-description: "Audit a code-generated animation, illustration or synthesized soundscape against physical reality before showing it: a deterministic scan that measures every frame, motion via frame strips, hand-drawn timing, cut continuity and rhythm, sound via source-causality, calibrated psychoacoustics and a hunt for whatever never stops, detail at full resolution, every joint across its motion, then a fresh-eyes reviewer."
+description: "code-video project only (code-drawn films, animation, synthesized sound): audit a code-generated animation, illustration or synthesized soundscape against physical reality before showing it: a deterministic scan that measures every frame, motion via frame strips, hand-drawn timing, cut continuity and rhythm, sound via source-causality, calibrated psychoacoustics and a hunt for whatever never stops, detail at full resolution, every joint across its motion, then a fresh-eyes reviewer. Not for web or dashboard UX work."
 ---
 
 # Media Audit — reality
 
-> **`abc` skill family · `media-audit-reality` v1.2.0** — domain `media` · kind `audit` · method `reality`
-> Source of truth: <https://github.com/AlonurKomilov/skills> (ABC LEGACY LLC).
-> Naming follows `{domain}-{kind}-{method}-{scope}`; `validate.sh` in that repo is the gate.
+> **code-video project skill · `media-audit-reality` v1.3.0**
+> Scope: the code-video repository only — code-drawn films, animation and synthesized sound. Not part of the abc UX-audit skill family (github.com/AlonurKomilov/skills): do not use it for web, dashboard or other non-video UX work, and do not add it to that repository.
+> Source of truth: `.claude/skills/media-audit-reality/SKILL.md` in <https://github.com/AlonurKomilov/code-video>.
 
 The core problem this skill solves: in this environment you **cannot play video and cannot hear audio**. You see still frames and you read numbers. Every check you run answers "does this do what I told it to?" — none answers "would this be true in the real world?" That gap is where the errors live. They are individually correct and collectively false: a self-propelled swimming subject that faces the right way but slides like it is being towed; an empty landscape with a pure sine whistle that no visible object could produce; an emitting source that looks fine at 360px and bare at 1080px; a figure whose head and body are each drawn perfectly and meet at a notch no real join has.
 
-Use this after building any generated animation, canvas/WebGL scene, procedural video, code-drawn illustration (SVG, canvas, a character or scene built from primitives) or synthesized audio, and BEFORE presenting it. Also use it when the user says something "feels wrong" but can't say why.
+Use this after building any generated animation, canvas/WebGL scene, procedural video, code-drawn illustration (SVG, canvas, a character or scene built from primitives) or synthesized audio, and BEFORE presenting it. Also use it when the user says something "feels wrong" but can't say why. When the task is to get closer to a given reference clip rather than to the world, use `media-match-reference` — the same discipline with instruments that compare against the reference frame by frame.
 
 Run all the passes. Each one replaces a sense you do not have with a check you can perform. Default mode is **report first**: list the findings and state whether the piece is all right; fix only what the user asks for, or everything if they asked for a finished piece.
 
@@ -40,6 +40,8 @@ window.__frameTo(140); const B=ctx.getImageData(0,0,w,h).data;
 ```
 
 One piece reported "differs" on a data-URL comparison and **0 of 2,073,600 pixels** on the real one, and the false negative nearly sent a working system back for a rewrite.
+
+**One document, many frames: every id unique per frame.** When each frame is its own SVG in one page and all but the current one are hidden, `url(#id)` resolves to the FIRST element with that id in the document. If that element sits in a hidden frame, the visible frame silently loses its clip, filter or gradient. One piece built a clip id from the rounded subject centre; six held frames rounded to the same centre, shared one id, and five of them drew their shadows unclipped outside the body — no error, a clean console, invisible at thumbnail size, found only when a per-frame silhouette measure showed a bulge in exactly those frames. Check the built document: `grep -o ' id="[^"]*"' out.html | sort | uniq -d` must print nothing.
 
 ## Pass 1 — Motion: frame strips, never single frames
 
@@ -143,6 +145,8 @@ Read it for: **runs of near-zero `diff`** (a held beat is deliberate, a dead one
 
 **Calibrate the frame index like any other metric.** A scan that reports frame `f` while the engine has already incremented to `f+1` reports an alternating mechanism exactly backwards — "exposed on even frames" came back as odd, and the first reading of it was that the feature was broken. State the known-good answer first (*characters are exposed every second frame, so even-frame motion must exceed odd*), then check the metric reproduces it. If it does not, suspect the metric before the mechanism.
 
+**Look at what every probe touched.** A probe that returns the extreme of a box — darkest, brightest, rightmost — returns whatever is extreme there: a particle, a highlight on hair, a dark sky. In one round four ranked "shape errors" were probe hits on the wrong object: a tear probe on a lit hair edge, a limb-tip probe whose threshold (26) sat inside the dark sky's range (17–30) and flooded into it on three frames of eleven, a ring probe on a snow particle brighter than the ring, and a mouth probe whose −1.7 px centroid shift was a stroke 3 px too long at ONE end. Open the sheet for every large difference before changing the drawing, list the component's extents rather than trusting its centroid, and keep the reason for each probe correction beside the probe.
+
 ## Pass 1c — Timing: hold the drawing, do not smooth it
 
 Continuous interpolation at 60 fps is why code-drawn motion reads as a screensaver rather than as animation. Hand-drawn animation has a vocabulary for this and all of it is implementable:
@@ -152,6 +156,7 @@ Continuous interpolation at 60 fps is why code-drawn motion reads as a screensav
 - **Impact frames.** At the hit, one to three frames of abstract graphic — lines converging on the point of contact, the subjects fused into one mass — then one or two INVERTED frames. A line that merely fades thinner over five frames is a wipe, and reads as one.
 - **Smears and multiples.** On the fastest frames draw the subject plus two or three trailing transparent copies. That is what an animator draws instead of in-betweens nobody can see.
 - **Holds that still breathe.** A held drawing lands the beat, but a completely frozen frame reads as a freeze. Keep the cloth settling, the weather running, the exhale drifting.
+- **A hold is one drawing — no boil inside it.** If lines are re-warped every frame to imitate redrawing, a held run is drawn WITHOUT the warp, not with one shared seed: a single seed's warp displaced all six held frames by the same field (rigid landmarks 0.7–1.1 px off, the mouth 1.2 px) where the unwarped geometry was exact. What keeps a hold alive is the secondary motion that really moves — hair, cloth, weather — and a median of block motion will not show it: 0.00 px in the held frames while the hair strands changed every frame (region energy 0.07–0.10 in the reference, 0.01–0.02 in ours). Check holds with a difference map, not a median.
 - **Anticipation, overshoot, settle.** A run does not stop dead: let the lean bleed off over ~1 s with a damped overshoot, and make two subjects asymmetric — mirrored figures at the same height read as a pose, not as a moment.
 
 And a staging rule the maths will not give you: **geometrically correct can still read wrong.** Two mirrored figures holding long horizontal blades that trail behind them say "still fighting" to the eye, whatever the angles prove about which way is backwards. When a frame reads wrong and measures right, change the staging, not the numbers.
@@ -453,3 +458,5 @@ The user has ears and sees motion at full speed; you do not. Their "that sound d
 When you cannot localise a fault by measurement, **build the A/B for them**: remove the suspect from some scenes, leave it in others, ship it, and ask which scenes still have it. That is not giving up — it is using the one instrument you do not have.
 
 **When the user reports a fault you have already "verified" as fine, they are right and your check was wrong.** Do not re-run the check that passed; find the check you never ran. A facing test that passes says nothing about whether the front leads; a source-line test that passes says nothing about whether the source was on screen at that instant; a per-scene level table says nothing about what plays in every scene at once; and a dozen sampled frames say nothing about the four hundred you never rendered. Restate their complaint as a measurement and print the numbers.
+
+<!-- SSOT: github.com/AlonurKomilov/code-video/.claude/skills/media-audit-reality -->

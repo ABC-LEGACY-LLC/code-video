@@ -49,16 +49,22 @@ const reasonOf=r=> r.err ? String(r.err).split('\n')[0]
      annotate() -> annotations. Not tidy, but PUBLIC: the same page shows
         "2 warnings, 2 notices" for a Node 20 deprecation without a sign-in. The
         name and the reason of a failing check now leave by that route. */
-const esc=s=>String(s).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A').replace(/:/g,'%3A').replace(/,/g,'%2C');
+/* TWO ESCAPINGS, and mixing them showed. On GitHub a MESSAGE escapes only %, CR and
+   LF; the colon and the comma are escaped only in PROPERTY values such as the title.
+   One escaping was applied to both, and on the public page the message came out as
+   "15 checks%2C 0 problems" -- the code instead of the comma. Found by looking, not
+   by guessing. */
+const escMsg=s=>String(s).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');
+const escProp=s=>escMsg(s).replace(/:/g,'%3A').replace(/,/g,'%2C');
 function annotate(suite,bad){
  if(!process.env.GITHUB_ACTIONS) return;
  for(const r of bad.slice(0,10)){
   const reason = reasonOf(r)
    || `measured ${f(r.value)}, known-bad ${r.cal==null?'—':f(r.cal)}${r.note?' ('+r.note+')':''}`;
-  console.log(`::error title=${esc(suite+' / '+r.name)}::${esc(reason)}`);
+  console.log(`::error title=${escProp(suite+' / '+r.name)}::${escMsg(reason)}`);
  }
- if(bad.length>10) console.log(`::error title=${esc(suite)}::${esc(`${bad.length-10} more problem(s)`)}`);
- if(!bad.length) console.log(`::notice title=${esc(suite)}::${esc(`${R.length} checks, 0 problems -- each one separated from its own broken case`)}`);
+ if(bad.length>10) console.log(`::error title=${escProp(suite)}::${escMsg(`${bad.length-10} more problem(s)`)}`);
+ if(!bad.length) console.log(`::notice title=${escProp(suite)}::${escMsg(`${R.length} checks, 0 problems -- each one separated from its own broken case`)}`);
 }
 function summary(suite,lines,bad){
  const file=process.env.GITHUB_STEP_SUMMARY; if(!file) return;
