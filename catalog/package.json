@@ -1,5 +1,5 @@
 {
-  "name": "loyihalar",
+  "name": "catalog",
   "type": "module",
   "private": true,
   "devDependencies": {
@@ -7,7 +7,7 @@
   },
   "scripts": {
     "audit": "node test/run.mjs",
-    "kartalar": "node tools/karta.mjs",
-    "katalog": "node tools/katalog.mjs"
+    "cards": "node tools/card.mjs",
+    "catalog": "node tools/catalog.mjs"
   }
 }

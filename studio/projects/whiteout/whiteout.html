@@ -1,7 +1,10 @@
 <title>Whiteout</title>
+<script>if(/[?&]embed\b/.test(location.search))document.documentElement.classList.add('embed')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<!-- media="print" + onload: as a plain stylesheet it blocked the script, and a font
+     host that never answered left the piece blank; now it waits at most 3 s (below) -->
+<link id="fontcss" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=IBM+Plex+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
 <style>
 :root{
   --snow-hi:#f1f3f3; --snow:#dfe3e4; --snow-lo:#c6cccd;
@@ -35,6 +38,12 @@ button[aria-pressed="true"]{border-color:var(--blood);color:#fff}
 .meta{font-size:11px;line-height:1.6;color:var(--shell-dim);letter-spacing:.04em;
   display:flex;gap:16px;flex-wrap:wrap}
 .meta b{color:var(--shell-text);font-weight:500}
+/* EMBED (?embed): inside the studio the piece shows its picture and its sound switch;
+   the replay button, the shot bar and the notes are the studio's job there */
+html.embed body{height:100vh;padding:8px 12px;gap:8px;overflow:hidden}
+html.embed .wrap{max-width:none;align-items:center}
+html.embed .stage{width:min(100%,calc((100vh - 64px)*16/9))}
+html.embed .shots,html.embed #play,html.embed .meta,html.embed .spacer{display:none}
 </style>
 
 <div class="wrap">
@@ -53,6 +62,7 @@ button[aria-pressed="true"]{border-color:var(--blood);color:#fff}
 </div>
 
 <script>
+window.__ready=false;   // the studio's contract: true once the piece is running
 (function(){
 const cv=document.getElementById('cv'),g=cv.getContext('2d');
 const W=1920,H=1080,TAU=Math.PI*2;
@@ -92,17 +102,19 @@ for(let i=0;i<1150;i++){
   r:lerp(0.8,6.2,z*z), vy:lerp(30,300,z), sw:rnd()*TAU,
   tw:0.6+rnd()*2.2, a:lerp(.10,.70,z)});
 }
+/* Frozen snow hangs where the last charge frame left it. That place is a TIME, not a
+   memory of the last picture: read back from whatever draw came before, the clash
+   showed different snow after a scrub than in a playthrough. */
+const FREEZE_T=(()=>{const s=S[SHOTS.findIndex(q=>q.k==='clash')];
+ let t=0,p=0;while(t<s){p=t;t+=DT;}return p;})();   // T of the last frame before it, as stepped
 function snow(t,wind,freeze,sc){
  sc=sc||1;
+ if(freeze)t=FREEZE_T;
  for(const f of flakes){
-  let x,y,vx;
-  if(freeze&&f.fx!==undefined){x=f.fx;y=f.fy;vx=f.fvx||0;}
-  else{
-   const drift=wind*lerp(40,260,f.z);
-   y=(f.y+t*f.vy)%(H+80)-40;
-   x=(f.x+t*drift+Math.sin(t*f.tw+f.sw)*lerp(6,26,f.z))%(W+120)-60;
-   vx=drift;f.fx=x;f.fy=y;f.fvx=vx;
-  }
+  const drift=wind*lerp(40,260,f.z);
+  const y=(f.y+t*f.vy)%(H+80)-40;
+  const x=(f.x+t*drift+Math.sin(t*f.tw+f.sw)*lerp(6,26,f.z))%(W+120)-60;
+  const vx=drift;
   g.globalAlpha=f.a;
   g.fillStyle=f.z>.6?'#ffffff':SNOW_HI;
   const r=f.r*sc;
@@ -716,6 +728,7 @@ function sim(dt){
 
  stepDrop(dt,k==='drop');
 }
+const smearAt=lt=>lt>0.16?3:lt>0.08?2:1;
 function shotNow(){let i=0;for(let j=0;j<SHOTS.length;j++)if(T>=S[j])i=j;return i;}
 function draw(){
  const i=shotNow(),sh=SHOTS[i],lt=T-S[i],u=clamp(lt/sh.d,0,1),k=sh.k;
@@ -794,7 +807,7 @@ function draw(){
  else if(k==='charge'){
   ground(900);
   const p=u*u;                                       // accelerating, not gliding
-  const sm=lt>0.16?3:lt>0.08?2:1;                    // more multiples the faster he goes
+  const sm=smearAt(lt);                              // more multiples the faster he goes
   speedLines(0.16+u*0.5);
   drawActor(hero,lerp(W*0.21,W*0.435,p),934,4.9,false,{drawn:true,bladeLen:42,smear:sm});
   drawActor(other,lerp(W*0.81,W*0.585,p),934,4.9,true,{drawn:true,bladeLen:42,smear:sm});
@@ -929,7 +942,9 @@ function wind(t,dur,peak){
  s.connect(fl).connect(e).connect(master);s.start(t,Math.random());s.stop(t+dur+0.1);
 }
 /* the footfall now fires from the FOOT, at the frame the heel actually strikes */
+let REC=null;                                // a list, while the footfalls are being found (see STEPS)
 function crunch(lvl,pan){
+ if(REC){REC.push(frameNo);return;}
  if(!soundOn||!AC)return;const t=AC.currentTime+0.005;
  nz(t,0.075,lvl,'lowpass',560,1.0,pan);
  nz(t+0.004,0.05,lvl*0.6,'bandpass',2100,1.3,pan);
@@ -958,24 +973,27 @@ function drone(t,dur,f0,f1,lvl){
  o.connect(fl);o2.connect(gn(0.28)).connect(fl);fl.connect(e).connect(master);
  o.start(t);o2.start(t);o.stop(t+dur+0.1);o2.stop(t+dur+0.1);
 }
-function score(t0){
- const at=s=>t0+s;
- wind(at(0),TOTAL,0.085);
- drone(at(0),9.5,34,46,0.10);
- breathS(at(2.1),0.055);breathS(at(4.3),0.075);breathS(at(6.0),0.10);
- nz(at(6.85),0.9,0.10,'bandpass',300,1.4,0,120);
- drone(at(6.8),3.1,44,70,0.20);
- nz(at(9.0),0.42,0.18,'bandpass',700,1.1,0,2400);
- /* 9.50 .. 9.80 : nothing. The gap is the loudest thing here. */
- steel(at(9.59),0.42);
- drone(at(9.59),2.4,96,30,0.42);
- nz(at(9.59),0.7,0.24,'lowpass',2000,0.9,0,200);
- nz(at(9.84),1.5,0.07,'bandpass',1800,2.2,0,600);
- breathS(at(10.6),0.11);breathS(at(11.4),0.09);
- drone(at(12.9),4.0,40,32,0.14);
- breathS(at(13.6),0.07);
- wind(at(15.3),4.0,0.05);
-}
+/* THE SCORE IS A TABLE: [second, voice, ...its arguments]. The studio's timeline reads
+   the same rows the sound is made from.
+   9.50 .. 9.80 : nothing. The gap is the loudest thing here. */
+const SCORE=[
+ [0,'wind',TOTAL,0.085],
+ [0,'drone',9.5,34,46,0.10],
+ [2.1,'breathS',0.055],[4.3,'breathS',0.075],[6.0,'breathS',0.10],
+ [6.85,'nz',0.9,0.10,'bandpass',300,1.4,0,120],
+ [6.8,'drone',3.1,44,70,0.20],
+ [9.0,'nz',0.42,0.18,'bandpass',700,1.1,0,2400],
+ [9.59,'steel',0.42],
+ [9.59,'drone',2.4,96,30,0.42],
+ [9.59,'nz',0.7,0.24,'lowpass',2000,0.9,0,200],
+ [9.84,'nz',1.5,0.07,'bandpass',1800,2.2,0,600],
+ [10.6,'breathS',0.11],[11.4,'breathS',0.09],
+ [12.9,'drone',4.0,40,32,0.14],
+ [13.6,'breathS',0.07],
+ [15.3,'wind',4.0,0.05]
+];
+const VOICES={wind,drone,breathS,nz,steel};
+function score(t0){ for(const [s,v,...a] of SCORE) VOICES[v](t0+s,...a); }
 function arm(){if(soundOn&&AC)score(AC.currentTime+0.08);}
 hero.onStep=i=>{const k=SHOTS[(()=>{let j=0;for(let q=0;q<SHOTS.length;q++)if(T>=S[q])j=q;return j;})()].k;
  if(k==='far'||k==='walk'||k==='boot')crunch(lerp(0.10,0.30,T/6.8),i?0.22:-0.22);
@@ -987,11 +1005,13 @@ const shotsEl=document.getElementById('shots');
 const bars=SHOTS.map(()=>{const i=document.createElement('i'),b=document.createElement('b');
  i.appendChild(b);shotsEl.appendChild(i);return b;});
 let frameNo=0, acc=0;
+let simSteps=0;                             // work done, counted: the studio's scrub check reads it
 function stepOnce(){                        // one authored frame at 24
- T+=DT;frameNo++;
+ T+=DT;frameNo++;simSteps++;
  if(frameNo%TWOS===0){expose(hero);expose(other);}   // the twos
  if(T>=TOTAL){T=TOTAL;playing=false;}
 }
+const SHAKE={impactA:1,after:0.5};           // the camera is hit as these shots begin (live playback only)
 function frame(now){
  const el=Math.min(0.1,(now-last)/1000);last=now;
  if(playing){acc+=el;let guard=0;
@@ -999,8 +1019,7 @@ function frame(now){
  }
  for(let i=0;i<SHOTS.length;i++){
   const d=T-S[i];
-  if(SHOTS[i].k==='impactA'&&d>=0&&d<0.05)shake=1;
-  if(SHOTS[i].k==='after'&&d>=0&&d<0.05)shake=0.5;
+  if(SHAKE[SHOTS[i].k]&&d>=0&&d<0.05)shake=SHAKE[SHOTS[i].k];
   bars[i].style.width=clamp((T-S[i])/SHOTS[i].d,0,1)*100+'%';
  }
  draw();
@@ -1058,11 +1077,70 @@ window.__scanAll=(step)=>{
  }
  return out;
 };
+/* SCRUBBING WITHOUT STARTING OVER. __frameTo used to re-simulate from frame 0 on every
+   call, so a scrub near the end cost the whole piece each time. Every step is
+   deterministic and the picture is drawn from that state alone (draw() keeps no memory
+   of the frame before it), so frame k is
+   the same however k was reached: going forward from where the piece already is gives
+   the same picture as starting over, and going back can start from the nearest saved
+   checkpoint. The studio's check compares both paths pixel for pixel. */
+const CK=new Map(), CK_EVERY=48;
+let canonical=true;                         // false when T was set by hand, not stepped
+const keep=a=>{const o={};for(const k in a)if(typeof a[k]!=='function')o[k]=structuredClone(a[k]);return o;};
+const back=(a,o)=>{for(const k in o)a[k]=structuredClone(o[k]);};
+function checkpoint(){CK.set(frameNo,{T,frameNo,RS,hero:keep(hero),other:keep(other),drop:keep(drop)});}
+function restore(c){T=c.T;frameNo=c.frameNo;RS=c.RS;back(hero,c.hero);back(other,c.other);back(drop,c.drop);}
 window.__frameTo=(n)=>{                     // deterministic: same n, same picture, always
- playing=false;T=0;frameNo=0;acc=0;reseed();resetAll();
- for(let i=0;i<n;i++){stepOnce();sim(DT);}
+ /* the camera shake belongs to live playback (set in frame(), decayed by draw()); a
+    frame asked for by number shows the film without it, the same way on every path */
+ playing=false;acc=0;shake=0;
+ if(!canonical||frameNo>n){
+  let k=Math.floor(n/CK_EVERY)*CK_EVERY;
+  while(k>0&&!CK.has(k))k-=CK_EVERY;
+  if(k>0)restore(CK.get(k)); else {T=0;frameNo=0;reseed();resetAll();}
+  canonical=true;
+ }
+ while(frameNo<n){stepOnce();sim(DT);if(frameNo%CK_EVERY===0&&!CK.has(frameNo))checkpoint();}
  draw();
  return {frame:n,t:+T.toFixed(4),shot:SHOTS[shotNow()].k};
+};
+/* the frame where each shot starts, found the way the piece finds it: T grows by DT a
+   frame and a shot begins at the first frame with T >= its start */
+const SHOT_F=(()=>{const o=[0];let t=0,n=0;for(let i=1;i<SHOTS.length;i++){while(t<S[i]){t+=DT;n++;}o.push(n);}return o;})();
+window.__shots=SHOTS.map((s,i)=>({k:s.k,f:SHOT_F[i]}));
+window.__totalFrames=Math.round(TOTAL*FPS);
+window.__frame=()=>({frame:frameNo,shot:SHOTS[shotNow()].k});
+window.__pause=()=>{playing=false;};
+window.__play=(f)=>{if(Number.isInteger(f))window.__frameTo(f);
+ if(frameNo>=window.__totalFrames)window.__frameTo(0);
+ playing=true;acc=0;last=performance.now();};
+window.__simSteps=()=>simSteps;
+/* THE FILM AS TRACKS, for the studio's timeline (studio/README.md): read from the tables
+   the film runs on -- SHOTS, SHAKE, the smear rule, SCORE -- never declared again. */
+window.__tracks=()=>{
+ const N=window.__totalFrames, F=t=>Math.min(N-1,Math.round(t*FPS)), here={file:'whiteout.html'};
+ const len=i=>(i+1<SHOTS.length?SHOT_F[i+1]:N)-SHOT_F[i];
+ const shotOf=k=>SHOTS.findIndex(s=>s.k===k), clip=(k,label)=>{const i=shotOf(k);return {f:SHOT_F[i],n:len(i),label};};
+ const smear=[]; { const i=shotOf('charge'); let cur=null;
+  for(let f=SHOT_F[i];f<SHOT_F[i]+len(i);f++){ const m=smearAt(f*DT-S[i]);
+   if(m>1){ if(cur&&cur.label==='smear ×'+m) cur.n++; else smear.push(cur={f,n:1,label:'smear ×'+m}); } else cur=null; } }
+ const voice=(v,label,dur)=>SCORE.filter(r=>r[1]===v).map(r=>({f:F(r[0]),n:dur?Math.max(1,Math.min(N-F(r[0]),Math.round(r[2]*FPS))):undefined,label:label(r)}));
+ const score={...here,find:'const SCORE=['};
+ return [
+  {id:'shots',name:'Shots',kind:'clips',src:{...here,find:'const SHOTS=['},items:SHOTS.map((s,i)=>({f:SHOT_F[i],n:len(i),label:s.k,
+    edit:[{name:'length',unit:'s',...here,row:{key:'k',is:s.k},key:'d',value:s.d,min:0.04,max:20,step:0.005,per:1/FPS,drag:true}]}))},
+  {id:'shake',name:'Effects · shake',kind:'events',src:{...here,find:'const SHAKE='},
+   items:Object.keys(SHAKE).map(k=>({f:SHOT_F[shotOf(k)],label:'shake '+SHAKE[k]+' (while playing)'}))},
+  {id:'fx',name:'Effects · drawing',kind:'clips',src:{...here,find:'const smearAt='},
+   items:[...smear,clip('clash','snow frozen'),clip('impactA','impact frame'),clip('impactB','impact, inverted')]},
+  {id:'wind',name:'Sound · wind',kind:'clips',src:score,items:voice('wind',r=>'level '+r[3],true)},
+  {id:'drone',name:'Sound · drone',kind:'clips',src:score,items:voice('drone',r=>r[3]+'→'+r[4]+' Hz',true)},
+  {id:'noise',name:'Sound · noise',kind:'clips',src:score,items:voice('nz',r=>r[4]+' '+r[5]+' Hz',true)},
+  {id:'breath',name:'Sound · breath',kind:'events',src:score,items:voice('breathS',r=>'level '+r[2])},
+  {id:'steps',name:'Sound · footfalls',kind:'events',derived:true,src:{...here,find:'hero.onStep='},
+   why:'A crunch sounds when the walk reaches a contact drawing; the film is stepped through once to find them.',items:STEPS.map(f=>({f:Math.min(N-1,f)}))},
+  {id:'steel',name:'Sound · steel',kind:'events',src:score,items:voice('steel',r=>'level '+r[2])}
+ ];
 };
 /* A window onto the mechanism itself, not its pixel shadow. Every bug in this file
    that cost real time was a mechanism running correctly on a wrong input, which a
@@ -1079,15 +1157,28 @@ window.__probe=()=>{
 };
 window.__sheet={WALK,CHARGE,STAND_A,STAND_B,CLASH,AFTER,PW,WALK_HOLDS,WALK_TRAVEL};
 window.__step=()=>{stepOnce();sim(DT);draw();return window.__probe();};
-window.__rewind=()=>{playing=false;T=0;frameNo=0;acc=0;reseed();resetAll();};
+window.__rewind=()=>{playing=false;T=0;frameNo=0;acc=0;reseed();resetAll();canonical=true;CK.clear();};
 window.__fps=FPS;window.__total=TOTAL;
-const start=()=>{last=performance.now();requestAnimationFrame(frame);};
+/* THE FOOTFALLS, FOUND BY RUNNING THE FILM ONCE. Nobody placed them: a step sounds when
+   the walk reaches a contact drawing. So the film is stepped through, silently, before
+   it starts, and the frames where it asked for a crunch are kept for the timeline. */
+REC=[]; for(let f=0,n=Math.round(TOTAL*FPS);f<n;f++){stepOnce();sim(DT);}
+const STEPS=REC; REC=null; T=0;frameNo=0;acc=0;simSteps=0;playing=true;reseed();resetAll();
+let started=false;
+const start=()=>{if(started)return;started=true;last=performance.now();requestAnimationFrame(frame);window.__ready=true;};
+/* Wait for the faces, but never for ever: the stylesheet and the font files together
+   get 3 s, then the piece starts in whatever face it has (the loop redraws when the
+   font comes). A file that never answers once kept the piece from starting at all. */
+const css=document.getElementById('fontcss');
+const cssIn=new Promise(r=>{if(!css||css.media!=='print')return r();
+ css.addEventListener('load',r,{once:true});css.addEventListener('error',r,{once:true});setTimeout(r,3000);});
+setTimeout(start,3000);
 if(document.fonts&&document.fonts.load){
- Promise.all([document.fonts.load('300 80px "Cormorant Garamond"'),
-              document.fonts.load('500 38px "IBM Plex Mono"')]).then(start).catch(start);
+ cssIn.then(()=>Promise.all([document.fonts.load('300 80px "Cormorant Garamond"'),
+              document.fonts.load('500 38px "IBM Plex Mono"')])).then(start,start);
 }else start();
 if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){
- playing=false;T=S[3]+0.9;
+ playing=false;T=S[3]+0.9;canonical=false;
 }
 })();
 </script>

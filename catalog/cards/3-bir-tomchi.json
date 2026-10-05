@@ -1,60 +1,60 @@
 {
- "nom": "Bir tomchi sayohati",
- "manba": [
-  "../../bir-tomchi/bir-tomchi.html"
+ "name": "Bir tomchi sayohati",
+ "sources": [
+  "../../studio/projects/bir-tomchi/bir-tomchi.html"
  ],
- "kadr": {
-  "fayl": "../../bir-tomchi/bir-tomchi.html",
-  "kadrlar": [
+ "frame": {
+  "file": "../../studio/projects/bir-tomchi/bir-tomchi.html",
+  "frames": [
    7,
    16,
    25
   ]
  },
- "uslub": [
+ "method": [
   {
-   "gap": "8 sahna, har biri 9 soniya, 1,35 soniya bir-birining ustiga tushadi — Deraza, Tomchi ichida, Kit, Vulqon, Cho'l, Kolibri, Shahar, Plastinka.",
-   "dalil": "jadvallar.SC"
+   "text": "8 scenes, 9 seconds each, overlapping by 1.35 seconds — Deraza, Tomchi ichida, Kit, Vulqon, Cho'l, Kolibri, Shahar, Plastinka.",
+   "evidence": "tables.SC"
   },
   {
-   "gap": "Har kadrda 379 chizish buyrug'i — beshtasining ichida eng zichi.",
-   "dalil": "chizishJami"
+   "text": "379 draw calls in every frame — the densest of the five.",
+   "evidence": "drawCallsTotal"
   },
   {
-   "gap": "98 beginPath, 68 lineTo, 43 arc, 30 bezierCurveTo: shakllar qo'lda yoziladi, tasvir emas.",
-   "dalil": "chizish.beginPath"
+   "text": "98 beginPath, 68 lineTo, 43 arc, 30 bezierCurveTo: the shapes are written by hand, not images.",
+   "evidence": "drawCalls.beginPath"
   },
   {
-   "gap": "Har sahna o'z draw(t,p) funksiyasi, kamera kalit kadrlari va ovoz to'shagiga ega — 29 funksiya.",
-   "dalil": "funksiyalar"
+   "text": "Each scene has its own draw(t,p) function, camera keyframes and sound bed — 29 functions.",
+   "evidence": "functions"
   }
  ],
- "stil": "Yomg'irli kechqurun, tomchining ichidan. Neon chekka, radial yog'du, shaffof pufakchalar. Kamera sahnadan sahnaga kalit kadrlar bo'ylab uchadi, sahnalar bir-birining ustiga qo'yiladi.",
- "davolar": {
-  "toyinganlik": [
+ "look": "A rainy evening, from inside a drop. Neon rims, radial glow, transparent bubbles. The camera flies from scene to scene along keyframes, and the scenes are laid over one another.",
+ "claims": {
+  "saturation": [
    ">",
    45,
-   "tunning rangi"
+   "the colour of night"
   ],
-  "siyoh": [
+  "ink": [
    ">",
    8,
-   "qorong'u — bu tungi film"
+   "dark — this is a night film"
   ]
  },
- "sanoq": {
-  "fayllar": 1,
-  "baytlar": 68531,
-  "satrlar": 1146,
+ "count": {
+  "files": 1,
+  "bytes": 70674,
+  "lines": 1175,
   "renderer": "canvas2d",
-  "funksiyalar": 29,
-  "ovoz": true,
-  "hodisalar": [
+  "functions": 29,
+  "audio": true,
+  "events": [
    "click",
    "visibilitychange"
   ],
-  "shriftlar": [],
-  "chizish": {
+  "fonts": [],
+  "drawCalls": {
    "beginPath": 98,
    "moveTo": 51,
    "lineTo": 68,
@@ -69,11 +69,11 @@
    "createRadialGradient": 9,
    "clip": 6
   },
-  "chizishJami": 379,
-  "jadvallar": {
-   "SC": 8
+  "drawCallsTotal": 379,
+  "tables": {
+   "SC": 9
   },
-  "davomiyliklar": [
+  "durations": [
    9,
    9,
    9,
@@ -84,49 +84,49 @@
    9
   ]
  },
- "olchov": {
-  "palitra": [
+ "measure": {
+  "palette": [
    {
     "hex": "#1f1d46",
-    "ulush": 25
+    "share": 25
    },
    {
     "hex": "#3b4aad",
-    "ulush": 25
+    "share": 25
    },
    {
     "hex": "#853a3e",
-    "ulush": 12.5
+    "share": 12.5
    },
    {
     "hex": "#a86549",
-    "ulush": 12.5
+    "share": 12.5
    },
    {
     "hex": "#94439b",
-    "ulush": 12.5
+    "share": 12.5
    },
    {
     "hex": "#877da7",
-    "ulush": 12.5
+    "share": 12.5
    }
   ],
-  "qiymat": [
+  "value": [
    12,
    156
   ],
-  "toyinganlik": 57.5,
-  "qattiqChet": 3.69,
-  "yumshoqChet": 32.64,
-  "chizilganlik": 10.2,
-  "tekstura": 4.71,
-  "siyoh": 14
+  "saturation": 57.5,
+  "hardEdges": 3.69,
+  "softEdges": 32.64,
+  "hardEdgeShare": 10.2,
+  "texture": 4.71,
+  "ink": 14
  },
- "maqsadlar": {
-  "chizilganlik": [
+ "goals": {
+  "hardEdgeShare": [
    ">",
    14,
-   "hozir 10,2 — yog'du chetlarni eritadi"
+   "now 10.2 — the glow melts the edges"
   ]
  }
 }

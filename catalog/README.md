@@ -1,82 +1,81 @@
-# Loyihalar — arxitektura
+# Catalog — the architecture of the works
 
-Beshta loyiha, bitta ma'lumot bloki. Har yangi loyiha shu blokni olib yuradi, va blok
-manba bilan rozi bo'lmay qolsa, qurish yiqiladi.
+Five projects, one block of data. Every new project carries that block, and when the block
+stops agreeing with its source, the build fails.
 
-## Nima uchun
+## Why
 
-Bu loyihalar tadqiqot uchun. Tadqiqotda esa *plausible* degan so'z yo'q: raqam yo
-o'lchangan, yo sanalgan, yo u umuman raqam emas. Shuning uchun kartadagi to'rt
-qismning huquqlari boshqa-boshqa:
+These projects are research, and in research there is no *plausible*: a number is either
+measured, or counted, or it is not a number. So the four parts of a card have different rights:
 
-| qism | kim yozadi | qanday tekshiriladi |
+| part | who writes it | how it is checked |
 |---|---|---|
-| `sanoq` | **tool** — `tools/sanoq.mjs` manbani o'qiydi | qo'l tegmaydi |
-| `uslub` | odam, lekin har satr `sanoq` dagi bitta qiymatga bog'lanadi | qiymat satr matnida turishi shart |
-| `stil` | odam — muhit qanday ko'rinadi | yagona erkin maydon |
-| `olchov` | **tool** — `tools/olchov.mjs` kadrni o'lchaydi | qo'l tegmaydi |
+| `count` | **a tool** — `tools/count.mjs` reads the source | never touched by hand |
+| `method` | a person, but every line is bound to one value in `count` | the value has to stand in the line's text |
+| `look` | a person — how the work looks | the one free field |
+| `measure` | **a tool** — `tools/measure.mjs` measures the frames | never touched by hand |
 
-`uslub` bog'lanishi asosiy mexanizm. Satr shunday yoziladi:
+The `method` binding is the main mechanism. A line is written like this:
 
 ```json
-{"gap":"Qo'lda yozilgan 4 poza — CONTACT, DOWN, PASSING, UP — ko'zguda 8 taga aylanadi.",
- "dalil":"jadvallar.PW"}
+{"text":"4 poses written by hand — CONTACT, DOWN, PASSING, UP — become 8 in the mirror.",
+ "evidence":"tables.PW"}
 ```
 
-Manbadagi poza soni 4 dan 6 ga chiqsa, `sanoq.jadvallar.PW` 6 bo'ladi, satrdagi 4 unga
-mos kelmaydi va `karta/sanoq-bilan-mos` yiqiladi. **Karta jimgina yolg'on bo'lib
-qololmaydi** — u yoki manba bilan rozi, yoki qurish to'xtaydi.
+If the source goes from 4 poses to 6, `count.tables.PW` becomes 6, the 4 in the line no longer
+matches it, and `card/matches-count` fails. **A card cannot quietly become a lie** — it either
+agrees with its source, or the build stops.
 
-## Da'vo va maqsad ikki xil narsa
+## A claim and a goal are two different things
 
-- **`davolar`** — loyiha *hozir nima ekani* haqidagi va'da. Whiteout OQ; Mushuk RANGLI.
-  Buzilsa — regressiya, qurish yiqiladi.
-- **`maqsadlar`** — loyiha *qayerga borishi*. Whiteout qiymat oralig'i 90 ga chiqishi
-  kerak, hozir 50. Bajarilmagan maqsad nosozlik emas, ish rejasi — va u yashirilmaydi,
-  faqat yiqitmaydi.
+- **`claims`** — a promise about what a project *is now*. Whiteout is WHITE; Mushuk is
+  COLOURFUL. If one breaks, that is a regression and the build fails.
+- **`goals`** — where a project is *going*. Whiteout's value range should reach 90, it is 50
+  now. An unmet goal is not a fault but a work plan — it is not hidden, it just does not fail.
 
-Ularni aralashtirish birinchi urinishda uchta soxta "yiqilish" berdi.
+Mixing them gave three false "failures" on the first try.
 
-## O'lchov o'zi ham kalibrlanadi
+## The measurement is calibrated too
 
-Har tekshiruv ataylab buzilgan holatini olib yuradi; buzilgan holat ham o'tib ketsa,
-tekshiruv `UNPROVEN` bo'ladi va qurish yiqiladi. O'lchov toolining o'ziga ikkita:
+Every check carries a deliberately broken case; if the broken case passes too, the check is
+`UNPROVEN` and the build fails. The measuring tool has two of its own:
 
-- **`olchov/buzilganni-sezadi`** — kadr xiralashtirilganda tekstura **9,6 barobar**
-  tushadi; xiralashtirishsiz **1,0**. Ya'ni tool nimani o'lchayotganini biladi.
-- **`olchov/kadrdan-mustaqil`** — bu tekshiruv haqiqiy xatoni tutdi. Birinchi variant
-  chetlarni faqat **birinchi** kadrdan o'lchardi, va o'sha uchta kadrning o'zi bitta-
-  bittalab o'lchanganda javob **19,6 foiz nuqtaga** farq qildi. Shu ikkita xulosani
-  buzdi — "Oq Ko'cha va Not A Measurement bir xil qo'l bilan chizilgan" degani o'sha
-  artefakt edi. Endi har kadr alohida o'lchanadi va o'rtacha olinadi: farq **0,9**.
+- **`measure/sees-the-broken`** — when a frame is blurred, texture drops **9.6 times**; without
+  the blur, **1.0**. So the tool knows what it measures.
+- **`measure/order-independent`** — this check caught a real error. The first version took edges
+  from the **first** frame only, and the same three frames measured one by one differed by
+  **19.6 points**. That broke a conclusion: "Oq Ko'cha and Not A Measurement are drawn by the
+  same hand" was that artefact. Now each frame is measured on its own and averaged: the
+  difference is **0.9**.
 
-Kalibratsiyaning o'zi ham beqaror bo'lishi mumkin: bu tekshiruv avval vaqt bo'yicha
-kadr oladigan loyihada turgan edi va bir yugurishda 19,6, keyingisida 5,4 berdi.
-Endi u `__frameTo` bilan raqam bo'yicha kadr oladigan loyihada.
+The calibration itself can be unstable: this check used to sit on a project sampled by time and
+gave 19.6 on one run and 5.4 on the next. It now sits on the project that takes frames by number
+with `__frameTo`.
 
-## Buyruqlar
+## Commands
 
 ```
-node tools/sanoq.mjs <fayl...>        # manbadan sanaydi
-node tools/olchov.mjs <fayl> <t...>   # kadrdan o'lchaydi
-node tools/karta.mjs                  # kartalar manba bilan rozimi
-node tools/karta.mjs refresh          # sanoq va o'lchovni qaytadan to'ldiradi
-node test/run.mjs                     # hammasi + kalibratsiya
+node tools/count.mjs <file...>         # count from the source
+node tools/measure.mjs <file> <t...>   # measure from frames
+node tools/card.mjs                    # do the cards agree with their sources
+node tools/card.mjs refresh            # refill count and measure
+node tools/catalog.mjs [out.html]      # the catalog page, build/style-catalog.html by default
+node test/run.mjs                      # everything, with calibration
 ```
 
-## Oltita raqam
+## Six numbers
 
-Renderer bilmaydigan oltita raqam — shuning uchun Canvas bilan chizilgan mushukni SDF
-bilan yechilgan ko'cha bilan solishtirish mumkin.
+Six numbers the renderer does not know about — which is why a cat drawn with Canvas can be
+compared with a street solved from a distance field.
 
-| raqam | nima |
+| number | what |
 |---|---|
-| `qiymat` | eng qorong'i va eng yorug' (2% va 98% kvantil), 0–255 |
-| `toyinganlik` | o'rtacha to'yinganlik, % |
-| `chizilganlik` | qattiq chet (Δluma > 0,16) ulushi, barcha chetlarga nisbatan |
-| `tekstura` | 3×3 blurdan keyin qolgan o'rtacha energiya, 0–255 shkalada |
-| `siyoh` | luma < 0,15 bo'lgan piksellar ulushi, % |
-| `palitra` | median-cut, 6 rang, maydon ulushi bilan |
+| `value` | the darkest and the brightest (2% and 98% quantiles), 0–255 |
+| `saturation` | mean saturation, % |
+| `hardEdgeShare` | the share of hard edges (Δluma > 0.16) among all edges |
+| `texture` | mean energy left after a 3×3 blur, on a 0–255 scale |
+| `ink` | the share of pixels with luma < 0.15, % |
+| `palette` | median-cut, 6 colours, with their share of the area |
 
-Median-cut ataylab: k-means boshlang'ich nuqtaga qarab har safar boshqa javob berardi,
-va har safar boshqa javob beradigan o'lchov o'lchov emas.
+Median-cut on purpose: k-means gave a different answer for every starting point, and a
+measurement that answers differently every time is not a measurement.

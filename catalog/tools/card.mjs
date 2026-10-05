@@ -1,96 +1,95 @@
-/* ===== KARTA — har bir loyiha bir xil ma'lumot blokini olib yuradi =====
-   Uchta qism, va ularning huquqlari boshqa:
-     sanoq  — manbadan sanaladi, qo'l tegmaydi
-     uslub  — odam yozadi, LEKIN har satr sanoqdagi bitta qiymatga bog'lanishi shart
-     stil   — odam yozadi, muhit qanday ko'rinishi (yagona erkin maydon)
-     olchov — kadrdan o'lchanadi, qo'l tegmaydi
+/* ===== CARD — every project carries the same block of data =====
+   Four parts, with different rights:
+     count   — counted from the source, never touched by hand
+     method  — written by a person, BUT every line must be bound to one value in count
+     look    — written by a person: how the work looks (the one free field)
+     measure — measured from frames, never touched by hand
 
-   `uslub` dagi har satr `dalil` maydoni bilan sanoqdagi qiymatga ko'rsatadi, va
-   tekshiruv o'sha qiymat satr matnida turganini talab qiladi. Manba o'zgarsa --
-   masalan poza soni 4 dan 6 ga chiqsa -- sanoq o'zgaradi, satr eskiradi va tekshiruv
-   yiqiladi. Shuning uchun karta jimgina yolg'on bo'lib qololmaydi. */
+   Every `method` line points at a value in count with its `evidence` field, and the
+   check requires that value to stand in the line's text. When the source changes --
+   say the number of poses goes from 4 to 6 -- the count changes, the line goes stale
+   and the check fails. So a card cannot quietly become a lie. */
 import {readFileSync,writeFileSync,readdirSync,existsSync} from 'fs';
 import {execFileSync} from 'child_process';
-import {count} from './sanoq.mjs';
-import {measure} from './olchov.mjs';
-export const DIR=new URL('../kartalar/',import.meta.url).pathname;
-export const MAYDONLAR=['nom','manba','kadr','uslub','stil','davolar','maqsadlar'];
+import {count} from './count.mjs';
+import {measure} from './measure.mjs';
+export const DIR=new URL('../cards/',import.meta.url).pathname;
+export const FIELDS=['name','sources','frame','method','look','claims','goals'];
 
 export const load=()=>readdirSync(DIR).filter(f=>f.endsWith('.json')).sort()
  .map(f=>({...JSON.parse(readFileSync(DIR+f,'utf8')), _f:DIR+f}));
 
-/* ===== QURILADIGAN SAHIFA =====
-   Ba'zi kartaning kadri manbada turmaydi -- u QURILADI. Oq Ko'chaning sahifasi
-   oq-kocha/build/ ichida, va build/ .gitignore da; ya'ni toza checkout'da o'sha
-   fayl yo'q. Shuning uchun o'lchov CI da hech qachon ishlay olmasdi, va xato
-   "fayl yo'q" deb emas, brauzer ichidagi tushunarsiz xato bo'lib chiqardi.
+/* ===== A PAGE THAT IS BUILT =====
+   Some cards' frames do not sit in the source -- they are BUILT. Oq Ko'cha's page is
+   in its build/ folder, and build/ is in .gitignore; on a clean checkout that file is
+   not there. So the measurement could never run in CI, and the error came out not as
+   "no such file" but as an obscure error inside the browser.
 
-   Endi karta kadrini QANDAY qurishni ham aytadi, va o'lchashdan oldin shu buyruq
-   ishlaydi. Har safar quriladi, mavjud bo'lsa ham: eskirgan qurilma -- shu
-   sessiyada ikki marta tutilgan xato (src/geo.frag o'zgargan, lekin o'lchov eski
-   sahifani o'lchagan), va uni tekshiruv bilan emas, har safar qurish bilan
-   yo'q qilish ishonchliroq. */
-export function tayyorla(K=load()){
- const qilingan=[];
+   Now a card also says HOW to build its page, and that command runs before measuring.
+   It is built every time, even when it exists: a stale build is an error caught twice
+   in one session (src/geo.frag changed, the measurement measured the old page), and
+   removing it by always building is more reliable than catching it with a check. */
+export function prepare(K=load()){
+ const done=[];
  for(const k of K){
-  const q=k.kadr?.qurish; if(!q) continue;
-  const papka=new URL(q.papka+'/','file://'+k._f).pathname;
-  const [cmd,...args]=q.buyruq.split(/\s+/);
-  execFileSync(cmd,args,{cwd:papka,stdio:['ignore','ignore','inherit']});
-  qilingan.push(k.nom);
+  const b=k.frame?.build; if(!b) continue;
+  const dir=new URL(b.dir+'/','file://'+k._f).pathname;
+  const [cmd,...args]=b.command.split(/\s+/);
+  execFileSync(cmd,args,{cwd:dir,stdio:['ignore','ignore','inherit']});
+  done.push(k.name);
  }
- return qilingan;
+ return done;
 }
-/* Qaysi kartalarning kadri hozir yo'q -- tekshiruv shu ro'yxatni o'lchaydi */
-export const yoq=(K=load())=>K.filter(k=>
- !existsSync(new URL(k.kadr.fayl,'file://'+k._f).pathname));
+/* Which cards' pages are missing right now -- the check measures this list */
+export const missing=(K=load())=>K.filter(k=>
+ !existsSync(new URL(k.frame.file,'file://'+k._f).pathname));
 
 const dig=(o,p)=>p.split('.').reduce((a,k)=>a==null?a:a[k],o);
 const nums=t=>[...String(t).matchAll(/\d+(?:[.,]\d+)?/g)].map(m=>+m[0].replace(',','.'));
 
-/* Bitta dalil satri tasdiqlanadimi. Raqam bo'lsa matnda turishi shart; matn bo'lsa
-   matn ichida bo'lishi; ro'yxat bo'lsa a'zolaridan biri. */
-export function tasdiq(gap,val){
- if(val==null) return {ok:false, sabab:'dalil topilmadi'};
+/* Whether one evidence line holds. A number must stand in the text; a string must be
+   inside the text; for a list, one of its members. */
+export function confirm(text,val){
+ if(val==null) return {ok:false, reason:'evidence not found'};
  if(typeof val==='number')
-  return {ok:nums(gap).includes(val), sabab:`sanoqda ${val}, satrda ${JSON.stringify(nums(gap))}`};
+  return {ok:nums(text).includes(val), reason:`count has ${val}, the line has ${JSON.stringify(nums(text))}`};
  if(typeof val==='string')
-  return {ok:gap.toLowerCase().includes(val.toLowerCase()), sabab:`sanoqda "${val}"`};
+  return {ok:text.toLowerCase().includes(val.toLowerCase()), reason:`count has "${val}"`};
  if(Array.isArray(val)){
-  const hit=val.some(v=>typeof v==='number'? nums(gap).includes(v)
-                       : gap.toLowerCase().includes(String(v).toLowerCase()));
-  return {ok:hit || nums(gap).includes(val.length), sabab:`ro'yxat: ${JSON.stringify(val)}`};
+  const hit=val.some(v=>typeof v==='number'? nums(text).includes(v)
+                       : text.toLowerCase().includes(String(v).toLowerCase()));
+  return {ok:hit || nums(text).includes(val.length), reason:`list: ${JSON.stringify(val)}`};
  }
- return {ok:false, sabab:'dalil turi qo\'llanmaydi'};
+ return {ok:false, reason:'evidence type not supported'};
 }
-/* Karta manbasi bilan hali ham rozimi */
+/* Whether a card still agrees with its source */
 export function verify(k){
- const s=count(k.manba.map(p=>new URL(p,'file://'+k._f).pathname));
- const yomon=[];
- for(const u of k.uslub){
-  const t=tasdiq(u.gap, dig(s,u.dalil));
-  if(!t.ok) yomon.push(`${k.nom}: "${u.gap.slice(0,44)}…" ↮ ${u.dalil} (${t.sabab})`);
+ const c=count(k.sources.map(p=>new URL(p,'file://'+k._f).pathname));
+ const stale=[];
+ for(const u of k.method){
+  const t=confirm(u.text, dig(c,u.evidence));
+  if(!t.ok) stale.push(`${k.name}: "${u.text.slice(0,44)}…" ↮ ${u.evidence} (${t.reason})`);
  }
- return {sanoq:s, yomon};
+ return {count:c, stale};
 }
-export async function refresh(k,{olchov=true}={}){
- const {sanoq}=verify(k);
+export async function refresh(k,{withMeasure=true}={}){
+ const {count:c}=verify(k);
  const y={...k}; delete y._f;
- y.sanoq=sanoq;
- if(olchov) y.olchov=await measure({...k.kadr, fayl:new URL(k.kadr.fayl,'file://'+k._f).pathname});
- else if(k.olchov) y.olchov=k.olchov;
+ y.count=c;
+ if(withMeasure) y.measure=await measure({...k.frame, file:new URL(k.frame.file,'file://'+k._f).pathname});
+ else if(k.measure) y.measure=k.measure;
  writeFileSync(k._f, JSON.stringify(y,null,1)+'\n');
  return y;
 }
-if(process.argv[1]?.endsWith('karta.mjs')){
- const only=process.argv[3], noM=process.argv.includes('--tez');
- /* Qurilib turadigan sahifalar avval qurilsin, keyin sanoq bosilsin */
- tayyorla().forEach(n=>console.log('qurildi:',n));
+if(process.argv[1]?.endsWith('card.mjs')){
+ const only=process.argv[3], fast=process.argv.includes('--fast');
+ /* pages that are built get built first, then the count is taken */
+ prepare().forEach(n=>console.log('built:',n));
  for(const k of load()){
-  if(only&&!noM&&k.nom!==only&&only!=='--tez') continue;
-  const {yomon}=verify(k);
-  if(process.argv[2]==='refresh'){ await refresh(k,{olchov:!noM}); console.log('yangilandi:',k.nom); }
-  else console.log(`${k.nom.padEnd(28)} ${yomon.length? '✗ '+yomon.length+' eskirgan satr':'✓'}`);
-  yomon.forEach(y=>console.log('   ',y));
+  if(only&&!fast&&k.name!==only&&only!=='--fast') continue;
+  const {stale}=verify(k);
+  if(process.argv[2]==='refresh'){ await refresh(k,{withMeasure:!fast}); console.log('refreshed:',k.name); }
+  else console.log(`${k.name.padEnd(28)} ${stale.length? '✗ '+stale.length+' stale line(s)':'✓'}`);
+  stale.forEach(y=>console.log('   ',y));
  }
 }

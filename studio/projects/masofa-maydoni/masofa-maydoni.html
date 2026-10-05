@@ -1,5 +1,6 @@
 <title>Masofa Maydoni</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>if(/[?&]embed\b/.test(location.search))document.documentElement.classList.add('embed')</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
 <style>
  :root{--pa:#ecedf0;--ink:#15171d;--mut:#646c7c;--rule:#c9ccd4;--stage:#d8dce2;--acc:#b0432a;
   --disp:"Archivo",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
@@ -29,6 +30,13 @@
  code{font:inherit;color:var(--mut)}
  .note{color:var(--mut);font-size:12.5px;margin:18px 0 0;max-width:56ch}
  .note em{color:var(--ink);font-style:normal;border-bottom:1px solid var(--acc)}
+ /* EMBED (?embed): a sandbox keeps every control of its own; inside the studio only the
+    title, the description and the notes step aside, and the picture fits the stage */
+ html.embed body{height:100vh;overflow:hidden}
+ html.embed .wrap{max-width:none;height:100vh;padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+ html.embed h1,html.embed .sub,html.embed dl,html.embed .note{display:none}
+ html.embed .stage{display:flex;justify-content:center;border:0;background:transparent}
+ html.embed canvas{width:min(100%,calc((100vh - 96px)/1.26));height:auto}
 </style>
 <div class="wrap">
  <h1>Masofa maydoni</h1>
@@ -776,29 +784,38 @@ function joints(K){
 const c=document.getElementById('c'),hud=document.getElementById('hud'),
       s2=document.getElementById('s2'),s3=document.getElementById('s3'),s4=document.getElementById('s4');
 const gl=c.getContext('webgl2',{antialias:false,powerPreference:'high-performance'});
-const fail=(m)=>{document.querySelector('.stage').innerHTML=
+window.__ready=false;   // the studio's contract: true once the sandbox is drawing
+const fail=(m)=>{window.__failed=m;document.querySelector('.stage').innerHTML=
  '<p style="padding:24px;font:400 13px/1.6 var(--mono);color:var(--ink)">'+m+'</p>';};
 if(!gl) fail("Bu brauzerda WebGL2 yo'q.");
 else if(!gl.getExtension('EXT_color_buffer_float')) fail("Float bufer qo'llab-quvvatlanmaydi.");
 else{
 const VS=`#version 300 es
 void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.-1.,0,1);}`;
-const mk=(t,src)=>{const o=gl.createShader(t);gl.shaderSource(o,src);gl.compileShader(o);
- if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(o));return o;};
+/* THE COMPILE DOES NOT HOLD THE THREAD. In the studio this page shares the studio's main
+   thread, and asking for COMPILE_STATUS straight after compileShader waited inside that
+   call for the whole compile: the studio froze until the sandbox was built. All three
+   programs are started first; with KHR_parallel_shader_compile the page asks "done
+   yet?" between turns of the event loop, and only then reads their status. */
+const mk=(t,src)=>{const o=gl.createShader(t);gl.shaderSource(o,src);gl.compileShader(o);return o;};
 const link=(fsId)=>{const p=gl.createProgram();
- gl.attachShader(p,mk(gl.VERTEX_SHADER,VS));
- gl.attachShader(p,mk(gl.FRAGMENT_SHADER,document.getElementById(fsId).textContent.trim()));
- gl.linkProgram(p);
- if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));
+ const v=mk(gl.VERTEX_SHADER,VS), f=mk(gl.FRAGMENT_SHADER,document.getElementById(fsId).textContent.trim());
+ gl.attachShader(p,v); gl.attachShader(p,f); gl.linkProgram(p);
+ p.check=()=>{ if(!gl.getProgramParameter(p,gl.LINK_STATUS))
+  throw new Error([gl.getShaderInfoLog(v),gl.getShaderInfoLog(f),gl.getProgramInfoLog(p)].filter(Boolean).join('\n')); };
  return p;};
 const CH=[{id:'fs-walker',name:"Qalpoqli",src:'hooded-walker'},
           {id:'fs-guard', name:"Zirhli",  src:'plated-guard'}];
-const GEO=CH.map(ch=>{const p=link(ch.id);
+const PROGS=CH.map(ch=>link(ch.id)), COMP=link('fs-comp');
+const PAR=gl.getExtension('KHR_parallel_shader_compile');
+const linked=()=>!PAR||[...PROGS,COMP].every(p=>gl.getProgramParameter(p,PAR.COMPLETION_STATUS_KHR));
+function begin(){
+const GEO=CH.map((ch,k)=>{const p=PROGS[k];
  return {p,uRes:gl.getUniformLocation(p,'iRes'),uJ:gl.getUniformLocation(p,'J'),
          uT:gl.getUniformLocation(p,'iTime'),uD:gl.getUniformLocation(p,'iDist'),
          uS:gl.getUniformLocation(p,'uScene'),
          uC:gl.getUniformLocation(p,'uCell'),uN:gl.getUniformLocation(p,'uNbr')};});
-const cp=link('fs-comp');
+const cp=COMP;
 const CP={p:cp,uRes:gl.getUniformLocation(cp,'iRes'),uT:gl.getUniformLocation(cp,'iTime'),
  uA:gl.getUniformLocation(cp,'gA'),uB:gl.getUniformLocation(cp,'gB'),
  uR:gl.getUniformLocation(cp,'RAMP'),uL:gl.getUniformLocation(cp,'uLines'),
@@ -888,5 +905,11 @@ window.__nbr=(v)=>{nbr=v;};
 window.__still=(i,w,h)=>{halt=true;c.width=w;c.height=h;playing=false;
  ph=(function(){let a=0;for(let k=0;k<i;k++)a+=HOLDS[k];return a/SLOTS+0.001;})();
  dist=travel(ph); render(i,i*0.41,dist); gl.finish();};
+window.__ready=true;
+}   // begin
+hud.textContent='shaderlar tayyorlanmoqda…';
+(function wait(){ if(!linked()) return setTimeout(wait,30);
+ try{ [...PROGS,COMP].forEach(p=>p.check()); }catch(e){ fail('Shader: '+e.message); return; }
+ begin(); })();
 }
 </script>

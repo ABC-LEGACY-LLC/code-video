@@ -1,117 +1,116 @@
-/* ===== TEKSHIRUV =====
-   Har tekshiruv o'zining ataylab buzilgan holatini olib yuradi. Agar buzilgan holat
-   ham o'tib ketsa, tekshiruv UNPROVEN bo'ladi va qurish yiqiladi: o'tayotgan, lekin
-   hech narsani ushlab turmaydigan tekshiruv -- eng yomon tekshiruv, chunki u
-   ishonch beradi va hech narsa qaytarmaydi. */
+/* ===== THE CHECKS =====
+   Every check carries its own deliberately broken case. If the broken case passes
+   too, the check is UNPROVEN and the build fails: a check that passes and holds
+   nothing is the worst check, because it gives confidence and returns nothing. */
 import {check,report} from './lib.mjs';
-import {load,verify,tasdiq,tayyorla,yoq,MAYDONLAR} from '../tools/karta.mjs';
-import {grab,metrics} from '../tools/olchov.mjs';
+import {load,verify,confirm,prepare,missing,FIELDS} from '../tools/card.mjs';
+import {grab,metrics} from '../tools/measure.mjs';
 import {rmSync} from 'fs';
 const K=load();
-const yol=(k,p)=>new URL(p,'file://'+k._f).pathname;
+const at=(k,p)=>new URL(p,'file://'+k._f).pathname;
 const t0=Date.now();
 
-/* HAR KARTA HAR SAVOLGA JAVOB BERADI. Bitta maydoni yo'q karta -- bu karta emas,
-   yamoq; va yamoqni boshqa loyiha bilan solishtirib bo'lmaydi. */
-await check({name:'karta/hamma-maydon', unit:'eng kambag\'al kartada yetishmaydigan maydon',
- measure:()=>Math.max(...K.map(k=>MAYDONLAR.filter(m=>k[m]==null).length
-                               + (k.sanoq?0:1) + (k.olchov?0:1))),
+/* EVERY CARD ANSWERS EVERY QUESTION. A card with a field missing is not a card but a
+   patch, and a patch cannot be compared with another project. */
+await check({name:'card/all-fields', unit:'fields missing on the poorest card',
+ measure:()=>Math.max(...K.map(k=>FIELDS.filter(m=>k[m]==null).length
+                               + (k.count?0:1) + (k.measure?0:1))),
  pass:v=>v===0,
- calibrate:()=>{ const n={...K[0]}; delete n.stil;
-                 return MAYDONLAR.filter(m=>n[m]==null).length; },
- note:`${K.length} karta, har biri ${MAYDONLAR.length} maydon + sanoq + o'lchov`});
+ calibrate:()=>{ const n={...K[0]}; delete n.look;
+                 return FIELDS.filter(m=>n[m]==null).length; },
+ note:`${K.length} cards, each with ${FIELDS.length} fields + count + measure`});
 
-/* KARTA MANBASI BILAN HALI HAM ROZIMI. Bu asosiy tekshiruv: uslub satrlari qo'lda
-   yoziladi, sanoq esa manbadan olinadi, va satr sanoqqa bog'lanadi. Manba o'zgarsa
-   -- poza soni 4 dan 6 ga chiqsa -- satr eskiradi va shu yerda yiqiladi. */
-await check({name:'karta/sanoq-bilan-mos', unit:'eskirgan uslub satri',
- measure:()=>K.reduce((a,k)=>a+verify(k).yomon.length,0),
+/* DOES THE CARD STILL AGREE WITH ITS SOURCE. This is the main check: method lines
+   are written by hand, the count is taken from the source, and each line is bound to
+   the count. When the source changes -- the number of poses goes from 4 to 6 -- the
+   line goes stale and fails here. */
+await check({name:'card/matches-count', unit:'stale method lines',
+ measure:()=>K.reduce((a,k)=>a+verify(k).stale.length,0),
  pass:v=>v===0,
- calibrate:()=>{                       // bitta satrdagi raqam o'zgartirilgan karta
-  const u=K[0].uslub[1];
-  return tasdiq(u.gap.replace(/\d+/,'999'), K[0].sanoq.jadvallar.SHOTS).ok? 0 : 1; },
- note:'har uslub satri sanoqdagi bitta qiymatga bog\'langan va u qiymat satrda turishi shart'});
+ calibrate:()=>{                       // a card with one number in one line changed
+  const u=K[0].method[1];
+  return confirm(u.text.replace(/\d+/,'999'), K[0].count.tables.SHOTS).ok? 0 : 1; },
+ note:'every method line is bound to one value in the count, and that value has to stand in the line'});
 
-/* ===== QURISH ZANJIRI =====
-   Kartaning kadri manbada turmasligi mumkin: Oq Ko'chaning sahifasi quriladi va
-   build/ .gitignore da. Bu tekshiruv aynan CI da bo'lgan xatoni yozadi -- o'sha
-   ish filmni qurmasdan uning qurilgan sahifasini o'lchamoqchi bo'lgan, ya'ni
-   hech qachon o'ta olmasdi.
+/* ===== THE BUILD CHAIN =====
+   A card's page may not sit in the source: Oq Ko'cha's page is built, and build/ is
+   in .gitignore. This check records the error that happened in CI -- that job tried
+   to measure the film's built page without building it, so it could never pass.
 
-   Kalibratsiya qurishsiz holat: sahifa o'chiriladi va QURILMAYDI. Agar shunda ham
-   "hammasi joyida" chiqsa, tekshiruv o'zi qarayotgan xatoni ko'rmayapti degani.
-   Ikkala tarmoq ham oxirida sahifani qaytarib quradi, chunki keyingi tekshiruvlar
-   o'sha fayldan kadr oladi. */
-const QUR=K.filter(k=>k.kadr?.qurish);
-await check({name:'kadr/qurish-zanjiri', unit:'qurishdan keyin yo\'q sahifa',
- measure:()=>{ QUR.forEach(k=>rmSync(yol(k,k.kadr.fayl),{force:true}));
-               tayyorla(QUR);
-               return yoq(QUR).length; },
+   The calibration is the state without a build: the page is deleted and NOT built.
+   If that still reads "all fine", the check does not see the failure it watches.
+   Both branches build the page again at the end, since the next checks take frames
+   from that file. */
+const BUILT=K.filter(k=>k.frame?.build);
+await check({name:'frame/build-chain', unit:'pages missing after the build',
+ measure:()=>{ BUILT.forEach(k=>rmSync(at(k,k.frame.file),{force:true}));
+               prepare(BUILT);
+               return missing(BUILT).length; },
  pass:v=>v===0,
- calibrate:()=>{ QUR.forEach(k=>rmSync(yol(k,k.kadr.fayl),{force:true}));
-                 const n=yoq(QUR).length;
-                 tayyorla(QUR);                       // keyingi tekshiruvlar uchun qaytariladi
+ calibrate:()=>{ BUILT.forEach(k=>rmSync(at(k,k.frame.file),{force:true}));
+                 const n=missing(BUILT).length;
+                 prepare(BUILT);                       // put back for the next checks
                  return n; },
- note:`${QUR.length} karta o'z kadrini quradi: `+QUR.map(k=>`${k.nom} (${k.kadr.qurish.buyruq})`).join(', ')});
+ note:`${BUILT.length} card(s) build their own page: `+BUILT.map(k=>`${k.name} (${k.frame.build.command})`).join(', ')});
 
-/* ===== O'LCHOV TOOLINING O'ZI HAM KALIBRLANADI =====
-   Ikkala tekshiruv ham BITTA olishdan hisoblanadi. Avvalgi variant o'lchovni besh
-   marta chaqirardi va har chaqiruv brauzerni qaytadan ochardi: yugurish o'n
-   daqiqadan oshdi, chaqiruvlardan biri yiqildi, va kalibratsiya "—" bo'lib qoldi --
-   ya'ni tekshiruv UNPROVEN chiqdi, lekin sababi aytilmadi. Endi harness kalibratsiya
-   xatosini ham bosib chiqaradi: yutilgan xato bu loyiha qarshi turadigan narsa. */
-const NM=K.find(k=>k.nom==="Oq Ko'cha");
-const KADRLAR=await grab({...NM.kadr, fayl:yol(NM,NM.kadr.fayl), olcham:[420,302]});
-const XIRA  =await grab({...NM.kadr, fayl:yol(NM,NM.kadr.fayl), olcham:[420,302], blur:3});
+/* ===== THE MEASURING TOOL IS CALIBRATED TOO =====
+   Both checks are computed from ONE grab. The earlier version called the tool five
+   times, and every call opened the browser again: the run went past ten minutes, one
+   of the calls failed, and the calibration came out "—" -- the check was UNPROVEN,
+   and no reason was given. Now the harness prints a calibration's error as well: a
+   swallowed error is what this project stands against. */
+const OQ=K.find(k=>k.name==="Oq Ko'cha");
+const FRAMES=await grab({...OQ.frame, file:at(OQ,OQ.frame.file), size:[420,302]});
+const BLURRED=await grab({...OQ.frame, file:at(OQ,OQ.frame.file), size:[420,302], blur:3});
 
-/* TARTIBGA BOG'LIQ BO'LMASLIK. Eski kod chetlarni faqat BIRINCHI kadrdan o'lchardi --
-   ya'ni javob kadrlar qanday tartibda berilganiga bog'liq edi, va Not A Measurement
-   bitta kadrda 28,4, boshqasida 45,9 chiqdi. Shu ikki xulosani buzdi: "Oq Ko'cha va
-   Not A Measurement bir xil qo'l" degani o'sha artefakt edi.
+/* INDEPENDENT OF ORDER. The old code took edges from the FIRST frame only -- the
+   answer depended on the order the frames came in, and Not A Measurement gave 28.4
+   on one frame and 45.9 on another. That broke two conclusions: "Oq Ko'cha and Not A
+   Measurement are drawn by the same hand" was that artefact.
 
-   Tekshiruvning birinchi ikki varianti o'zi ham yaroqsiz edi. "Uch kadr o'rtachasi
-   bitta kadrdan barqarorroq" deb yozilgani sahnaga bog'liq bo'lib chiqdi: Oq
-   Ko'chaning kadrlari bir-biriga o'xshash (27,0 / 29,1 / 29,0), shuning uchun u yerda
-   eski usul ham deyarli to'g'ri javob berardi va kalibratsiya hech narsani
-   ko'rsatmadi. Vaqt bo'yicha kadr oladigan loyihada esa kalibratsiyaning o'zi
-   beqaror edi -- 19,6 va 5,4.
+   The first two versions of the check were invalid themselves. "An average of three
+   frames is steadier than one" turned out to depend on the scene: Oq Ko'cha's frames
+   are alike (27.0 / 29.1 / 29.0), so even the old method was nearly right there and
+   the calibration showed nothing. On a project sampled by time, the calibration was
+   unstable itself -- 19.6 and 5.4.
 
-   Tartib sinovi sahnadan mustaqil: bir xil kadrlar teskari tartibda bir xil javob
-   berishi shart, va eski usul buni qila olmaydi. */
-const tesk=[...KADRLAR].reverse();
-await check({name:'olchov/tartibdan-mustaqil', unit:'chizilganlikdagi farq, foiz nuqta',
- measure:()=>+Math.abs(metrics(KADRLAR).chizilganlik-metrics(tesk).chizilganlik).toFixed(2),
+   The order test does not depend on the scene: the same frames in reverse order must
+   give the same answer, and the old method cannot do that. */
+const reversed=[...FRAMES].reverse();
+await check({name:'measure/order-independent', unit:'difference in hardEdgeShare, points',
+ measure:()=>+Math.abs(metrics(FRAMES).hardEdgeShare-metrics(reversed).hardEdgeShare).toFixed(2),
  pass:v=>v===0,
- calibrate:()=>+Math.abs(metrics([KADRLAR[0]]).chizilganlik-metrics([tesk[0]]).chizilganlik).toFixed(2),
- note:'har kadr alohida o\'lchanib o\'rtacha olinadi, shuning uchun tartib ta\'sir qilmaydi'});
+ calibrate:()=>+Math.abs(metrics([FRAMES[0]]).hardEdgeShare-metrics([reversed[0]]).hardEdgeShare).toFixed(2),
+ note:'each frame is measured on its own and averaged, so order cannot matter'});
 
-/* VA U BUZILGANNI SEZISHI KERAK. Xiralashtirilgan kadrda chet ham, tekstura ham
-   yo'qoladi; sezmaydigan o'lchov nimani o'lchayotganini bilmaydi. */
-await check({name:'olchov/buzilganni-sezadi', unit:'xiralashtirilganda tekstura necha barobar tushadi',
- measure:()=>+(metrics(KADRLAR).tekstura/Math.max(metrics(XIRA).tekstura,1e-6)).toFixed(2),
+/* AND IT HAS TO NOTICE THE BROKEN. In a blurred frame both edges and texture go; a
+   measurement that does not notice does not know what it measures. */
+await check({name:'measure/sees-the-broken', unit:'how many times texture drops when blurred',
+ measure:()=>+(metrics(FRAMES).texture/Math.max(metrics(BLURRED).texture,1e-6)).toFixed(2),
  pass:v=>v>2.5,
- calibrate:()=>1.0,                    // xiralashtirishsiz nisbat aynan bir
- note:'tool o\'zi ham kalibrlanadi, loyihalar kabi'});
+ calibrate:()=>1.0,                    // without the blur the ratio is exactly one
+ note:'the tool is calibrated too, like the projects'});
 
-/* DA'VO VA MAQSAD IKKI XIL NARSA, va ularni aralashtirish birinchi urinishda uchta
-   soxta "yiqilish" berdi. DA'VO -- loyiha hozir nima ekani haqidagi va'da: Whiteout
-   OQ, Mushuk RANGLI. U buzilsa, bu regressiya. MAQSAD -- loyiha qayerga borishi:
-   Whiteout qiymat oralig'i 90 ga chiqishi kerak, hozir 50. Bajarilmagan maqsad
-   nosozlik emas, ish rejasi -- va u yashirilmaydi, faqat yiqitmaydi. */
-const olch=(o,kal)=>kal==='qiymat.oraliq'? o.qiymat[1]-o.qiymat[0]
-                  : kal==='qiymat.past'? o.qiymat[0] : o[kal];
-for(const k of K) for(const [kal,[op,lim,nima]] of Object.entries(k.davolar)){
- await check({name:`davo/${k.nom}/${kal}`, unit:nima,
-  measure:()=>olch(k.olchov,kal),
+/* A CLAIM AND A GOAL ARE TWO DIFFERENT THINGS, and mixing them gave three false
+   "failures" on the first try. A CLAIM is a promise about what a project is now:
+   Whiteout is WHITE, Mushuk is COLOURFUL. If it breaks, that is a regression. A GOAL
+   is where a project is going: Whiteout's value range should reach 90, it is 50 now.
+   An unmet goal is not a fault but a work plan -- it is not hidden, it just does not
+   fail the build. */
+const read=(o,key)=>key==='value.range'? o.value[1]-o.value[0]
+                  : key==='value.low'? o.value[0] : o[key];
+for(const k of K) for(const [key,[op,lim,what]] of Object.entries(k.claims)){
+ await check({name:`claim/${k.name}/${key}`, unit:what,
+  measure:()=>read(k.measure,key),
   pass:v=>op==='>'? v>lim : v<lim,
-  calibrate:()=>lim,                   // chegaraning o'zi o'tmasligi shart
+  calibrate:()=>lim,                   // the limit itself must not pass
   note:`${op} ${lim}`});
 }
 const ok=report();
-console.log('  MAQSADLAR — bajarilmagani ish rejasi, nosozlik emas');
-for(const k of K) for(const [kal,[op,lim,nima]] of Object.entries(k.maqsadlar||{})){
- const v=olch(k.olchov,kal), y=op==='>'? v>lim : v<lim;
- console.log(`   ${y?'yetdi ':'qoldi '} ${(k.nom+' / '+kal).padEnd(42)} ${String(v).padStart(7)} ${op} ${lim}   ${nima}`);
+console.log('  GOALS — an unmet goal is a work plan, not a fault');
+for(const k of K) for(const [key,[op,lim,what]] of Object.entries(k.goals||{})){
+ const v=read(k.measure,key), met=op==='>'? v>lim : v<lim;
+ console.log(`   ${met?'met ':'open'}  ${(k.name+' / '+key).padEnd(42)} ${String(v).padStart(7)} ${op} ${lim}   ${what}`);
 }
 console.log();
 console.log(`  ${((Date.now()-t0)/1000).toFixed(1)}s\n`);

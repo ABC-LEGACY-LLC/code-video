@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bir tomchi sayohati</title>
+<script>if(/[?&]embed\b/.test(location.search))document.documentElement.classList.add('embed')</script>
 <style>
 :root{--bg:#171029;--fg:#f4ead4;--muted:#a99cc4;--btn:#e8557f;--btnfg:#fff}
 @media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f0e5cd;--fg:#2a1f3d;--muted:#6b5d80}}
@@ -30,6 +31,11 @@ p{margin:0;font-size:14px;color:var(--muted);text-align:center;max-width:62ch;li
 body.render .cap,body.render .track,body.render .bar,body.render p{display:none}
 body.render{padding:0;background:#000}
 body.render .frame{border-radius:0;box-shadow:none;width:100vmin;max-width:none}
+/* EMBED (?embed): inside the studio the film shows its picture, its scene name and its
+   sound switch; the clock, the progress line and the description are the studio's job */
+html.embed body{height:100vh;padding:8px;gap:8px;overflow:hidden;justify-content:center}
+html.embed .frame{width:min(100%,calc(100vh - 72px))}
+html.embed #tc,html.embed .track,html.embed p{display:none}
 </style>
 </head>
 <body>
@@ -41,6 +47,7 @@ body.render .frame{border-radius:0;box-shadow:none;width:100vmin;max-width:none}
 <div class="bar"><button id="snd" aria-pressed="false">Ovozni yoqish</button></div>
 <p>Sakkiz sahna, bitta uzluksiz kadr — oxiri boshiga ulanadi. Rasm ham, video ham, audio fayl ham yo'q: har bir piksel va har bir tovush kodda yaratiladi.</p>
 <script>
+window.__ready=false;   // the studio's contract: true once the film is running
 (()=>{
 const RENDER=new URLSearchParams(location.search).has('render');
 if(RENDER)document.body.classList.add('render');
@@ -141,7 +148,7 @@ const grooves=[];for(let i=0;i<46;i++)grooves.push(132+i*5.4+R8()*2.2);
 /* ===================== SCENES ===================== */
 const SC=[];
 
-SC.push({name:"Deraza",dur:9,enter:1,
+SC.push({name:"Deraza",dur:13.5833,enter:1,
  space:['t',0.12],trim:1.62,
  bed:[['p',1.6,'bandpass',1500,2.2,0.187,-.35],['p',2.4,'bandpass',3000,2.6,0.121,.35],
   ['p',.55,'lowpass',240,.8,0.055,0]],
@@ -1099,10 +1106,10 @@ function paint(buf,L2){
  g.save();L2.sc.draw(L2.lt,clamp(L2.lt/L2.sc.dur,0,1));g.restore();
 }
 const lbl=document.getElementById('lbl'),tc=document.getElementById('tc'),bar=document.getElementById('bar');
-let last=performance.now(),T=0,shown='';
+let last=performance.now(),T=0,shown='',paused=false;
 function frame(now){
  const dt=Math.min(.05,(now-last)/1000);last=now;
- T=(T+dt)%TOTAL;
+ if(!paused)T=(T+dt)%TOTAL;
  const Ls=layersAt(T);
  const n=cv.width;
  ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
@@ -1132,13 +1139,35 @@ function frame(now){
  }
  requestAnimationFrame(frame);
 }
-window.__seek=s=>{T=s%TOTAL;};
+window.__seek=s=>{T=((s%TOTAL)+TOTAL)%TOTAL;};
 window.__total=()=>TOTAL;
+/* THE STUDIO'S CONTRACT (studio/README.md): where the film is, stop, go on */
+window.__frame=()=>({frame:Math.round(T*24),shot:shown});
+window.__pause=()=>{paused=true;};
+window.__play=f=>{if(Number.isInteger(f))T=((f/24)%TOTAL+TOTAL)%TOTAL;paused=false;last=performance.now();};
+/* THE FILM AS TRACKS, for the studio's timeline: read from SC and the overlap, the tables
+   the film runs on. Scenes cross-fade, so they sit on two rolls, like an A/B edit. */
+window.__tracks=()=>{
+ const N=Math.round(TOTAL*24), F=t=>Math.round(t*24), file='bir-tomchi.html';
+ const scene=(s,i)=>({f:F(starts[i]),n:Math.min(F(s.dur),N-F(starts[i])),label:s.name,src:{file,find:'SC.push({name:'+JSON.stringify(s.name)},
+  edit:[{name:'length',unit:'s',file,row:{key:'name',is:s.name},key:'dur',value:s.dur,min:3,max:60,step:0.25,per:1/24,drag:true}]});
+ const roll=k=>SC.map(scene).filter((_,i)=>i%2===k);
+ return [
+  {id:'rollA',name:'Scenes · roll A',kind:'clips',items:roll(0)},
+  {id:'rollB',name:'Scenes · roll B',kind:'clips',items:roll(1)},
+  {id:'fades',name:'Cross-fades',kind:'clips',src:{file,find:'const OV='},
+   items:SC.map((s,i)=>({f:F(starts[i]),n:F(OV),label:(i?SC[i-1].name:SC[SC.length-1].name)+' → '+s.name}))},
+  {id:'beds',name:'Sound · beds',kind:'clips',
+   items:SC.map((s,i)=>({...scene(s,i),n:Math.min(F(s.dur-OV),N-F(starts[i])),label:s.bed.length+' voices · trim '+s.trim,
+    edit:[{name:'trim',unit:'gain',file,row:{key:'name',is:s.name},key:'trim',value:s.trim,min:0,max:4,step:0.01}]}))}
+ ];
+};
 window.__sound=setSound;
 // lets the video export record exactly what the page plays
 window.__tapAudio=()=>{if(!AC)return null;const d=AC.createMediaStreamDestination();limiter.connect(d);return d.stream;};
 new ResizeObserver(resize).observe(cv);
 resize();requestAnimationFrame(frame);
+window.__ready=true;
 })();
 </script>
 </body>

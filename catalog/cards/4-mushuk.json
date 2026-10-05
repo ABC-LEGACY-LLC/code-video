@@ -1,61 +1,61 @@
 {
- "nom": "Yomg'irli derazadagi mushuk",
- "manba": [
-  "../../mushuk/mushuk.html"
+ "name": "Yomg'irli derazadagi mushuk",
+ "sources": [
+  "../../studio/projects/mushuk/mushuk.html"
  ],
- "kadr": {
-  "fayl": "../../mushuk/mushuk.html",
-  "kadrlar": [
+ "frame": {
+  "file": "../../studio/projects/mushuk/mushuk.html",
+  "frames": [
    4,
    9,
    14
   ]
  },
- "uslub": [
+ "method": [
   {
-   "gap": "Mushuk uchta yo'l bilan chiziladi — catBodyPath, catHeadPath, tailPath — shahar esa halftoneGlow bilan. Jami 26 funksiya.",
-   "dalil": "funksiyalar"
+   "text": "The cat is drawn with three paths — catBodyPath, catHeadPath, tailPath — and the city with halftoneGlow. 26 functions in all.",
+   "evidence": "functions"
   },
   {
-   "gap": "Har kadrda 82 chizish buyrug'i — beshtasining ichida eng soddasi.",
-   "dalil": "chizishJami"
+   "text": "82 draw calls in every frame — the simplest of the five.",
+   "evidence": "drawCallsTotal"
   },
   {
-   "gap": "Bosilganda javob beradi: click — mushuk javob beradi, chaqmoq uradi, tomchi uziladi.",
-   "dalil": "hodisalar"
+   "text": "It answers a click: click — the cat answers, lightning strikes, a drop falls.",
+   "evidence": "events"
   },
   {
-   "gap": "renderer canvas2d, 530 satr; sahna offscreen buferga chiziladi, keyin birlashtiriladi.",
-   "dalil": "satrlar"
+   "text": "renderer canvas2d, 536 lines; the scene is drawn to an offscreen buffer, then composited.",
+   "evidence": "lines"
   }
  ],
- "stil": "Yomg'irli tungi deraza. Issiq parda chapda, halftone nuqtali shahar o'ngda, siluetda mushuk. Beshtasining ichida eng rangdori; yorug'lik hech qachon oqqa yetmaydi.",
- "davolar": {
-  "toyinganlik": [
+ "look": "A rainy night window. A warm curtain on the left, a halftone-dotted city on the right, the cat in silhouette. The most colourful of the five; the light never reaches white.",
+ "claims": {
+  "saturation": [
    ">",
    55,
-   "bu filmning o'zi rang"
+   "colour is this film itself"
   ],
-  "siyoh": [
+  "ink": [
    ">",
    8,
-   "siluet bilan ishlaydi"
+   "it works in silhouette"
   ]
  },
- "sanoq": {
-  "fayllar": 1,
-  "baytlar": 26481,
-  "satrlar": 530,
+ "count": {
+  "files": 1,
+  "bytes": 26891,
+  "lines": 536,
   "renderer": "canvas2d",
-  "funksiyalar": 26,
-  "ovoz": true,
-  "hodisalar": [
+  "functions": 26,
+  "audio": true,
+  "events": [
    "click",
    "input",
    "visibilitychange"
   ],
-  "shriftlar": [],
-  "chizish": {
+  "fonts": [],
+  "drawCalls": {
    "beginPath": 17,
    "moveTo": 12,
    "lineTo": 14,
@@ -69,52 +69,52 @@
    "createRadialGradient": 1,
    "clip": 1
   },
-  "chizishJami": 82,
-  "jadvallar": {}
+  "drawCallsTotal": 82,
+  "tables": {}
  },
- "olchov": {
-  "palitra": [
+ "measure": {
+  "palette": [
    {
     "hex": "#3e264d",
-    "ulush": 50
+    "share": 50
    },
    {
     "hex": "#8d502b",
-    "ulush": 12.5
+    "share": 12.5
    },
    {
     "hex": "#c06838",
-    "ulush": 12.5
+    "share": 12.5
    },
    {
     "hex": "#3648ac",
-    "ulush": 12.5
+    "share": 12.5
    },
    {
     "hex": "#414fb5",
-    "ulush": 6.3
+    "share": 6.3
    },
    {
     "hex": "#726cb7",
-    "ulush": 6.3
+    "share": 6.3
    }
   ],
-  "qiymat": [
+  "value": [
    12,
    151
   ],
-  "toyinganlik": 68.1,
-  "qattiqChet": 5.69,
-  "yumshoqChet": 35.53,
-  "chizilganlik": 13.8,
-  "tekstura": 5.77,
-  "siyoh": 13.6
+  "saturation": 68.1,
+  "hardEdges": 5.69,
+  "softEdges": 35.53,
+  "hardEdgeShare": 13.8,
+  "texture": 5.77,
+  "ink": 13.6
  },
- "maqsadlar": {
-  "qiymat.oraliq": [
+ "goals": {
+  "value.range": [
    ">",
    190,
-   "hozir 139 — yorug'ligi 151 da to'xtaydi"
+   "now 139 — its light stops at 151"
   ]
  }
 }

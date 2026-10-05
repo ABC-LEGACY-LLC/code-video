@@ -7,7 +7,8 @@
   "scripts": {
     "build": "node tools/build.mjs src/characters/hooded-walker.json src/characters/plated-guard.json build/film.frag && node tools/style.mjs src/styles build && python3 tools/mkfilm.py",
     "audit": "node test/run.mjs",
-    "audit:fast": "node test/run.mjs --no-browser"
+    "audit:fast": "node test/run.mjs --no-browser",
+    "audio": "node tools/render-audio.mjs"
   },
   "devDependencies": { "playwright": "^1.47.0" }
 }

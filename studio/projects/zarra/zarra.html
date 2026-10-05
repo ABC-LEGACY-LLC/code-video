@@ -1,36 +1,40 @@
 <!doctype html><html lang="uz"><head><meta charset="utf-8">
 <title>Zarra qatlami</title>
+<script>if(/[?&]embed\b/.test(location.search))document.documentElement.classList.add('embed')</script>
 <style>
  html,body{margin:0;height:100%;background:#0b0a14;display:grid;place-items:center}
  canvas{image-rendering:pixelated;box-shadow:0 0 0 1px #221f33}
+ /* EMBED (?embed): the layer fills the studio's stage, pixels kept square */
+ html.embed canvas{width:min(100vw,calc(100vh*540/304));height:auto}
 </style></head><body><canvas id="c" width="540" height="304"></canvas><script>
-/* ===== ZARRA QATLAMI =====
-   Har son o'lchangan, o'ylab topilmagan. Manba: misol GIF (540x304, 22 tasvir,
-   har biri 60 ms), va uning zarra qatlami seldan ayirib olinib o'lchangan:
+/* ===== THE PARTICLE LAYER =====
+   Every number is measured, not invented. Source: a sample GIF (540x304, 22 images,
+   60 ms each), whose particle layer was separated from the cel and measured:
 
-     yaqin qatlam  +5,-2 px/kadr   moslik 0.79  (katta, yumshoq zarra)
-     uzoq qatlam   +1,-1 px/kadr   moslik 0.24  (mayda, aniq zarra)
-     bo'laklar     1483 ta/tasvir: 76% 1-3 px, 21% 4-12 px, 3% 13-40 px, 0.5% kattaroq
-     yorqin piksel kadrning 3.8% i
+     near layer  +5,-2 px/frame   match 0.79  (large, soft particles)
+     far layer   +1,-1 px/frame   match 0.24  (small, sharp particles)
+     specks      1483 per image: 76% 1-3 px, 21% 4-12 px, 3% 13-40 px, 0.5% larger
+     bright pixels are 3.8% of the frame
 
-   SEL QIMIRLAMAYDI. Misolda har kadr ichida eng yaxshi siljish (0,0) edi -- kamera
-   ham, personaj ham. Ya'ni tiriklikni chizma emas, shu qatlam olib yuradi, va
-   shuning uchun bu fayl chizmani bilmaydi: u faqat zarrani biladi. */
-const W=540,H=304, MS=60;                       // o'lchangan: 60 ms/tasvir
+   THE CEL DOES NOT MOVE. Within each shot of the sample the best shift was (0,0) --
+   for the camera and for the character. So the life is carried by this layer, not by
+   the drawing, and that is why this file does not know the drawing: it only knows
+   the particles. */
+const W=540,H=304, MS=60;                       // measured: 60 ms per image
 
-/* Deterministik: bir xil kadr har safar bir xil chiqishi shart, aks holda
-   o'lchov o'lchov emas. */
+/* Deterministic: the same frame has to come out the same every time, or the
+   measurement is not a measurement. */
 function rng(s){return function(){s^=s<<13;s^=s>>>17;s^=s<<5;return (s>>>0)/4294967296;}}
 
-const QATLAM=[
- /* uzoq: mayda va aniq, sekin. Soni maydalar ulushidan: 1483*0.76 ~ 1127 */
- {n:1127, v:[ 1,-1], r:[0.5,1.6], a:[0.35,0.95], yum:0},
- /* yaqin: kattaroq va yumshoq, ~3.5 barobar tez */
- {n: 309, v:[ 5,-2], r:[1.4,2.6], a:[0.30,0.80], yum:1},
- {n:  41, v:[ 5,-2], r:[2.6,4.0], a:[0.20,0.55], yum:2},
- {n:   8, v:[ 5,-2], r:[4.5,8.0], a:[0.08,0.22], yum:3},
+const LAYERS=[
+ /* far: small and sharp, slow. The count comes from the share of small specks: 1483*0.76 ~ 1127 */
+ {n:1127, v:[ 1,-1], r:[0.5,1.6], a:[0.35,0.95], soft:0},
+ /* near: larger and soft, ~3.5 times faster */
+ {n: 309, v:[ 5,-2], r:[1.4,2.6], a:[0.30,0.80], soft:1},
+ {n:  41, v:[ 5,-2], r:[2.6,4.0], a:[0.20,0.55], soft:2},
+ {n:   8, v:[ 5,-2], r:[4.5,8.0], a:[0.08,0.22], soft:3},
 ];
-const P=QATLAM.map((q,qi)=>{
+const P=LAYERS.map((q,qi)=>{
  const R=rng(1013+qi*7919), a=[];
  for(let i=0;i<q.n;i++) a.push({x:R()*W, y:R()*H, r:q.r[0]+R()*(q.r[1]-q.r[0]),
                                 al:q.a[0]+R()*(q.a[1]-q.a[0])});
@@ -38,30 +42,32 @@ const P=QATLAM.map((q,qi)=>{
 });
 const g=document.getElementById('c').getContext('2d');
 
-/* ATAYLAB BUZISH UCHUN ESHIK. Tekshiruv kalibratsiyasi shu yerdan o'tadi: ikkala
-   qatlamni bir xil tezlikka qo'yib, "qatlamlarni ajratadi" degan da'voni sinaydi.
-   Eshiksiz kalibratsiya yozib bo'lmaydi, kalibratsiyasiz tekshiruv esa raqam. */
-let USTUN=null;
-window.__opt=o=>{ USTUN=o||null; };
-window.__resetOpt=()=>{ USTUN=null; };
-const tezlik=qi=>(USTUN&&USTUN['v'+qi])||QATLAM[qi].v;
+/* A DOOR FOR BREAKING IT ON PURPOSE. The check's calibration goes through here: it
+   puts both layers at the same speed to test the claim "it separates the layers".
+   Without the door no calibration can be written, and without a calibration a check
+   is a number. */
+let OVERRIDE=null;
+window.__opt=o=>{ OVERRIDE=o||null; };
+window.__resetOpt=()=>{ OVERRIDE=null; };
+const speed=qi=>(OVERRIDE&&OVERRIDE['v'+qi])||LAYERS[qi].v;
 
-function osmon(){                                // tekis fon: zarra ko'rinishi uchun
+function sky(){                                  // a flat background, so the particles show
  const gr=g.createLinearGradient(0,0,W*0.6,H);
  gr.addColorStop(0,'#141129'); gr.addColorStop(1,'#090813');
  g.fillStyle=gr; g.fillRect(0,0,W,H);
 }
-/* HAR KADR BUTUN SONGA SURILADI, chunki o'lchov butun songa qaraydi: 5.39 px/kadr
-   deb yozib, keyin 5.4 ni o'lchab olish -- o'zini aldash. */
-function kadr(n){
- osmon();
+/* EVERY FRAME MOVES BY A WHOLE NUMBER, because the measurement looks at whole numbers:
+   writing 5.39 px/frame and then measuring 5.4 back would be fooling oneself. */
+const OFF=new Set();                              // layers switched off from the studio
+function drawFrame(n){
+ sky();
  g.globalCompositeOperation='lighter';
- for(let qi=0;qi<QATLAM.length;qi++){
-  const q=QATLAM[qi];
+ for(let qi=0;qi<LAYERS.length;qi++){
+  const q=LAYERS[qi]; if(OFF.has(qi)) continue;
   for(const p of P[qi]){
-   const v=tezlik(qi);
+   const v=speed(qi);
    const x=((p.x+v[0]*n)%W+W)%W, y=((p.y+v[1]*n)%H+H)%H;
-   if(q.yum===0){ g.fillStyle=`rgba(226,232,255,${p.al})`; g.fillRect(Math.round(x),Math.round(y),Math.max(1,Math.round(p.r)),Math.max(1,Math.round(p.r))); }
+   if(q.soft===0){ g.fillStyle=`rgba(226,232,255,${p.al})`; g.fillRect(Math.round(x),Math.round(y),Math.max(1,Math.round(p.r)),Math.max(1,Math.round(p.r))); }
    else{
     const gr=g.createRadialGradient(x,y,0,x,y,p.r*2.2);
     gr.addColorStop(0,`rgba(232,238,255,${p.al})`); gr.addColorStop(1,'rgba(232,238,255,0)');
@@ -70,10 +76,27 @@ function kadr(n){
   }
  }
  g.globalCompositeOperation='source-over';
- return {kadr:n, ms:n*MS};
+ return {frame:n, ms:n*MS};
 }
-window.__frameTo=kadr;                           // o'lchov shu ilmoqdan kadr oladi
-let t=0, oxirgi=0;
-function yur(ts){ if(ts-oxirgi>=MS){ oxirgi=ts; kadr(t++); } requestAnimationFrame(yur); }
-kadr(0); requestAnimationFrame(yur);
+/* THE STUDIO'S CONTRACT (studio/README.md): a frame by number holds still; the layer
+   can say where it is, stop and go on. The measurement takes frames through __frameTo. */
+/* The layer itself never ends; playing loops over FRAMES, so the frame it reports is
+   always one the studio can scrub to (it used to count on past 120, and the readout
+   said "frame 250 / 120"). */
+const FRAMES=120;
+let t=0, last=0, shown=0, paused=false;
+window.__totalFrames=FRAMES;
+window.__frameTo=n=>{ paused=true; t=(n+1)%FRAMES; shown=n; return drawFrame(n); };
+window.__frame=()=>({frame:shown});
+window.__pause=()=>{ paused=true; };
+window.__play=f=>{ if(Number.isInteger(f)){ t=((f%FRAMES)+FRAMES)%FRAMES; } paused=false; };
+/* THE LAYERS AS TRACKS, for the studio's timeline: each one runs the whole loop */
+const NAMES=['Far specks','Near, small','Near, medium','Near, large'];
+window.__tracks=()=>LAYERS.map((q,qi)=>({id:'layer'+qi,name:NAMES[qi],kind:'clips',src:{file:'zarra.html',find:'const LAYERS=['},
+ items:[{f:0,n:FRAMES,label:q.n+' specks · '+q.v[0]+','+q.v[1]+' px a frame'}]}));
+window.__layers=()=>LAYERS.map((q,qi)=>({id:String(qi),name:NAMES[qi],on:!OFF.has(qi)}));
+window.__layer=(id,on)=>{ const qi=+id; if(!(qi>=0&&qi<LAYERS.length)) return; on?OFF.delete(qi):OFF.add(qi); if(paused) drawFrame(shown); };
+function tick(ts){ if(!paused&&ts-last>=MS){ last=ts; shown=t; drawFrame(t); t=(t+1)%FRAMES; } requestAnimationFrame(tick); }
+drawFrame(0); requestAnimationFrame(tick);
+window.__ready=true;                             // ready: the measurement asks for this instead of sleeping
 </script></body></html>

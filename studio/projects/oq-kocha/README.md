@@ -1,7 +1,8 @@
 # Qalam
 
-A 14.6-second film. No image, no mesh, no video, no texture — every frame is
-computed from a distance field, and the whole thing is one HTML file.
+A 350-frame film, 14.58 seconds at 24 fps. No image, no mesh, no video, no
+texture — every frame is computed from a distance field, and the whole thing is
+one HTML file.
 
 ```
 src/
@@ -13,6 +14,7 @@ src/
 tools/
   build.mjs         characters -> GLSL
   mkfilm.py         everything -> one page
+  render-audio.mjs  the soundtrack, offline -> build/film.pcm
 test/
   lib.mjs           the harness
   checks-sheet.mjs  checks that need no browser
@@ -25,7 +27,8 @@ test/
 ```sh
 npm install && npx playwright install chromium
 npm run build      # -> build/oq-kocha.html
-npm run audit      # 16 checks
+npm run audit      # 43 checks
+npm run audio      # the soundtrack, rendered offline -> build/film.pcm
 ```
 
 ## Why two passes
@@ -81,6 +84,13 @@ with a limit so loose that an 8% rubber limb passed too.
 **The world steps when the drawing steps.** Distance is a step function of the
 exposure sheet, not a velocity. A constant speed under a 3·2·1·2 timing chart slides
 the planted foot by a tenth of a body height every stride.
+
+**A shot is a number of frames.** The shot list was authored in seconds, and at 24 fps
+six of the eight shots ended between two frames. The page added 1/24 at a time and
+compared the sum with the seconds; 72 steps come to 2.999999999999998, so the first cut
+fell on frame 73 and the film looped after 351 frames against a soundtrack of 350. Shots
+are declared in frames now, seconds are derived from them, and the page picks the shot by
+frame number. `cut-frames` asks the page which shot is up on both sides of every cut.
 
 **A street is one building.** Space folds under it with `mod`, the cell index is
 hashed for height, width and setback. 7.6× more buildings costs 0.99× the time. The

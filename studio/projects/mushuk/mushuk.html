@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Yomg'irli derazadagi mushuk</title>
+<script>if(/[?&]embed\b/.test(location.search))document.documentElement.classList.add('embed')</script>
 <style>
 :root{--bg:#1a1530;--fg:#f3e9d2;--muted:#b3a8c9;--btn:#e24f93;--btnfg:#fff;--track:#4a3d6b}
 @media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#efe4cc;--fg:#2b2140;--muted:#6d5f80;--track:#cbb9a2}}
@@ -24,6 +25,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
 input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--btn);border:0}
 p{margin:0;font-size:15px;color:var(--muted);text-align:center;max-width:60ch;line-height:1.5}
 @media (prefers-reduced-motion:reduce){.frame{box-shadow:none}}
+/* EMBED (?embed): inside the studio the cat keeps its picture and its sound controls;
+   the description is the studio's job there */
+html.embed body{height:100vh;padding:8px;gap:8px;overflow:hidden;justify-content:center}
+html.embed .frame{width:min(100%,calc(100vh - 120px))}
+html.embed p{display:none}
 </style>
 </head>
 <body>

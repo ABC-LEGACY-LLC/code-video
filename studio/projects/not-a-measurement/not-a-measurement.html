@@ -1,7 +1,10 @@
 <title>Not A Measurement</title>
+<script>if(/[?&]embed\b/.test(location.search))document.documentElement.classList.add('embed')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<!-- media="print" + onload: as a plain stylesheet it blocked the script, and a font
+     host that never answered left the piece blank; now it waits at most 3 s (below) -->
+<link id="fontcss" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;600&display=swap" media="print" onload="this.media='all'">
 <style>
 :root{
   --paper:#f7e6e1;      /* chart paper */
@@ -53,6 +56,12 @@ button[aria-pressed="true"]{border-color:var(--pen);color:#fff}
 }
 .track i{position:absolute;inset:0 auto 0 0;width:0;background:var(--pen);display:block}
 @media (prefers-reduced-motion:reduce){.track i{transition:none}}
+/* EMBED (?embed): inside the studio the piece shows its picture, sound and language;
+   the replay button and the notes are the studio's job there */
+html.embed body{height:100vh;padding:8px 12px;gap:8px;overflow:hidden}
+html.embed .wrap{max-width:none;align-items:center}
+html.embed .stage{width:min(100%,calc((100vh - 64px)*16/9))}
+html.embed #play,html.embed .meta{display:none}
 </style>
 
 <div class="wrap">
@@ -492,12 +501,19 @@ bEn.addEventListener('click',()=>setLang('en'));
 
 /* Fonts must be there before the first measureText, or every size is computed
    against the fallback and the layout jumps once the real face arrives. */
-const start=()=>{last=performance.now();requestAnimationFrame(frame);};
+let started=false;
+const start=()=>{if(started)return;started=true;last=performance.now();requestAnimationFrame(frame);};
+/* the stylesheet and the font files together get 3 s, then the piece starts in
+   whatever face it has: a file that never answers must not keep it from starting */
+const css=document.getElementById('fontcss');
+const cssIn=new Promise(r=>{if(!css||css.media!=='print')return r();
+ css.addEventListener('load',r,{once:true});css.addEventListener('error',r,{once:true});setTimeout(r,3000);});
+setTimeout(start,3000);
 if(document.fonts&&document.fonts.load){
- Promise.all([
+ cssIn.then(()=>Promise.all([
   document.fonts.load('400 200px "Archivo Black"'),
   document.fonts.load('600 26px "IBM Plex Mono"')
- ]).then(start).catch(start);
+ ])).then(start,start);
 }else start();
 
 if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){

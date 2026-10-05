@@ -3,6 +3,8 @@ HERE=os.path.dirname(os.path.abspath(__file__))
 ROOT=os.path.dirname(HERE)
 def mod(p):
     t=open(os.path.join(ROOT,'src',p),encoding='utf-8').read()
+    # an import names a module the page already holds inline (shots.mjs asks sheet.mjs for FPS)
+    t=re.sub(r'^import .*\n','',t,flags=re.M)
     return re.sub(r'^export (const|function) ',r'\1 ',t,flags=re.M)
 G=open(os.path.join(ROOT,'build','film.frag'),encoding='utf-8').read()
 C=open(os.path.join(ROOT,'src','comp.frag'),encoding='utf-8').read()
@@ -13,8 +15,13 @@ R=json.load(open(os.path.join(ROOT,'build','film.ramp.json')))
 P=json.load(open(os.path.join(ROOT,'src','poses.json')))
 flat=[v for c in R for v in c]
 HEAD=r'''<title>Oq Ko'cha</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>if(/[?&]embed\b/.test(location.search))document.documentElement.classList.add('embed')</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
 <style>
+ /* The font stylesheet is loaded with media="print" and switched on when it arrives:
+    as a plain stylesheet it blocked this page's script, so a font host that never
+    answered left the film blank and the studio waiting for ever. Until the fonts
+    come, the page draws in the fallback face. */
  :root{--pa:#ecedf0;--ink:#15171d;--mut:#646c7c;--rule:#c9ccd4;--stage:#0b0c10;--acc:#b0432a;
   --disp:"Archivo",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
@@ -45,10 +52,20 @@ HEAD=r'''<title>Oq Ko'cha</title>
  .note{color:var(--mut);font-size:12.5px;margin:16px 0 0;max-width:58ch}
  .note em{color:var(--ink);font-style:normal;border-bottom:1px solid var(--acc)}
  code{font:inherit;color:var(--mut)}
+ /* EMBED (?embed): inside the studio the page shows the picture and the work's own
+    options -- sound, quality, style. The title, the notes, this page's own transport,
+    clock and shot bar are the studio's job there, and two of each read as one. */
+ html.embed body{height:100vh;overflow:hidden}
+ html.embed .wrap{max-width:none;height:100vh;padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+ html.embed h1,html.embed .sub,html.embed .tl,html.embed dl,html.embed .note,html.embed .hud,
+ html.embed #play,html.embed #rew,html.embed #q{display:none}
+ html.embed .stage{border:0;background:transparent;display:flex;justify-content:center}
+ html.embed canvas{width:min(100%,calc((100vh - 72px)/0.72));height:auto}
+ html.embed .bar{margin-top:0;justify-content:center}
 </style>
 <div class="wrap">
  <h1>Oq ko'cha</h1>
- <p class="sub">14.6 soniya, 8 kadr, 24 fps, personajlar 12 da. Nol bayt asset —
+ <p class="sub"><span id="length"></span>, 24 fps, personajlar 12 da. Nol bayt asset —
   na rasm, na mesh, na video.</p>
  <div class="stage"><canvas id="c"></canvas><span class="hud" id="hud">—</span></div>
  <div class="tl" id="tl"></div>
@@ -78,6 +95,7 @@ HEAD=r'''<title>Oq Ko'cha</title>
 <script id="fs-geo" type="x-shader/x-fragment">__G__</script>
 <script id="fs-comp" type="x-shader/x-fragment">__C__</script>
 <script>
+window.__ready=false;   // the studio's contract: true once the film can be asked for a frame
 __SOUND__
 const POSES=__POSES__, RAMP=new Float32Array(__RAMP__);
 __SHEET__
@@ -100,6 +118,9 @@ function joints(K,out){
    read the authored subject scale instead of guessing it from pixels. */
 __SHOTS__
 const S=STARTS;
+/* the length is read from the shot list, never typed: the typed one said 14.6 s for a
+   14.583 s film, and 15.6 in the card before that */
+document.getElementById('length').textContent=TOTAL_F+' kadr ('+TOTAL.toFixed(2).replace('.',',')+' soniya), '+SHOTS.length+' sahna';
 const DT=1/FPS;
 
 const c=document.getElementById('c'),hud=document.getElementById('hud');
@@ -107,22 +128,36 @@ const s1=document.getElementById('s1'),s2=document.getElementById('s2'),s3=docum
       qEl=document.getElementById('q'),tl=document.getElementById('tl');
 SHOTS.forEach(()=>{const i=document.createElement('i');tl.appendChild(i);});
 const gl=c.getContext('webgl2',{antialias:false,powerPreference:'high-performance'});
-const fail=m=>{document.querySelector('.stage').innerHTML=
+const fail=m=>{window.__failed=m;document.querySelector('.stage').innerHTML=
  '<p style="padding:24px;font:400 13px/1.6 var(--mono);color:#e6e8ee">'+m+'</p>';};
 if(!gl) fail("Bu brauzerda WebGL2 yo'q.");
 else if(!gl.getExtension('EXT_color_buffer_float')) fail("Float bufer qo'llab-quvvatlanmaydi.");
 else{
 const VS=`#version 300 es
 void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.-1.,0,1);}`;
-const mk=(t,src)=>{const o=gl.createShader(t);gl.shaderSource(o,src);gl.compileShader(o);
- if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(o));return o;};
+/* COMPILING DOES NOT HOLD THE PAGE. Asking a shader for its COMPILE_STATUS waits until
+   the GPU process has compiled it, and on some machines (ANGLE on Direct3D) these two
+   programs take seconds -- seconds in which this page, and the studio that shows it in
+   a frame on the same main thread, cannot answer a click. So nothing is asked until the
+   driver says the work is done (KHR_parallel_shader_compile); a browser without the
+   extension carries on at once, exactly as before. */
+const mk=(t,src)=>{const o=gl.createShader(t);gl.shaderSource(o,src);gl.compileShader(o);return o;};
 const link=id=>{const p=gl.createProgram();
- gl.attachShader(p,mk(gl.VERTEX_SHADER,VS));
- gl.attachShader(p,mk(gl.FRAGMENT_SHADER,document.getElementById(id).textContent.trim()));
- gl.linkProgram(p);
- if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));
+ const v=mk(gl.VERTEX_SHADER,VS), f=mk(gl.FRAGMENT_SHADER,document.getElementById(id).textContent.trim());
+ gl.attachShader(p,v); gl.attachShader(p,f); gl.linkProgram(p);
+ p.check=()=>{ if(!gl.getProgramParameter(p,gl.LINK_STATUS))
+  throw new Error([gl.getShaderInfoLog(v),gl.getShaderInfoLog(f),gl.getProgramInfoLog(p)].filter(Boolean).join('\n')); };
  return p;};
 const gp=link('fs-geo'), cp=link('fs-comp');
+const PAR=gl.getExtension('KHR_parallel_shader_compile');
+const linked=()=>!PAR||(gl.getProgramParameter(gp,PAR.COMPLETION_STATUS_KHR)&&gl.getProgramParameter(cp,PAR.COMPLETION_STATUS_KHR));
+hud.textContent='shaderlar tayyorlanmoqda…';
+(function wait(){
+ if(!linked()) return setTimeout(wait,30);
+ try{ gp.check(); cp.check(); }catch(e){ fail('Shader: '+e.message); throw e; }
+ begin();
+})();
+function begin(){
 const U=(p,n)=>gl.getUniformLocation(p,n);
 const G={p:gp,res:U(gp,'iRes'),t:U(gp,'iTime'),d:U(gp,'iDist'),sc:U(gp,'uScene'),
  JA:U(gp,'JA'),JB:U(gp,'JB'),pA:U(gp,'uPosA'),pB:U(gp,'uPosB'),two:U(gp,'uTwo'),
@@ -201,7 +236,10 @@ function scheduleLoop(base){
 __STYLEJS__
 const GS=styleLocs(gl,gp), KS=styleLocs(gl,cp);
 const OPT={lines:1,nbr:1,cell:0,cam:null,bound:1,fog:1,snow:1,lfar:1,rimg:1,wmax:4096,wdir:1,style:'oq-qalam'};
-function shotAt(t){let i=0;for(let j=0;j<SHOTS.length;j++)if(t>=S[j])i=j;return i;}
+/* THE FRAME DECIDES THE SHOT, not a sum of 1/24s. T is built by adding DT, and 72 of
+   them come to 2.999999999999998: compared with a cut at 3 s, frame 72 stayed in the
+   first shot. A frame number is an integer; a cut is one too. */
+function shotAt(t){const f=Math.round(t*FPS);let i=0;for(let j=0;j<SHOTS.length;j++)if(f>=STARTS_F[j])i=j;return i;}
 
 /* ===== THE SOUND TIMELINE =====
    Built once, by simulating the film exactly as it plays. A footfall is emitted on
@@ -209,7 +247,7 @@ function shotAt(t){let i=0;for(let j=0;j<SHOTS.length;j++)if(t>=S[j])i=j;return 
    from -- so the sound cannot drift from the picture: they are the same decision. */
 function buildTimeline(){
  const ev=[]; let t=0,a=0,b=0.37,ia=-1,ib=-1,breath=0.9;
- const n=Math.round(TOTAL*FPS);
+ const n=TOTAL_F;
  for(let f=0;f<n;f++){
   const i=shotAt(t), sh=SHOTS[i], m=1-(sh.snd.mute||0);
   /* the phase is advanced BEFORE the index is read, so the drawing that has just
@@ -275,7 +313,7 @@ function step(dt){
  T+=dt; frameNo++;
  if(sh.aw){const p0=phA; phA+=dt/CYCLE; dist+=travel(phA)-travel(p0);}
  if(sh.bw) phB+=dt/CYCLE;
- if(T>=TOTAL){T=0;phA=0;phB=0.37;dist=0;frameNo=0;}
+ if(Math.round(T*FPS)>=TOTAL_F){T=0;phA=0;phB=0.37;dist=0;frameNo=0;}   // the loop is counted in frames too
 }
 let acc=0;
 function frame(now){
@@ -333,8 +371,14 @@ sb.onclick=()=>{
  else { AC.resume(); audioOn=true; loopBase=AC.currentTime-T; sb.setAttribute('aria-pressed','true');
   document.getElementById('s5').textContent="yoqilgan — sintez, 0 bayt namuna"; }
 };
+/* THE STUDIO'S CONTRACT (studio/README.md): where the film is now, stop, go on */
+window.__frame=()=>({frame:Math.round(T*FPS)%TOTAL_F, shot:SHOTS[shotAt(T)].k});
+window.__pause=()=>{ playing=false; pl.textContent='Davom'; pl.setAttribute('aria-pressed','false'); };
+window.__play=(f)=>{ if(Number.isInteger(f)) window.__frameTo(f);
+ playing=true; acc=0; last=performance.now(); pl.textContent='Pauza'; pl.setAttribute('aria-pressed','true');
+ if(audioOn&&AC) loopBase=AC.currentTime-T; };
 /* deterministic access, for the audit */
-window.__total=TOTAL; window.__fps=FPS; window.__shots=SHOTS.map(s=>({k:s.k,d:s.d,sz:s.sz}));
+window.__total=TOTAL; window.__totalFrames=TOTAL_F; window.__fps=FPS; window.__shots=SHOTS.map(s=>({k:s.k,d:s.d,df:s.df,sz:s.sz}));
 window.__shotsRaw=SHOTS;   // the audit needs to perturb a camera to price it
 window.__styles=()=>Object.keys(STYLES).map(k=>({name:k,title:STYLES[k].t}));
 /* THE SAME FILM, THE OTHER WAY OF DRAWING IT. Nothing below the marks changes: same
@@ -350,6 +394,51 @@ window.__styles=()=>Object.keys(STYLES).map(k=>({name:k,title:STYLES[k].t}));
   box.appendChild(b);
  }}
 window.__timeline=()=>TIMELINE;
+/* THE FILM AS TRACKS, for the studio's timeline (studio/README.md). Nothing is declared
+   a second time: every track is read from the table the film itself runs on, or found by
+   stepping the film the way step() does. `derived` marks what nobody placed by hand --
+   a footfall sits where the drawing changes to a contact, so it has no handle to drag. */
+window.__tracks=()=>{
+ const runs=(at)=>{ const o=[]; let cur=null;
+  for(let f=0;f<TOTAL_F;f++){ const v=at(f); if(cur&&cur.label===v) cur.n++; else { cur=v==null?null:{f,n:1,label:v}; if(cur)o.push(cur); } }
+  return o; };
+ /* the drawing on screen at frame f is the one after f steps: the phase runs on across
+    every shot that walks, so it is stepped here, not worked out from the cut */
+ const A=[],B=[]; { let a=0,b=0.37;
+  for(let f=0;f<TOTAL_F;f++){ const sh=SHOTS[shotAt(f/FPS)];
+   A.push(sh.aw?String(idxAt(a)+1):'stand'); B.push(!sh.two?null:sh.bw?String(idxAt(b)+1):'stand');
+   if(sh.aw)a+=DT/CYCLE; if(sh.bw)b+=DT/CYCLE; } }
+ const ev=(type,who)=>TIMELINE.filter(e=>e.type===type&&(!who||e.who===who)).map(e=>({f:Math.min(TOTAL_F-1,Math.round(e.t*FPS))}));
+ const shots={file:'src/shots.mjs',find:'export const SHOTS'}, sheet={file:'src/sheet.mjs',find:'export const HOLDS'},
+       snd={file:'tools/mkfilm.py',find:'function buildTimeline'};
+ const row=s=>({file:'src/shots.mjs',row:{key:'k',is:s.k}});
+ const per=(label)=>SHOTS.map((s,i)=>({f:STARTS_F[i],n:s.df,label:label(s)}));
+ return [
+  {id:'shots',name:'Shots',kind:'clips',src:shots,items:SHOTS.map((s,i)=>({f:STARTS_F[i],n:s.df,label:s.k,
+    edit:[{name:'length',unit:'frames',...row(s),key:'df',value:s.df,min:1,max:480,step:1,per:1,drag:true}]}))},
+  {id:'camera',name:'Camera',kind:'clips',src:shots,items:per(s=>'size '+s.sz+' · focal '+s.foc)},
+  {id:'drawA',name:'Drawings · walker',kind:'clips',derived:true,src:sheet,
+   why:'The exposure sheet (HOLDS 3·2·1·2…) read by the walk phase, which runs on across cuts.',items:runs(f=>A[f])},
+  {id:'drawB',name:'Drawings · second',kind:'clips',derived:true,src:sheet,
+   why:'The same sheet, 0.37 of a cycle behind.',items:runs(f=>B[f])},
+  {id:'beds',name:'Sound · wind, city',kind:'clips',src:shots,items:SHOTS.map((s,i)=>({f:STARTS_F[i],n:s.df,
+    label:'wind '+s.snd.wind+' · city '+s.snd.city+(s.snd.mute?' · muted '+s.snd.mute:''),
+    edit:['wind','city','mute'].map(k=>({name:k,unit:'0–1',...row(s),key:k,value:s.snd[k],min:0,max:1,step:0.01}))}))},
+  {id:'stepA',name:'Sound · steps, walker',kind:'events',derived:true,src:snd,
+   why:'A footfall is emitted on the frame the drawing changes to a contact: the sound and the picture are one decision.',items:ev('step','a')},
+  {id:'stepB',name:'Sound · steps, second',kind:'events',derived:true,src:snd,why:'As above, for the second figure.',items:ev('step','b')},
+  {id:'breath',name:'Sound · breath',kind:'events',derived:true,src:snd,why:'Every 1.9–2.7 s, by a rule on the frame count.',items:ev('breath')},
+  {id:'cloth',name:'Sound · cloth',kind:'events',derived:true,src:snd,why:'Every 29th frame while someone walks.',items:ev('cloth')},
+  {id:'metal',name:'Sound · metal',kind:'events',derived:true,src:snd,why:'Every 17th frame while the second figure walks.',items:ev('metal')}
+ ];
+};
+/* LAYERS AND VIEWS, for the studio: parts of the picture switched off, and the buffers
+   the picture is made from. They change what is shown, never the film. */
+const LAYERS=[['lines','Ink lines'],['snow','Snow'],['fog','Fog']];
+window.__layers=()=>LAYERS.map(([id,name])=>({id,name,on:!!OPT[id]}));
+window.__layer=(id,on)=>{ if(LAYERS.some(l=>l[0]===id)){ OPT[id]=on?1:0; if(!playing){render();gl.finish();} } };
+window.__views=()=>[{id:0,name:'Picture'},{id:1,name:'Material'},{id:2,name:'Lines'},{id:6,name:'Depth'}];
+window.__view=(d)=>{ DBG=d; if(!playing){render();gl.finish();} };
 /* the same graph, rendered offline, so the sound can be MEASURED rather than liked */
 window.__renderAudio=async(seconds,sr)=>{
  const oc=new OfflineAudioContext(2, Math.floor((sr||32000)*seconds), sr||32000);
@@ -397,6 +486,12 @@ window.__frameTo=(n,w,h)=>{
  return {frame:n,t:+T.toFixed(4),shot:sh.k,size:sh.sz,
          idx: sh.aw? idxAt(phA) : -1, di:+dist.toFixed(5)};
 };
+/* READY IS SAID, NOT WAITED FOR. Everything above ran in one go: the programs are
+   linked, the buffers built, the timeline simulated. The harness used to sleep 600 ms
+   after load and hope; on a runner 1.7x slower a sleep is a race. Without WebGL2 this
+   line is never reached, and a harness asking for it stops with that sentence. */
+window.__ready=true;
+}  // begin
 }
 </script>'''
 # the sheet block also carried the WALK declaration away with it; put it back

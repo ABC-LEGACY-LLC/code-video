@@ -1,13 +1,12 @@
-# Skill'lar
+# Skills
 
-Bu ikkitasi shu yerdagi ishlarda ishlatilgan va ularning natijasini shakllantirgan:
+These two were used in the work here and shaped its results:
 
-- **`media-audit-reality`** — chiqarilgan narsani ko'z va quloq bilan emas, o'lchov
-  bilan tekshirish. Oq Ko'chadagi 41 tekshiruv va `loyihalar/` dagi 14 tasi shu
-  yondashuvdan o'sib chiqqan: har tekshiruv o'zining ataylab buzilgan holatini olib
-  yuradi, va isbotlay olmasa `UNPROVEN` bo'ladi.
-- **`code-audit-structure-scale`** — kodning tuzilishi va ko'lamini tekshirish.
+- **`media-audit-reality`** — checking what was produced by measurement, not by eye and ear.
+  Oq Ko'cha's 41 checks and the 14 in the catalog (then `loyihalar/`) grew out of this
+  approach: every check carries its own deliberately broken case, and if it cannot prove itself
+  it is `UNPROVEN`.
+- **`code-audit-structure-scale`** — checking the structure and the scale of the code.
 
-Nusxa: Claude skill'lari sifatida ular alohida joyda turadi; bu papka — **yozuv**,
-ya'ni bu ishlar qaysi ko'rsatmalar ostida qilinganining qaydi. Ishlaydigan nusxasi
-emas.
+A copy: as Claude skills they live elsewhere; this folder is a **record** of the instructions
+this work was done under. It is not the working copy.

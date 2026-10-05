@@ -1,62 +1,64 @@
 {
- "nom": "Whiteout",
- "manba": [
-  "../../whiteout/whiteout.html"
+ "name": "Whiteout",
+ "sources": [
+  "../../studio/projects/whiteout/whiteout.html"
  ],
- "kadr": {
-  "fayl": "../../whiteout/whiteout.html",
-  "kadrlar": [
+ "frame": {
+  "file": "../../studio/projects/whiteout/whiteout.html",
+  "frames": [
    4,
    10,
    16
   ]
  },
- "uslub": [
+ "method": [
   {
-   "gap": "Qo'lda yozilgan 4 poza — CONTACT, DOWN, PASSING, UP — ko'zguda 8 taga aylanadi.",
-   "dalil": "jadvallar.PW"
+   "text": "4 poses written by hand — CONTACT, DOWN, PASSING, UP — become 8 in the mirror.",
+   "evidence": "tables.PW"
   },
   {
-   "gap": "13 kadr, eng qisqasi 0,085 s — zarb uchun.",
-   "dalil": "jadvallar.SHOTS"
+   "text": "13 shots, the shortest 0.085 s — for the strike.",
+   "evidence": "tables.SHOTS"
   },
   {
-   "gap": "Har kadrda 127 chizish buyrug'i ishlaydi: 35 beginPath, 33 lineTo, 13 bezierCurveTo.",
-   "dalil": "chizishJami"
+   "text": "127 draw calls run in every frame: 35 beginPath, 33 lineTo, 13 bezierCurveTo.",
+   "evidence": "drawCallsTotal"
   },
   {
-   "gap": "renderer canvas2d, 1094 satr, 39 funksiya.",
-   "dalil": "satrlar"
+   "text": "renderer canvas2d, 1185 lines, 41 functions.",
+   "evidence": "lines"
   }
  ],
- "stil": "Chegarasiz qor dalasi. Ufq yo'q, bino yo'q, soya yo'q — oq maydon va undagi bitta nuqta. Sarlavha Cormorant Garamond bilan, o'lchov satrlari IBM Plex Mono bilan.",
- "davolar": {
-  "qiymat.past": [
+ "look": "A snowfield with no edges. No horizon, no building, no shadow — a white field and one dot in it. The title is set in Cormorant Garamond, the measurement lines in IBM Plex Mono.",
+ "claims": {
+  "value.low": [
    ">",
    150,
-   "eng qorong'i piksel ham yorug' — bu film OQ"
+   "even the darkest pixel is light — this film is WHITE"
   ],
-  "toyinganlik": [
+  "saturation": [
    "<",
    6,
-   "va rangsiz"
+   "and colourless"
   ]
  },
- "sanoq": {
-  "fayllar": 1,
-  "baytlar": 49587,
-  "satrlar": 1094,
+ "count": {
+  "files": 1,
+  "bytes": 56917,
+  "lines": 1185,
   "renderer": "canvas2d",
-  "funksiyalar": 39,
-  "ovoz": true,
-  "hodisalar": [
-   "click"
+  "functions": 41,
+  "audio": true,
+  "events": [
+   "click",
+   "error",
+   "load"
   ],
-  "shriftlar": [
+  "fonts": [
    "Cormorant Garamond",
    "IBM Plex Mono"
   ],
-  "chizish": {
+  "drawCalls": {
    "beginPath": 35,
    "moveTo": 19,
    "lineTo": 33,
@@ -68,12 +70,12 @@
    "fillText": 2,
    "createLinearGradient": 2
   },
-  "chizishJami": 127,
-  "jadvallar": {
+  "drawCallsTotal": 127,
+  "tables": {
    "PW": 4,
    "SHOTS": 13
   },
-  "davomiyliklar": [
+  "durations": [
    3,
    2,
    1.8,
@@ -89,54 +91,54 @@
    4
   ]
  },
- "olchov": {
-  "palitra": [
+ "measure": {
+  "palette": [
    {
     "hex": "#e8ecec",
-    "ulush": 50
+    "share": 50
    },
    {
     "hex": "#dee2e3",
-    "ulush": 25
+    "share": 25
    },
    {
     "hex": "#d3d8d9",
-    "ulush": 12.5
+    "share": 12.5
    },
    {
     "hex": "#c7cdce",
-    "ulush": 6.3
+    "share": 6.3
    },
    {
     "hex": "#84898b",
-    "ulush": 3.1
+    "share": 3.1
    },
    {
     "hex": "#c1c8c9",
-    "ulush": 3.1
+    "share": 3.1
    }
   ],
-  "qiymat": [
+  "value": [
    193,
    243
   ],
-  "toyinganlik": 2.1,
-  "qattiqChet": 0.67,
-  "yumshoqChet": 8.96,
-  "chizilganlik": 7,
-  "tekstura": 1.18,
-  "siyoh": 0
+  "saturation": 2.1,
+  "hardEdges": 0.67,
+  "softEdges": 8.96,
+  "hardEdgeShare": 7,
+  "texture": 1.18,
+  "ink": 0
  },
- "maqsadlar": {
-  "qiymat.oraliq": [
+ "goals": {
+  "value.range": [
    ">",
    90,
-   "hozir 50 — oq ustiga oq, o'lchaydigan qorong'i narsa yo'q"
+   "now 50 — white on white, nothing dark to measure"
   ],
-  "chizilganlik": [
+  "hardEdgeShare": [
    ">",
    8,
-   "hozir 7 — chizilgan chet deyarli yo'q"
+   "now 7 — almost no drawn edge"
   ]
  }
 }

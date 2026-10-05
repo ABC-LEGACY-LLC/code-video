@@ -1,11 +1,12 @@
-/* ===== O'LCHOV — kadrdan o'lchanadi, ko'z bilan baholanmaydi =====
-   Oltita raqam, va ularning hech biri renderer nima ekanini bilmaydi. Shuning uchun
-   Canvas bilan chizilgan mushukni SDF bilan yechilgan ko'cha bilan solishtirish
-   mumkin: ikkalasi ham oxirida pikselga aylanadi, va o'lchov shu yerda turadi.
+/* ===== MEASURE — measured from the frame, not judged by eye =====
+   Six numbers, and none of them knows what the renderer is. That is why a cat drawn
+   with Canvas can be compared with a street solved from a distance field: both end
+   up as pixels, and the measurement stands there.
 
-   Piksellar sahifaning o'zidan olinadi -- canvas boshqa canvasga drawImage bilan
-   tushadi, shuning uchun WebGL ham, 2D ham bir xil yo'ldan o'tadi. PNG yo'q, tashqi
-   kutubxona yo'q: siqilgan rasmdan o'lchash o'lchovga siqilish xatosini qo'shadi. */
+   The pixels are taken from the page itself -- the canvas is drawn onto another canvas
+   with drawImage, so WebGL and 2D go through the same path. No PNG, no outside
+   library: measuring a compressed image would add the compression error to the
+   measurement. */
 import {chromium} from 'playwright';
 import {existsSync,readdirSync} from 'fs';
 
@@ -17,11 +18,11 @@ function chrome(){
  }
  return null;
 }
-const W=320;   // har kadr shu kenglikka keltiriladi, aks holda katta kadr ko'proq "tekstura" beradi
+const W=320;   // every frame is brought to this width, or a larger frame would give more "texture"
 
-/* MEDIAN-CUT: qutini eng keng o'qi bo'yicha ikkiga bo'lib boraveramiz. Deterministik --
-   k-means boshlang'ich nuqtaga qarab har safar boshqa javob berardi, va har safar
-   boshqa javob beradigan o'lchov o'lchov emas. */
+/* MEDIAN-CUT: keep splitting the box along its widest axis. Deterministic -- k-means
+   gave a different answer for every starting point, and a measurement that answers
+   differently every time is not a measurement. */
 function medianCut(px,k){
  let boxes=[[...Array(px.length/3).keys()]];
  while(boxes.length<k){
@@ -42,8 +43,8 @@ function medianCut(px,k){
   const m=[0,0,0]; for(const p of b) for(let c=0;c<3;c++) m[c]+=px[p*3+c];
   const rgb=m.map(v=>Math.round(v/b.length));
   return {hex:'#'+rgb.map(v=>v.toString(16).padStart(2,'0')).join(''),
-          ulush:+(100*b.length/(px.length/3)).toFixed(1)};
- }).sort((a,b)=>b.ulush-a.ulush);
+          share:+(100*b.length/(px.length/3)).toFixed(1)};
+ }).sort((a,b)=>b.share-a.share);
 }
 const LUMA=(r,g,b)=>(0.2126*r+0.7152*g+0.0722*b)/255;
 
@@ -61,12 +62,12 @@ export function metrics(frames){          // frames: [{w,h,data:Uint8ClampedArra
  }
  const srt=Float64Array.from(lum).sort();
  const q=p=>srt[Math.min(n-1,Math.floor(n*p))];
- /* Chetlar va tekstura FAZOVIY o'lchovlar, shuning uchun kadrlarni ustma-ust qo'yib
-    o'lchab bo'lmaydi -- kadr chegarasi soxta chet bo'lib qo'shiladi. Lekin birinchi
-    variant faqat BIRINCHI kadrni o'lchagan edi, va u holda raqam qaysi kadr birinchi
-    tushganiga bog'liq bo'lib qoladi: Not A Measurement bitta kadrda 28,4 va boshqa
-    kadrda 46,4 chiqdi. Qaysi kadr olinganiga qarab o'n olti barobar o'zgaradigan
-    narsa o'lchov emas. Har kadr alohida o'lchanadi, keyin o'rtacha olinadi. */
+ /* Edges and texture are SPATIAL measurements, so frames cannot be stacked and
+    measured as one -- the border between frames would be added as a false edge. But
+    the first version measured only the FIRST frame, and then the number depends on
+    which frame came first: Not A Measurement gave 28.4 on one frame and 46.4 on
+    another. Something that moves that much with the choice of frame is not a
+    measurement. Each frame is measured on its own, then averaged. */
  let hard=0,soft=0,tot=0,tex=0,texN=0;
  for(const f of frames){
   const w=f.w,h=f.h, L=new Float64Array(w*h);
@@ -83,43 +84,52 @@ export function metrics(frames){          // frames: [{w,h,data:Uint8ClampedArra
  let ink=0; for(let i=0;i<n;i++) if(lum[i]<0.15) ink++;
  const hp=100*hard/tot, sp=100*soft/tot;
  return {
-  palitra: medianCut(px,6),
-  qiymat: [Math.round(q(0.02)*255), Math.round(q(0.98)*255)],
-  toyinganlik:+(100*sat.reduce((a,b)=>a+b,0)/n).toFixed(1),
-  qattiqChet:+hp.toFixed(2), yumshoqChet:+sp.toFixed(2),
-  chizilganlik:+(100*hp/(hp+sp)).toFixed(1),
-  tekstura:+(255*tex/texN).toFixed(2),
-  siyoh:+(100*ink/n).toFixed(1)
+  palette: medianCut(px,6),
+  value: [Math.round(q(0.02)*255), Math.round(q(0.98)*255)],
+  saturation:+(100*sat.reduce((a,b)=>a+b,0)/n).toFixed(1),
+  hardEdges:+hp.toFixed(2), softEdges:+sp.toFixed(2),
+  hardEdgeShare:+(100*hp/(hp+sp)).toFixed(1),
+  texture:+(255*tex/texN).toFixed(2),
+  ink:+(100*ink/n).toFixed(1)
  };
 }
 
-export async function grab(spec){          // spec: {fayl, kadrlar:[...], hook?}
+export async function grab(spec){          // spec: {file, frames:[...], hook?, size?, blur?}
  const b=await chromium.launch({executablePath:chrome()||undefined,
   args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
  const pg=await b.newPage({viewport:{width:1100,height:760}});
- await pg.goto('file://'+spec.fayl);
- await pg.waitForTimeout(1400);
+ await pg.goto('file://'+spec.file);
+ /* READINESS IS ASKED FOR, NOT SLEPT THROUGH -- on a page with a hook. It draws a
+    frame by number and needs no clock, only the word "ready". This used to sleep
+    1400 ms, and on a runner 1.7x slower a sleep becomes a race.
+    On a page without a hook the 1400 ms is not readiness but PART OF THE SAMPLING
+    SCHEDULE: frames are taken by seconds since the page opened. Replacing it -- a
+    stepped clock for the page (room 2, item 10) -- is separate work; until then the
+    schedule is left alone so those four cards' numbers do not move. */
+ if(spec.hook) await pg.waitForFunction(h=>window.__ready===true&&typeof window[h]==='function',spec.hook,{timeout:120000})
+  .catch(()=>{ throw new Error(spec.file+': the page never said it was ready (window.__ready)'); });
+ else await pg.waitForTimeout(1400);
  const out=[]; let prev=0;
- for(const k of spec.kadrlar){
+ for(const k of spec.frames){
   if(!spec.hook){ await pg.waitForTimeout(Math.max(0,(k-prev)*1000)); prev=k; }
-  out.push(await pg.evaluate(([k,hook,W,blur,olcham])=>{
-   if(hook) window[hook](k,olcham[0],olcham[1]);
+  out.push(await pg.evaluate(([k,hook,W,blur,size])=>{
+   if(hook) window[hook](k,size[0],size[1]);
    const cs=[...document.querySelectorAll('canvas')].sort((a,b)=>b.width*b.height-a.width*a.height);
    const src=cs[0];
    const h=Math.max(1,Math.round(W*src.height/src.width));
    const c=document.createElement('canvas'); c.width=W; c.height=h;
    const g=c.getContext('2d'); g.imageSmoothingQuality='high';
-   if(blur) g.filter='blur('+blur+'px)';     // ataylab buzilgan holat: tool buni sezishi shart
+   if(blur) g.filter='blur('+blur+'px)';     // the deliberately broken case: the tool must notice it
    g.drawImage(src,0,0,W,h);
    return {w:W,h,data:Array.from(g.getImageData(0,0,W,h).data)};
-  },[k,spec.hook||null,W,spec.blur||0,spec.olcham||[720,518]]));
+  },[k,spec.hook||null,W,spec.blur||0,spec.size||[720,518]]));
  }
  await b.close();
  return out.map(f=>({...f,data:Uint8ClampedArray.from(f.data)}));
 }
 export async function measure(spec){ return metrics(await grab(spec)); }
-if(process.argv[1]?.endsWith('olchov.mjs')){
- const [fayl,...ks]=process.argv.slice(2);
+if(process.argv[1]?.endsWith('measure.mjs')){
+ const [file,...ks]=process.argv.slice(2);
  const hook=ks[0]==='--hook'? ks.splice(0,2)[1] : null;
- console.log(JSON.stringify(await measure({fayl,kadrlar:ks.map(Number),hook}),null,1));
+ console.log(JSON.stringify(await measure({file,frames:ks.map(Number),hook}),null,1));
 }

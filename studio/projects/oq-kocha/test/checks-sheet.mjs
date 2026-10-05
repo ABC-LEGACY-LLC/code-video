@@ -1,8 +1,8 @@
 /* Checks that need no browser: the exposure sheet, the model sheet, the cuts. */
 import {readFileSync} from 'fs';
 import {check} from './lib.mjs';
-import {HOLDS,SLOTS,TRAVEL,CYCLE,idxAt,travel,walkFrom} from '../src/sheet.mjs';
-import {SHOTS} from '../src/shots.mjs';
+import {HOLDS,SLOTS,TRAVEL,CYCLE,FPS,idxAt,travel,walkFrom} from '../src/sheet.mjs';
+import {SHOTS,TOTAL_F} from '../src/shots.mjs';
 const POSES=JSON.parse(readFileSync(new URL('../src/poses.json',import.meta.url),'utf8'));
 const WALK=walkFrom(POSES.PW);
 const D=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
@@ -67,6 +67,17 @@ await check({name:'cut-sizes', unit:'JUMP cuts',
  pass:v=>v===0,
  calibrate:()=>jumps(SHOTS.concat([{...SHOTS[0],sz:SHOTS[SHOTS.length-1].sz*1.2}])),
  note:'a 1.05-1.44x change of size is the zone the eye reads as a mistake'});
+
+/* every shot is a whole number of frames, and its seconds are only a view of them.
+   Authored in seconds, six of the eight fell between two frames and each reader put
+   the cut where its own rounding did; the page, adding 1/24 at a time, put the first
+   one a frame late. The broken case is a shot typed in seconds again: 2.2 s is 52.8. */
+const offGrid=shots=>shots.filter(s=>!(Number.isInteger(s.df)&&s.df>0&&Math.abs(s.d*FPS-s.df)<1e-9)).length;
+await check({name:'frame-grid', unit:'shots off the frame grid',
+ measure:()=>offGrid(SHOTS),
+ pass:v=>v===0,
+ calibrate:()=>offGrid(SHOTS.concat([{...SHOTS[1],d:2.2}])),
+ note:`${SHOTS.length} shots, ${TOTAL_F} frames = ${(TOTAL_F/FPS).toFixed(3)} s at ${FPS} fps`});
 
 /* the sheet itself has to add up */
 await check({name:'sheet-arithmetic', unit:'slots',

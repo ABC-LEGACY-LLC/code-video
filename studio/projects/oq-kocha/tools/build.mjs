@@ -120,9 +120,9 @@ if(args.length){
   ' return b.x<a.x? b : a;',
   '}'].join('\n');
  frag=frag.replace('//#CHARACTER_MAP',fns+'\n'+disp);
- /* BUILD/ REPO'DA SAQLANMAYDI, ya'ni toza checkout'da bu papka yo'q. Bu qatorsiz
-    qurish birinchi yozishdayoq ENOENT bilan yiqilardi, va CI hech qachon
-    toza holatdan filmni qura olmasdi. */
+ /* BUILD/ IS NOT KEPT IN THE REPOSITORY, so on a clean checkout this folder is not
+    there. Without this line the build failed with ENOENT on its first write, and CI
+    could never build the film from a clean state. */
  mkdirSync(dirname(outPath),{recursive:true});
  writeFileSync(outPath,frag);
  /* 12 palette slots: 1-6 for the first character, 21-26 for the second */

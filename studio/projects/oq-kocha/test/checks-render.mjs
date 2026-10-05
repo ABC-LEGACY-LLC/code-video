@@ -1,15 +1,15 @@
 /* Checks that need the renderer. Each one still carries its known-bad case. */
 import {check} from './lib.mjs';
-import {pixels,matOf,CHARACTER,open,close} from './browser.mjs';
-import {SHOTS,STARTS} from '../src/shots.mjs';
+import {pixels,matOf,CHARACTER,open,close,state} from './browser.mjs';
+import {SHOTS,STARTS,STARTS_F,TOTAL_F} from '../src/shots.mjs';
 import {FPS} from '../src/sheet.mjs';
 const W=200,H=144;   // small on purpose: every check here is a ratio or a count, not a look
 
-/* ===== ISH HAJMI: PRIMITIV SANOG'I, SOAT EMAS =====
-   Renderer har nurda nechta primitivni tekshirganini 3-kanalga yozadi, va shu
-   son mashinaga bog'liq emas -- qaysi kompyuterda yursa ham bir xil chiqadi.
-   To'yingan zond o'lchov emas: agar piksel 255 ga tirralsa, nisbat "kamida
-   shuncha" degan pol bo'lib qoladi, shuning uchun to'yinish xato beradi. */
+/* ===== WORK: A COUNT OF PRIMITIVES, NOT A CLOCK =====
+   The renderer writes into channel 3 how many primitives each ray tested, and that
+   number does not depend on the machine -- it comes out the same on any computer.
+   A saturated probe is not a measurement: if a pixel hits 255, the ratio becomes a
+   floor ("at least this much"), so saturation throws an error. */
 const prim=async(frame,opt,wmax)=>{
  const p=await pixels(frame,W,H,{...opt,wmax},3); let s=0,sat=0;
  for(let k=0;k<W*H;k++){ s+=p[k*4]; if(p[k*4]>=255) sat++; }
@@ -92,6 +92,24 @@ await check({name:'bounds-save-work', unit:'x fewer primitive evals',
  pass:v=>v>1.8,
  calibrate:async()=>1.0,          // bounds on both sides: by construction, no saving
  note:'a bounding sphere for the figure and a slab test for each terrace'});
+
+/* THE FILM PLAYS THE LIST. Each cut is asked of the page on the frame either side of
+   it, and the loop on the last frame. The page used to add 1/24 at a time and compare
+   the sum with seconds: the first cut fell on frame 73 while the list said 72, and the
+   film ran 351 frames against a soundtrack of 350. The broken case is the list one
+   frame late at the first cut, which the page must now contradict. */
+const edges=starts=>{const o=[];
+ for(let i=1;i<SHOTS.length;i++) o.push([starts[i]-1,SHOTS[i-1].k],[starts[i],SHOTS[i].k]);
+ o.push([TOTAL_F-1,SHOTS[SHOTS.length-1].k],[TOTAL_F,SHOTS[0].k]);
+ return o;};
+const wrongSide=async starts=>{let n=0;
+ for(const [f,k] of edges(starts)) if((await state(f,32,24)).shot!==k) n++;
+ return n;};
+await check({name:'cut-frames', unit:'frames on the wrong side of a cut',
+ measure:()=>wrongSide(STARTS_F),
+ pass:v=>v===0,
+ calibrate:()=>wrongSide(STARTS_F.map((f,i)=>i===1?f+1:f)),
+ note:`${SHOTS.length-1} cuts and the loop at frame ${TOTAL_F}, each asked of the page on both sides`});
 
 /* a shot whose subject is outside the frame is an empty shot */
 for(let i=0;i<SHOTS.length;i++){

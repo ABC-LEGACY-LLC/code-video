@@ -30,7 +30,16 @@ export async function open(){
  page.on('pageerror',e=>errs.push(String(e.message)));
  page.on('console',m=>{if(m.type()==='error'&&!/net::/.test(m.text()))errs.push(m.text());});
  page.__errs=errs;
- await page.goto(PAGE); await page.waitForTimeout(600);
+ await page.goto(PAGE);
+ /* READY IS ASKED OF THE PAGE, NOT WAITED OUT. This slept 600 ms and hoped, and a
+    runner 1.7x slower turns a sleep into a race. The page says when its programs are
+    linked and its timeline built; two animation frames later, anything the first
+    frame throws has been thrown. A page without WebGL2 never says it, and the audit
+    stops here with that sentence instead of a stranger one further on. */
+ await page.waitForFunction(()=>window.__ready===true,null,{timeout:120000})
+  .catch(()=>{ throw new Error('the page never said it was ready (window.__ready)'
+   +(errs.length?': '+errs.join(' | '):'')); });
+ await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
  if(errs.length) throw new Error('page errors: '+errs.join(' | '));
  return page;
 }
