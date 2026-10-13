@@ -4,6 +4,7 @@
    matches the next one is measured. The best shift is that layer's speed. A direct
    shift, not an FFT, so the sign cannot get mixed up: in the GIF exactly that mix-up
    showed the direction reversed. */
+import {startPreview} from '../../../../catalog/tools/preview.mjs';
 import {chromium} from 'playwright';
 import {existsSync,readdirSync} from 'fs';
 function findChrome(){
@@ -13,7 +14,7 @@ function findChrome(){
  } return null;
 }
 export const PAGE='file://'+new URL('../zarra.html',import.meta.url).pathname;
-let br=null,pg=null;
+let br=null,pg=null,preview=null;
 export async function open(){
  if(pg) return pg;
  const args=['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'];
@@ -21,7 +22,7 @@ export async function open(){
  br=await chromium.launch(exe?{args,executablePath:exe}:{args});
  pg=await br.newPage({viewport:{width:700,height:420}});
  const errs=[]; pg.on('pageerror',e=>errs.push(String(e.message)));
- await pg.goto(PAGE);
+ preview=await startPreview(new URL('../zarra.html',import.meta.url).pathname);await pg.goto(preview.url);
  /* READINESS IS ASKED FOR: this used to sleep 300 ms, and on a slow runner a sleep
     becomes a race. The page says so itself at the end of its script. */
  await pg.waitForFunction(()=>window.__ready===true,null,{timeout:60000})
@@ -29,7 +30,7 @@ export async function open(){
  if(errs.length) throw new Error('page error: '+errs.join(' | '));
  return pg;
 }
-export async function close(){ if(br) await br.close(); br=pg=null; }
+export async function close(){ if(br) await br.close();if(preview)await preview.close();br=pg=preview=null; }
 process.on('exit',()=>{ try{ br&&br.close(); }catch(e){} });
 
 /* EVERY FRAME IS CARRIED OUT ON ITS OWN. The earlier version returned them all in one

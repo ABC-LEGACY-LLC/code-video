@@ -63,8 +63,23 @@ html.embed .shots,html.embed #play,html.embed .meta,html.embed .spacer{display:n
 
 <script>
 window.__ready=false;   // the studio's contract: true once the piece is running
-(function(){
-const cv=document.getElementById('cv'),g=cv.getContext('2d');
+(async function(){
+const {SCHEMA_VERSION,validateProject,evaluateEntity,evaluatedLayers}=await import('../../core/project.mjs');
+const {migrateWhiteoutProject}=await import('../../core/layer-migration.mjs');
+const response=await fetch('./project.studio.json',{cache:'no-store'});
+if(!response.ok)throw new Error('Whiteout project could not load: '+response.status);
+const documentState=await response.json();
+if(window.frameElement?.studioPreviewProject)documentState.project=JSON.parse(JSON.stringify(window.frameElement.studioPreviewProject));
+if(documentState.schemaVersion!==1&&documentState.schemaVersion!==SCHEMA_VERSION)throw new Error('Unsupported Whiteout project version');
+const {upgradeEditorProject}=await import('../../core/editor-upgrade.mjs');
+const project=upgradeEditorProject(documentState.schemaVersion===1?migrateWhiteoutProject(documentState.project):validateProject(documentState.project,{requireLayers:true}));
+if(project.id!=='whiteout'||project.fps.num/project.fps.den!==24||project.width!==1920||project.height!==1080)
+ throw new Error('Whiteout currently needs its authored 1920 × 1080, 24 fps format');
+window.__studioProject={id:project.id,generation:documentState.generation,schemaVersion:SCHEMA_VERSION,sourceSchemaVersion:documentState.schemaVersion};
+window.__previewOnlyEffects=[];
+const {loadMedia}=await import('../../media.mjs');
+const media=await loadMedia(project);
+const cv=document.getElementById('cv');let g=cv.getContext('2d');
 const W=1920,H=1080,TAU=Math.PI*2;
 const SNOW_HI='#f1f3f3',SNOW='#dfe3e4',SNOW_LO='#c6cccd',FIG='#0f1214',BLOOD='#a1221a';
 const lerp=(a,b,t)=>a+(b-a)*t, clamp=(v,a,b)=>v<a?a:v>b?b:v;
@@ -80,14 +95,38 @@ function reseed(){RS=12345;}
 const FPS=24, DT=1/FPS;              // authored at 24, like film
 const TWOS=2;                        // characters exposed every 2nd frame -> 12 drawings/s
 
-const SHOTS=[
- {d:3.00,k:'far'},{d:2.00,k:'walk'},{d:1.80,k:'boot'},
- {d:1.60,k:'meet'},{d:0.60,k:'other'},{d:0.42,k:'charge'},{d:0.17,k:'clash'},
- {d:0.125,k:'impactA'},{d:0.085,k:'impactB'},{d:1.15,k:'after'},
- {d:2.00,k:'drop'},{d:2.40,k:'backs'},{d:4.00,k:'alone'}
-];
-const S=[];{let a=0;for(const s of SHOTS){S.push(a);a+=s.d;}}
-const TOTAL=S[S.length-1]+SHOTS[SHOTS.length-1].d;
+/* Integer durations are authored in one project file. sourceTiming is immutable
+   migration metadata: the old scene table had subframe boundaries, and rounding it
+   would change the drawings. Keep those offsets while edits use whole frames. */
+const SHOT_F=[];let TOTAL_FRAMES=0;
+const SHOTS=project.shots.map(s=>{SHOT_F.push(TOTAL_FRAMES);TOTAL_FRAMES+=s.durationFrames;
+ if(!s.sourceTiming)throw new Error('Whiteout shot has no source timing: '+s.id);
+ return {...s,k:s.id,d:s.sourceTiming.durationSeconds*s.durationFrames/s.sourceTiming.durationFrames};
+});
+const frameTimes=[0];
+for(let n=1;n<=Math.max(TOTAL_FRAMES,...SHOTS.map(s=>s.sourceTiming.startFrame))+1;n++)frameTimes[n]=frameTimes[n-1]+DT;
+const S=SHOTS.map((s,i)=>frameTimes[SHOT_F[i]]-
+ (frameTimes[s.sourceTiming.startFrame]-s.sourceTiming.startSeconds)*s.durationFrames/s.sourceTiming.durationFrames);
+const TOTAL=TOTAL_FRAMES/FPS;
+const properties=(type,index=shotNow(),f=frameNo-SHOT_F[index])=>{
+ const prefix=type==='camera2d'?'camera':type==='audio'?'audio':'hero';
+ const entity=SHOTS[index].entities.find(e=>e.id===prefix+':'+SHOTS[index].id&&e.type===type);
+ return entity?evaluateEntity(entity,Math.max(0,Math.min(SHOTS[index].durationFrames-1,f))):null;
+};
+let heroProperties={x:0,y:0,scale:1,rotation:0,opacity:1}, activeActorProperties=null;
+const actorLayer=document.createElement('canvas');actorLayer.width=W;actorLayer.height=H;
+const pointOpacityLayer=document.createElement('canvas');pointOpacityLayer.width=pointOpacityLayer.height=1;
+function actorOpacity(opacity,paint){
+ // Composite a complete character once; overlapping limbs must share one fade.
+ opacity*=g.globalAlpha;
+ if(opacity===1)return paint();
+ if(opacity===0)return;
+ const main=g, surface=main.canvas.width===1&&main.canvas.height===1?pointOpacityLayer:actorLayer, layer=surface.getContext('2d');
+ layer.setTransform(1,0,0,1,0,0);layer.clearRect(0,0,surface.width,surface.height);
+ layer.setTransform(main.getTransform());layer.globalAlpha=1;g=layer;
+ try{paint();}finally{g=main;}
+ main.save();main.setTransform(1,0,0,1,0,0);main.globalAlpha=opacity;main.drawImage(surface,0,0);main.restore();
+}
 
 /* ===================== SNOW =====================
    Snow does not fall; it is carried. A flake reaches terminal velocity almost at once
@@ -414,6 +453,12 @@ function expose(a){
 }
 
 function drawActor(a,cx,cy,s,flip,pose){
+ if(paintingRecord)actorGeometry.set(paintingRecord.id,{x:cx,y:cy,s});
+ const override=activeActorProperties||(a===hero?heroProperties:null);
+ if(override){cx+=override.x;cy+=override.y;s*=override.scale;}
+ actorOpacity(override?.opacity??1,()=>{
+ const rotated=!!override?.rotation;
+ if(rotated){g.save();g.translate(cx,cy);g.rotate(override.rotation*Math.PI/180);cx=0;cy=0;}
  curScale=s;                       // what the eye judges is the subject's real size,
  const sm=(pose&&pose.smear)||0;   // not the part of it the frame happens to contain
  if(sm){                                    // trailing multiples: what an animator draws
@@ -424,6 +469,8 @@ function drawActor(a,cx,cy,s,flip,pose){
   }
  }
  drawBody(a,cx,cy,s,flip,pose);
+ if(rotated)g.restore();
+ });
 }
 function drawBody(a,cx,cy,s,flip,pose){
  g.save();
@@ -694,7 +741,7 @@ function resetAll(){
 }
 
 function sim(dt){
- let i=0;for(let j=0;j<SHOTS.length;j++)if(T>=S[j])i=j;
+ const i=shotNow();
  const sh=SHOTS[i],lt=T-S[i],u=clamp(lt/sh.d,0,1),k=sh.k;
 
  const running=(k==='far'||k==='walk'||k==='boot');
@@ -729,198 +776,228 @@ function sim(dt){
  stepDrop(dt,k==='drop');
 }
 const smearAt=lt=>lt>0.16?3:lt>0.08?2:1;
-function shotNow(){let i=0;for(let j=0;j<SHOTS.length;j++)if(T>=S[j])i=j;return i;}
-function draw(){
- const i=shotNow(),sh=SHOTS[i],lt=T-S[i],u=clamp(lt/sh.d,0,1),k=sh.k;
- g.setTransform(1,0,0,1,0,0);
- if(shake>0){const m=shake*22;
-  /* the shake is hashed from the frame number, not drawn from the shared stream:
-     Math.random() made the same frame render differently twice, and pulling from the
-     seeded RNG inside draw() would have desynced it from the simulation. */
-  const hz=(k)=>{const v=Math.sin(frameNo*12.9898+k*78.233)*43758.5453;return v-Math.floor(v)-0.5;};
-  g.setTransform(1,0,0,1,hz(1)*m,hz(2)*m);
-  shake=Math.max(0,shake-0.085);}
-
- const sky=g.createLinearGradient(0,0,0,H);
- sky.addColorStop(0,SNOW_HI);sky.addColorStop(.6,SNOW);sky.addColorStop(1,SNOW_LO);
- g.fillStyle=sky;g.fillRect(-40,-40,W+80,H+80);
-
+function shotNow(){let i=0;for(let j=0;j<SHOTS.length;j++)if(frameNo>=SHOT_F[j])i=j;return i;}
+/* Real drawing layers: simulation above advances once, regardless of visibility,
+   ordering, Solo or picking. Each callback only reads that simulated state. */
+const actorGeometry=new Map();let paintingRecord=null;
+let layerPreview={soloId:null,selectedId:null,transform:null}, layerUnderlay=new DOMMatrix(), lastLayerWorld=new DOMMatrix();
+const pointLayer=document.createElement('canvas');pointLayer.width=pointLayer.height=1;
+const pointContext=pointLayer.getContext('2d',{willReadFrequently:true});
+function scenePainters(){
+ const i=shotNow(),sh=SHOTS[i],lt=T-S[i],u=clamp(lt/sh.d,0,1),k=sh.k,paint={};
+ // Playback and scanAll expose the end sentinel TOTAL_FRAMES. Layer ranges use
+ // the final valid local frame there, just like the camera evaluator.
+ const local=clamp(frameNo-SHOT_F[i],0,sh.durationFrames-1);
+ const value=id=>{const e=sh.entities.find(e=>e.id===id+':'+sh.id);return e?evaluateEntity(e,local):null;};
+ const scale=id=>value(id)?.scale??1;
+ let diagnosticScale;
+ paint.background=()=>{
+  /* This underfill preserves the old opaque uncovered camera edges. It belongs to
+     Background, so hiding/moving that layer really does remove/move the underfill. */
+  g.save();g.setTransform(layerUnderlay);g.fillStyle=SNOW;g.fillRect(0,0,W,H);g.restore();
+  const sky=g.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,SNOW_HI);sky.addColorStop(.6,SNOW);sky.addColorStop(1,SNOW_LO);
+  g.fillStyle=sky;g.fillRect(-40,-40,W+80,H+80);
+ };
  if(k==='far'){
-  ground(880,true,hero.distD*2.0);
-  const p=ease(u), s=lerp(1.0,2.3,p), x=lerp(W*0.63,W*0.56,p), y=lerp(838,874,p);
-  g.globalAlpha=lerp(0.20,0.94,ease(clamp((u-0.10)/0.6,0,1)));
-  drawActor(hero,x,y,s,false,null);
-  g.globalAlpha=1;
-  haze(lerp(0.58,0.18,p));snow(T,1.0);
- }
- else if(k==='walk'){
-  ground(930,true,hero.distD*5.6);
-  drawActor(hero,W*0.47,954,5.6,false,null);
-  haze(0.10);snow(T,1.0,false,1.2);
- }
- else if(k==='boot'){
-  /* low angle, knee down. Three references — two legs, the drift line, the snow they
-     break — so the eye has something to measure against. */
-  ground(1500,true,hero.distD*19.5);
-  g.save();
-  curScale=19.5;
-  g.translate(W*0.5,1560);g.scale(19.5,19.5);  // a real step in
-  g.strokeStyle=FIG;g.fillStyle=FIG;g.lineCap='round';g.lineJoin='round';
-  const KB=poseFor(hero,(hero.phD===undefined?hero.ph:hero.phD),hero.idleD);
-  const hipY=KB.hip;
-  const legF=(kx,ky,ax,ay,w)=>{
-   g.lineWidth=w;g.beginPath();g.moveTo(0,hipY);g.lineTo(kx,ky);g.lineTo(ax,ay);g.stroke();
-   g.lineWidth=w*0.78;g.beginPath();g.moveTo(ax,ay);g.lineTo(ax+8.5,ay+0.5);g.stroke();
+  const p=ease(u),s=lerp(1.0,2.3,p),x=lerp(W*0.63,W*0.56,p),y=lerp(838,874,p);
+  paint.ground=()=>ground(880,true,hero.distD*2.0);
+  paint.hero=()=>{g.globalAlpha=1;drawActor(hero,x,y,s,false,null);g.globalAlpha=1;};
+  paint.haze=()=>haze(1);paint.snow=()=>snow(T,1.0);diagnosticScale=s*scale('hero');
+ }else if(k==='walk'){
+  paint.ground=()=>ground(930,true,hero.distD*5.6);
+  paint.hero=()=>drawActor(hero,W*0.47,954,5.6,false,null);
+  paint.haze=()=>haze(1);paint.snow=()=>snow(T,1.0,false,1.2);diagnosticScale=5.6*scale('hero');
+ }else if(k==='boot'){
+  paint.ground=()=>ground(1500,true,hero.distD*19.5);
+  paint.hero=()=>actorOpacity(heroProperties.opacity,()=>{
+   g.save();curScale=19.5*heroProperties.scale;
+   g.translate(W*0.5+heroProperties.x,1560+heroProperties.y);
+   if(heroProperties.rotation)g.rotate(heroProperties.rotation*Math.PI/180);
+   g.scale(curScale,curScale);
+   g.strokeStyle=FIG;g.fillStyle=FIG;g.lineCap='round';g.lineJoin='round';
+   const KB=poseFor(hero,(hero.phD===undefined?hero.ph:hero.phD),hero.idleD),hipY=KB.hip;
+   const legF=(kx,ky,ax,ay,w)=>{
+    g.lineWidth=w;g.beginPath();g.moveTo(0,hipY);g.lineTo(kx,ky);g.lineTo(ax,ay);g.stroke();
+    g.lineWidth=w*0.78;g.beginPath();g.moveTo(ax,ay);g.lineTo(ax+8.5,ay+0.5);g.stroke();
+   };
+   legF(KB.fk[0],KB.fk[1],KB.fa[0],KB.fa[1],8);
+   g.beginPath();g.moveTo(-11,hipY-2);g.lineTo(11,hipY-2);g.lineTo(11,hipY+6);g.lineTo(-11,hipY+6);g.closePath();g.fill();
+   legF(KB.nk[0],KB.nk[1],KB.na[0],KB.na[1],9);
+   g.save();g.fillStyle='#ffffff';
+   for(const q of hero.spray){g.globalAlpha=clamp(q.life,0,1)*0.9;g.beginPath();g.arc(q.x,q.y,q.r,0,TAU);g.fill();}g.restore();
+   g.save();g.fillStyle=SNOW_LO;
+   for(const q of hero.prints){const kk=1-q.age/3.2,x=PRINT_X-(hero.distD-q.d);if(x<-120)continue;
+    g.globalAlpha=kk*0.5;g.beginPath();g.ellipse(x,2,8.5,3,0,0,TAU);g.fill();}g.restore();g.restore();
+  });
+  paint.haze=()=>haze(1);paint.snow=()=>snow(T,0.7,false,1.5);diagnosticScale=19.5*scale('hero');
+ }else if(k==='meet'){
+  paint.ground=()=>ground(900);paint.hero=()=>drawActor(hero,W*0.30,932,4.7,false,{drawn:true});
+  paint.opponent=()=>{g.globalAlpha=1;drawActor(other,W*0.72,932,4.7,true,{drawn:true});g.globalAlpha=1;};
+  paint.haze=()=>haze(1);paint.snow=()=>snow(T,1.2);diagnosticScale=4.7*scale('opponent');
+ }else if(k==='other'){
+  paint.ground=()=>ground(1340);paint.opponent=()=>drawActor(other,W*0.41,1900,14.0,true,{drawn:true});
+  paint.haze=()=>haze(1);paint.snow=()=>snow(T,1.2,false,1.5);diagnosticScale=14*scale('opponent');
+ }else if(k==='charge'){
+  const p=u*u,sm=smearAt(lt);paint.ground=()=>ground(900);paint.speed=()=>speedLines(0.16+u*0.5);
+  paint.hero=()=>drawActor(hero,lerp(W*0.21,W*0.435,p),934,4.9,false,{drawn:true,bladeLen:42,smear:sm});
+  paint.opponent=()=>drawActor(other,lerp(W*0.81,W*0.585,p),934,4.9,true,{drawn:true,bladeLen:42,smear:sm});
+  paint.haze=()=>haze(1);paint.snow=()=>snow(T,2.8,false,1.0);diagnosticScale=4.9*scale('opponent');
+ }else if(k==='clash'){
+  paint.ground=()=>ground(900);paint.hero=()=>drawActor(hero,W*0.452,934,4.9,false,{key:CLASH,drawn:true,bladeLen:58});
+  paint.opponent=()=>drawActor(other,W*0.568,934,4.9,true,{key:CLASH,drawn:true,bladeLen:58});
+  paint.snow=()=>snow(T,2.8,true);diagnosticScale=4.9*scale('opponent');
+ }else if(k==='impactA'){
+  paint.impact=()=>{
+   g.fillStyle='#ffffff';g.fillRect(-40,-40,W+80,H+80);g.save();g.strokeStyle=FIG;g.lineCap='round';
+   const cxp=W*0.51,cyp=H*0.47;
+   for(let q=0;q<52;q++){const a2=q*0.1209+q*q*0.0021,r0=lerp(110,260,(q*0.37)%1);g.lineWidth=lerp(3,17,(q*0.611)%1);
+    g.beginPath();g.moveTo(cxp+Math.cos(a2)*r0,cyp+Math.sin(a2)*r0*0.62);g.lineTo(cxp+Math.cos(a2)*1500,cyp+Math.sin(a2)*1500*0.62);g.stroke();}
+   g.restore();g.save();g.fillStyle=FIG;g.beginPath();g.ellipse(cxp,cyp,138,96,0.1,0,TAU);g.fill();g.restore();
   };
-  legF(KB.fk[0],KB.fk[1],KB.fa[0],KB.fa[1],8);
-  g.beginPath();g.moveTo(-11,hipY-2);g.lineTo(11,hipY-2);
-  g.lineTo(11,hipY+6);g.lineTo(-11,hipY+6);g.closePath();g.fill();
-  legF(KB.nk[0],KB.nk[1],KB.na[0],KB.na[1],9);
-  g.save();g.fillStyle='#ffffff';
-  for(const q of hero.spray){g.globalAlpha=clamp(q.life,0,1)*0.9;
-   g.beginPath();g.arc(q.x,q.y,q.r,0,TAU);g.fill();}
-  g.restore();
-  g.save();g.fillStyle=SNOW_LO;
-  for(const q of hero.prints){
-   const kk=1-q.age/3.2, x=PRINT_X-(hero.distD-q.d);
-   if(x<-120)continue;
-   g.globalAlpha=kk*0.5;g.beginPath();g.ellipse(x,2,8.5,3,0,0,TAU);g.fill();
-  }
-  g.restore();
-  g.restore();
-  haze(0.04);snow(T,0.7,false,1.5);
+ }else if(k==='impactB'){
+  paint.impact=()=>{
+   g.fillStyle=FIG;g.fillRect(-40,-40,W+80,H+80);g.save();g.strokeStyle='#ffffff';g.lineWidth=22;g.lineCap='round';
+   g.beginPath();g.moveTo(W*0.10,H*0.74);g.lineTo(W*0.92,H*0.23);g.stroke();g.lineWidth=7;
+   g.beginPath();g.moveTo(W*0.22,H*0.20);g.lineTo(W*0.44,H*0.40);g.stroke();
+   g.beginPath();g.moveTo(W*0.78,H*0.80);g.lineTo(W*0.58,H*0.60);g.stroke();g.restore();
+  };
+ }else if(k==='after'){
+  const settle=1-Math.exp(-lt*2.6),ov=Math.sin(lt*11)*Math.exp(-lt*3.4)*13;
+  paint.ground=()=>ground(900);
+  paint.hero=()=>drawActor(hero,W*0.705+ov,934,4.9,false,{key:lerpPose(AFTER[0],AFTER[1],settle),drawn:true,bladeLen:42});
+  paint.opponent=()=>drawActor(other,W*0.295-ov*0.6,934,4.9,true,{key:lerpPose(AFTER[0],AFTER[1],clamp(settle*1.18,0,1)),drawn:true,bladeLen:42});
+  paint.haze=()=>haze(1);paint.snow=()=>snow(T,lerp(2.6,1.0,settle),false,1.0);diagnosticScale=4.9*scale('opponent');
+ }else if(k==='drop'){
+  paint.ground=()=>ground(1010);
+  paint.hero=()=>{g.globalAlpha=1;drawActor(hero,W*0.82,1046,7.4,false,{drawn:true});g.globalAlpha=1;};
+  paint.opponent=()=>{g.globalAlpha=1;drawActor(other,W*0.18,1046,7.4,true,{drawn:true});g.globalAlpha=1;};
+  paint.drop=()=>{
+   const bx=W*0.5,by=470;
+   if(!drop.landed&&lt>0.2){const st=clamp(drop.v/900,0,1);g.fillStyle=BLOOD;g.beginPath();
+    g.ellipse(bx,by+drop.y,lerp(18,11,st),lerp(18,52,st),0,0,TAU);g.fill();}
+   if(drop.landed){g.fillStyle=BLOOD;g.beginPath();g.ellipse(bx,1062,56,20,0,0,TAU);g.fill();
+    for(const m of drop.marks){g.beginPath();g.ellipse(bx+m.x,1062+m.y*0.34,m.r*2.1,m.r*1.5,0,0,TAU);g.fill();}}
+  };
+  paint.haze=()=>haze(1);paint.snow=()=>snow(T,0.6,false,1.4);diagnosticScale=7.4*scale('opponent');
+ }else if(k==='backs'){
+  paint.ground=()=>ground(900);paint.hero=()=>drawActor(hero,W*0.415,932,4.7,true,{drawn:true});
+  paint.opponent=()=>drawActor(other,W*0.585,932,4.7,false,{drawn:true});
+  paint.haze=()=>haze(1);paint.snow=()=>snow(T,0.9);diagnosticScale=4.7*scale('opponent');
+ }else if(k==='alone'){
+  const fade=ease(clamp((lt-0.7)/2.0,0,1));paint.ground=()=>ground(900);
+  paint.opponent=()=>{g.globalAlpha=1;drawActor(other,W*0.585+fade*80,932,4.7,false,{drawn:true});g.globalAlpha=1;};
+  paint.hero=()=>drawActor(hero,W*0.415,932,4.7,true,{drawn:true});
+  paint.haze=()=>haze(1);paint.snow=()=>snow(T,0.7,false,1+fade*0.5);
+  paint.title=()=>{if(true){const a=1;
+   g.save();g.globalAlpha=a;g.fillStyle=FIG;g.textAlign='center';g.font='300 80px "Cormorant Garamond", Georgia, serif';
+   g.fillText('O‘ZING BILAN',W/2,198);g.font='500 38px "IBM Plex Mono", monospace';g.globalAlpha=a*0.5;g.fillText('W H I T E O U T',W/2,260);g.restore();}};
+  diagnosticScale=4.7*scale('hero');
  }
-
- else if(k==='meet'){
-  ground(900);
-  drawActor(hero,W*0.30,932,4.7,false,{drawn:true});
-  g.globalAlpha=lerp(0.28,0.96,ease(clamp(lt/0.9,0,1)));
-  drawActor(other,W*0.72,932,4.7,true,{drawn:true});
-  g.globalAlpha=1;
-  haze(0.14);snow(T,1.2);
- }
- else if(k==='other'){
-  ground(1340);
-  drawActor(other,W*0.41,1900,14.0,true,{drawn:true});   // 1.17x -> 1.59x
-  haze(0.05);snow(T,1.2,false,1.5);
- }
- else if(k==='charge'){
-  ground(900);
-  const p=u*u;                                       // accelerating, not gliding
-  const sm=smearAt(lt);                              // more multiples the faster he goes
-  speedLines(0.16+u*0.5);
-  drawActor(hero,lerp(W*0.21,W*0.435,p),934,4.9,false,{drawn:true,bladeLen:42,smear:sm});
-  drawActor(other,lerp(W*0.81,W*0.585,p),934,4.9,true,{drawn:true,bladeLen:42,smear:sm});
-  haze(0.08);snow(T,2.8,false,1.0);
- }
- else if(k==='clash'){
-  /* four frames. Bodies low, blades meeting, everything about to break. */
-  ground(900);
-  // MATCHES the charge: one action, one size
-  drawActor(hero,W*0.452,934,4.9,false,{key:CLASH,drawn:true,bladeLen:58});
-  drawActor(other,W*0.568,934,4.9,true,{key:CLASH,drawn:true,bladeLen:58});
-  snow(T,2.8,true);
- }
- else if(k==='impactA'){
-  /* インパクトフレーム — three frames of graphic, not a picture of two men */
-  g.fillStyle='#ffffff';g.fillRect(-40,-40,W+80,H+80);
-  g.save();g.strokeStyle=FIG;g.lineCap='round';
-  const cxp=W*0.51,cyp=H*0.47;
-  for(let q=0;q<52;q++){                             // 集中線 converging on the hit
-   const a2=q*0.1209+q*q*0.0021, r0=lerp(110,260,(q*0.37)%1);
-   g.lineWidth=lerp(3,17,(q*0.611)%1);
-   g.beginPath();g.moveTo(cxp+Math.cos(a2)*r0,cyp+Math.sin(a2)*r0*0.62);
-   g.lineTo(cxp+Math.cos(a2)*1500,cyp+Math.sin(a2)*1500*0.62);g.stroke();
-  }
-  g.restore();
-  g.save();g.fillStyle=FIG;                          // the two, fused into one black mass
-  g.beginPath();g.ellipse(cxp,cyp,138,96,0.1,0,TAU);g.fill();g.restore();
- }
- else if(k==='impactB'){
-  /* two frames, inverted. The eye is still holding the white one. */
-  g.fillStyle=FIG;g.fillRect(-40,-40,W+80,H+80);
-  g.save();g.strokeStyle='#ffffff';g.lineWidth=22;g.lineCap='round';
-  g.beginPath();g.moveTo(W*0.10,H*0.74);g.lineTo(W*0.92,H*0.23);g.stroke();
-  g.lineWidth=7;
-  g.beginPath();g.moveTo(W*0.22,H*0.20);g.lineTo(W*0.44,H*0.40);g.stroke();
-  g.beginPath();g.moveTo(W*0.78,H*0.80);g.lineTo(W*0.58,H*0.60);g.stroke();
-  g.restore();
- }
- else if(k==='after'){
-  ground(900);
-  const settle=1-Math.exp(-lt*2.6);                  // slow enough to SEE it bleed off
-  const ov=Math.sin(lt*11)*Math.exp(-lt*3.4)*13;
-  /* asymmetry is what sells a pass: one ends deep in the follow-through, one upright */
-  drawActor(hero,W*0.705+ov,934,4.9,false,
-    {key:lerpPose(AFTER[0],AFTER[1],settle),drawn:true,bladeLen:42});
-  drawActor(other,W*0.295-ov*0.6,934,4.9,true,
-    {key:lerpPose(AFTER[0],AFTER[1],clamp(settle*1.18,0,1)),drawn:true,bladeLen:42});
-  haze(0.08);snow(T,lerp(2.6,1.0,settle),false,1.0);
- }
- else if(k==='drop'){
-  ground(1010);
-  g.globalAlpha=0.74;
-  drawActor(hero,W*0.82,1046,7.4,false,{drawn:true});   // push in: the DROP is the subject
-  drawActor(other,W*0.18,1046,7.4,true,{drawn:true});
-  g.globalAlpha=1;
-  const bx=W*0.5, by=470;
-  if(!drop.landed&&lt>0.2){
-   const st=clamp(drop.v/900,0,1);
-   g.fillStyle=BLOOD;g.beginPath();
-   g.ellipse(bx,by+drop.y,lerp(18,11,st),lerp(18,52,st),0,0,TAU);g.fill();
-  }
-  if(drop.landed){
-   g.fillStyle=BLOOD;
-   g.beginPath();g.ellipse(bx,1062,56,20,0,0,TAU);g.fill();
-   for(const m of drop.marks){
-    g.beginPath();g.ellipse(bx+m.x,1062+m.y*0.34,m.r*2.1,m.r*1.5,0,0,TAU);g.fill();
-   }
-  }
-  haze(0.05);snow(T,0.6,false,1.4);
- }
- else if(k==='backs'){
-  ground(900);
-  drawActor(hero,W*0.415,932,4.7,true,{drawn:true});
-  drawActor(other,W*0.585,932,4.7,false,{drawn:true});
-  haze(0.13);snow(T,0.9);
- }
- else if(k==='alone'){
-  ground(900);
-  const fade=ease(clamp((lt-0.7)/2.0,0,1));
-  g.globalAlpha=1-fade;
-  drawActor(other,W*0.585+fade*80,932,4.7,false,{drawn:true});
-  g.globalAlpha=1;
-  drawActor(hero,W*0.415,932,4.7,true,{drawn:true});
-  haze(lerp(0.13,0.36,fade));snow(T,0.7,false,1+fade*0.5);
-  if(lt>2.2){
-   const a=ease(clamp((lt-2.2)/1.0,0,1))*0.82;
-   g.save();g.globalAlpha=a;g.fillStyle=FIG;g.textAlign='center';
-   g.font='300 80px "Cormorant Garamond", Georgia, serif';
-   g.fillText('O‘ZING BILAN',W/2,198);
-   g.font='500 38px "IBM Plex Mono", monospace';g.globalAlpha=a*0.5;
-   g.fillText('W H I T E O U T',W/2,260);
-   g.restore();
-  }
- }
- g.setTransform(1,0,0,1,0,0);
+ const soloId=sh.layerOrder.includes(layerPreview.soloId)?layerPreview.soloId:null;
+ return {i,sh,paint,diagnosticScale,layers:evaluatedLayers(sh,local,{soloIds:soloId?[soloId]:[]})};
 }
+function layerTransform(v){
+ if(v.x===0&&v.y===0&&v.scale===1&&v.rotation===0)return;
+ g.translate(W/2+v.x,H/2+v.y);if(v.rotation)g.rotate(v.rotation*Math.PI/180);g.scale(v.scale,v.scale);g.translate(-W/2,-H/2);
+}
+function paintLayer(record,scene,world,point=null){
+ const paint=['text','image','video'].includes(record.layer.binding)?()=>media.paint(g,record,W,H):scene.paint[record.layer.binding];if(!paint||record.type==='group'||!record.effectiveVisible)return;
+ const v=layerPreview.transform?.targetId===record.id?{...record.values,...layerPreview.transform.properties}:record.values,actor=record.layer.binding==='hero'||record.layer.binding==='opponent';
+ const p=point?new DOMMatrix().translate(-point.x,-point.y):new DOMMatrix();
+ g.save();
+ try{
+  g.globalAlpha=1;g.setTransform(p);if(!actor)layerTransform(v);layerUnderlay=g.getTransform();
+  const base=record.layer.space==='screen'?new DOMMatrix():world;
+  g.setTransform(point?p.multiply(base):base);
+  activeActorProperties=actor?v:null;paintingRecord=record;
+  if(record.layer.binding==='hero')heroProperties=v;
+  if(actor)paint();else{layerTransform(v);actorOpacity(v.opacity,paint);}
+ }finally{activeActorProperties=null;paintingRecord=null;g.restore();}
+}
+function draw(){
+ const scene=scenePainters(),beforeScale=curScale;media.sync(scene.sh,frameNo-SHOT_F[scene.i],FPS);
+ // Each composition starts with a fresh path and drawing state, including after
+ // a preview-only redraw or pick. No canvas state belongs to the next frame.
+ g.reset();
+ // A fixed video matte keeps hidden backgrounds and Solo identical in preview
+ // and opaque MP4 output. It is not an editable or pickable scene element.
+ g.fillStyle=SNOW;g.fillRect(0,0,W,H);
+ const shakeEntity=scene.sh.entities.find(e=>e.type==='effect'),shakeValue=shakeEntity?evaluateEntity(shakeEntity,frameNo-SHOT_F[scene.i]):{strength:0,frequency:12};
+ const shakeNow=shakeValue.strength*Math.max(0,1-(frameNo-SHOT_F[scene.i])/12);
+ if(shakeNow>0){const m=shakeNow*22,hz=k=>{const v=Math.sin(frameNo*shakeValue.frequency*1.08248+k*78.233)*43758.5453;return v-Math.floor(v)-0.5;};
+  g.setTransform(1,0,0,1,hz(1)*m,hz(2)*m);}
+ const camera=properties('camera2d',scene.i);
+ if(camera&&(camera.x!==0||camera.y!==0||camera.zoom!==1)){
+  g.translate(W/2+camera.x,H/2+camera.y);g.scale(camera.zoom,camera.zoom);g.translate(-W/2,-H/2);
+ }
+ lastLayerWorld=g.getTransform();
+ for(const record of scene.layers)paintLayer(record,scene,lastLayerWorld);
+ g.setTransform(1,0,0,1,0,0);curScale=scene.diagnosticScale??beforeScale;
+}
+const validLayerId=id=>typeof id==='string'&&SHOTS.some(s=>s.entities.some(e=>e.id===id&&e.layer));
+window.__setLayerPreview=next=>{
+ if(!next||typeof next!=='object')next={};
+ let changed=false;
+ for(const key of ['soloId','selectedId'])if(Object.hasOwn(next,key)){
+  const value=validLayerId(next[key])?next[key]:null;
+  if(layerPreview[key]!==value){layerPreview[key]=value;changed=true;}
+ }
+ if(Object.hasOwn(next,'transform')){layerPreview.transform=next.transform;changed=true;}
+ if(changed)draw();return {...layerPreview};
+};
+window.__getLayerPreview=()=>({...layerPreview});
+window.__pickLayer=(x,y,{allLayers=false}={})=>{
+ if(!Number.isFinite(x)||!Number.isFinite(y)||x<0||x>1||y<0||y>1)return null;
+ const point={x:Math.min(W-1,Math.floor(x*W)),y:Math.min(H-1,Math.floor(y*H))},scene=scenePainters();
+ const saved={g,curScale,heroProperties,activeActorProperties,layerUnderlay};g=pointContext;
+ try{
+  const ordered=[...scene.layers].reverse(),subjects=new Set(['hero','opponent','drop','title','impact']);
+  // Full-frame haze must not intercept every character click. Alt-click in the
+  // Studio asks for the strict painted stack, including atmosphere.
+  const candidates=allLayers?ordered:[...ordered.filter(r=>subjects.has(r.layer.binding)),...ordered.filter(r=>!subjects.has(r.layer.binding))];
+  for(const record of candidates){
+   if(record.type==='group'||!record.effectiveVisible||record.effectiveLocked||record.values.opacity===0)continue;
+   g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,1,1);
+   paintLayer(record,scene,lastLayerWorld,point);
+   if(g.getImageData(0,0,1,1).data[3]>0)return record.id;
+  }
+  return null;
+ }finally{({g,curScale,heroProperties,activeActorProperties,layerUnderlay}=saved);}
+};
+
+
+window.__prepareFrame=async()=>{if(!media.hasVideo)return;const i=shotNow();await media.prepare(SHOTS[i],frameNo-SHOT_F[i],FPS);draw();};
+window.__layerGeometry=id=>{
+ const scene=scenePainters(),e=scene.layers.find(e=>e.id===id);
+ if(!e||!e.effectiveVisible||e.effectiveLocked||e.type==='group')return null;
+ const v=layerPreview.transform?.targetId===id?{...e.values,...layerPreview.transform.properties}:e.values;
+ const a=actorGeometry.get(id),actor=['hero','opponent'].includes(e.layer.binding),base=e.layer.space==='screen'?new DOMMatrix():lastLayerWorld;
+ const pivot=actor&&a?{x:a.x,y:a.y}:{x:W/2,y:H/2};
+ const box=actor&&a?{x:-60*a.s,y:-125*a.s,w:120*a.s,h:130*a.s}:e.content?{x:-e.content.width/2,y:-e.content.height/2,w:e.content.width,h:e.content.height}:{x:-W/2,y:-H/2,w:W,h:H};
+ const m=base.translate(pivot.x+v.x,pivot.y+v.y).rotate(v.rotation).scale(v.scale),point=(x,y)=>{const p=m.transformPoint({x,y});return{x:p.x/W,y:p.y/H};};
+ const inv=base.inverse();
+ return{id,values:v,points:[point(box.x,box.y),point(box.x+box.w,box.y),point(box.x+box.w,box.y+box.h),point(box.x,box.y+box.h)],pivot:point(0,0),inverse:[inv.a,inv.b,inv.c,inv.d],width:W,height:H};
+};
 
 /* ===================== SOUND ===================== */
-let AC=null,master,lim,soundOn=false,nb=null;
+let AC=null,master,lim,mix,soundOn=false,nb=null,AR=0;
+function audioRandom(){AR=(AR*1664525+1013904223)>>>0;return AR/4294967296;}
 function gn(v){const n=AC.createGain();n.gain.value=v;return n;}
 function bq(t,f,q){const n=AC.createBiquadFilter();n.type=t;n.frequency.value=f;n.Q.value=q;return n;}
 function initAudio(ctx){                      // ctx: an offline context, when the sound is rendered for an export
  AC=ctx||new (window.AudioContext||window.webkitAudioContext)();
  lim=AC.createDynamicsCompressor();
  lim.threshold.value=-3;lim.knee.value=0;lim.ratio.value=14;lim.attack.value=.002;lim.release.value=.14;
- master=gn(0);master.connect(lim);lim.connect(AC.destination);
+ master=gn(0);mix=gn(1);master.connect(lim);lim.connect(mix);mix.connect(AC.destination);
+ AR=0x57484954;                          // audio never consumes the simulation's RNG
  const n=Math.floor(AC.sampleRate*3),d=new Float32Array(n);
- for(let i=0;i<n;i++)d[i]=Math.random()*2-1;
+ for(let i=0;i<n;i++)d[i]=audioRandom()*2-1;
  nb=AC.createBuffer(1,n,AC.sampleRate);nb.copyToChannel(d,0);
 }
 function nz(t,dur,peak,type,f,q,pan,f2){
  const s=AC.createBufferSource(),fl=bq(type,f,q),e=gn(0);
- s.buffer=nb;s.loop=true;s.playbackRate.value=0.8+rnd()*0.5;
+ s.buffer=nb;s.loop=true;s.playbackRate.value=0.8+audioRandom()*0.5;
  if(f2){fl.frequency.setValueAtTime(f,t);fl.frequency.exponentialRampToValueAtTime(f2,t+dur*0.85);}
  e.gain.setValueAtTime(0,t);
  e.gain.linearRampToValueAtTime(peak,t+Math.min(0.012,dur*0.18));
@@ -928,7 +1005,7 @@ function nz(t,dur,peak,type,f,q,pan,f2){
  const p=AC.createStereoPanner?AC.createStereoPanner():null;
  if(p){p.pan.value=pan||0;s.connect(fl).connect(e).connect(p).connect(master);}
  else s.connect(fl).connect(e).connect(master);
- s.start(t,Math.random()*2);s.stop(t+dur+0.06);
+ s.start(t,audioRandom()*2);s.stop(t+dur+0.06);
 }
 function wind(t,dur,peak){
  const s=AC.createBufferSource(),fl=bq('bandpass',420,2.9),e=gn(0);
@@ -936,16 +1013,19 @@ function wind(t,dur,peak){
  const l=AC.createOscillator(),ld=gn(150);
  l.frequency.value=0.11;l.connect(ld).connect(fl.frequency);l.start(t);l.stop(t+dur+0.2);
  e.gain.setValueAtTime(0,t);
- e.gain.linearRampToValueAtTime(peak,t+1.2);
- e.gain.setValueAtTime(peak,t+dur-1.4);
+ e.gain.linearRampToValueAtTime(peak,t+Math.min(1.2,dur*.3));
+ e.gain.setValueAtTime(peak,t+Math.max(dur*.3,dur-1.4));
  e.gain.linearRampToValueAtTime(0.0005,t+dur);
- s.connect(fl).connect(e).connect(master);s.start(t,Math.random());s.stop(t+dur+0.1);
+ s.connect(fl).connect(e).connect(master);s.start(t,audioRandom());s.stop(t+dur+0.1);
 }
 /* the footfall now fires from the FOOT, at the frame the heel actually strikes */
 let REC=null;                                // a list, while the footfalls are being found (see STEPS)
 function crunch(lvl,pan,at){
  if(REC){REC.push([frameNo,lvl,pan]);return;}
- if(!soundOn||!AC)return;const t=at!=null?at:AC.currentTime+0.005;
+ /* Live playback uses the same rendered mix as export. Simulation must not also
+    fire a second, unsynchronised footfall through a separate audio clock. */
+ if(!soundOn||!AC||at==null)return;const t=at;
+ AR=(0x4352554e+Math.round(at*FPS)*2654435761)>>>0;
  nz(t,0.075,lvl,'lowpass',560,1.0,pan);
  nz(t+0.004,0.05,lvl*0.6,'bandpass',2100,1.3,pan);
 }
@@ -953,7 +1033,7 @@ function breathS(t,lvl){nz(t,0.42,lvl,'bandpass',560,1.6,0,900);}
 function steel(t,lvl){
  [2380,3170,4510,5960,7720].forEach((f,i)=>{
   const o=AC.createOscillator(),e=gn(0);
-  o.frequency.value=f*(1+(rnd()-.5)*0.01);
+  o.frequency.value=f*(1+(audioRandom()-.5)*0.01);
   e.gain.setValueAtTime(0,t);
   e.gain.linearRampToValueAtTime(lvl*(1-i*0.16),t+0.002);
   e.gain.exponentialRampToValueAtTime(0.0004,t+1.5-i*0.2);
@@ -976,26 +1056,54 @@ function drone(t,dur,f0,f1,lvl){
 /* THE SCORE IS A TABLE: [second, voice, ...its arguments]. The studio's timeline reads
    the same rows the sound is made from.
    9.50 .. 9.80 : nothing. The gap is the loudest thing here. */
-const SCORE=[
- [0,'wind',TOTAL,0.085],
- [0,'drone',9.5,34,46,0.10],
- [2.1,'breathS',0.055],[4.3,'breathS',0.075],[6.0,'breathS',0.10],
- [6.85,'nz',0.9,0.10,'bandpass',300,1.4,0,120],
- [6.8,'drone',3.1,44,70,0.20],
- [9.0,'nz',0.42,0.18,'bandpass',700,1.1,0,2400],
- [9.59,'steel',0.42],
- [9.59,'drone',2.4,96,30,0.42],
- [9.59,'nz',0.7,0.24,'lowpass',2000,0.9,0,200],
- [9.84,'nz',1.5,0.07,'bandpass',1800,2.2,0,600],
- [10.6,'breathS',0.11],[11.4,'breathS',0.09],
- [12.9,'drone',4.0,40,32,0.14],
- [13.6,'breathS',0.07],
- [15.3,'wind',4.0,0.05]
-];
+const CUES=SHOTS.flatMap((shot,i)=>shot.entities.filter(e=>e.type==='audioCue').map(e=>({entity:e,shot,index:i,start:(SHOT_F[i]+e.cue.frame)/FPS})));
+const SCORE=CUES.map(({entity:e,start})=>[start,e.cue.voice,...(['wind','drone','nz'].includes(e.cue.voice)?[e.cue.durationFrames/FPS]:[]),...e.cue.args]);
+const audioAssets=new Map();
 const VOICES={wind,drone,breathS,nz,steel};
-function score(t0){ for(const [s,v,...a] of SCORE) VOICES[v](t0+s,...a); }
-function arm(){if(soundOn&&AC)score(AC.currentTime+0.08);}
-hero.onStep=i=>{const k=SHOTS[(()=>{let j=0;for(let q=0;q<SHOTS.length;q++)if(T>=S[q])j=q;return j;})()].k;
+function score(t0){const main=master;
+ for(let i=0;i<CUES.length;i++){
+  const {entity:e,shot,start}=CUES[i],t=t0+start,duration=e.cue.durationFrames/FPS;
+  const gain=gn(0);gain.connect(main);master=gain;
+  for(let f=0;f<e.cue.durationFrames;f++){const v=evaluateEntity(e,Math.min(shot.durationFrames-1,e.cue.frame+f)),time=f/FPS;
+   const fade=Math.min(1,v.fadeIn?time/v.fadeIn:1,v.fadeOut?(duration-time)/v.fadeOut:1);
+   gain.gain.setValueAtTime(v.muted?0:v.gain*Math.max(0,fade),t+time);
+  }
+  gain.gain.setValueAtTime(0,t+duration);
+  AR=e.cue.seed??((0x53434f52+Number(e.id.split(':').at(-1))*2654435761)>>>0);
+  try{if(e.cue.voice==='file'){const source=AC.createBufferSource();source.buffer=audioAssets.get(e.cue.src);source.connect(master);source.start(t,e.cue.offsetSeconds,duration);source.stop(t+duration);}else VOICES[e.cue.voice](t,...(['wind','drone','nz'].includes(e.cue.voice)?[duration]:[]),...e.cue.args);}finally{master=main;}
+ }
+}
+function scheduleMix(){
+ for(let i=0;i<SHOTS.length;i++)for(let f=0;f<SHOTS[i].durationFrames;f++){
+  const value=properties('audio',i,f);
+  mix.gain.setValueAtTime(value?.muted?0:(value?.gain??1),(SHOT_F[i]+f)/FPS);
+ }
+}
+let playbackContext=null,playbackSource=null,playbackBuffer=null,playbackPending=null,playbackEpoch=0;
+let playbackStart=0,playbackFrame=0;
+window.__audioState=()=>({enabled:soundOn,playing:!!playbackSource,offsetFrame:playbackFrame,error:window.__audioError||null});
+function stopAudio(){playbackEpoch++;if(playbackSource){
+ try{playbackSource.stop();}catch(error){}playbackSource.disconnect();playbackSource=null;
+}}
+async function playAudio(){
+ stopAudio();if(!soundOn||!playing||!playbackContext)return;
+ const epoch=playbackEpoch;
+ try{
+  await playbackContext.resume();
+  if(!playbackPending)playbackPending=window.__renderAudio(TOTAL,playbackContext.sampleRate).then(audio=>{
+   const buffer=playbackContext.createBuffer(audio.channels.length,audio.channels[0].length,audio.sr);
+   audio.channels.forEach((channel,i)=>buffer.copyToChannel(channel,i));return playbackBuffer=buffer;
+  }).catch(error=>{playbackPending=null;throw error;});
+  await playbackPending;
+  if(epoch!==playbackEpoch||!soundOn||!playing)return;
+  playbackSource=playbackContext.createBufferSource();playbackSource.buffer=playbackBuffer;
+  playbackSource.connect(playbackContext.destination);playbackFrame=frameNo;
+  playbackStart=playbackContext.currentTime+0.02;
+  playbackSource.start(playbackStart,Math.min(frameNo/FPS,playbackBuffer.duration));
+ }catch(error){if(epoch!==playbackEpoch)return;stopAudio();window.__audioError=String(error.message||error);soundOn=false;
+  bSnd.textContent='Ovoz ishga tushmadi';bSnd.setAttribute('aria-pressed','false');}
+}
+hero.onStep=i=>{const k=SHOTS[shotNow()].k;
  if(k==='far'||k==='walk'||k==='boot')crunch(lerp(0.10,0.30,T/6.8),i?0.22:-0.22);
  else if(k==='charge')crunch(0.26,i?0.3:-0.3);};
 other.onStep=()=>{};
@@ -1009,41 +1117,39 @@ let simSteps=0;                             // work done, counted: the studio's 
 function stepOnce(){                        // one authored frame at 24
  T+=DT;frameNo++;simSteps++;
  if(frameNo%TWOS===0){expose(hero);expose(other);}   // the twos
- if(T>=TOTAL){T=TOTAL;playing=false;}
+ if(frameNo>=TOTAL_FRAMES){T=TOTAL;playing=false;stopAudio();}
 }
 const SHAKE={impactA:1,after:0.5};           // the camera is hit as these shots begin (live playback only)
 function frame(now){
  const el=Math.min(0.1,(now-last)/1000);last=now;
- if(playing){acc+=el;let guard=0;
+ if(playing){acc=playbackSource?Math.max(0,(playbackFrame/FPS+playbackContext.currentTime-playbackStart)-T):acc+el;let guard=0;
   while(acc>=DT&&guard++<6){acc-=DT;stepOnce();sim(DT);}
  }
  for(let i=0;i<SHOTS.length;i++){
   const d=T-S[i];
-  if(SHAKE[SHOTS[i].k]&&d>=0&&d<0.05)shake=SHAKE[SHOTS[i].k];
+  if(playing&&SHAKE[SHOTS[i].k]&&d>=0&&d<0.05)shake=SHAKE[SHOTS[i].k];
   bars[i].style.width=clamp((T-S[i])/SHOTS[i].d,0,1)*100+'%';
  }
  draw();
  requestAnimationFrame(frame);
 }
-function restart(){T=0;frameNo=0;acc=0;playing=true;last=performance.now();reseed();resetAll();
- if(soundOn&&AC){AC.resume();arm();}}
+function restart(){T=0;frameNo=0;acc=0;playing=true;last=performance.now();reseed();resetAll();playAudio();}
 
 document.getElementById('play').addEventListener('click',restart);
 const bSnd=document.getElementById('snd');
 bSnd.addEventListener('click',()=>{
- if(!AC)initAudio();
+ if(!playbackContext)playbackContext=new (window.AudioContext||window.webkitAudioContext)();
  soundOn=!soundOn;
  bSnd.textContent=soundOn?'Ovoz: yoniq':"Ovoz: o'chiq";
  bSnd.setAttribute('aria-pressed',String(soundOn));
- if(soundOn){AC.resume();master.gain.setTargetAtTime(0.9,AC.currentTime,0.05);restart();}
- else master.gain.setTargetAtTime(0,AC.currentTime,0.05);
+ if(soundOn){playbackContext.resume();restart();}else stopAudio();
 });
 /* A linear scan: reset once, then step and MEASURE every frame. __frameTo restarts
    from zero each call, so scanning with it is O(n^2); this is O(n) and makes a
    whole-piece per-frame audit cheap enough to run every time. */
 window.__scanAll=(step)=>{
  step=step||4;
- playing=false;T=0;frameNo=0;acc=0;reseed();resetAll();
+ playing=false;stopAudio();T=0;frameNo=0;acc=0;reseed();resetAll();
  const N=Math.round(TOTAL*FPS), out=[];
  let prev=null;
  for(let f=1;f<=N;f++){                 // frameNo is 1-based after stepOnce; match it
@@ -1093,7 +1199,7 @@ function restore(c){T=c.T;frameNo=c.frameNo;RS=c.RS;back(hero,c.hero);back(other
 window.__frameTo=(n)=>{                     // deterministic: same n, same picture, always
  /* the camera shake belongs to live playback (set in frame(), decayed by draw()); a
     frame asked for by number shows the film without it, the same way on every path */
- playing=false;acc=0;shake=0;
+ playing=false;acc=0;shake=0;stopAudio();
  if(!canonical||frameNo>n){
   let k=Math.floor(n/CK_EVERY)*CK_EVERY;
   while(k>0&&!CK.has(k))k-=CK_EVERY;
@@ -1106,14 +1212,13 @@ window.__frameTo=(n)=>{                     // deterministic: same n, same pictu
 };
 /* the frame where each shot starts, found the way the piece finds it: T grows by DT a
    frame and a shot begins at the first frame with T >= its start */
-const SHOT_F=(()=>{const o=[0];let t=0,n=0;for(let i=1;i<SHOTS.length;i++){while(t<S[i]){t+=DT;n++;}o.push(n);}return o;})();
-window.__shots=SHOTS.map((s,i)=>({k:s.k,f:SHOT_F[i]}));
-window.__totalFrames=Math.round(TOTAL*FPS);
-window.__frame=()=>({frame:frameNo,shot:SHOTS[shotNow()].k});
-window.__pause=()=>{playing=false;};
+window.__shots=SHOTS.map((s,i)=>({k:s.name,id:s.id,f:SHOT_F[i]}));
+window.__totalFrames=TOTAL_FRAMES;
+window.__frame=()=>({frame:frameNo,playing,shot:SHOTS[shotNow()].k});
+window.__pause=()=>{playing=false;shake=0;stopAudio();};
 window.__play=(f)=>{if(Number.isInteger(f))window.__frameTo(f);
  if(frameNo>=window.__totalFrames)window.__frameTo(0);
- playing=true;acc=0;last=performance.now();};
+ playing=true;acc=0;last=performance.now();playAudio();};
 window.__simSteps=()=>simSteps;
 /* THE FILM AS TRACKS, for the studio's timeline (studio/README.md): read from the tables
    the film runs on -- SHOTS, SHAKE, the smear rule, SCORE -- never declared again. */
@@ -1124,13 +1229,26 @@ window.__tracks=()=>{
  const smear=[]; { const i=shotOf('charge'); let cur=null;
   for(let f=SHOT_F[i];f<SHOT_F[i]+len(i);f++){ const m=smearAt(f*DT-S[i]);
    if(m>1){ if(cur&&cur.label==='smear ×'+m) cur.n++; else smear.push(cur={f,n:1,label:'smear ×'+m}); } else cur=null; } }
- const voice=(v,label,dur)=>SCORE.filter(r=>r[1]===v).map(r=>({f:F(r[0]),n:dur?Math.max(1,Math.min(N-F(r[0]),Math.round(r[2]*FPS))):undefined,label:label(r)}));
+ const voice=(v,label,dur)=>CUES.filter(c=>c.entity.cue.voice===v).map(c=>({f:F(c.start),n:Math.max(1,Math.min(N-F(c.start),c.entity.cue.durationFrames)),label:c.entity.name,targetId:c.entity.id}));
  const score={...here,find:'const SCORE=['};
+ const visualTracks=new Map();
+ for(let i=0;i<SHOTS.length;i++){
+  const shot=SHOTS[i],records=evaluatedLayers(shot,0),byId=new Map(records.map(r=>[r.id,r]));
+  for(const record of records){
+   const chain=[record,...record.parentIds.map(id=>byId.get(id))];
+   const start=Math.max(...chain.map(r=>r.layer.startFrame)),end=Math.min(...chain.map(r=>r.layer.endFrame));
+   if(end<=start)continue;
+   const key=record.type==='group'?record.id:record.layer.binding;
+   if(!visualTracks.has(key))visualTracks.set(key,{id:'layer:'+key,name:'Layer · '+record.name,kind:'clips',src:{file:'project.studio.json',find:'"layerOrder"'},items:[]});
+   visualTracks.get(key).items.push({f:SHOT_F[i]+start,n:end-start,label:record.name+(chain.some(r=>!r.layer.visible)?' (hidden)':''),targetId:record.id});
+  }
+ }
  return [
-  {id:'shots',name:'Shots',kind:'clips',src:{...here,find:'const SHOTS=['},items:SHOTS.map((s,i)=>({f:SHOT_F[i],n:len(i),label:s.k,
-    edit:[{name:'length',unit:'s',...here,row:{key:'k',is:s.k},key:'d',value:s.d,min:0.04,max:20,step:0.005,per:1/FPS,drag:true}]}))},
+  {id:'imported-audio',name:'Sound · imported',kind:'clips',items:CUES.filter(c=>c.entity.cue.voice==='file').map(c=>({f:F(c.start),n:c.entity.cue.durationFrames,label:c.entity.name,targetId:c.entity.id}))},
+  {id:'shots',name:'Shots',kind:'clips',src:{file:'project.studio.json',find:'"shots"'},items:SHOTS.map((s,i)=>({f:SHOT_F[i],n:len(i),label:s.name,targetId:s.id}))},
+  ...visualTracks.values(),
   {id:'shake',name:'Effects · shake',kind:'events',src:{...here,find:'const SHAKE='},
-   items:Object.keys(SHAKE).map(k=>({f:SHOT_F[shotOf(k)],label:'shake '+SHAKE[k]+' (while playing)'}))},
+   items:Object.keys(SHAKE).map(k=>({f:SHOT_F[shotOf(k)],label:'Camera shake',targetId:'shake:'+k}))},
   {id:'fx',name:'Effects · drawing',kind:'clips',src:{...here,find:'const smearAt='},
    items:[...smear,clip('clash','snow frozen'),clip('impactA','impact frame'),clip('impactB','impact, inverted')]},
   {id:'wind',name:'Sound · wind',kind:'clips',src:score,items:voice('wind',r=>'level '+r[3],true)},
@@ -1157,7 +1275,7 @@ window.__probe=()=>{
 };
 window.__sheet={WALK,CHARGE,STAND_A,STAND_B,CLASH,AFTER,PW,WALK_HOLDS,WALK_TRAVEL};
 window.__step=()=>{stepOnce();sim(DT);draw();return window.__probe();};
-window.__rewind=()=>{playing=false;T=0;frameNo=0;acc=0;reseed();resetAll();canonical=true;CK.clear();};
+window.__rewind=()=>{playing=false;stopAudio();T=0;frameNo=0;acc=0;reseed();resetAll();canonical=true;CK.clear();};
 window.__fps=FPS;window.__total=TOTAL;
 /* THE FOOTFALLS, FOUND BY RUNNING THE FILM ONCE. Nobody placed them: a step sounds when
    the walk reaches a contact drawing. So the film is stepped through, silently, before
@@ -1168,12 +1286,14 @@ const STEPS=REC; REC=null; T=0;frameNo=0;acc=0;simSteps=0;playing=true;reseed();
    film found, scheduled on an offline context through the very functions that play them
    live. The live context, if there is one, is put back untouched. */
 window.__renderAudio=async(seconds,sr)=>{
- const live={AC,master,lim,nb,soundOn};
+ const decoder=new OfflineAudioContext(2,1,sr||48000);
+ await Promise.all(CUES.filter(c=>c.entity.cue.voice==='file').map(async({entity:e})=>{if(!audioAssets.has(e.cue.src)){const response=await fetch(e.cue.src);if(!response.ok)throw new Error('Audio file unavailable: '+e.name);audioAssets.set(e.cue.src,await decoder.decodeAudioData(await response.arrayBuffer()));}}));
+ const live={AC,master,lim,mix,nb,soundOn,AR};
  let off;
  try{ off=new OfflineAudioContext(2,Math.ceil(seconds*(sr||48000)),sr||48000);
   initAudio(off); soundOn=true; master.gain.value=0.9;
-  score(0); for(const [f,lvl,pan] of STEPS) crunch(lvl,pan,f/FPS);
- } finally { ({AC,master,lim,nb,soundOn}=live); }
+  scheduleMix();score(0); for(const [f,lvl,pan] of STEPS) crunch(lvl,pan,f/FPS);
+ } finally { ({AC,master,lim,mix,nb,soundOn,AR}=live); }
  const b=await off.startRendering();
  return {sr:b.sampleRate,channels:[b.getChannelData(0),b.getChannelData(1)]};
 };
@@ -1193,5 +1313,5 @@ if(document.fonts&&document.fonts.load){
 if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){
  playing=false;T=S[3]+0.9;canonical=false;
 }
-})();
+})().catch(error=>{window.__failed=String(error.message||error);console.error(error);});
 </script>

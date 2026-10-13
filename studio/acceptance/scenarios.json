@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "status": "specified-not-implemented",
+  "purpose": "Future end-to-end acceptance scenarios for the general Studio. These are requirements, not passing test results.",
+  "sharedRequirements": [
+    "Create through Studio without copying an existing film or modifying Studio core",
+    "Keep stable object IDs through edits and shot reordering",
+    "Reject stale Human or AI writes without losing authored work",
+    "Bind preview, audit and export to the same input snapshot when snapshots ship",
+    "Show rule, input identity, environment, frame coverage and limitations with each audit",
+    "Download the final video to the user's disk; do not persist it on the server or CI",
+    "Reopen the exported video and check dimensions, frame count, duration and supported audio"
+  ],
+  "scenarios": [
+    {
+      "id": "motion-graphics",
+      "name": "Three scene product announcement",
+      "renderer": "canvas2d",
+      "formats": [{"width": 1920, "height": 1080}, {"width": 1080, "height": 1920}],
+      "fps": {"num": 24, "den": 1},
+      "durationFrames": 288,
+      "shotFrames": [96, 96, 96],
+      "components": ["background", "shape", "text", "image", "camera2d", "audio"],
+      "humanEdits": ["Create and reorder shots", "Move and animate a title", "Replace an image", "Align audio to a cut"],
+      "aiEdit": "Move the second title entry 12 frames later without moving the sound cue or other titles",
+      "checks": ["Title inside safe area after it settles", "Exact cut frames", "Out-of-order seek matches repeated frame", "Audio onset within one video frame"],
+      "knownBad": ["Title clipped outside safe area", "Cut one frame late", "Sound cue three frames late"],
+      "firstMilestone": "phase-3-human-preview",
+      "completeMilestone": "phase-9"
+    },
+    {
+      "id": "explanatory-video",
+      "name": "An animated chart with a spoken explanation",
+      "renderer": "canvas2d",
+      "formats": [{"width": 1920, "height": 1080}, {"width": 1080, "height": 1080}],
+      "fps": {"num": 30, "den": 1},
+      "durationFrames": 600,
+      "shotFrames": [150, 300, 150],
+      "components": ["background", "shape", "text", "data-chart", "caption", "audio"],
+      "humanEdits": ["Change chart data", "Adjust a caption interval", "Trim a narration asset without moving the chart"],
+      "aiEdit": "Explain the updated data using the existing chart component and preserve the narration asset",
+      "checks": ["Settled displayed values agree with an independent calculation", "Captions follow authored intervals", "No text clipping", "No audio clipping", "Aspect ratio changes preserve readable content"],
+      "knownBad": ["A displayed value disagrees with its data", "A caption is shifted across the next sentence", "An overdriven audio mix"],
+      "firstMilestone": "phase-5-human-preview",
+      "completeMilestone": "phase-9",
+      "notes": "Narration may be imported. Speech generation and automatic transcription are not prerequisites; sentence timing can be supplied and reviewed."
+    },
+    {
+      "id": "product-3d",
+      "name": "A simple product reveal and camera orbit",
+      "renderer": "threejs",
+      "formats": [{"width": 1920, "height": 1080}, {"width": 1080, "height": 1920}],
+      "fps": {"num": 24, "den": 1},
+      "durationFrames": 288,
+      "shotFrames": [72, 144, 72],
+      "components": ["mesh", "material", "light", "camera3d", "screen-text", "audio"],
+      "humanEdits": ["Change a material", "Move a light", "Animate camera position and target", "Adjust the overlay title"],
+      "aiEdit": "Reverse the camera orbit while preserving the product, title timing and shot duration",
+      "checks": ["Expected camera direction from state and rendered progression", "Product remains in frame", "Stable object identity", "Repeatable seeks within declared rendering tolerance", "Screen overlay remains legible"],
+      "knownBad": ["Camera orbit goes the wrong way", "Product leaves the frame", "A missing material asset", "A history-dependent animation pose"],
+      "firstMilestone": "phase-7-human-preview",
+      "completeMilestone": "phase-9",
+      "notes": "Use original procedural geometry or a cleared asset. Photorealistic generative finishing and character rigging are not prerequisites."
+    }
+  ]
+}

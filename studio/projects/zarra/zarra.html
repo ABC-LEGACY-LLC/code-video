@@ -1,12 +1,15 @@
 <!doctype html><html lang="uz"><head><meta charset="utf-8">
 <title>Zarra qatlami</title>
-<script>if(/[?&]embed\b/.test(location.search))document.documentElement.classList.add('embed')</script>
+<script>window.__ready=false;
+addEventListener('error',e=>{if(!window.__ready)window.__failed=e.message;});
+addEventListener('unhandledrejection',e=>{if(!window.__ready)window.__failed=String(e.reason?.message||e.reason);});
+if(/[?&]embed\b/.test(location.search))document.documentElement.classList.add('embed')</script>
 <style>
  html,body{margin:0;height:100%;background:#0b0a14;display:grid;place-items:center}
  canvas{image-rendering:pixelated;box-shadow:0 0 0 1px #221f33}
  /* EMBED (?embed): the layer fills the studio's stage, pixels kept square */
  html.embed canvas{width:min(100vw,calc(100vh*540/304));height:auto}
-</style></head><body><canvas id="c" width="540" height="304"></canvas><script>
+</style></head><body><canvas id="c" width="540" height="304"></canvas><script type="module">
 /* ===== THE PARTICLE LAYER =====
    Every number is measured, not invented. Source: a sample GIF (540x304, 22 images,
    60 ms each), whose particle layer was separated from the cel and measured:
@@ -40,7 +43,7 @@ const P=LAYERS.map((q,qi)=>{
                                 al:q.a[0]+R()*(q.a[1]-q.a[0])});
  return a;
 });
-const g=document.getElementById('c').getContext('2d');
+let g=document.getElementById('c').getContext('2d'),composition=null;
 
 /* A DOOR FOR BREAKING IT ON PURPOSE. The check's calibration goes through here: it
    puts both layers at the same speed to test the claim "it separates the layers".
@@ -59,11 +62,11 @@ function sky(){                                  // a flat background, so the pa
 /* EVERY FRAME MOVES BY A WHOLE NUMBER, because the measurement looks at whole numbers:
    writing 5.39 px/frame and then measuring 5.4 back would be fooling oneself. */
 const OFF=new Set();                              // layers switched off from the studio
-function drawFrame(n){
- sky();
+function drawFrame(n){if(composition)return composition.draw(n);sky();drawParticles(n);return{frame:n,ms:n*MS};}
+function drawParticles(n,only=null){
  g.globalCompositeOperation='lighter';
  for(let qi=0;qi<LAYERS.length;qi++){
-  const q=LAYERS[qi]; if(OFF.has(qi)) continue;
+  const q=LAYERS[qi]; if(OFF.has(qi)||(only!==null&&qi!==only)) continue;
   for(const p of P[qi]){
    const v=speed(qi);
    const x=((p.x+v[0]*n)%W+W)%W, y=((p.y+v[1]*n)%H+H)%H;
@@ -87,7 +90,7 @@ const FRAMES=120;
 let t=0, last=0, shown=0, paused=false;
 window.__totalFrames=FRAMES;
 window.__frameTo=n=>{ paused=true; t=(n+1)%FRAMES; shown=n; return drawFrame(n); };
-window.__frame=()=>({frame:shown});
+window.__frame=()=>({frame:shown,playing:!paused});
 window.__pause=()=>{ paused=true; };
 window.__play=f=>{ if(Number.isInteger(f)){ t=((f%FRAMES)+FRAMES)%FRAMES; } paused=false; };
 /* THE LAYERS AS TRACKS, for the studio's timeline: each one runs the whole loop */
@@ -97,6 +100,12 @@ window.__tracks=()=>LAYERS.map((q,qi)=>({id:'layer'+qi,name:NAMES[qi],kind:'clip
 window.__layers=()=>LAYERS.map((q,qi)=>({id:String(qi),name:NAMES[qi],on:!OFF.has(qi)}));
 window.__layer=(id,on)=>{ const qi=+id; if(!(qi>=0&&qi<LAYERS.length)) return; on?OFF.delete(qi):OFF.add(qi); if(paused) drawFrame(shown); };
 function tick(ts){ if(!paused&&ts-last>=MS){ last=ts; shown=t; drawFrame(t); t=(t+1)%FRAMES; } requestAnimationFrame(tick); }
+const {createComposition}=await import('../../composition.mjs');
+const state=await (await fetch('./project.studio.json',{cache:'no-store'})).json();
+const project=window.frameElement?.studioPreviewProject?JSON.parse(JSON.stringify(window.frameElement.studioPreviewProject)):state.project;
+composition=await createComposition({canvas:document.getElementById('c'),project,blend:binding=>binding.startsWith('particles')?'lighter':'source-over',setContext:next=>{g=next;},paint:(binding,n)=>{if(binding==='background')sky();else if(binding.startsWith('particles'))drawParticles(n,Number(binding.slice(9)));}});
+window.__setLayerPreview=composition.preview;window.__getLayerPreview=composition.getPreview;window.__layerGeometry=composition.geometry;window.__pickLayer=composition.pick;window.__prepareFrame=composition.prepare;window.__tracks=composition.tracks;window.__layers=()=>[];
+window.__fps=1000/MS;window.__studioProject={id:project.id,generation:state.generation,schemaVersion:2};
 drawFrame(0); requestAnimationFrame(tick);
 window.__ready=true;                             // ready: the measurement asks for this instead of sleeping
 </script></body></html>

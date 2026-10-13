@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Motion graphics · SDK</title><link rel="stylesheet" href="../../tokens.css"><style>body{margin:0;background:var(--stage);display:grid;place-items:center;min-height:100vh}canvas{width:100%;height:auto;max-height:100vh;object-fit:contain}</style><canvas></canvas>
+<script>window.__ready=false;</script>
+<script type="module">
+import {createRendererRegistry} from '../../sdk/registry.mjs';
+import {registerCanvas2D} from '../../renderers/canvas2d.mjs';
+import {installPageHooks} from '../../sdk/legacy.mjs';
+import {badge} from './badge.mjs';
+window.__ready=false;
+try{
+ const response=await fetch('./project.studio.json');if(!response.ok)throw new Error('Project could not load');const state=await response.json();
+ const registry=createRendererRegistry();registerCanvas2D(registry);
+ const runtime=await registry.open(state.project.renderer,{canvas:document.querySelector('canvas'),project:state.project,components:{badge},onProgress:value=>window.__progress=value});
+ await runtime.renderFrame({frame:0});installPageHooks(window,runtime,{generation:state.generation});
+}catch(error){window.__failed=error.message;document.body.append(document.createTextNode(error.message));}
+</script></html>

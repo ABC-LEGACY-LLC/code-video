@@ -1,5 +1,7 @@
 # Films drawn with code — and their measurement
 
+Studio platform development: [phase one and the next core work](studio/FOUNDATION.md).
+
 Six short works, one on a WebGL distance field and five on Canvas. And beside them two things,
 which are really the main thing:
 
@@ -30,7 +32,7 @@ build. Only shared things stay at the root: `studio/`, `harness/`, `catalog/`, `
 | `studio/projects/personaj3d/` | A 3D character (three.js) brought toward a sample clip pass by pass, by measurement: one world fitted to all shots, a camera-only consistency test, styles from ink to watercolour. Only technique is taken from the sample; the sample and everything measured from it stay in `private/`, outside git, so its tools run where that folder is | — |
 | `studio/projects/personaj/` | The earlier 2D Canvas character (passes 1–12): an archive the 3D one grew from | — |
 | `studio/projects/masofa-maydoni/` | An SDF sandbox — primitives, unions, marching | — |
-| `studio/` | A person and an AI on the same piece: live viewing, frame scrubbing, card and checks, notes on a frame and the AI's answers; a timeline of each film's own tables; what the AI changes shows at once; export to mp4 in the browser, with sound | **33** |
+| `studio/` | Human/AI editing with shared operations, camera/object keyframes, mix controls and durable history for Whiteout; live viewing, timeline, notes, audits and browser video export for the works | 20 server + 18 UI; managed editor/core/renderer suites |
 | `catalog/` | The architecture: tools that count the source and measure frames, six cards, the catalog generator | **18** |
 | `tools/compare/` | Code-drawn frames compared with a sample clip **frame by frame, with the same code on both sides**: probes, silhouettes, motion and boil, difference maps, rhythm, occlusion. `METHOD.md` is the method and its findings | **13** (`calibrate`) |
 | `tools/gpu/` | SAM 2 and CoTracker3 for the laptop with the GPU (Windows, CUDA): one shared environment, one folder per project; the projects' frames, prompts and masks stay off git | — |
@@ -79,6 +81,8 @@ that passed while they were blind**.
 `make` lists everything. The studio runs as a service:
 
 ```bash
+make setup      # install locked packages and browser revisions once
+make doctor     # check the environment
 make start      # the studio at http://127.0.0.1:4321/
 make status     # is it up, does it answer
 make stop       # stop it
@@ -87,18 +91,25 @@ make expose     # put it on https://code-video.abclegacyllc.com, login through t
 make audit-fast # the quick checks
 ```
 
+See [DEPENDENCIES.md](DEPENDENCIES.md) for the supported runtime, isolated Python
+environments, browser system libraries, and dependency update procedure.
+Open **Whiteout → Editor** for the first managed project. [Studio editing](studio/EDITOR.md)
+describes its controls, the shared AI API/CLI, current limits and remaining work.
+Its **Layers** sidebar separates the background, characters, atmosphere and effects,
+with visibility, locking, Solo preview, ordering, grouping and keyframes.
+
 Or by hand, suite by suite:
 
 ```bash
-cd studio/projects/oq-kocha && npm i && npm run build && npm run audit   # 43 checks
+cd studio/projects/oq-kocha && npm ci && npm run build && npm run audit   # 43 checks
 cd studio/projects/oq-kocha && npm run audio                             # the sound, offline: build/film.pcm
-cd catalog && npm i && node test/run.mjs                                 # 18 checks
+cd catalog && npm ci && node test/run.mjs                                 # 18 checks
 cd catalog && node tools/card.mjs                                        # do the cards agree with their sources
 cd catalog && node tools/catalog.mjs out.html                            # the catalog page
-cd studio/projects/zarra && npm i && npm run audit                       # 4 checks
+cd studio/projects/zarra && npm ci && npm run audit                       # 4 checks
 cd tools/compare && python3 -m compare calibrate                         # 13 proofs of the measurements
-cd studio/projects/tong-kaptar && npm i && npm run audit                 # 3 checks
-cd studio && npm i && npm run audit && npm run audit:ui                  # 15 checks, then 18 in a browser
+cd studio/projects/tong-kaptar && npm ci && npm run audit                 # 3 checks
+cd studio && npm ci && npm run audit && npm run audit:ui                  # server checks, then browser checks
 node studio/server.mjs                                                   # the studio: http://127.0.0.1:4321/
 ```
 

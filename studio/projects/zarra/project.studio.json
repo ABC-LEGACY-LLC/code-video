@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "generation": 0,
+  "project": {
+    "id": "zarra",
+    "name": "Zarra qatlami",
+    "width": 540,
+    "height": 304,
+    "fps": {
+      "num": 50,
+      "den": 3
+    },
+    "shots": [
+      {
+        "id": "particles",
+        "name": "Particles",
+        "durationFrames": 120,
+        "entities": [
+          {
+            "id": "camera:particles",
+            "name": "Camera",
+            "type": "camera2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1
+            },
+            "keyframes": {}
+          },
+          {
+            "id": "background:particles",
+            "name": "Background",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "background",
+              "parentId": null,
+              "space": "world",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 120
+            }
+          },
+          {
+            "id": "particles0:particles",
+            "name": "Far specks",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "particles0",
+              "parentId": null,
+              "space": "world",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 120
+            }
+          },
+          {
+            "id": "particles1:particles",
+            "name": "Near small",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "particles1",
+              "parentId": null,
+              "space": "world",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 120
+            }
+          },
+          {
+            "id": "particles2:particles",
+            "name": "Near medium",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "particles2",
+              "parentId": null,
+              "space": "world",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 120
+            }
+          },
+          {
+            "id": "particles3:particles",
+            "name": "Near large",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "particles3",
+              "parentId": null,
+              "space": "world",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 120
+            }
+          }
+        ],
+        "layerOrder": [
+          "background:particles",
+          "particles0:particles",
+          "particles1:particles",
+          "particles2:particles",
+          "particles3:particles"
+        ]
+      }
+    ],
+    "annotations": []
+  },
+  "history": {
+    "past": [],
+    "future": []
+  },
+  "receipts": [],
+  "migrations": [
+    {
+      "runtimeVersion": "sdk-1",
+      "at": "2026-10-13T08:52:34.105Z",
+      "beforeSourceHash": "bc47000433925cd41fc4536c5fde09aaa5b423c92f0c77b32d8cedc59def689a",
+      "afterSourceHash": "4dad37bb3d46f3efb1d42820496a35a4e4e87b0ec87b56c37ba2050cfcab36f3"
+    }
+  ]
+}

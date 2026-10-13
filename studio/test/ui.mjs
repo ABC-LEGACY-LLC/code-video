@@ -47,7 +47,7 @@ window.__tracks=()=>{let a=0;return[{id:'shots',name:'Shots',kind:'clips',src:{f
 window.__ready=true;`));
 editPage();
 const real=JSON.parse(readFileSync(join(ROOT,'studio','works.json'),'utf8')).works;
-const fake=(id,name)=>({id,dir:FAKE,name,page:`${FAKE}/${id.slice(2)}.html`,control:'frameTo',suites:[]});
+const fake=(id,name)=>({id,dir:FAKE,name,page:`${FAKE}/${id.slice(2)}.html`,control:'frameTo',suites:[],...(id==='t-edit'?{editor:{sources:[{file:'edit.html',rowKey:'k',key:'df',min:1,max:99,integer:true}]}}:{})});
 writeFileSync(join(CONF,'works.json'),JSON.stringify({works:[...real,
  fake('t-never','Never ready'),fake('t-edit','Edit'),fake('t-failed','Fails'),fake('t-good','Good'),fake('t-block','Blocks')]}));
 process.env.STUDIO_WORKS=join(CONF,'works.json');
@@ -421,8 +421,8 @@ await check({name:'studio/edit-in-timeline', unit:'faults: the row written, the 
  note:'a fake film whose table is in its own page; clip b 20 → 25 typed, undone, then dragged to 25'});
 
 /* AN EXPORT IS A VIDEO THAT PLAYS, MADE IN THE BROWSER. Twelve frames of zarra at half
-   size have to come back as an mp4 this browser can open: 270×152, half a second at 24
-   frames a second, and its last frame decodes to a picture. Nothing goes to the server:
+   size have to come back as an mp4 this browser can open: 270×152, 0.72 seconds at its
+   authored 60 ms per frame, and its last frame decodes to a picture. Nothing goes to the server:
    the requests made during the export are counted. The broken case exports six frames,
    which is not the length that was asked for. */
 async function exportOff(frames){
@@ -439,9 +439,9 @@ async function exportOff(frames){
  },frames).catch(e=>({error:e.message}));
  await done(p);
  if(r.error) throw new Error(r.error);
- const faults=(r.w===270&&r.h===152?0:1)+(Math.abs(r.duration-frames/24)<0.03?0:1)+(r.lit>50?0:1)+(r.type==='video/mp4'?0:1)+sent.length;
+ const faults=(r.w===270&&r.h===152?0:1)+(Math.abs(r.duration-frames*0.06)<0.03?0:1)+(r.lit>50?0:1)+(r.type==='video/mp4'?0:1)+sent.length;
  if(faults&&frames===12) console.log('  export-plays saw: '+JSON.stringify({w:r.w,h:r.h,duration:r.duration,lit:r.lit,type:r.type,sent}));
- return frames===12?faults:faults+(Math.abs(r.duration-0.5)<0.03?0:1);
+ return frames===12?faults:faults+(Math.abs(r.duration-0.72)<0.03?0:1);
 }
 await check({name:'studio/export-plays', unit:'faults: size, length, picture, type, things sent to the server',
  measure:()=>exportOff(12), pass:v=>v===0, calibrate:()=>exportOff(6),

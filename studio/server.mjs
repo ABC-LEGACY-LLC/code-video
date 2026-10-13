@@ -5,21 +5,24 @@
    repository, so the AI can read it -- a person's eyes and ears are what the AI does
    not have, and the studio joins the two into one piece of work.
 
-   Taken from Open Edit: one folder per piece; one contract between the page and the
-   renderer (a frame hook, readiness); after a change only what changed is rebuilt;
-   and the idea of its deleted `preview` command -- "read-only: watch and scrub, and
-   swap in the new render when it lands". Not taken: editing a timeline in the
-   browser, recipes, the hand-off to VEED. A work is code; code changes it.
+   Human and AI share validated operations, revision checks and persistent history.
+   Legacy works keep their source adapters; managed projects have one authored document.
 
-   No library: Node alone. It listens on 127.0.0.1 only, because it can run build
+   Node with Acorn for source parsing. It listens on 127.0.0.1 only, because it can run build
    commands -- but only the ones written in the cards. From outside (through Caddy,
    on a public name) it asks for a login through a Telegram bot: see auth.mjs. */
 import http from 'node:http';
-import {readFileSync, existsSync, readdirSync, mkdirSync, appendFileSync, writeFileSync, statSync, watch} from 'node:fs';
+import {readFileSync, existsSync, readdirSync, mkdirSync, appendFileSync, writeFileSync, statSync, realpathSync} from 'node:fs';
 import {join, sep, extname, dirname, resolve, relative} from 'node:path';
 import {execFile} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {createAuth, readEnv, fromOwnPage} from './auth.mjs';
+import {prepareNumber, atomicWrite, digest, sourcePath, withSourceLock} from './core/source-edit.mjs';
+import {createProjectStore, ProjectError} from './core/store.mjs';
+import {watchTree} from './core/watch-tree.mjs';
+import {serveFile} from './core/http-file.mjs';
+import {importAsset} from './core/assets.mjs';
+import {measurementStatus} from '../catalog/tools/fingerprint.mjs';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const STUDIO = join(ROOT, 'studio');
@@ -27,7 +30,7 @@ const STUDIO = join(ROOT, 'studio');
 const TYPES = {'.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8',
  '.mjs':'text/javascript; charset=utf-8', '.json':'application/json; charset=utf-8',
  '.css':'text/css; charset=utf-8', '.png':'image/png', '.jpg':'image/jpeg', '.svg':'image/svg+xml',
- '.frag':'text/plain; charset=utf-8', '.glsl':'text/plain; charset=utf-8', '.md':'text/plain; charset=utf-8'};
+ '.wav':'audio/wav', '.mp3':'audio/mpeg', '.ogg':'audio/ogg', '.webp':'image/webp', '.mp4':'video/mp4', '.webm':'video/webm', '.frag':'text/plain; charset=utf-8', '.glsl':'text/plain; charset=utf-8', '.md':'text/plain; charset=utf-8'};
 
 /* ===== A SAFE PATH =====
    The repository root holds .env (the Labs token) and .git holds the whole history.
@@ -42,6 +45,12 @@ export function safePath(rel, root=ROOT){
  const p=join(root, ...parts);
  if(!p.startsWith(root+sep)) return null;
  if(!TYPES[extname(p)]) return null;
+ if(existsSync(p)){
+  const actual=realpathSync(p),base=realpathSync(root);
+  if(!actual.startsWith(base+sep)||!statSync(actual).isFile()) return null;
+  const parts=relative(base,actual).split(sep);
+  if(parts.some(x=>x.startsWith('.')||x==='node_modules')||!TYPES[extname(actual)]) return null;
+ }
  return p;
 }
 
@@ -58,7 +67,7 @@ export function works(){
    const cf = cardPath(w.card), cdir = dirname(cf);
    try{
     const c = JSON.parse(readFileSync(cf, 'utf8'));
-    o.card = c; o.cardFile = w.card; o.name = c.name;
+    o.card = {...c,measurementStatus:measurementStatus({...c,_f:cf})}; o.cardFile = w.card; o.name = c.name;
     o.page = resolve(cdir, c.frame.file).slice(ROOT.length+1);
     if(c.frame.build) o.build = {dir: resolve(cdir, c.frame.build.dir), command: c.frame.build.command};
    }catch(e){ o.cardError = String(e.message); }
@@ -157,6 +166,14 @@ function audits(){
  for(const f of readdirSync(dir).filter(f=>f.endsWith('.json'))){
   try{ o[f.slice(0,-5)] = JSON.parse(readFileSync(join(dir,f), 'utf8')); }catch(e){}
  }
+ if(o.catalog?.checks){const cards=works().filter(w=>w.card),cache=new Map();
+  for(const [name,result] of Object.entries(o.catalog.checks)){
+   const w=cards.find(w=>name.startsWith('claim/'+w.card.name+'/'));if(!w)continue;
+   const key=name.slice(('claim/'+w.card.name+'/').length),rule=w.card.claims?.[key],claim=result.evidence?.claim;
+   if(!rule||!claim||claim.key!==key||claim.op!==rule[0]||claim.limit!==rule[1]){result.freshness={status:'unverified',reason:'claim rule has not been verified by this audit'};continue;}
+   const signature=w.id+':'+result.evidence.sourceHash;if(!cache.has(signature))cache.set(signature,measurementStatus({...w.card,_f:cardPath(w.cardFile),measureEvidence:result.evidence}));result.freshness=cache.get(signature);
+  }
+ }
  return o;
 }
 const git = args => new Promise(res=>execFile('git', args, {cwd:ROOT, maxBuffer:4<<20},
@@ -217,31 +234,16 @@ export function where(w, file, find){
    row (df), and exactly that number is rewritten -- nothing is searched for by position,
    so the wrong row cannot be hit. If the row is not there exactly once, or the key is
    not in it, nothing is written. Git is the undo of last resort; the studio keeps its own. */
-const IDENT = /^[A-Za-z_$][\w$]*$/;
-const reEsc = t => String(t).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-export function editNumber(w, {file, row, key, value, as}){
- const s = sourceFile(w, file); if(!s) throw new Error('no such source file in this work');
- if(!row || !IDENT.test(row.key||'') || !IDENT.test(key||'')) throw new Error('the edit does not name a row and a key');
- const v = typeof value==='number' ? value : NaN;
- if(!Number.isFinite(v)) throw new Error('the value is not a number');
- const text = readFileSync(s.f, 'utf8');
- const hits = [...text.matchAll(new RegExp(`\\b${row.key}\\s*:\\s*(['"])${reEsc(row.is)}\\1`, 'g'))];
- if(hits.length!==1) throw new Error(`the row ${row.key}: ${JSON.stringify(row.is)} is in the file ${hits.length} times, not once`);
- let a = hits[0].index, b = a, d = 0;
- for(; a>=0; a--){ const c = text[a]; if(c==='}') d++; else if(c==='{'){ if(d===0) break; d--; } }
- for(d=0; b<text.length; b++){ const c = text[b]; if(c==='{') d++; else if(c==='}'){ if(d===0) break; d--; } }
- if(a<0 || b>=text.length) throw new Error('the row is not inside { }');
- const obj = text.slice(a, b+1);
- const m = obj.match(new RegExp(`(^|[{,\\s])(${key}\\s*:\\s*)(-?\\d+(?:\\.\\d+)?)`));
- if(!m) throw new Error(`the row has no number at ${key}`);
- /* written the way the row writes its numbers: 3.00 stays two decimals when it can */
- const dec = (m[3].split('.')[1]||'').length, short = String(+v.toFixed(4));
- /* an undo gives the number back as it was written (`as`), digit for digit */
- const verbatim = typeof as==='string' && /^-?\d+(\.\d+)?$/.test(as) && +as===v;
- const at = a + m.index + m[1].length + m[2].length,
-  to = verbatim ? as : (short.split('.')[1]||'').length<dec ? v.toFixed(dec) : short;
- writeFileSync(s.f, text.slice(0, at) + to + text.slice(at + m[3].length));
- return {file:s.rel, line:text.slice(0, at).split('\n').length, from:+m[3], fromText:m[3], to:+to};
+export function editNumber(w, edit){
+ const source=sourcePath(ROOT,w,edit.file);
+ return withSourceLock(source.path,()=>{
+  const prepared=prepareNumber(ROOT,w,edit);
+  if((edit.baseHash && edit.baseHash!==digest(prepared.before)) || (edit.expectedValue!==undefined && edit.expectedValue!==prepared.from)) throw new ProjectError('source changed; refresh before editing',409);
+  atomicWrite(prepared.path,prepared.after,{beforeCommit:()=>{
+   if(readFileSync(prepared.path,'utf8')!==prepared.before)throw new ProjectError('source changed while saving; refresh before editing',409);
+  }});
+  return {file:prepared.relative,line:prepared.line,from:prepared.from,fromText:prepared.fromText,to:prepared.to,sourceHash:digest(prepared.after)};
+ });
 }
 /* the "open questions for the owner" on the Labs pages -- where a person decides */
 function decisions(){
@@ -262,18 +264,43 @@ function decisions(){
    work's folder is watched; a work that is built (oq-kocha) is built first, then its
    page reloads. build/ and node_modules are not watched: they are output, not source. */
 const listeners = new Set();
-function send(ev){ const s = `data: ${JSON.stringify({...ev, time:Date.now()})}\n\n`; for(const r of listeners) r.write(s); }
+function send(ev){ const s = `data: ${JSON.stringify({...ev, time:Date.now()})}\n\n`; for(const client of listeners) client.write(s); }
+/* A long-lived response does not keep the permission it had when it opened. The
+   session is checked immediately before each write, and logout closes it even when
+   no files are changing. Local subscribers keep the same loopback access as HTTP. */
+function events(req, res, auth, outside, heartbeatMs){
+ let closed=false, timer, unsubscribe=()=>{};
+ const close=()=>{
+  if(closed) return; closed=true;
+  clearInterval(timer); unsubscribe(); listeners.delete(client);
+  res.end();
+ };
+ const revalidate=()=>{
+  if(closed) return false;
+  try{ if(res.destroyed || res.writableEnded || (outside && !auth.userOf(req))){ close(); return false; } }
+  catch(e){ close(); return false; }
+  return true;
+ };
+ const client={write(s){ if(!revalidate()) return;
+  try{ res.write(s); }catch(e){ close(); }
+ }};
+ res.on('close', close); res.on('error', close);
+ unsubscribe=auth.onSessionsChanged(revalidate);
+ listeners.add(client);
+ timer=setInterval(()=>client.write(': alive\n\n'), heartbeatMs); timer.unref();
+ client.write(': studio\n\n');
+}
 const pending = new Map();
 function changed(key, file, job){
  const k = pending.get(key) || {files:new Set()}; k.files.add(file);
  clearTimeout(k.t); k.t = setTimeout(async()=>{ pending.delete(key); await job([...k.files]); }, 250);
  pending.set(key, k);
 }
-const ignored = rel => !rel || rel.split(/[\\/]/).some(p=>p.startsWith('.') || p==='node_modules' || p==='build');
+const ignored = rel => !rel || rel.endsWith('.tmp') || rel.split(/[\\/]/).some(p=>p.startsWith('.') || p==='node_modules' || p==='build');
 export function watchWorks(){
  const watchers = [];
  const add = (dir, fn) => { if(!existsSync(dir)) mkdirSync(dir, {recursive:true});
-  watchers.push(watch(dir, {recursive:true}, (e, rel)=>fn(String(rel||'')))); };
+  watchers.push(watchTree(dir,fn,{ignore:rel=>!!rel&&ignored(rel),onError:error=>send({type:'watch-error',message:error.message})})); };
  for(const w of works()){
   add(join(ROOT, w.dir), rel=>{ if(ignored(rel)) return;
    changed(w.id, w.dir+'/'+rel, async files=>{
@@ -287,7 +314,7 @@ export function watchWorks(){
   if(w) changed('card:'+w.id, rel, ()=>send({type:'card', work:w.id})); });
  add(join(ROOT, 'build', 'audit'), rel=>changed('audit', rel, ()=>send({type:'audit'})));
  add(notesDir(), rel=>changed('note:'+rel, rel, ()=>send({type:'note', work:rel.replace(/\.md$/,'')})));
- return ()=>watchers.forEach(w=>w.close());
+ return ()=>watchers.forEach(close=>close());
 }
 
 /* ===== ONLY THE STUDIO'S OWN PAGE MAY CHANGE THINGS =====
@@ -311,16 +338,19 @@ const studioPage = () => readFileSync(join(STUDIO, 'index.html'), 'utf8')
 
 /* ===== HTTP ===== */
 const json = (res, code, o) => { res.writeHead(code, {'content-type':'application/json; charset=utf-8', 'cache-control':'no-store'}); res.end(JSON.stringify(o)); };
-const body = req => new Promise((res, rej)=>{ let s=''; req.on('data', c=>{ s+=c; if(s.length>65536){ rej(new Error('too large')); req.destroy(); } });
+const body = (req,limit=65536) => new Promise((res, rej)=>{ let s=''; req.on('data', c=>{ s+=c; if(s.length>limit){ rej(new Error('too large')); req.destroy(); } });
  req.on('end', ()=>{ try{ res(s ? JSON.parse(s) : {}); }catch(e){ rej(e); } }); });
 
 /* `auth` decides who may come in from outside. Without one, every outside request is
    refused: a studio started without its login is a local studio, never an open one. */
-export function server({auth=createAuth({})}={}){
+export function server({auth=createAuth({}), eventsHeartbeatMs=25000}={}){
+ const projects=createProjectStore(ROOT);
  return http.createServer(async (req, res)=>{
-  const url = new URL(req.url, 'http://studio');
-  const p = url.pathname;
   try{
+   let url;
+   try{ url = new URL(req.url, 'http://studio'); }
+   catch(e){ return json(res, 400, {error:'invalid request URL'}); }
+   const p = url.pathname;
    /* a browser asks for this on every page; answered before the gate, with nothing */
    if(p==='/favicon.ico'){ res.writeHead(204, {'cache-control':'max-age=86400'}); return res.end(); }
    if(await auth.route(req, res, p)) return;            // /login, /auth/<link>, /logout
@@ -332,11 +362,10 @@ export function server({auth=createAuth({})}={}){
     res.writeHead(200, {'content-type':TYPES['.html'], 'cache-control':'no-store'});
     return res.end(studioPage());
    }
-   if(req.method==='GET' && p.startsWith('/w/')){
+   if(['GET','HEAD'].includes(req.method) && p.startsWith('/w/')){
     const f = safePath(p.slice(3));
     if(!f || !existsSync(f)){ res.writeHead(404); return res.end('not found'); }
-    res.writeHead(200, {'content-type':TYPES[extname(f)], 'cache-control':'no-store'});
-    return res.end(readFileSync(f));
+    return serveFile(req,res,f,TYPES[extname(f)]);
    }
    if(req.method==='GET' && p==='/api/works')
     return json(res, 200, works().map(w=>({...w, build:!!w.build, sourcesChangedAt:sourcesChangedAt(w.dir),
@@ -344,6 +373,11 @@ export function server({auth=createAuth({})}={}){
    if(req.method==='GET' && p==='/api/audits') return json(res, 200, audits());
    if(req.method==='GET' && p==='/api/decisions') return json(res, 200, decisions());
    const w = url.searchParams.get('work') ? findWork(url.searchParams.get('work')) : null;
+   if(req.method==='GET' && (p==='/api/project'||p==='/api/context')){
+    if(!w) return json(res,404,{error:'no such work'});
+    try { return json(res,200,p==='/api/project'?projects.get(w):projects.context(w,Number(url.searchParams.get('frame')||0))); }
+    catch(e){ return json(res,e.status||422,{error:e.message}); }
+   }
    if(req.method==='GET' && p==='/api/changes'){ if(!w) return json(res, 404, {error:'no such work'}); return json(res, 200, await changes(w)); }
    if(req.method==='GET' && p==='/api/where'){ if(!w) return json(res, 404, {error:'no such work'});
     const r = where(w, url.searchParams.get('file'), url.searchParams.get('find'));
@@ -351,26 +385,43 @@ export function server({auth=createAuth({})}={}){
    if(req.method==='GET' && p==='/api/notes'){ if(!w) return json(res, 404, {error:'no such work'}); return json(res, 200, notes(w.id)); }
    if(req.method==='GET' && p==='/api/events'){
     res.writeHead(200, {'content-type':'text/event-stream', 'cache-control':'no-store', connection:'keep-alive'});
-    res.write(': studio\n\n'); listeners.add(res);
-    const t = setInterval(()=>res.write(': alive\n\n'), 25000);
-    return req.on('close', ()=>{ clearInterval(t); listeners.delete(res); });
+    return events(req, res, auth, outside, eventsHeartbeatMs);
    }
    if(req.method==='POST'){
     if(!sameOrigin(req)) return json(res, 403, {error:'refused: a change has to come from the studio page'});
-    const b = await body(req);
+    let b; try { b=await body(req,p==='/api/assets'?25*1024*1024:65536); } catch(e) { return json(res,400,{error:'invalid JSON body'}); }
+    // A session can be revoked or expire while the request body is still arriving.
+    if(outside && !auth.userOf(req)) return auth.refuse(req,res,p);
+    if(!b||typeof b!=='object'||Array.isArray(b)) return json(res,400,{error:'expected a JSON object'});
     const bw = b.work ? findWork(b.work) : null;
     if(!bw) return json(res, 404, {error:'no such work'});
+    if(p==='/api/assets'){
+     try{if(!bw.project)throw new Error('This work has no media editor');return json(res,200,importAsset(ROOT,bw,b));}catch(e){return json(res,400,{error:e.message});}
+    }
+    if(p==='/api/proposal'){
+     try{return json(res,200,projects.preview(bw,b));}catch(e){return json(res,e.status||400,{error:e.message});}
+    }
+    if(p==='/api/operations'||p==='/api/history'){
+     try {
+      if(p==='/api/operations' && b.action && b.action!=='apply') throw new ProjectError('use the history endpoint for undo or redo');
+      if(p==='/api/history' && !['undo','redo'].includes(b.action)) throw new ProjectError('history action must be undo or redo');
+      return json(res,200,projects.transact(bw,b,outside?'telegram:'+auth.userOf(req):'local'));
+     } catch(e){ return json(res,e.status||400,{error:e.message}); }
+    }
     if(p==='/api/note'){
      if(!String(b.text||'').trim()) return json(res, 400, {error:'the note is empty'});
      addNote(bw, b.frame, b.text); return json(res, 200, notes(bw.id));
     }
     if(p==='/api/note/state'){ markNote(bw.id, +b.line, !!b.done); return json(res, 200, notes(bw.id)); }
-    if(p==='/api/edit'){ try{ return json(res, 200, editNumber(bw, b)); }catch(e){ return json(res, 400, {error:String(e.message)}); } }
+    if(p==='/api/edit'){ try{
+     if(typeof b.expectedValue!=='number'||!Number.isFinite(b.expectedValue))throw new ProjectError('expectedValue must name the number currently shown in the editor');
+     return json(res, 200, editNumber(bw, b));
+    }catch(e){ return json(res, e.status||400, {error:String(e.message)}); } }
     if(p==='/api/build'){ send({type:'building', work:bw.id, files:[]}); const r = await build(bw);
      send({type:'updated', work:bw.id, files:[], built:r}); return json(res, 200, r); }
    }
    json(res, 404, {error:'not found: '+p});
-  }catch(e){ json(res, 500, {error:String(e.message||e)}); }
+  }catch(e){ if(res.headersSent) return res.destroy(); json(res, 500, {error:String(e.message||e)}); }
  });
 }
 

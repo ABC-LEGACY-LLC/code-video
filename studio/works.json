@@ -1,13 +1,145 @@
 {
  "about": "The works the studio shows. A work with a card takes its name, page and build from the card; this file only adds what the studio needs: how the page is controlled and which check suites belong to it. control: frameTo -- a frame is drawn by number; seek -- the time is set and the page draws it; live -- no hook, live viewing only; sandbox -- no timeline.",
  "works": [
-  {"id": "oq-kocha", "dir": "studio/projects/oq-kocha", "card": "1-oq-kocha.json", "control": "frameTo", "suites": ["oq-kocha"]},
-  {"id": "whiteout", "dir": "studio/projects/whiteout", "card": "2-whiteout.json", "control": "frameTo", "suites": []},
-  {"id": "bir-tomchi", "dir": "studio/projects/bir-tomchi", "card": "3-bir-tomchi.json", "control": "seek", "suites": []},
-  {"id": "mushuk", "dir": "studio/projects/mushuk", "card": "4-mushuk.json", "control": "live", "suites": []},
-  {"id": "not-a-measurement", "dir": "studio/projects/not-a-measurement", "card": "5-not-a-measurement.json", "control": "live", "suites": []},
-  {"id": "tong-kaptar", "dir": "studio/projects/tong-kaptar", "card": "6-tong-kaptar.json", "control": "frameTo", "suites": ["tong-kaptar"]},
-  {"id": "zarra", "dir": "studio/projects/zarra", "name": "Zarra qatlami", "page": "studio/projects/zarra/zarra.html", "control": "frameTo", "frameCount": 120, "suites": ["zarra"]},
-  {"id": "masofa-maydoni", "dir": "studio/projects/masofa-maydoni", "name": "Masofa maydoni", "page": "studio/projects/masofa-maydoni/masofa-maydoni.html", "control": "sandbox", "suites": []}
+  {
+   "id": "oq-kocha",
+   "dir": "studio/projects/oq-kocha",
+   "card": "1-oq-kocha.json",
+   "control": "frameTo",
+   "suites": [
+    "oq-kocha"
+   ]
+  },
+  {
+   "id": "whiteout",
+   "project": "project.studio.json",
+   "dir": "studio/projects/whiteout",
+   "card": "2-whiteout.json",
+   "control": "frameTo",
+   "suites": [],
+   "editor": {
+    "operations": [
+     "setProperty",
+     "setKeyframe",
+     "deleteKeyframe",
+     "renameShot",
+     "addAnnotation",
+     "resolveAnnotation",
+     "setLayer",
+     "renameLayer",
+     "moveLayer",
+     "groupLayers",
+     "ungroupLayer",
+     "addLayer",
+     "duplicateLayer",
+     "deleteLayer",
+     "setContent",
+     "trimShot",
+     "moveShot",
+     "setCue",
+     "addAudio",
+     "deleteAudio",
+     "duplicateAudio"
+    ]
+   }
+  },
+  {
+   "id": "bir-tomchi",
+   "dir": "studio/projects/bir-tomchi",
+   "card": "3-bir-tomchi.json",
+   "control": "seek",
+   "suites": []
+  },
+  {
+   "id": "mushuk",
+   "dir": "studio/projects/mushuk",
+   "card": "4-mushuk.json",
+   "control": "live",
+   "suites": []
+  },
+  {
+   "id": "not-a-measurement",
+   "dir": "studio/projects/not-a-measurement",
+   "card": "5-not-a-measurement.json",
+   "control": "live",
+   "suites": []
+  },
+  {
+   "id": "tong-kaptar",
+   "dir": "studio/projects/tong-kaptar",
+   "card": "6-tong-kaptar.json",
+   "control": "frameTo",
+   "suites": [
+    "tong-kaptar"
+   ]
+  },
+  {
+   "id": "zarra",
+   "dir": "studio/projects/zarra",
+   "name": "Zarra qatlami",
+   "page": "studio/projects/zarra/zarra.html",
+   "control": "frameTo",
+   "frameCount": 120,
+   "suites": [
+    "zarra"
+   ],
+   "project": "project.studio.json",
+   "editor": {
+    "operations": [
+     "setProperty",
+     "setKeyframe",
+     "deleteKeyframe",
+     "renameShot",
+     "addAnnotation",
+     "resolveAnnotation",
+     "setLayer",
+     "renameLayer",
+     "moveLayer",
+     "groupLayers",
+     "ungroupLayer",
+     "addLayer",
+     "duplicateLayer",
+     "deleteLayer",
+     "setContent"
+    ]
+   }
+  },
+  {
+   "id": "masofa-maydoni",
+   "dir": "studio/projects/masofa-maydoni",
+   "name": "Masofa maydoni",
+   "page": "studio/projects/masofa-maydoni/masofa-maydoni.html",
+   "control": "sandbox",
+   "suites": []
+  },
+  {
+   "id": "sdk-motion",
+   "name": "Motion graphics · SDK",
+   "dir": "studio/projects/sdk-motion",
+   "page": "studio/projects/sdk-motion/index.html",
+   "project": "project.studio.json",
+   "control": "frameTo",
+   "suites": [],
+   "editor": {
+    "operations": [
+     "setProperty",
+     "setKeyframe",
+     "deleteKeyframe",
+     "addComponent",
+     "renameShot",
+     "trimShot",
+     "moveShot",
+     "addAnnotation",
+     "resolveAnnotation",
+     "setLayer",
+     "renameLayer",
+     "moveLayer",
+     "groupLayers",
+     "ungroupLayer",
+     "duplicateLayer",
+     "deleteLayer"
+    ]
+   }
+  }
  ]
 }

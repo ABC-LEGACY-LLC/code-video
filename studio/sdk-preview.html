@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Code preview · Studio</title><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="sdk-preview.css">
+<header><a href="/">← Studio</a><h1>Code preview</h1></header>
+<main><section aria-label="Component source"><h2>Try a Canvas2D component</h2>
+<p>Paste a render function. Its inputs are the frame clock, canvas, properties and seeded random samples. Preview runs in a separate runtime.</p>
+<label>Render function<textarea id="source" spellcheck="false" rows="20"></textarea></label>
+<div class="controls"><label>Frame <input id="frame" type="number" min="0" max="239" value="24"></label><button id="run">Render frame</button><button id="cancel" disabled>Cancel</button></div>
+<p id="status" role="status" aria-live="polite">Ready to preview.</p><p class="mut">24 fps · 240 frames · seed 2026. This preview does not save to a project.</p></section>
+<section aria-label="Rendered frame"><canvas width="960" height="540"></canvas><p class="mut">Network, Studio data and browser storage are unavailable to the component. A frame has a two-second limit.</p></section></main>
+<script type="module" src="sdk-preview.mjs"></script></html>

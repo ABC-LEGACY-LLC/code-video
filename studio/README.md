@@ -1,15 +1,24 @@
 # Studio — a person and an AI on the same piece
 
+The reusable renderer/component contract and isolated **Code preview** are documented
+in [SDK.md](SDK.md). Open **Motion graphics · SDK** in Works to try typed component
+editing through the same Human/AI operations.
+
+The general Studio work starts at [Phase one foundation](FOUNDATION.md), with a
+[capability inventory](CAPABILITIES.md), [project contract](PROJECT-CONTRACT.md)
+and [acceptance scenarios](acceptance/scenarios.json).
+
 ```bash
 make start                      # http://127.0.0.1:4321/  (from the repository root)
 make stop
 make install                    # as a systemd user service: back if it dies, up after a reboot
 make expose                     # on https://code-video.abclegacyllc.com, login through the Telegram bot
-node studio/test/run.mjs        # 15 checks: the server, the login, the notes, the colours
+node studio/test/run.mjs        # 20 checks: the server, the login, the notes, the colours
 node studio/test/ui.mjs         # 18 checks in Chromium: the page itself (cd studio && npm i first)
 ```
 
-No library, Node alone. The server listens on this machine only (127.0.0.1). If you use VS Code
+Run `make setup` first: Node 22, Acorn for source parsing, and locked browser test dependencies.
+The server listens on this machine only (127.0.0.1). If you use VS Code
 in a browser, forward port 4321 in the Ports panel and open that address: the page uses relative
 URLs, so it also opens behind a path prefix.
 
@@ -81,6 +90,17 @@ work:
 
 ## What is in it
 
+- **Managed editing.** Whiteout and Zarra have a shared Human/AI Editor with a Layers sidebar.
+  Whiteout exposes its background, ground, characters, atmosphere, effects and title;
+  Zarra exposes its background and four particle passes. Both support
+  visibility, preview Solo, locking, ordering, groups and frame ranges. Select an
+  object on the canvas or timeline to edit its transform and keyframes. Camera and
+  per-shot mix controls stay separate. Frame annotations, revision conflicts
+  and persistent Undo/Redo. See [EDITOR.md](EDITOR.md) for scope, API/CLI, limitations
+  and remaining adapters. Media import, canvas transform handles, timeline keyframe editing,
+  Whiteout sound cues and before/after AI proposal review share the same operations.
+  Other works retain their source controls.
+
 - **The list of works.** A work with a card takes its name, page and build from the card; works
   without a card (`zarra`, `masofa-maydoni`) are in [works.json](works.json). Each row says how
   the work is controlled (scrub by frame, by time, watch only, sandbox) and, in words, what its
@@ -99,7 +119,7 @@ work:
   never the film. oq-kocha, whiteout, bir-tomchi and zarra have tracks.
 - **A change on the timeline is a change in the code.** A clip may offer numbers to change
   (a shot's length, a sound bed's level): type one and Apply, or drag the clip's right edge.
-  The studio rewrites that one number in that one row of the source (`POST /api/edit`), the
+  The studio parses the source and validates that registered property on the server (`POST /api/edit`), the
   work rebuilds and reloads, and Undo puts the old text back. Nothing else is editable: a
   derived clip has no handle, and what a change does to the checks and the card shows as
   stale or failing until they are run again.
@@ -174,13 +194,13 @@ version (eleven steps, recipes, gates, a preview server) was deleted within a we
 
 | not taken | why |
 |---|---|
-| editing a timeline in the browser | a work is code; code changes it, the studio shows it |
+| an independent second timeline | authored project data and procedural source must have one shared edit contract |
 | recipes, a design system, an eleven-step flow | Open Edit deleted them itself |
 | the hand-off to VEED, golden mp4s in the repository | it needs a VEED login; video is not kept in the repository |
 
 ## Next stages
 
-Room 2's six stages for a studio; this folder is the first step of stage 5.
+Room 2's six stages for a studio; the current Human/AI implementation is described in [EDITOR.md](EDITOR.md).
 
 1. Every page answers one contract (above). oq-kocha, whiteout, zarra and bir-tomchi do;
    mushuk and not-a-measurement have no stepped clock yet.

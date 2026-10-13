@@ -64,6 +64,37 @@ await check({name:'studio/no-foreign-files', unit:'hidden or outside files serve
  calibrate:()=>BAD.filter(p=>naive(p)).length,              // a join with no checks serves .env
  note:BAD.length+' bad paths, three of them over HTTP as well'});
 
+/* A malformed request target must not reject an async HTTP handler outside its
+   catch and kill the process. Run this in a child so the old implementation produces
+   a failed check, not a crashed audit. The calibration restores that exact bug. */
+function malformedUrlFaults(broken=false){
+ const source=`
+  import http from 'node:http';
+  import {server} from ${JSON.stringify(new URL('../server.mjs',import.meta.url).href)};
+  const s=${broken ? "http.createServer(async(req,res)=>{ new URL(req.url,'http://studio'); res.end('ok'); })" : 'server()'};
+  await new Promise(r=>s.listen(0,'127.0.0.1',r));
+  const request=(path,headers={})=>new Promise((resolve,reject)=>{
+   const req=http.get({hostname:'127.0.0.1',port:s.address().port,path,headers},res=>{
+    res.resume(); res.on('end',()=>resolve(res.statusCode));
+   }); req.on('error',reject);
+  });
+  let faults=0;
+  try{
+   for(const headers of [{},{'x-forwarded-for':'203.0.113.9'}]){
+    if(await request('//[',headers)!==400) faults++;
+    if(await request('/')!==200) faults++;
+   }
+  }finally{ s.close(); s.closeAllConnections(); }
+  console.log(faults);
+ `;
+ try{ return Number(execFileSync(process.execPath,['--input-type=module','-e',source],
+  {timeout:10000,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim()); }
+ catch(e){ return 1; }
+}
+await check({name:'studio/malformed-url-survives', unit:'bad responses or server crashes',
+ measure:()=>malformedUrlFaults(), pass:v=>v===0, calibrate:()=>malformedUrlFaults(true),
+ note:'raw //[ requests, local and external, return 400; the same child process still serves the studio afterward'});
+
 /* EVERY WORK OPENS. Build what is built, then every page on the list must answer 200. */
 const W=works();
 for(const w of W) if(w.build){ const r=await build(w); if(!r.ok) throw new Error(w.id+' did not build: '+r.output.slice(-300)); }
@@ -150,7 +181,12 @@ await check({name:'studio/changes-in-words', unit:'things not said in words',
    a nested one, and nothing at all when the row is missing, named twice, the value is
    not a number or the file is outside the work. The broken case is the obvious way to do
    it, replacing the first "df:" in the file, which rewrites the wrong row. */
-const ZW=W.find(w=>w.id==='zarra'), EDIT_PROBE=join(ROOT,ZW.dir,'__studio_edit_probe__.mjs'); cleanup.push(EDIT_PROBE);
+const ZW={...W.find(w=>w.id==='zarra'),project:undefined}, EDIT_PROBE=join(ROOT,ZW.dir,'__studio_edit_probe__.mjs'); cleanup.push(EDIT_PROBE);
+ZW.editor={sources:[
+ {file:'__studio_edit_probe__.mjs',rowKey:'k',key:'df',min:1,max:100,integer:true},
+ {file:'__studio_edit_probe__.mjs',rowKey:'k',key:'wind',min:0,max:4},
+ {file:'__studio_edit_probe__.mjs',rowKey:'k',key:'d',min:0.04,max:20}
+]};
 const TABLE=`export const SHOTS=[\n {k:"a'b", snd:{wind:0.5,city:0.2}, df:10, far:7},\n {k:'c', snd:{wind:0.7,city:0.1}, df:20},\n {k:'twin', df:1},{k:'twin', df:2}\n];\n`;
 const WANT=TABLE.replace('df:20','df:25').replace('wind:0.5','wind:0.3');
 const editFaults=async(apply)=>{ writeFileSync(EDIT_PROBE,TABLE);
@@ -266,6 +302,74 @@ await check({name:'studio/forged-session-refused', unit:'forged or ended session
  pass:v=>v===0,
  calibrate:()=>withCookie(OWNER_COOKIE),                   // the owner's live session does let in
  note:'a made-up cookie, a session after /logout on the page, and after /logout to the bot'});
+
+/* SSE is an ongoing permission, not permission captured when the request started.
+   Each probe has an authenticated subscriber, a second owner, and a local subscriber.
+   The broken guard caches identity per HTTP request and ignores logout notifications,
+   reproducing the original connection-only authorization while new HTTP still fails. */
+async function streamAuthFaults(mode, broken=false){
+ const seen=new WeakMap();
+ const guard=broken ? {...auth, onSessionsChanged:()=>()=>{}, userOf(req){
+  if(!seen.has(req)) seen.set(req,auth.userOf(req)); return seen.get(req);
+ }} : auth;
+ const probe=server({auth:guard,eventsHeartbeatMs:mode==='expiry-heartbeat'?40:60000});
+ await new Promise(r=>probe.listen(0,'127.0.0.1',r));
+ const base=`http://127.0.0.1:${probe.address().port}`, streams=[];
+ const until=async predicate=>{ const end=Date.now()+800;
+  while(!predicate()&&Date.now()<end) await new Promise(r=>setTimeout(r,10));
+  return predicate();
+ };
+ const login=async id=>{
+  const r=await fetch(base+new URL(auth.issueLink(id)).pathname,{method:'POST',redirect:'manual'});
+  if(r.status!==303) throw new Error('SSE probe could not log in');
+  return r.headers.get('set-cookie').split(';')[0];
+ };
+ const open=headers=>new Promise((resolve,reject)=>{
+  const stream={data:'',closed:false,req:null}; streams.push(stream);
+  stream.req=http.get(base+'/api/events',{headers},res=>{
+   stream.status=res.statusCode;
+   res.on('data',c=>stream.data+=c);
+   res.on('end',()=>{ stream.closed=true; });
+   res.on('close',()=>{ stream.closed=true; });
+   res.on('error',()=>{ stream.closed=true; });
+   resolve(stream);
+  }); stream.req.on('error',reject);
+ });
+ const emit=()=>fetch(base+'/api/build',{method:'POST',headers:{'content-type':'application/json'},
+  body:JSON.stringify({work:'zarra'})}).then(r=>r.arrayBuffer());
+ try{
+  const cookie=await login(222), otherCookie=await login(111);
+  const revoked=await open({...OUT,cookie}), other=await open({...OUT,cookie:otherCookie}), local=await open({});
+  await emit();
+  let faults=(await until(()=>streams.every(s=>s.data.includes('data: ')))?0:1)
+   +streams.filter(s=>s.status!==200).length;
+  for(const s of streams) s.data='';
+  if(mode==='page-logout') await fetch(base+'/logout',{method:'POST',headers:{...OUT,cookie},redirect:'manual'});
+  else if(mode==='bot-logout') await botSays(222,'/logout');
+  else SHIFT=31*24*3600*1000;
+  /* Delivery mode has a 60-second heartbeat: only event-time validation can close it.
+     Logout modes must close before an event or heartbeat; idle expiry uses neither an
+     HTTP request nor a file change to prompt revalidation. */
+  if(mode==='expiry-delivery') await emit();
+  if(!await until(()=>revoked.closed)) faults++;
+  if(revoked.data.includes('data: ')||revoked.data.includes(': alive')) faults++;
+  if(mode!=='expiry-delivery') await emit();
+  if(!await until(()=>local.data.includes('data: '))||local.closed) faults++;
+  if(!mode.startsWith('expiry') && (!await until(()=>other.data.includes('data: '))||other.closed)) faults++;
+  if((await fetch(base+'/api/works',{headers:{...OUT,cookie}})).status!==401) faults++;
+  return faults;
+ }finally{
+  SHIFT=0;
+  for(const s of streams) s.req.destroy();
+  await new Promise(r=>{ probe.close(r); probe.closeAllConnections(); });
+ }
+}
+for(const mode of ['page-logout','bot-logout','expiry-delivery','expiry-heartbeat']){
+ await check({name:'studio/sse-'+mode, unit:'revoked streams kept open, leaked messages, or active streams lost',
+  measure:()=>streamAuthFaults(mode), pass:v=>v===0,
+  calibrate:()=>streamAuthFaults(mode,true),
+  note:'live SSE revalidates '+mode+'; revoked requests get 401, while local and unaffected sessions keep receiving updates'});
+}
 
 /* THE BROWSER'S ICON REQUEST IS ANSWERED QUIETLY. Every page asks for /favicon.ico; a
    404 is a red line in the console on every load, and from outside it was a redirect

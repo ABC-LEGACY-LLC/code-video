@@ -82,12 +82,18 @@ export function createAuth({botToken='', owners='', publicUrl='', stateDir, api=
  const base = String(publicUrl||'').replace(/\/+$/,'');
  const links = new Map();                       // sha(link) -> {user, exp, used}
  let sessions = {};                             // sha(cookie) -> {user, exp}
+ const sessionListeners = new Set();
+ const sessionsChanged = () => { for(const fn of sessionListeners) fn(); };
+ const onSessionsChanged = fn => { sessionListeners.add(fn); return ()=>sessionListeners.delete(fn); };
  let botName = '';
  const file = stateDir && join(stateDir, 'sessions.json');
  const offsetFile = stateDir && join(stateDir, 'telegram-offset');
 
  function load(){ try{ sessions = JSON.parse(readFileSync(file,'utf8')); }catch(e){ sessions = {}; } prune(); }
- function prune(){ const t=now(); for(const k of Object.keys(sessions)) if(sessions[k].exp<=t || !OWNERS.has(sessions[k].user)) delete sessions[k]; }
+ function prune(){ const t=now(); let changed=false;
+  for(const k of Object.keys(sessions)) if(sessions[k].exp<=t || !OWNERS.has(sessions[k].user)){ delete sessions[k]; changed=true; }
+  if(changed) sessionsChanged();
+ }
  function save(){
   if(!file) return; prune(); mkdirSync(stateDir, {recursive:true});
   const tmp = file+'.tmp'; writeFileSync(tmp, JSON.stringify(sessions), {mode:0o600}); renameSync(tmp, file);
@@ -110,7 +116,9 @@ export function createAuth({botToken='', owners='', publicUrl='', stateDir, api=
   const s = sessions[sha(c)];
   return s && s.exp>now() && OWNERS.has(s.user) ? s.user : null;
  }
- function endSessionsOf(user){ let n=0; for(const k of Object.keys(sessions)) if(sessions[k].user===String(user)){ delete sessions[k]; n++; } save(); return n; }
+ function endSessionsOf(user){ let n=0; for(const k of Object.keys(sessions)) if(sessions[k].user===String(user)){ delete sessions[k]; n++; }
+  if(n) sessionsChanged(); save(); return n;
+ }
 
  /* ---- pages: /login, /auth/<link>, /logout ---- */
  const html = (res, code, body, headers={}) => { res.writeHead(code, {'content-type':'text/html; charset=utf-8',
@@ -148,7 +156,7 @@ export function createAuth({botToken='', owners='', publicUrl='', stateDir, api=
   }
   if(p==='/logout' && req.method==='POST'){
    if(!fromOwnPage(req)){ html(res, 403, page('Refused', '<h1>Refused</h1>')); return true; }
-   const c = cookieOf(req); if(c){ delete sessions[sha(c)]; save(); }
+   const c = cookieOf(req); if(c){ delete sessions[sha(c)]; sessionsChanged(); save(); }
    res.writeHead(303, {location:'/login', 'cache-control':'no-store', 'set-cookie':`${COOKIE}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0`});
    res.end(); return true;
   }
@@ -223,6 +231,6 @@ export function createAuth({botToken='', owners='', publicUrl='', stateDir, api=
  }
  function stopBot(){ running = false; polling?.abort(); }
 
- return {enabled, isOutside, route, refuse, userOf, startBot, stopBot, issueLink,
+ return {enabled, isOutside, route, refuse, userOf, onSessionsChanged, startBot, stopBot, issueLink,
   get botName(){ return botName; }, get sessionCount(){ prune(); return Object.keys(sessions).length; }};
 }
