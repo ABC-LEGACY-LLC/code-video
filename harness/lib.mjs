@@ -15,25 +15,33 @@ export const setSuite=n=>{ SUITE=n; };
 const R = [];
 export const results = R;
 
-export async function check({name, unit='', measure, pass, calibrate, note}){
- let value, cal, err=null, calErr=null;
- try{ value = await measure(); }catch(e){ err = e; }
- if(err){ R.push({name,status:'ERROR',err:String(err.message||err),note}); return; }
- const ok = pass(value);
+export async function check({name, unit='', measure, pass, calibrate, note, evidence}){
+ let value, cal, ok, err=null, calErr=null;
+ try{
+  value = await measure();
+  if(typeof value==='number'&&!Number.isFinite(value)) throw new Error('measurement returned a non-finite number');
+  ok = pass(value);
+ }catch(e){ err = e; }
+ if(err){ R.push({name,status:'ERROR',err:String(err.message||err),note,evidence}); return; }
  let sep = null;
  if(calibrate){
   /* A swallowed error is the thing this project stands against: if the
      calibration throws, the check is UNPROVEN and nobody is told why. Now it is. */
-  try{ cal = await calibrate(); sep = !pass(cal); }
+  try{
+   cal = await calibrate();
+   if(typeof cal==='number'&&!Number.isFinite(cal)) throw new Error('calibration returned a non-finite number');
+   sep = !pass(cal);
+  }
   catch(e){ cal = null; sep = false; calErr = String(e.message||e); }
  }
- R.push({name,unit,value,ok,cal,sep,note,calErr,
+ R.push({name,unit,value,ok,cal,sep,note,calErr,evidence,
   status: !ok ? 'FAIL' : (calibrate ? (sep?'PASS':'UNPROVEN') : 'UNCALIBRATED')});
 }
 const f=(v)=> typeof v==='number' ? (Math.abs(v)>=1000||(v!==0&&Math.abs(v)<0.001)? v.toExponential(2): v.toFixed(3)) : String(v);
 const reasonOf=r=> r.err ? String(r.err).split('\n')[0]
  : r.calErr ? 'the calibration itself failed: '+String(r.calErr).split('\n')[0]
  : r.status==='UNPROVEN' ? 'the broken case passed too -- this check cannot see the failure it watches'
+ : r.status==='UNCALIBRATED' ? 'no known-bad calibration was supplied'
  : null;
 /* ===== A FAILURE HAS TO BE VISIBLE =====
    On GitHub the TEXT of a log is shown only to someone signed in: even on a public
@@ -94,7 +102,7 @@ function save(suite){
   const time=new Date().toISOString();
   const checks={...(old.checks||{})};
   for(const r of R) checks[r.name]={status:r.status,value:r.value,cal:r.cal,unit:r.unit,
-   note:r.note,error:r.err||r.calErr||null,time};
+   note:r.note,error:r.err||r.calErr||reasonOf(r)||null,evidence:r.evidence,time};
   writeFileSync(file, JSON.stringify({suite,
    last:{time,count:R.length,argv:process.argv.slice(2)}, checks},null,1)+'\n');
  }catch(e){ console.log('  (studio result not written: '+e.message+')'); }
@@ -114,9 +122,10 @@ export function report(){
   if(r.status==='UNPROVEN') say(r.calErr
    ? '      the calibration itself threw, so nothing was proved: '+r.calErr
    : '      the broken case passed too — this check cannot see the failure it watches');
+  if(r.status==='UNCALIBRATED') say('      no known-bad calibration was supplied');
   if(r.note) say('      '+r.note);
  }
- const bad = R.filter(r=>r.status==='FAIL'||r.status==='ERROR'||r.status==='UNPROVEN');
+ const bad = R.filter(r=>r.status!=='PASS');
  say('\n  ' + R.length + ' checks, ' + bad.length + ' problem(s)\n');
  summary(SUITE, S, bad);
  annotate(SUITE, bad);

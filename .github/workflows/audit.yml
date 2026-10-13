@@ -6,8 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: '22'}
-      - run: npm i && npx playwright install --with-deps chromium
+        with: {node-version-file: '.nvmrc'}
+      - run: npm ci && node node_modules/playwright/cli.js install --with-deps chromium
         working-directory: studio/projects/oq-kocha
       - run: npm run build && npm run audit
         working-directory: studio/projects/oq-kocha
@@ -16,18 +16,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: '22'}
-      - run: npm i playwright && npx playwright install --with-deps chromium
+        with: {node-version-file: '.nvmrc'}
+      - run: npm ci && node node_modules/playwright/cli.js install --with-deps chromium
         working-directory: catalog
       - run: node tools/card.mjs && node test/run.mjs
         working-directory: catalog
+      - run: node --test harness/test.mjs catalog/test/freshness.mjs
   zarra:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: '22'}
-      - run: npm i && npx playwright install --with-deps chromium
+        with: {node-version-file: '.nvmrc'}
+      - run: npm ci && node node_modules/playwright/cli.js install --with-deps chromium
         working-directory: studio/projects/zarra
       - run: npm run audit
         working-directory: studio/projects/zarra
@@ -36,8 +37,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: '22'}
-      - run: npm i && npx playwright install --with-deps chromium
+        with: {node-version-file: '.nvmrc'}
+      - run: npm ci && node node_modules/playwright/cli.js install --with-deps chromium
         working-directory: studio/projects/tong-kaptar
       - run: npm run audit
         working-directory: studio/projects/tong-kaptar
@@ -46,8 +47,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: '22'}
-      - run: npm i && npx playwright install --with-deps chromium
+        with: {node-version-file: '.nvmrc'}
+      - run: npm ci && node node_modules/playwright/cli.js install --with-deps chromium
         working-directory: studio
       - run: npm run audit && npm run audit:ui
         working-directory: studio
+      - run: node --test studio/test/core.mjs studio/test/layers.mjs studio/test/completion.mjs studio/test/completion-ui.mjs studio/test/http-boundaries.mjs studio/test/watch-tree.mjs studio/test/editor-ui.mjs studio/test/layers-ui.mjs && node studio/test/whiteout-project.mjs && node studio/test/whiteout-layers.mjs
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m pip install -r tools/compare/requirements.txt
+      - run: python -m pip check
+      - run: python -m compare calibrate
+        working-directory: tools/compare

@@ -1,0 +1,4 @@
+# Python 3.12. These exact versions passed the comparison calibration suite.
+numpy==2.5.3
+scipy==1.18.1
+Pillow==12.3.0

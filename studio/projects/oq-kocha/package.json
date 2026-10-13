@@ -10,5 +10,10 @@
     "audit:fast": "node test/run.mjs --no-browser",
     "audio": "node tools/render-audio.mjs"
   },
-  "devDependencies": { "playwright": "^1.47.0" }
+  "devDependencies": {
+    "playwright": "1.62.1"
+  },
+  "engines": {
+    "node": ">=22 <23"
+  }
 }

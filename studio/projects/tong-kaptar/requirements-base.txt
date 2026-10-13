@@ -1,0 +1,19 @@
+# Python 3.12. Original film synthesis / measurement versions, without the optional AudioSet model.
+# Keep this environment separate from tools/compare's environment.
+numpy==2.4.4
+scipy==1.17.1
+numba==0.67.0
+pyloudnorm==0.2.0
+Pillow==12.2.0
+opencv-python==4.13.0.92
+matplotlib==3.10.9
+# Transitive dependencies resolved in an empty Python 3.12 environment.
+llvmlite==0.49.0
+contourpy==1.4.0
+cycler==0.12.1
+fonttools==4.66.1
+kiwisolver==1.5.1
+packaging==26.3
+pyparsing==3.3.3
+python-dateutil==2.9.0.post0
+six==1.17.0

@@ -1,8 +1,8 @@
 # code-video — convenience targets
 # ─────────────────────────────────────────
 #
-# One long-running service: the studio (studio/server.mjs, Node only, no
-# dependencies).  Everything else here is a one-shot job: building a film,
+# One long-running service: the studio (studio/server.mjs, Node + Acorn).
+# Everything else here is a one-shot job: building a film,
 # running a suite of checks, generating the catalog page.
 #
 # The studio runs one of two ways, and every target below picks the right one:
@@ -30,7 +30,7 @@ TONG         = studio/projects/tong-kaptar
 .DEFAULT_GOAL := help
 
 .PHONY: help start stop restart status logs install uninstall ports expose expose-dry unexpose \
-        build build-if-needed deps deps-if-needed audio \
+        build build-if-needed setup doctor deps deps-if-needed setup-compare setup-tong audio \
         audit audit-fast audit-studio audit-oq-kocha audit-catalog audit-zarra audit-tong-kaptar \
         cards catalog notes labs clean
 
@@ -49,6 +49,8 @@ help:
 	@echo "  make expose       put it on https://$(STUDIO_HOST), login through the Telegram bot (sudo)"
 	@echo ""
 	@echo "  make audit-fast   the quick checks (seconds)"
+	@echo "  make setup        install locked packages and Chromium for every suite"
+	@echo "  make doctor       check dependencies and browser availability"
 	@echo "  make notes        open notes a person left in the studio"
 	@echo ""
 	@echo "All targets:"
@@ -247,16 +249,28 @@ build-if-needed:
 audio: build-if-needed deps-if-needed
 	@cd $(OQ) && npm run --silent audio
 
-## Install the browser the checks use (Playwright), in every suite that needs it.
-deps:
-	@for d in $(OQ) catalog $(ZARRA) $(TONG) studio; do \
-		echo "   📦 $$d"; (cd $$d && npm install --silent && npx playwright install chromium) || exit 1; \
-	done
+## Install locked JavaScript dependencies and their Chromium revisions.
+setup:
+	@$(NODE) tools/setup.mjs
 
-## Install dependencies only where node_modules is missing.
+## Verify locked dependency versions and browser availability; changes nothing.
+doctor:
+	@$(NODE) tools/doctor.mjs
+
+## Create the isolated Python comparison environment (requires Python 3.12 + venv).
+setup-compare:
+	@$(NODE) tools/setup.mjs --python compare
+
+## Create the isolated Tong audio environment, without Torch or GPU dependencies.
+setup-tong:
+	@$(NODE) tools/setup.mjs --python tong
+
+## Alias for setup: locked JavaScript packages and Chromium.
+deps: setup
+
+## Repair missing or mismatched dependencies and ensure the matching Chromium exists.
 deps-if-needed:
-	@missing=0; for d in $(OQ) catalog $(ZARRA) $(TONG) studio; do [ -d $$d/node_modules/playwright ] || missing=1; done; \
-	if [ $$missing -eq 1 ]; then $(MAKE) --no-print-directory deps; else echo "   📦 dependencies present"; fi
+	@$(NODE) tools/setup.mjs --if-needed
 
 # ── checks ───────────────────────────────────────────
 
@@ -265,13 +279,14 @@ audit: audit-studio audit-catalog audit-zarra audit-tong-kaptar audit-oq-kocha
 
 ## The quick checks: studio, the cards against their sources, Oq Ko'cha without a browser.
 audit-fast:
+	@node --test harness/test.mjs catalog/test/freshness.mjs catalog/test/render-input.mjs studio/test/core.mjs studio/test/layers.mjs studio/test/http-boundaries.mjs studio/test/watch-tree.mjs studio/test/sdk.mjs
 	@cd studio && node test/run.mjs
 	@cd catalog && node tools/card.mjs
 	@cd $(OQ) && node test/run.mjs --no-browser
 
 ## The studio's own checks: the server in seconds, then the page in a browser (a few minutes).
 audit-studio: deps-if-needed
-	@cd studio && node test/run.mjs && node test/ui.mjs
+	@cd studio && node test/run.mjs && node --test test/core.mjs test/layers.mjs test/completion.mjs test/completion-ui.mjs test/sdk.mjs test/sdk-ui.mjs test/http-boundaries.mjs test/watch-tree.mjs test/editor-ui.mjs test/layers-ui.mjs && node test/whiteout-project.mjs && node test/whiteout-layers.mjs && node test/ui.mjs
 
 ## Oq Ko'cha: every check, renders included (long).
 audit-oq-kocha: build deps-if-needed

@@ -8,5 +8,8 @@
   "scripts": {
     "audit": "node test/run.mjs",
     "film": "bash make_film.sh"
+  },
+  "engines": {
+    "node": ">=22 <23"
   }
 }

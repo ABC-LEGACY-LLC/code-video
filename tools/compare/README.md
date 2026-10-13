@@ -10,10 +10,12 @@ done exactly this way, and which errors were found where — in [`METHOD.md`](ME
 
 ## Install
 
-Python 3.10+, `numpy`, `scipy`, `Pillow`. No network needed.
+The pinned environment uses Python 3.12, `numpy`, `scipy`, and `Pillow`.
+Installation downloads packages; comparisons run offline. From the repository root:
 
 ```bash
-pip install numpy scipy pillow
+make setup-compare
+source .venv/compare/bin/activate
 cd tools/compare
 python3 -m compare calibrate      # the first job: is every measurement proven
 ```

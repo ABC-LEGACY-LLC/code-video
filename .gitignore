@@ -4,6 +4,7 @@ build/
 .DS_Store
 .env
 __pycache__/
+.venv/
 
 # what a work takes from someone else's reference (frames, masks, landmarks): this server only
 studio/projects/*/private/
