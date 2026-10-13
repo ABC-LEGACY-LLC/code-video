@@ -9,6 +9,8 @@
    measurement. */
 import {chromium} from 'playwright';
 import {existsSync,readdirSync} from 'fs';
+import {startPreview} from './preview.mjs';
+import {renderInput} from './render-input.mjs';
 
 function chrome(){
  const root='/opt/pw-browsers';
@@ -49,6 +51,8 @@ function medianCut(px,k){
 const LUMA=(r,g,b)=>(0.2126*r+0.7152*g+0.0722*b)/255;
 
 export function metrics(frames){          // frames: [{w,h,data:Uint8ClampedArray}]
+ if(!frames.length||frames.some(f=>f.w<2||f.h<2||f.data.length!==f.w*f.h*4))
+  throw new Error('measurement needs non-empty RGBA frames at least 2 × 2 pixels');
  const all=[];
  for(const f of frames) for(let i=0;i<f.w*f.h;i++) all.push(f.data[i*4],f.data[i*4+1],f.data[i*4+2]);
  const px=Float64Array.from(all);
@@ -81,24 +85,45 @@ export function metrics(frames){          // frames: [{w,h,data:Uint8ClampedArra
    tex+=Math.abs(L[y*w+x]-s/9); texN++;
   }
  }
- let ink=0; for(let i=0;i<n;i++) if(lum[i]<0.15) ink++;
+ let ink=0,light=0; for(let i=0;i<n;i++){if(lum[i]<0.15) ink++;if(lum[i]>150/255)light++;}
  const hp=100*hard/tot, sp=100*soft/tot;
  return {
   palette: medianCut(px,6),
+  lightField:+(100*light/n).toFixed(2),
   value: [Math.round(q(0.02)*255), Math.round(q(0.98)*255)],
   saturation:+(100*sat.reduce((a,b)=>a+b,0)/n).toFixed(1),
   hardEdges:+hp.toFixed(2), softEdges:+sp.toFixed(2),
-  hardEdgeShare:+(100*hp/(hp+sp)).toFixed(1),
+  hardEdgeShare:hp+sp ? +(100*hp/(hp+sp)).toFixed(1) : 0,
   texture:+(255*tex/texN).toFixed(2),
   ink:+(100*ink/n).toFixed(1)
  };
 }
 
-export async function grab(spec){          // spec: {file, frames:[...], hook?, size?, blur?}
- const b=await chromium.launch({executablePath:chrome()||undefined,
-  args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
+export async function capture(spec,options={}){ // options.root is only for isolated test fixtures
+ if(!spec.frames?.length||spec.frames.some(n=>!Number.isFinite(n)||n<0))
+  throw new Error('measurement needs a non-empty, non-negative sampling schedule');
+ const preview=await startPreview(spec.file,options);
+ let b;
+ try{
+ b=await chromium.launch({executablePath:chrome()||undefined,
+  // Canvas2D should not compile a software GPU pipeline for each paint operation.
+  // WebGL works still use SwiftShader; 2D works use Chromium's CPU canvas renderer.
+  args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-accelerated-2d-canvas','--autoplay-policy=no-user-gesture-required']});
  const pg=await b.newPage({viewport:{width:1100,height:760}});
- await pg.goto('file://'+spec.file);
+ const resources=new Map(), external=new Set(), missingLocal=new Set(), pageErrors=[];
+ const fingerprint=file=>renderInput(file,spec);
+ pg.on('request',request=>{
+  const url=request.url();
+  if(url.startsWith(preview.origin+'/')){
+   const file=preview.fileForURL(url);
+   if(!file){if(new URL(url).pathname!=='/favicon.ico')missingLocal.add(new URL(url).pathname);return;}
+   if(!resources.has(file)){
+    try{ resources.set(file,fingerprint(file)); }catch{ resources.set(file,null); }
+   }
+  }else if(/^https?:/.test(url)) external.add(url);
+ });
+ pg.on('pageerror',err=>pageErrors.push(err.message));
+ await pg.goto(preview.url);
  /* READINESS IS ASKED FOR, NOT SLEPT THROUGH -- on a page with a hook. It draws a
     frame by number and needs no clock, only the word "ready". This used to sleep
     1400 ms, and on a runner 1.7x slower a sleep becomes a race.
@@ -112,10 +137,12 @@ export async function grab(spec){          // spec: {file, frames:[...], hook?, 
  const out=[]; let prev=0;
  for(const k of spec.frames){
   if(!spec.hook){ await pg.waitForTimeout(Math.max(0,(k-prev)*1000)); prev=k; }
-  out.push(await pg.evaluate(([k,hook,W,blur,size])=>{
-   if(hook) window[hook](k,size[0],size[1]);
+  out.push(await pg.evaluate(async([k,hook,W,blur,size])=>{
+   if(window.__failed)throw new Error(String(window.__failed));
+   if(hook) await window[hook](k,size[0],size[1]);
    const cs=[...document.querySelectorAll('canvas')].sort((a,b)=>b.width*b.height-a.width*a.height);
    const src=cs[0];
+   if(!src||!src.width||!src.height) throw new Error('page has no drawable canvas');
    const h=Math.max(1,Math.round(W*src.height/src.width));
    const c=document.createElement('canvas'); c.width=W; c.height=h;
    const g=c.getContext('2d'); g.imageSmoothingQuality='high';
@@ -124,9 +151,18 @@ export async function grab(spec){          // spec: {file, frames:[...], hook?, 
    return {w:W,h,data:Array.from(g.getImageData(0,0,W,h).data)};
   },[k,spec.hook||null,W,spec.blur||0,spec.size||[720,518]]));
  }
- await b.close();
- return out.map(f=>({...f,data:Uint8ClampedArray.from(f.data)}));
+ if(pageErrors.length) throw new Error('page script failed: '+pageErrors.join('; '));
+ if(missingLocal.size)throw new Error('local render resources unavailable: '+[...missingLocal].join(', '));
+ for(const [file,input] of resources){
+  if(input===null) throw new Error('render resource was missing or invalid: '+file);
+  if(fingerprint(file).renderHash!==input.renderHash) throw new Error('render resource changed during measurement: '+file);
+ }
+ return {frames:out.map(f=>({...f,data:Uint8ClampedArray.from(f.data)})),
+  browser:b.version(),resources:[...resources].map(([file,input])=>({file,...input})),
+  externalResources:[...external].sort()};
+ }finally{ try{if(b)await b.close();}finally{await preview.close();} }
 }
+export async function grab(spec){ return (await capture(spec)).frames; }
 export async function measure(spec){ return metrics(await grab(spec)); }
 if(process.argv[1]?.endsWith('measure.mjs')){
  const [file,...ks]=process.argv.slice(2);

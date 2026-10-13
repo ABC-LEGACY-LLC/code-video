@@ -1,15 +1,18 @@
 {
  "name": "Whiteout",
  "sources": [
-  "../../studio/projects/whiteout/whiteout.html"
+  "../../studio/projects/whiteout/whiteout.html",
+  "../../studio/projects/whiteout/project.studio.json"
  ],
  "frame": {
+  "project": "../../studio/projects/whiteout/project.studio.json",
   "file": "../../studio/projects/whiteout/whiteout.html",
   "frames": [
-   4,
-   10,
-   16
-  ]
+   96,
+   240,
+   384
+  ],
+  "hook": "__frameTo"
  },
  "method": [
   {
@@ -17,24 +20,37 @@
    "evidence": "tables.PW"
   },
   {
-   "text": "13 shots, the shortest 0.085 s — for the strike.",
+   "text": "13 authored shots, stored in project.studio.json.",
    "evidence": "tables.SHOTS"
   },
   {
-   "text": "127 draw calls run in every frame: 35 beginPath, 33 lineTo, 13 bezierCurveTo.",
+   "text": "130 draw calls in the source: 35 beginPath, 33 lineTo, 13 bezierCurveTo.",
    "evidence": "drawCallsTotal"
   },
   {
-   "text": "renderer canvas2d, 1198 lines, 41 functions.",
+   "text": "renderer canvas2d, 6238 authored source lines across 2 source files, 48 functions.",
    "evidence": "lines"
+  },
+  {
+   "text": "The shortest authored shot is 2 frames.",
+   "evidence": "shortestShotFrames"
+  },
+  {
+   "text": "68 independently editable visual layers across 13 shots.",
+   "evidence": "visualLayers"
   }
  ],
  "look": "A snowfield with no edges. No horizon, no building, no shadow — a white field and one dot in it. The title is set in Cormorant Garamond, the measurement lines in IBM Plex Mono.",
  "claims": {
-  "value.low": [
+  "lightField": [
+   ">",
+   80,
+   "at least 80% of the sampled image is a bright snowfield"
+  ],
+  "value.range": [
    ">",
    150,
-   "even the darkest pixel is light — this film is WHITE"
+   "dark figures remain distinct from the bright snowfield"
   ],
   "saturation": [
    "<",
@@ -43,11 +59,11 @@
   ]
  },
  "count": {
-  "files": 1,
-  "bytes": 57754,
-  "lines": 1198,
+  "files": 2,
+  "bytes": 204994,
+  "lines": 6238,
   "renderer": "canvas2d",
-  "functions": 41,
+  "functions": 48,
   "audio": true,
   "events": [
    "click",
@@ -66,79 +82,246 @@
    "bezierCurveTo": 13,
    "quadraticCurveTo": 4,
    "ellipse": 8,
-   "fillRect": 4,
+   "fillRect": 6,
    "fillText": 2,
+   "drawImage": 1,
    "createLinearGradient": 2
   },
-  "drawCallsTotal": 127,
+  "drawCallsTotal": 130,
   "tables": {
    "PW": 4,
    "SHOTS": 13
   },
-  "durations": [
+  "shotFrames": [
+   73,
+   47,
+   44,
+   38,
+   14,
+   11,
+   4,
    3,
    2,
-   1.8,
-   1.6,
-   0.6,
-   0.42,
-   0.17,
+   27,
+   48,
+   58,
+   95
+  ],
+  "totalFrames": 464,
+  "shortestShotFrames": 2,
+  "fps": 24,
+  "durations": [
+   3.0416666666666665,
+   1.9583333333333333,
+   1.8333333333333333,
+   1.5833333333333333,
+   0.5833333333333334,
+   0.4583333333333333,
+   0.16666666666666666,
    0.125,
-   0.085,
-   1.15,
+   0.08333333333333333,
+   1.125,
    2,
-   2.4,
-   4
+   2.4166666666666665,
+   3.9583333333333335
+  ],
+  "visualLayers": 68,
+  "layerBindings": [
+   "background",
+   "drop",
+   "ground",
+   "haze",
+   "hero",
+   "impact",
+   "opponent",
+   "snow",
+   "speed",
+   "title"
   ]
  },
  "measure": {
   "palette": [
    {
-    "hex": "#e8ecec",
+    "hex": "#e9ecec",
     "share": 50
    },
    {
-    "hex": "#dee2e3",
+    "hex": "#dce0e1",
     "share": 25
    },
    {
-    "hex": "#d3d8d9",
+    "hex": "#cdd2d3",
     "share": 12.5
    },
    {
-    "hex": "#c7cdce",
+    "hex": "#bfc5c6",
     "share": 6.3
    },
    {
-    "hex": "#84898b",
+    "hex": "#242729",
     "share": 3.1
    },
    {
-    "hex": "#c1c8c9",
+    "hex": "#8c9192",
     "share": 3.1
    }
   ],
+  "lightField": 95.59,
   "value": [
-   193,
+   40,
    243
   ],
-  "saturation": 2.1,
-  "hardEdges": 0.67,
-  "softEdges": 8.96,
-  "hardEdgeShare": 7,
-  "texture": 1.18,
-  "ink": 0
+  "saturation": 2.4,
+  "hardEdges": 1.85,
+  "softEdges": 9.31,
+  "hardEdgeShare": 16.6,
+  "texture": 1.77,
+  "ink": 1.3
  },
  "goals": {
   "value.range": [
    ">",
    90,
-   "now 50 — white on white, nothing dark to measure"
+   "Keep readable silhouette contrast"
   ],
   "hardEdgeShare": [
    ">",
    8,
-   "now 7 — almost no drawn edge"
+   "Keep the authored drawing edges readable"
+  ]
+ },
+ "retiredClaims": [
+  {
+   "key": "value.low",
+   "rule": [
+    ">",
+    150,
+    "even the darkest pixel is light — this film is WHITE"
+   ],
+   "reason": "Whole-frame lower luminance includes the intentionally dark figures. Replaced with light-field coverage and silhouette contrast, each calibrated independently."
+  }
+ ],
+ "measureEvidence": {
+  "schema": 2,
+  "measuredAt": "2026-10-13T08:42:33.189Z",
+  "sourceHash": "670b7175e57b254f23305fc56b06253075dddeb5d2b76825fbb609a417129115",
+  "sampling": {
+   "frames": [
+    96,
+    240,
+    384
+   ],
+   "hook": "__frameTo",
+   "size": [
+    720,
+    518
+   ],
+   "blur": 0,
+   "measurementWidth": 320,
+   "liveWarmupMs": 0,
+   "project": "../../studio/projects/whiteout/project.studio.json"
+  },
+  "inputs": [
+   {
+    "file": "../tools/fingerprint.mjs",
+    "sha256": "58be72fdea16e7531ef3870c2a0dd968752afeebf8ec5519a7d56257627a3823",
+    "renderHash": "58be72fdea16e7531ef3870c2a0dd968752afeebf8ec5519a7d56257627a3823",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../tools/measure.mjs",
+    "sha256": "cb2fc1c06cf88ee8ab8a5e1b2623818a4ac6626d8eb295178298c0833fd1e8ef",
+    "renderHash": "cb2fc1c06cf88ee8ab8a5e1b2623818a4ac6626d8eb295178298c0833fd1e8ef",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../tools/preview.mjs",
+    "sha256": "2fbe43cea14a43a6b15a35ff784be3579fa2492efc14e3b3ca2daa4cdbafa834",
+    "renderHash": "2fbe43cea14a43a6b15a35ff784be3579fa2492efc14e3b3ca2daa4cdbafa834",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../tools/render-input.mjs",
+    "sha256": "1a6ece0ad4f891d664c2c1632f998cb3c03f1f6413ab8910d5556db6613a23ad",
+    "renderHash": "1a6ece0ad4f891d664c2c1632f998cb3c03f1f6413ab8910d5556db6613a23ad",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../tools/sample.mjs",
+    "sha256": "edcfe37b1ae074dfa21cc39ab6c98f5bd36cfd4a7181969cac6634b18e2993d4",
+    "renderHash": "edcfe37b1ae074dfa21cc39ab6c98f5bd36cfd4a7181969cac6634b18e2993d4",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/components/legacy.mjs",
+    "sha256": "aa8ae250f6c711e92f7835a64fd0d5e4e4dc3f861db6ae590f2887e3bc5aa30b",
+    "renderHash": "aa8ae250f6c711e92f7835a64fd0d5e4e4dc3f861db6ae590f2887e3bc5aa30b",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/core/component-schema.mjs",
+    "sha256": "af9ad2a7c5d841aaae206fcca8940c78607963eea9ce6808695fd733cf49ea03",
+    "renderHash": "af9ad2a7c5d841aaae206fcca8940c78607963eea9ce6808695fd733cf49ea03",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/core/editor-upgrade.mjs",
+    "sha256": "86fdaecdb50d418594d3ffcb2135028984dbf49b6e158b48ef6947e2b579ecf8",
+    "renderHash": "86fdaecdb50d418594d3ffcb2135028984dbf49b6e158b48ef6947e2b579ecf8",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/core/http-file.mjs",
+    "sha256": "002308e0cbccff4de14f677b691f8d133e4869c82fc54d316788207f6b74941a",
+    "renderHash": "002308e0cbccff4de14f677b691f8d133e4869c82fc54d316788207f6b74941a",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/core/layer-migration.mjs",
+    "sha256": "f511467336ede4bad797419914b962df31b5394e9c614e8beb40a6a82bdd48a7",
+    "renderHash": "f511467336ede4bad797419914b962df31b5394e9c614e8beb40a6a82bdd48a7",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/core/layers.mjs",
+    "sha256": "a0be434a1c7e2c7f4a4ddec10a62536e159586f11ae39cb5214bf308ca20c31e",
+    "renderHash": "a0be434a1c7e2c7f4a4ddec10a62536e159586f11ae39cb5214bf308ca20c31e",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/core/project.mjs",
+    "sha256": "a3b8bcbb336852a031b1ac624f2e373d213ed23770cea1d6e035ee2848981a31",
+    "renderHash": "a3b8bcbb336852a031b1ac624f2e373d213ed23770cea1d6e035ee2848981a31",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/media.mjs",
+    "sha256": "389e4038902945edb185bfb912fc5e6b22d2ac9d7c5908c8dfb163c974828eb7",
+    "renderHash": "389e4038902945edb185bfb912fc5e6b22d2ac9d7c5908c8dfb163c974828eb7",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/projects/whiteout/project.studio.json",
+    "sha256": "5ebbcc8d791dfea6ed943570e5950afcf61593dcd3a55530ab239baa79f87c3d",
+    "renderHash": "5ac3e829e80e872c1276db616ade74b2e6d08621ba249ed748230a858f01aa6f",
+    "projection": "studio-project-v1"
+   },
+   {
+    "file": "../../studio/projects/whiteout/whiteout.html",
+    "sha256": "e6b16afb01c44370ffb891d42e620c552322ab5b5c00eb8e8b7e99f60c87a132",
+    "renderHash": "e6b16afb01c44370ffb891d42e620c552322ab5b5c00eb8e8b7e99f60c87a132",
+    "projection": "bytes-v1"
+   }
+  ],
+  "pixelHash": "f15c97b4f3c52e8ab032a8202d90636c6a1c753c54c96296e2124c91c503d7e3",
+  "browser": "151.0.7922.34",
+  "node": "v22.23.2",
+  "samplingMode": "hook",
+  "externalResources": [
+   "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=IBM+Plex+Mono:wght@400;500&display=swap",
+   "https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2",
+   "https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1i8q1w.woff2",
+   "https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3twJwlBFgg.woff2"
   ]
  }
 }

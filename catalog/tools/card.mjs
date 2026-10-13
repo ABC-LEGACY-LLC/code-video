@@ -12,7 +12,8 @@
 import {readFileSync,writeFileSync,readdirSync,existsSync} from 'fs';
 import {execFileSync} from 'child_process';
 import {count} from './count.mjs';
-import {measure} from './measure.mjs';
+import {sampleCard,measurementStatus} from './sample.mjs';
+import {frameSpec} from './fingerprint.mjs';
 export const DIR=new URL('../cards/',import.meta.url).pathname;
 export const FIELDS=['name','sources','frame','method','look','claims','goals'];
 
@@ -64,7 +65,7 @@ export function confirm(text,val){
 }
 /* Whether a card still agrees with its source */
 export function verify(k){
- const c=count(k.sources.map(p=>new URL(p,'file://'+k._f).pathname));
+ const c=count(k.sources.map(p=>new URL(p,'file://'+k._f).pathname),frameSpec(k));
  const stale=[];
  for(const u of k.method){
   const t=confirm(u.text, dig(c,u.evidence));
@@ -76,7 +77,10 @@ export async function refresh(k,{withMeasure=true}={}){
  const {count:c}=verify(k);
  const y={...k}; delete y._f;
  y.count=c;
- if(withMeasure) y.measure=await measure({...k.frame, file:new URL(k.frame.file,'file://'+k._f).pathname});
+ if(withMeasure){
+  const sample=await sampleCard(k);
+  y.measure=sample.measure; y.measureEvidence=sample.evidence;
+ }
  else if(k.measure) y.measure=k.measure;
  writeFileSync(k._f, JSON.stringify(y,null,1)+'\n');
  return y;
@@ -89,7 +93,11 @@ if(process.argv[1]?.endsWith('card.mjs')){
   if(only&&!fast&&k.name!==only&&only!=='--fast') continue;
   const {stale}=verify(k);
   if(process.argv[2]==='refresh'){ await refresh(k,{withMeasure:!fast}); console.log('refreshed:',k.name); }
-  else console.log(`${k.name.padEnd(28)} ${stale.length? '✗ '+stale.length+' stale line(s)':'✓'}`);
+  else{
+   const recorded=measurementStatus(k);
+   console.log(`${k.name.padEnd(28)} ${stale.length? '✗ '+stale.length+' stale line(s)':'✓ method'}; measurements ${recorded.status}: ${recorded.reason}`);
+  }
   stale.forEach(y=>console.log('   ',y));
+  if(stale.length) process.exitCode=1;
  }
 }

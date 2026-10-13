@@ -2,7 +2,9 @@
    "Method" means how a project is built. It cannot be written from a feeling: it is
    in the source and has to be counted. This file does one thing -- it reads code and
    returns numbers. It does not know what they mean; that is the card's job. */
-import {readFileSync,statSync} from 'fs';
+import {readFileSync} from 'fs';
+import {resolve} from 'node:path';
+import {authoredDocument} from './render-input.mjs';
 
 const DRAW=['beginPath','moveTo','lineTo','arc','arcTo','bezierCurveTo','quadraticCurveTo',
             'ellipse','rect','fillRect','strokeRect','fillText','strokeText','drawImage',
@@ -32,12 +34,13 @@ function tableSize(s,name){
  return pushes || null;
 }
 
-export function count(paths){
- const src=paths.map(p=>readFileSync(p,'utf8'));
+export function count(paths,{project}={}){
+ const src=paths.map(p=>project&&resolve(p)===resolve(project)
+  ?JSON.stringify(authoredDocument(readFileSync(p)),null,2)+'\n':readFileSync(p,'utf8'));
  const s=src.join('\n');
  const o={
   files:paths.length,
-  bytes:paths.reduce((a,p)=>a+statSync(p).size,0),
+  bytes:src.reduce((a,text)=>a+Buffer.byteLength(text),0),
   lines:src.reduce((a,t)=>a+t.split('\n').length,0),
   renderer: (/webgl2/.test(s)||/#version\s+300\s+es/.test(s)) ? 'webgl2'
           : (/getContext\(\s*['"]2d/.test(s)? 'canvas2d' : 'unknown'),
@@ -67,6 +70,29 @@ export function count(paths){
     to the NUMBER of shots, not to their sum. */
  const df=[...s.matchAll(/\bdf\s*:\s*([0-9]+)\b/g)].map(m=>+m[1]);
  if(df.length){ o.shotFrames=df; o.totalFrames=df.reduce((a,b)=>a+b,0); }
+ /* Migrated works keep authored shots in the Studio document. Count that data,
+    rather than treating SHOTS = project.shots.map(...) as an empty source table. */
+ const projects=paths.flatMap((p,i)=>p.endsWith('/project.studio.json')?[JSON.parse(src[i])]:[]);
+ if(projects.length>1) throw new Error('a card must identify one authored Studio project');
+ if(projects.length){
+  const doc=projects[0],project=doc.project;
+  if(![1,2].includes(doc.schemaVersion)||!Array.isArray(project?.shots)||!project.shots.length
+    ||project.shots.some(shot=>!Number.isSafeInteger(shot.durationFrames)||shot.durationFrames<=0)
+    ||!Number.isSafeInteger(project.fps?.num)||project.fps.num<=0
+    ||!Number.isSafeInteger(project.fps?.den)||project.fps.den<=0)
+   throw new Error('invalid authored Studio shot timing');
+  o.tables.SHOTS=project.shots.length;
+  o.shotFrames=project.shots.map(shot=>shot.durationFrames);
+  o.totalFrames=o.shotFrames.reduce((a,b)=>a+b,0);
+  o.shortestShotFrames=Math.min(...o.shotFrames);
+  o.fps=project.fps.num/project.fps.den;
+  o.durations=o.shotFrames.map(n=>n/o.fps);
+  if(doc.schemaVersion===2){
+   const layers=project.shots.flatMap(shot=>(shot.entities||[]).filter(entity=>entity.layer&&entity.layer.binding!=='group'));
+   o.visualLayers=layers.length;
+   o.layerBindings=[...new Set(layers.map(entity=>entity.layer.binding))].sort();
+  }
+ }
  return o;
 }
 if(process.argv[1]?.endsWith('count.mjs'))

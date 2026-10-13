@@ -5,6 +5,8 @@
 import {writeFileSync,readFileSync,mkdirSync} from 'fs';
 import {dirname} from 'path';
 import {load,prepare} from './card.mjs';
+import {measurementStatus} from './sample.mjs';
+import {startPreview} from './preview.mjs';
 import {chromium} from 'playwright';
 import {existsSync,readdirSync} from 'fs';
 const K=load();
@@ -15,11 +17,15 @@ function chrome(){const r='/opt/pw-browsers';if(!existsSync(r))return undefined;
   const p=`${r}/${d}/chrome-linux/chrome`; if(existsSync(p))return p;} return undefined;}
 
 const b=await chromium.launch({executablePath:chrome(),
- args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
+ args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-accelerated-2d-canvas','--autoplay-policy=no-user-gesture-required']});
 const still={};
+try{
 for(const k of K){
- const pg=await b.newPage({viewport:{width:1100,height:760}});
- await pg.goto('file://'+at(k,k.frame.file));
+ const preview=await startPreview(at(k,k.frame.file));
+ let pg;
+ try{
+ pg=await b.newPage({viewport:{width:1100,height:760}});
+ await pg.goto(preview.url);
  const t=k.frame.frames[0];
  /* a page with a hook says when it is ready; on a page without one, 1400 ms and t
     seconds are the sampling schedule (see the comment in measure.mjs), untouched
@@ -32,28 +38,30 @@ for(const k of K){
   const s=document.createElement('canvas'); s.width=520; s.height=Math.round(520*c.height/c.width);
   s.getContext('2d').drawImage(c,0,0,s.width,s.height);
   return s.toDataURL('image/jpeg',0.78);},[t,k.frame.hook||null]);
- await pg.close();
+ }finally{try{if(pg)await pg.close();}finally{await preview.close();}}
 }
-await b.close();
+}finally{await b.close();}
 
 const e=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const bar=(lab,val,mx,unit='%',thin=false)=>`<div class="bar"><div class="lab"><span>${lab}</span><b>${val}${unit}</b></div>
    <div class="track"><div class="fill${thin?' thin':''}" style="width:${Math.min(100,val/mx*100).toFixed(1)}%"></div></div></div>`;
 const cards=K.map(k=>{
  const o=k.measure, [lo,hi]=o.value;
+ const recorded=measurementStatus(k);
  const sw=o.palette.map(p=>`<i style="width:${p.share}%;background:${p.hex}"></i>`).join('');
  const us=k.method.map(u=>`<li>${e(u.text)} <span class="evidence">${e(u.evidence)}</span></li>`).join('');
  const gl=Object.entries(k.goals||{}).map(([key,[op,lim,what]])=>`${e(what)}`).join(' · ');
  return `<article class="spec">
  <div class="plate"><img src="${still[k.name]}" alt="${e(k.name)}">
-  <div><div class="eyebrow" style="margin-bottom:5px">measured palette</div><div class="swatches">${sw}</div></div></div>
+  <div><div class="eyebrow" style="margin-bottom:5px">recorded palette</div><div class="swatches">${sw}</div></div></div>
  <div class="body">
   <h2>${e(k.name)}</h2>
   <div class="src">${e(k.count.renderer)} · ${k.count.lines} lines · ${k.count.drawCallsTotal} draw calls</div>
   <div class="pair"><div class="eyebrow">method · how it is built — counted from the source</div><ul class="method">${us}</ul></div>
   <div class="pair"><div class="eyebrow">look · how the work looks</div><p>${e(k.look)}</p></div>
  </div>
- <div class="meas"><span class="eyebrow">measured</span>
+ <div class="meas"><span class="eyebrow">recorded measurement · ${e(recorded.status)}</span>
+  <p>${e(recorded.reason)}</p>
   <div class="bar"><div class="lab"><span>value range</span><b>${lo}–${hi}</b></div>
    <div class="range"><i style="left:${(lo/255*100).toFixed(1)}%;width:${((hi-lo)/255*100).toFixed(1)}%"></i></div></div>
   ${bar("saturation",o.saturation,70,'%',o.saturation<5)}
@@ -78,7 +86,7 @@ const dots=P.map(p=>{const [a,dx,dy]=anchor[p.name]||['start',12,4];
  return `<circle cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="5.5" fill="var(--accent)"/>`
  +`<text x="${(X(p.x)+dx).toFixed(1)}" y="${(Y(p.y)+dy).toFixed(1)}" text-anchor="${a}" class="pt">${e(p.name)}</text>`;}).join('');
 const wo=P.find(p=>p.name==='Whiteout'), nm=P.find(p=>p.name==='Not A Measurement');
-const svg=`<svg viewBox="0 0 600 392" role="img" aria-label="Five projects: hard-edge share against saturation">
+const svg=`<svg viewBox="0 0 600 392" role="img" aria-label="${K.length} projects: recorded hard-edge share against saturation">
  <style>.ax{font-family:"JetBrains Mono",monospace;font-size:11px;fill:var(--muted)}
  .pt{font-family:"Bricolage Grotesque",sans-serif;font-size:13.5px;font-weight:700;fill:var(--ink)}
  .axt{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.1em;fill:var(--muted)}</style>
@@ -103,7 +111,7 @@ const lowWhite=K.find(k=>k.name==='Whiteout')?.measure.value[0], mushukSat=K.fin
 writeFileSync(OUT, head+`<div class="wrap">
 <span class="eyebrow">ABC Legacy · the catalog of works · ${date}</span>
 <h1>Style catalog</h1>
-<p class="lede">Five projects, one block of data. Each block has three parts with different rights: <b>method</b> — how it is built, <em>counted</em> from the source; <b>look</b> — how the work looks, the one free field; <b>measure</b> — <em>measured</em> from frames. This page is generated from the cards, so it cannot go stale against them.</p>
+<p class="lede">${K.length} projects, one block of data. Each block has three parts with different rights: <b>method</b> — how it is built, <em>counted</em> from the source; <b>look</b> — how the work looks, the one free field; <b>measure</b> — a recorded frame measurement. The images are rendered now; the numbers below are card snapshots, with their provenance status. Run the catalog audit for claims about current frames.</p>
 
 <div class="axes">
  <div class="axis"><h3>Method <span class="k">counted</span></h3><p>Every line is bound to one value in the <span class="mono">count</span>, and that value has to stand in the line's text. When the source changes — the number of poses goes from 4 to 6 — the line goes stale and the build fails.</p></div>
@@ -122,13 +130,13 @@ ${cards}
 
 <hr class="rule">
 <div class="chartbox">
- <h2>The method cannot predict the look</h2>
- <p><b>Whiteout</b> and <b>Not A Measurement</b> — both Canvas 2D, both colourless, both on white paper. Their hard-edge share is <b>${wo.x}%</b> and <b>${nm.x}%</b>: the two ends of the five. How they are built is the same, how they look is entirely different — which is why a third column is needed, and why it stays unnamed.</p>
+ <h2>The method cannot predict the look · recorded measurements</h2>
+ <p><b>Whiteout</b> and <b>Not A Measurement</b> — both Canvas 2D, both colourless, both on white paper. Their recorded hard-edge share is <b>${wo.x}%</b> and <b>${nm.x}%</b>. These snapshot values describe the sampled pictures; a current comparison requires a fresh audit.</p>
  <div class="chartscroll">${svg}</div>
 </div>
 
 <hr class="rule">
-<p class="note"><b>Claim and goal.</b> <span class="mono">claims</span> — a promise about what a project is now: Whiteout is WHITE (even its darkest pixel is ${lowWhite}), Mushuk is COLOURFUL (${mushukSat}%). If one breaks, that is a regression. <span class="mono">goals</span> — where it is going: Whiteout's value range should reach 90, it is 50 now. An unmet goal is not a fault but a work plan — it is not hidden, it just does not fail the build.</p>
+<p class="note"><b>Claim and goal.</b> <span class="mono">claims</span> are promises checked against fresh pixels by the audit. The card snapshots record Whiteout's 2nd-percentile brightness as ${lowWhite} and Mushuk's saturation as ${mushukSat}%; these historical values do not establish a current pass. <span class="mono">goals</span> describe intended improvements and do not fail the build when unmet.</p>
 
 <footer>
  COUNT — <span class="mono">tools/count.mjs</span>: lines, draw calls, table sizes, cut durations<br>

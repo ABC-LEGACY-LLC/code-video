@@ -4,9 +4,15 @@
    nothing is the worst check, because it gives confidence and returns nothing. */
 import {check,report} from './lib.mjs';
 import {load,verify,confirm,prepare,missing,FIELDS} from '../tools/card.mjs';
-import {grab,metrics} from '../tools/measure.mjs';
+import {metrics} from '../tools/measure.mjs';
+import {sampleCard,metricValue,claimPass,breakClaim,blurFrames} from '../tools/sample.mjs';
 import {rmSync} from 'fs';
+import {basename} from 'path';
 const K=load();
+const onlyAt=process.argv.indexOf('--only'),only=onlyAt<0?null:process.argv[onlyAt+1];
+if(onlyAt>=0&&!only)throw new Error('--only needs a card name or id');
+const SELECTED=only?K.filter(k=>k.name===only||basename(k._f,'.json').replace(/^\d+-/,'')===only):K;
+if(!SELECTED.length)throw new Error('unknown card: '+only);
 const at=(k,p)=>new URL(p,'file://'+k._f).pathname;
 const t0=Date.now();
 
@@ -59,9 +65,19 @@ await check({name:'frame/build-chain', unit:'pages missing after the build',
    of the calls failed, and the calibration came out "—" -- the check was UNPROVEN,
    and no reason was given. Now the harness prints a calibration's error as well: a
    swallowed error is what this project stands against. */
-const OQ=K.find(k=>k.name==="Oq Ko'cha");
-const FRAMES=await grab({...OQ.frame, file:at(OQ,OQ.frame.file), size:[420,302]});
-const BLURRED=await grab({...OQ.frame, file:at(OQ,OQ.frame.file), size:[420,302], blur:3});
+const SAMPLES=new Map();
+for(const k of SELECTED){
+ console.log('  sampling current frames:',k.name);
+ try{ SAMPLES.set(k.name,await sampleCard(k)); }
+ catch(error){ SAMPLES.set(k.name,{error}); }
+}
+const current=k=>{
+ const sample=SAMPLES.get(k.name);
+ if(sample.error) throw sample.error;
+ return sample;
+};
+const OQ=SELECTED.find(k=>k.name==="Oq Ko'cha");
+const frames=()=>current(OQ).frames;
 
 /* INDEPENDENT OF ORDER. The old code took edges from the FIRST frame only -- the
    answer depended on the order the frames came in, and Not A Measurement gave 28.4
@@ -76,20 +92,23 @@ const BLURRED=await grab({...OQ.frame, file:at(OQ,OQ.frame.file), size:[420,302]
 
    The order test does not depend on the scene: the same frames in reverse order must
    give the same answer, and the old method cannot do that. */
-const reversed=[...FRAMES].reverse();
+if(OQ){
 await check({name:'measure/order-independent', unit:'difference in hardEdgeShare, points',
- measure:()=>+Math.abs(metrics(FRAMES).hardEdgeShare-metrics(reversed).hardEdgeShare).toFixed(2),
+ measure:()=>+Math.abs(metrics(frames()).hardEdgeShare-metrics([...frames()].reverse()).hardEdgeShare).toFixed(2),
  pass:v=>v===0,
- calibrate:()=>+Math.abs(metrics([FRAMES[0]]).hardEdgeShare-metrics([reversed[0]]).hardEdgeShare).toFixed(2),
+ calibrate:()=>+Math.abs(metrics([frames()[0]]).hardEdgeShare-metrics([frames().at(-1)]).hardEdgeShare).toFixed(2),
+ evidence:SAMPLES.get(OQ.name).evidence,
  note:'each frame is measured on its own and averaged, so order cannot matter'});
 
 /* AND IT HAS TO NOTICE THE BROKEN. In a blurred frame both edges and texture go; a
    measurement that does not notice does not know what it measures. */
 await check({name:'measure/sees-the-broken', unit:'how many times texture drops when blurred',
- measure:()=>+(metrics(FRAMES).texture/Math.max(metrics(BLURRED).texture,1e-6)).toFixed(2),
+ measure:()=>+(metrics(frames()).texture/Math.max(metrics(blurFrames(frames())).texture,1e-6)).toFixed(2),
  pass:v=>v>2.5,
  calibrate:()=>1.0,                    // without the blur the ratio is exactly one
+ evidence:SAMPLES.get(OQ.name).evidence,
  note:'the tool is calibrated too, like the projects'});
+}
 
 /* A CLAIM AND A GOAL ARE TWO DIFFERENT THINGS, and mixing them gave three false
    "failures" on the first try. A CLAIM is a promise about what a project is now:
@@ -97,19 +116,19 @@ await check({name:'measure/sees-the-broken', unit:'how many times texture drops 
    is where a project is going: Whiteout's value range should reach 90, it is 50 now.
    An unmet goal is not a fault but a work plan -- it is not hidden, it just does not
    fail the build. */
-const read=(o,key)=>key==='value.range'? o.value[1]-o.value[0]
-                  : key==='value.low'? o.value[0] : o[key];
-for(const k of K) for(const [key,[op,lim,what]] of Object.entries(k.claims)){
+for(const k of SELECTED) for(const [key,[op,lim,what]] of Object.entries(k.claims)){
  await check({name:`claim/${k.name}/${key}`, unit:what,
-  measure:()=>read(k.measure,key),
-  pass:v=>op==='>'? v>lim : v<lim,
-  calibrate:()=>lim,                   // the limit itself must not pass
-  note:`${op} ${lim}`});
+  measure:()=>metricValue(current(k).measure,key),
+  pass:v=>claimPass(v,op,lim),
+  calibrate:()=>metricValue(metrics(breakClaim(current(k).frames,key,op)),key),
+  evidence:{...SAMPLES.get(k.name).evidence,claim:{key,op,limit:lim}},
+  note:`${op} ${lim}; fresh rendered pixels; known-bad pixels measured through the same tool`});
 }
 const ok=report();
 console.log('  GOALS — an unmet goal is a work plan, not a fault');
-for(const k of K) for(const [key,[op,lim,what]] of Object.entries(k.goals||{})){
- const v=read(k.measure,key), met=op==='>'? v>lim : v<lim;
+for(const k of SELECTED) for(const [key,[op,lim,what]] of Object.entries(k.goals||{})){
+ if(SAMPLES.get(k.name).error){ console.log(`   unavailable: ${k.name} / ${key} (render failed)`);continue; }
+ const v=metricValue(current(k).measure,key), met=claimPass(v,op,lim);
  console.log(`   ${met?'met ':'open'}  ${(k.name+' / '+key).padEnd(42)} ${String(v).padStart(7)} ${op} ${lim}   ${what}`);
 }
 console.log();
