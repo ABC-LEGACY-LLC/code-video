@@ -405,7 +405,9 @@ export function server({auth=createAuth({}), eventsHeartbeatMs=25000}={}){
      try {
       if(p==='/api/operations' && b.action && b.action!=='apply') throw new ProjectError('use the history endpoint for undo or redo');
       if(p==='/api/history' && !['undo','redo'].includes(b.action)) throw new ProjectError('history action must be undo or redo');
-      return json(res,200,projects.transact(bw,b,outside?'telegram:'+auth.userOf(req):'local'));
+      /* the history is committed to a public repository: it says an owner acted through the
+         login, never which Telegram account (the ids stay in .env) */
+      return json(res,200,projects.transact(bw,b,outside?'owner':'local'));
      } catch(e){ return json(res,e.status||400,{error:e.message}); }
     }
     if(p==='/api/note'){

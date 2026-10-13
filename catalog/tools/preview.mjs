@@ -16,7 +16,8 @@ const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=
  '.woff':'font/woff','.woff2':'font/woff2','.ttf':'font/ttf','.otf':'font/otf',
  '.wav':'audio/wav','.mp3':'audio/mpeg','.ogg':'audio/ogg','.mp4':'video/mp4',
  '.webm':'video/webm','.glsl':'text/plain','.frag':'text/plain','.vert':'text/plain'};
-const forbidden=p=>p.split(/[\\/]/).some(s=>s.startsWith('.')||s==='node_modules'
+/* private/ holds what a work took from someone else's reference: never served */
+const forbidden=p=>p.split(/[\\/]/).some(s=>s.startsWith('.')||s==='node_modules'||s==='private'
  ||/^(?:secrets?|credentials?|sessions?|auth)(?:[.-]|$)/i.test(s));
 
 export async function startPreview(file,{root=REPO}={}){
@@ -45,6 +46,9 @@ export async function startPreview(file,{root=REPO}={}){
   }catch{return null;}
  }
  const server=createServer((req,res)=>{
+  /* a page elsewhere could rebind a name to 127.0.0.1 and read this port: only the
+     address this server gave out is answered */
+  if(!origin||req.headers.host!==origin.slice('http://'.length)){res.writeHead(421);res.end();return;}
   if(!['GET','HEAD'].includes(req.method)){res.writeHead(405);res.end();return;}
   if(req.url==='/favicon.ico'){res.writeHead(204);res.end();return;}
   const target=fileForURL(req.url);
