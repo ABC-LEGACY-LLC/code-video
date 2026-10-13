@@ -120,6 +120,10 @@ done, opened 2026-09-30, from lead L0012
 
 done, opened 2026-10-01, from lead L0014
 
+## Room 15 · image-to-3dlab
+
+done, opened 2026-10-01, from lead L0015
+
 ## Room 16 · Zoah
 
 done, opened 2026-10-01, from lead L0016
@@ -183,3 +187,15 @@ done, opened 2026-10-04, from lead L0049
 ## Room 46 · NVIDIA Lyra 2.0
 
 done, opened 2026-10-04, from lead L0050
+
+## Room 61 · Shaders WebGPU components
+
+done, opened 2026-10-07, from lead L0066
+
+## Room 62 · Tesseract Converter
+
+done, opened 2026-10-08, from lead L0067
+
+## Room 67 · Code Video Model
+
+done, opened 2026-10-13, from lead L0073

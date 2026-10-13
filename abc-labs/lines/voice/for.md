@@ -1,5 +1,5 @@
 # For code-video, from the line voice
-(rewritten 2026-10-05 against your `f1340bf`, the head of the workshop's clone that morning: your works now live under `studio/projects/` and your cards under `catalog/cards/`, so every path below was found again there; the advice is the page of 2026-10-04 against `ff977c2`, and none of items 1–10 is done in `f1340bf`. From rooms 5 (Cuelume UI sounds), 12 (Retro note app, item 3's bed rule), 19 (Gapirov rain sound, with its policy pass), 29 (Cactus Whistle), 32 (Eleven v4) and 41 (parakeet.cpp); items 1–5 from entries e0084–e0087, items 6–8 and 10 from e0004–e0006, a wide bed's check in items 5 and 8 from e0168, item 9 from e0087, e0092 and e0093, with e0090 and e0091 behind its "not worth taking"; one "not worth taking" from e0222, e0223 and e0225)
+(rewritten 2026-10-05 against your `f1340bf`, the head of the workshop's clone that morning and still on 2026-10-12, when the entries behind it were checked again and one line of the Whisper item changed: your works now live under `studio/projects/` and your cards under `catalog/cards/`, so every path below was found again there; the advice is the page of 2026-10-04 against `ff977c2`, and none of items 1–10 is done in `f1340bf`. From rooms 5 (Cuelume UI sounds), 12 (Retro note app, item 3's bed rule), 19 (Gapirov rain sound, with its policy pass), 29 (Cactus Whistle), 32 (Eleven v4) and 41 (parakeet.cpp); items 1–5 from entries e0084–e0087, items 6–8 and 10 from e0004–e0006, a wide bed's check in items 5 and 8 from e0168, item 9 from e0087, e0092 and e0093, with e0090 and e0091 behind its "not worth taking"; one "not worth taking" from e0222, e0223 and e0225)
 
 ## What this line has for you
 
@@ -487,14 +487,14 @@ makes it.
   arrives). Your words are Uzbek, and Whistle hears seven European languages and no Uzbek. Given
   Uzbek, it wrote fluent Polish-, German-, English- or Spanish-looking sentences, each tagged as
   that language, with no flag, on 8 clips of 8 [room 29 s9, `work/results/score-whistle.md:10`].
-  It refuses anything over 30 s [room 29 s5 `needle.h:63`]. The larger recogniser the workshop
+  The engine measured refused anything over 30 s [room 29 s5 `needle.h:63`]; a new engine of
+  2026-10-10 says it windows beyond that, unrun (e0223). The larger recogniser the workshop
   runs, whisper.cpp `small`, does no better on Uzbek: it tagged 8 clips of 8 as another
   language, and with Uzbek forced it was still at WER 93 % (e0225, e0222 —
-  [room 29 `work/results/score-whisper-ru-uz.md:5-6`]). No local recogniser has been shown to
-  hear Uzbek, so none can check an Uzbek line of yours. Your films hold no speech today
+  [room 29 `work/results/score-whisper-ru-uz.md:5-6`]). Vosk small-uz now makes a local Uzbek text check possible as an experiment: WER 24.2 %, 7.8 % on the five clips without digit references, and byte-identical text on two saved runs of 8/8 clips (e0225; [room 29 s21, s22]). This does not prove caption timing or correctness on your speech. Run it pinned for your own rendered lines, compare the words against the script with a recorded number-normalisation rule, and calibrate with a changed word. Do not ship its weights until licence/provenance gaps clear: the models page grants Apache-2.0, but neither archive carries a licence and training data is unnamed [room 29 s13, s16, s17]. Turbo is no remedy: all eight Uzbek clips were tagged kk at p up to 0.98, forced WER 157.1 %, and forced/auto costs 7.38/12.65 wall/audio (e0222, e0224; [room 29 s21]). Your films hold no speech today
   (`oq-kocha/tools/mkfilm.py:87`, "Ovoz: o'chiq — sintez, 0 bayt namuna"), and the day one
   speaks, item 9 times captions from the voice, never from a recogniser (e0093). Before any
-  recogniser enters a check of yours, give it one clip in a language it does not claim (e0222).
+  recogniser enters a check of yours, probe every language that will arrive, claimed or not; retain probability as evidence and never accept text merely because it is high (e0222).
 - **The ad's recipe: the voice first, a generated picture driven by it as a black video, the
   track laid back in the edit** [room 32 s2, s3]. It generates the picture with a model, which
   no work of yours does, and it is weakest at the joint, lip sync, which the ad hides by shooting

@@ -38,6 +38,14 @@ done, opened 2026-10-03, from lead L0022
 
 done, opened 2026-10-03, from lead L0028
 
+## Room 34 · Ann Nguyen's foil embossed cards
+
+done, opened 2026-10-03, from lead L0035
+
 ## Room 48 · Auki CCTV shelf attention
 
 done, opened 2026-10-04, from lead L0051
+
+## Room 66 · Motion2MixamoRig
+
+done, opened 2026-10-13, from lead L0072

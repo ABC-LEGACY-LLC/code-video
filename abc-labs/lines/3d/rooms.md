@@ -29,3 +29,19 @@ done, opened 2026-10-04, from lead L0046
 ## Room 46 · NVIDIA Lyra 2.0
 
 done, opened 2026-10-04, from lead L0050
+
+## Room 58 · UnlimitedKeenGameplay Soldier Short
+
+done, opened 2026-10-06, from lead L0061
+
+## Room 64 · Damage Control Bundle
+
+done, opened 2026-10-13, from lead L0070
+
+## Room 66 · Motion2MixamoRig
+
+done, opened 2026-10-13, from lead L0072
+
+## Room 67 · Code Video Model
+
+done, opened 2026-10-13, from lead L0073

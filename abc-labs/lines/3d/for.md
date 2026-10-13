@@ -1,5 +1,5 @@
 # For code-video, from the line 3d
-(written 2026-10-04 against your `ff977c2`, still the remote's head at the workshop's last fetch; from room 15 (image-to-3dlab) and room 3 (UniMate, text-to-motion), whose Policy sections each item carries; two patches beside this page, for items 3 and 1, both proved through your own commands and both yours to apply as they are; since 2026-10-05 each item names its entry in the line's library: item 1 e0265, item 2 e0269, item 3 e0274)
+(written 2026-10-12 against `f1340bf`; earlier evidence remains pinned at `ff977c2`. From e0265, e0269 and e0274 and rooms 15 and 3, with their Policy carried below. Patch 2 is now rebased and proved at `f1340bf`; both patches apply and build together in either order [room 15 s19].)
 
 ## What this line has for you
 
@@ -22,7 +22,7 @@ into your tree as a patch, and run your own commands on both sides of it.
   - With the patch, your render checks print `figure/matches-sheet PASS 0.979`, against a
     known-bad of 0.641 from the next drawing.
   - With the picture one drawing off the sheet, the check fails at 0.645.
-  - Without the patch, your thirteen render checks pass that fault.
+  - Without the patch, your fourteen render checks at `f1340bf` pass that fault [room 15 s19 `render2.out.txt`].
 - **The run record (item 2, read and not run).** The lab's run record, whose reason is
   "parameters can lie", describes the state your cards' measured block is in.
 
@@ -39,29 +39,65 @@ How to read the citations:
   `render.out.txt`, and its `README.md`.
 - `[room 3 s3]` is UniMate at `5d6aabe`, and `[room 3 s4]` its paper as text.
 - `[room 3 s13]` is room 3's runs on your tree; `§n` is a section of its `patch.out.txt`.
-- Every other path is yours, at `ff977c2`.
+- `[room 15 s19]` is the rebase and runs at `f1340bf`: `README.md`, `prep2.out.txt`,
+  `rebase.diff.txt`, `render2.out.txt`.
+- Unless explicitly marked `f1340bf` or s19, paths in the items' older evidence are yours at `ff977c2`, where the rooms read and ran.
+  What you do (each "→ How", "→ Where", the card's numbers, "Where to start") is written for
+  `f1340bf`.
 
-The copies of the patches here are the rooms' files, with their blank context lines written as
-empty lines; `git apply` reads them the same. Apply them at the root of your tree. File, field
-and check names below are proposals in your idiom; ask in the line's log for anything else.
+**Your tree since `ff977c2`** (read on 2026-10-12 in the workshop's clone, at `f1340bf`):
+- **Where things went** (a4c8fb1, "works move to studio/projects, loyihalar becomes catalog"):
+  `oq-kocha/` → `studio/projects/oq-kocha/`; `whiteout/`, `not-a-measurement/` → under
+  `studio/projects/`; `loyihalar/kartalar/` → `catalog/cards/`; `loyihalar/tools/karta.mjs` →
+  `catalog/tools/card.mjs`; `sanoq.mjs` → `catalog/tools/count.mjs`; `loyihalar/test/run.mjs` →
+  `catalog/test/run.mjs`. `harness/` stays.
+- **The card's words, in English**: `sanoq` → `count`, `olchov` → `measure`, `manba` → `sources`,
+  `gap` → `text`, `dalil` → `evidence`, `jadvallar` → `tables`, `satrlar`/`baytlar`/`funksiyalar`/
+  `shriftlar` → `lines`/`bytes`/`functions`/`fonts`, `tasdiq` → `confirm`, `--tez` → `--fast`,
+  `karta/sanoq-bilan-mos` → `card/matches-count`.
+- **Unchanged, as read**: `src/sheet.mjs` (23 lines), `test/checks-sheet.mjs:1-32`,
+  `tools/build.mjs:1-11`.
+- **New**: `frame-grid` in `test/checks-sheet.mjs:71-80`, so `npm run audit:fast` runs 5 checks,
+  not 4, and `sheet-arithmetic` is at `:82-87`. `cut-frames` in `test/checks-render.mjs:96-112`,
+  which now imports `state` (`:3`) and `STARTS_F`, `TOTAL_F` (`:4`), so the render checks are
+  fourteen, and occupancy is at `:114-126`. Shots are declared in frames. The full audit is 43
+  checks (`README.md:30`), and its table of checks is at `README.md:70-80`.
+- **The card**: "… 701 lines of source." (`catalog/cards/1-oq-kocha.json:42`), `count.bytes`
+  39,839 (`:61`), `count.functions` 4 (`:64`); the chart's sentence is at `:38-39`.
+- **Both patches now apply and build at `f1340bf`** [room 15 s19 `prep2.out.txt`].
+  Patch 1 uses `--directory=studio/projects`; patch 2's new paths need no prefix.
+  Patch 2 alone passes five sheet checks; together they pass seven, with room 3's three
+  rows at their proved numbers. Both orders build the same page byte for byte
+  (`411e8287c194…`); shader and ramp stay byte-identical.
+- **Patch 2:** `code-video.patches/2-figure-matches-sheet-f1340bf.patch`, copied unchanged
+  from room 15 (179 lines; sha256 prefix `80d25f080312ce20`). It carries "(iq)" at all
+  three primitives, changes the card sentence to 721, and gathers frames inside the check
+  using `STARTS_F` and `df`. The old `2-figure-matches-sheet.patch` stays for `ff977c2`.
+
+Apply at your repository root. Patch 1's existing copy normalises blank context lines;
+the new patch 2 is the room's exact file. File, field and check names below are proposals
+in your idiom; ask in the line's log for anything else.
 
 Each item says what it may be used as. That comes from its room's verdict, its Policy section:
 - **Item 3: as it is.** Patch 1 is ours and owes no notice.
-- **Item 1: as it is.** Patch 2 is ours, with one credit to add.
+- **Item 1: as it is.** Patch 2 is ours and carries its required iq credits.
 - **Item 2: inspiration only.** Take the shape, write the code.
 
 Where to start:
-1. Item 3: apply patch 1, run `npm run audit:fast`, add its three rows to the README.
-2. Item 1: apply patch 2, add "(iq)" beside its three distance functions, run
-   `checks-render.mjs` once and expect the row below, add it to the README.
-3. Item 2's source hash on the cards.
+1. Item 3: apply patch 1 (`--directory=studio/projects`), run `npm run audit:fast` in
+   `studio/projects/oq-kocha`, add its three rows to the README's table.
+2. Item 2's source hash on the cards: it needs no patch.
+3. Item 1: apply `git apply code-video.patches/2-figure-matches-sheet-f1340bf.patch`,
+   build, run `checks-render.mjs` through your normal report runner, and add its row to the README.
+   Refresh the catalog's stored counts with `catalog/tools/card.mjs`; expect 721 lines,
+   5 functions and 41,063 bytes [room 15 s19].
 
 ## Worth taking
 
 1. **The figure on screen checked against the drawing its document names: silhouette IoU
    against a reference marched from the character file, with the next drawing as the
-   known-bad. A patch, proved in four runs through your harness:
-   `code-video.patches/2-figure-matches-sheet.patch`.**
+   known-bad. A patch, rebased and proved at `f1340bf`:
+   `code-video.patches/2-figure-matches-sheet-f1340bf.patch`.**
 
    **In the library:** e0265, as it is (keep "(iq)" beside the distance functions).
 
@@ -81,8 +117,10 @@ Where to start:
    - The proof that the generated character equals the hand-written one, `equiv.mjs`, is named
      in `oq-kocha/README.md:42-43` and is not in the tree.
 
-   → **The patch: five files against `ff977c2`.** `oq-kocha/test/checks-render.mjs` gains
-   `figure/matches-sheet`.
+   → **The patch: five files against `f1340bf`** [room 15 s19].
+   `studio/projects/oq-kocha/test/checks-render.mjs` gains `figure/matches-sheet`.
+   The mechanism below is the earlier proof at `ff977c2`, carried forward; every difference
+   is in s19 `rebase.diff.txt`.
    - **The rendered mask** is the one occupancy counts: `CHARACTER(matOf(…))` over
      `pixels(f,200,144,{},1)` (`checks-render.mjs:100-101`, `oq-kocha/test/browser.mjs:52-53`).
    - **The drawing** is the one the film reports, `state(f).idx`, asked and never recomputed
@@ -150,7 +188,23 @@ Where to start:
    The keeper compared the file room 15 sent with its run's own output (identical), and checked
    the room's numbers against the four tables.
 
-   → **What it costs** [room 15 s16 `dump.out.txt`, `ref2.out.txt`, `README.md`]:
+   → **Re-proved at `f1340bf`** [room 15 s19 `render2.out.txt`].
+   - Patched: 15 checks, 0 problems; PASS 0.979 (known-bad 0.641), exit 0, 572.9 s.
+   - Patched, picture ahead: 15 checks, 1 problem; FAIL 0.645 (known-bad 0.979), exit 1, 535.2 s.
+   - Unpatched, picture ahead: 14 checks, 0 problems, exit 0, 409.9 s.
+   All fourteen other rows match in the faulted pair, including `cut-frames`.
+   Occupancy for `o'tish` changed since `ff977c2` because shots moved to whole frames,
+   with or without the patch. No unpatched clean render run was made at `f1340bf`.
+   With no browser, the new patched file still prints all fifteen ERROR rows and exits 1:
+   frame queries now run inside `measure`, not at module level. Document reads remain at
+   module level, so missing or malformed JSON can still abort loading.
+   These are room 15's container runs; the keeper read the evidence, not a fresh local run.
+   Both-patch builds and sheet checks were run; the render runs above used patch 2 alone.
+   The room used Playwright 1.47.0 with `PLAYWRIGHT_BROWSERS_PATH=/ms-playwright` and
+   image browser `chromium-1134`, since the shared cache otherwise shadows it (f0565).
+   The faulted pair adds about 125 s; the shared box's load differs, so this is not a benchmark.
+
+   → **What it cost at `ff977c2`** [room 15 s16 `dump.out.txt`, `ref2.out.txt`, `README.md`]:
    - eight masks at 8–22 s each in SwiftShader;
    - one state query per frame of the shot: 3 s for 52 frames;
    - eight references at about 1.1 s each in node.
@@ -174,21 +228,23 @@ Where to start:
 
    → **Your card counts `sheet.mjs`.** The file goes from 23 to 43 lines and from 1,271 to
    2,495 bytes.
-   - The patch changes the sentence at `loyihalar/kartalar/1-oq-kocha.json:38` to "710 satr".
-   - `refresh` rewrites the stored `sanoq`: `funksiyalar` 4 → 5, `baytlar` 39,095 → 40,319.
-     The keeper recounted the six files in both trees [room 15 s16].
-   - `mkfilm.py`, `build.mjs` and the test are not among the six (`1-oq-kocha.json:3-9`).
+   - At `f1340bf` the sentence at `catalog/cards/1-oq-kocha.json:42` must go from "701 lines of
+     source" to "721".
+   - `refresh` rewrites the stored `count`: `functions` 4 → 5, `bytes` 39,839 → 41,063. That is
+     the same +1,224 the keeper recounted in both trees at `ff977c2` (690 → 710 lines, 39,095 →
+     40,319 bytes) [room 15 s16]; at `f1340bf` room 15 confirmed it with the project's own recount [s19 `README.md`].
+   - `mkfilm.py`, `build.mjs` and the test are not among the six (`1-oq-kocha.json:3-10`).
 
    → **With item 3's patch.** The two touch `sheet.mjs` in different places: patch 1 rewrites
    lines 6–22, and patch 2 adds after line 23, with lines 21–23 as context, which patch 1 leaves
-   as they are. Patch 1 keeps the file at 23 lines, so with both the sentence is still 710. That
-   is read from the two files; nobody has applied one on top of the other. Once `joints` is in
-   `sheet.mjs`, item 3's ground can go through the toe the page draws (see there).
+   as they are. Patch 1 keeps the file at 23 lines, so with both the sentence is still 721. Room 15 applied both orders on fresh `f1340bf` archives: seven sheet checks,
+   zero problems, card ✓ at 721, and identical page hashes [s19 `prep2.out.txt`]. Once `joints` is in `sheet.mjs`, item 3's ground can go through the toe the page draws (see
+   there).
 
-   → **Where:** `oq-kocha/test/checks-render.mjs`, `oq-kocha/src/sheet.mjs`,
-   `oq-kocha/tools/build.mjs`, `oq-kocha/tools/mkfilm.py`,
-   `loyihalar/kartalar/1-oq-kocha.json:38`. Its row in the table at `oq-kocha/README.md:67-77`
-   is not in the patch: add `figure/matches-sheet` there.
+   → **Where** (at `f1340bf`): `studio/projects/oq-kocha/test/checks-render.mjs`, `…/src/sheet.mjs`,
+   `…/tools/build.mjs`, `…/tools/mkfilm.py`, `catalog/cards/1-oq-kocha.json:42`. Its row in the
+   table at `studio/projects/oq-kocha/README.md:70-80` is not in the patch: add
+   `figure/matches-sheet` there.
 
    → **Effort: S.** Apply, run the render checks once (about twelve minutes on four CPUs), add
    the README row.
@@ -202,9 +258,9 @@ Where to start:
      `oq-kocha/src/geo.frag:42-63`: the round cone, the ellipsoid and the smooth minimum.
 
    There is one obligation, and your shader already meets it: keep iq's name beside those
-   functions. `geo.frag:42` heads its block "distance primitives (iq)". The patch names
-   `sdRoundCone` and not iq, so add "(iq)" to the comments at `cone`, `smin` and the `ellip`
-   case in `checks-render.mjs`. That file is not among the card's six, so no count moves.
+   functions. `geo.frag:42` heads its block "distance primitives (iq)". The rebased patch already carries "(iq)" at `cone`, `smin` and the `ellip`
+   case in `checks-render.mjs`; apply it unchanged [room 15 s19 `rebase.diff.txt`].
+   That file is not among the card's six, so these comments move no count.
    iq's article states no licence: the word does not occur in the page [room 15 s17]. Whether
    more than the name is owed is the film's question, not the patch's (open question 2).
 
@@ -227,43 +283,43 @@ Where to start:
    recommended backend writes one licence string and no commit
    (`scripts/pixal3d_generate.py:102-116`).
 
-   **Your side.**
-   - A card's `olchov` is written only by `refresh` (`loyihalar/tools/karta.mjs:76-83`). With
-     `--tez` the stored block is kept while `sanoq` is recounted (`:81`).
+   **Your side** (at `f1340bf`, re-read 2026-10-12; the same at `ff977c2` under the old names).
+   - A card's `measure` is written only by `refresh` (`catalog/tools/card.mjs:75-83`). With
+     `--fast` the stored block is kept while `count` is recounted (`:79-80`, `:85`).
    - Nothing in the card says which sources those numbers were measured from
-     (`loyihalar/kartalar/1-oq-kocha.json:81-118`). You met the case twice in one session: the
-     source changed and the old page was measured (`karta.mjs:28-32`).
-   - The stored count drifts the same way, and no check notices (`1-oq-kocha.json:57`): item
-     3's patch moves `baytlar` from 39095 to 39293, item 1's to 40319 [room 3 s13 §5; room 15
-     s16].
+     (`catalog/cards/1-oq-kocha.json:86-123`). You met the case twice in one session: the
+     source changed and the old page was measured (`card.mjs:28-31`).
+   - The stored count drifts the same way, and no check notices (`1-oq-kocha.json:61`): item
+     3's patch moves `bytes` from 39,839 to 40,037, item 1's to 41,063 (the rooms' +198 and
+     +1,224 at `ff977c2` [room 3 s13 §5; room 15 s16], added to today's count).
    - Two works draw their letters with fonts fetched at play time: whiteout
-     (`whiteout/whiteout.html:4`) and not-a-measurement
-     (`not-a-measurement/not-a-measurement.html:4`). `sanoq` counts the names
-     (`loyihalar/tools/sanoq.mjs:48`, `loyihalar/kartalar/2-whiteout.json:55-58`), and their
-     terms are written nowhere.
+     (`studio/projects/whiteout/whiteout.html:7`) and not-a-measurement
+     (`studio/projects/not-a-measurement/not-a-measurement.html:7`). `count` takes the names
+     (`catalog/tools/count.mjs:48`, `catalog/cards/2-whiteout.json:57-59`), and their terms are
+     written nowhere.
 
    → **How.** In `refresh`, beside the numbers, write
-   `olchov.manba = {sha256, commit, dirty}`:
-   - `sha256` over the card's `manba` files, in their listed order;
+   `measure.source = {sha256, commit, dirty}`:
+   - `sha256` over the card's `sources` files, in their listed order;
    - `commit` from `git rev-parse HEAD`;
    - `dirty`: whether `git status --porcelain` printed anything. `execFileSync` is already
-     imported (`karta.mjs:13`).
+     imported (`card.mjs:13`).
 
-   The check `karta/olchov-manbasi` recomputes the hash and compares; its broken state is one
+   The check `card/measure-source` recomputes the hash and compares; its broken state is one
    byte appended to a copy of one source. It needs no browser, so it can say "these numbers are
-   another tree's" before the video line's proposed check (`karta/olchov-yangi`, its item 19)
+   another tree's" before the video line's proposed check (`card/measure-fresh`, its item 19)
    spends a render to say by how much. The same hash is the key that line's item 8 wants for
    its segments, so write the function once. The commit and `dirty` are for the reader; the
    hash is what the check holds.
 
    → **The borrowed parts.** A person's block in the card, one entry per font: its name,
    where it loads from, its licence, and `loaded: false` (the upstream's form) for anything
-   named and left out on purpose. Bind it the way `uslub` is bound: every name in
-   `sanoq.shriftlar` must have an entry, and the broken state is one entry removed. The line
-   has not read these fonts' licences.
+   named and left out on purpose. Bind it as `card/matches-count` binds a method line to the
+   count (`catalog/test/run.mjs:27-33`): every name in `count.fonts` must have an entry, and the
+   broken state is one entry removed. The line has not read these fonts' licences.
 
-   → **Where:** `loyihalar/tools/karta.mjs`, `loyihalar/test/run.mjs`,
-   `loyihalar/kartalar/2-whiteout.json`, `loyihalar/kartalar/5-not-a-measurement.json`.
+   → **Where:** `catalog/tools/card.mjs`, `catalog/test/run.mjs`,
+   `catalog/cards/2-whiteout.json`, `catalog/cards/5-not-a-measurement.json`.
 
    → **Effort: S.**
 
@@ -302,10 +358,12 @@ Where to start:
      drawings are the near ones swapped (`sheet.mjs:21-23`), so they are right only while both
      halves of the chart are timed alike.
 
-   **What passes that chart today**, run by room 3 on your tree:
+   **What passes that chart**, run by room 3 on your tree at `ff977c2`:
    - `npm run audit:fast`: 4 checks, 0 problems, exit 0. `sheet-arithmetic` prints the
      re-timed chart in its note and passes it, because the slots still add up to 16
-     (`checks-sheet.mjs:72-76`) [room 3 s13 §2].
+     (`checks-sheet.mjs:72-76`, now `:82-87`) [room 3 s13 §2]. At `f1340bf` the fifth,
+     `frame-grid`, reads the shot list and not the chart (`:71-80`), so by reading it passes the
+     re-timed chart too.
    - The five audio checks. `audio/footfall-sync` reads 0.000, because it recomputes the
      drawing with the same `idxAt` the page follows (`oq-kocha/test/checks-audio.mjs:9`, `:63`)
      [room 3 s13 `audio.out.txt`].
@@ -316,7 +374,8 @@ Where to start:
    (`checks-render.mjs:5`, `checks-world.mjs:13`, `checks-style.mjs:22`), and the world checks
    ask the film which drawing is up (`checks-world.mjs:48-59`). So none is built to see it.
 
-   → **The patch: two files against `ff977c2`.**
+   → **The patch: two files against `ff977c2`**, both unchanged at `f1340bf` under
+   `studio/projects/`, so apply it there with `git apply --directory=studio/projects`.
    - **In `oq-kocha/src/sheet.mjs`:**
      - `idxAt(ph, H=HOLDS)` and `travel(p, H=HOLDS)` take the chart as an optional last
        argument, and `CUM` comes from a new `cumOf(chart)`. A check can then re-time the chart
@@ -353,6 +412,9 @@ Where to start:
    - after, with the re-timed chart: `foot-plant` and `foot-plant/both-halves` FAIL at 0.042
      (0.0425 to your harness's three decimals), exit 1.
 
+   At `f1340bf`, room 15 ran 5 checks before and 7 with both patches, 0 problems in
+   either case and in both apply orders [room 15 s19 `prep2.out.txt`].
+
    What must not move did not:
    - `idxAt` and `travel` equal the old ones with `===` over 22,098 phases.
    - `npm run build` gives a page whose script parses, and which differs only in the sheet's
@@ -362,9 +424,10 @@ Where to start:
      `probe.out.txt`].
 
    → **Your card counts this file.** The patch keeps `sheet.mjs` at 23 lines and four named
-   functions (the new helper is an arrow in a `const`), so "690 satr" still holds [room 3 s13
-   §5]. If you change the patch so the file gains a line, `karta/sanoq-bilan-mos` fails until
-   the sentence at `loyihalar/kartalar/1-oq-kocha.json:38` changes with it.
+   functions (the new helper is an arrow in a `const`), so the card's line count holds [room 3
+   s13 §5]: "701 lines of source" at `f1340bf`. If you change the patch so the file gains a line,
+   `card/matches-count` fails until the sentence at `catalog/cards/1-oq-kocha.json:42` changes
+   with it.
 
    → **The guard, `walk/support`.** Contact found from the pose can pass by finding none. A
    redrawn ankle that sits above 0.05 L drops out of its stretch, and the drift over what is
@@ -385,10 +448,12 @@ Where to start:
    `sheet.mjs`; with both applied, put the ground through the toe `joints` returns (indices 6
    and 11 of its sixteen). Neither patch does that.
 
-   → **The card still prints the old chart.** Its sentence "Ekspozitsiya varaqasi 8 slotdan
-   iborat: 3·2·1·2·3·2·1·2, …" is bound to `jadvallar.HOLDS`, which is the table's length
-   (`1-oq-kocha.json:34-35`, `sanoq.mjs:58`). `tasdiq` passes a number found anywhere in the
-   sentence (`loyihalar/tools/karta.mjs:49`, `:55-56`).
+   → **The card still prints the old chart.** Its sentence "The exposure sheet has 8 slots:
+   3·2·1·2·3·2·1·2, 12 drawings a second, 24 frames." is bound to `tables.HOLDS`, which is the
+   table's length (`catalog/cards/1-oq-kocha.json:38-39`, `catalog/tools/count.mjs:58`).
+   `confirm` passes a number found anywhere in the sentence (`catalog/tools/card.mjs:48`,
+   `:54-55`). Room 3 showed it on the Uzbek sentence at `ff977c2`; the English one at `f1340bf`
+   is bound the same way, read and not run.
    - The re-timed chart passes it.
    - Since `·` splits the quoted chart into single numbers, it would also pass a table of 1,
      2, 3, 8, 12 or 24 entries [room 3 s13 §7].
@@ -396,25 +461,24 @@ Where to start:
 
    That is the video line's item 13 (a card line binds every number it states); this line adds
    its broken state:
-   - `sanoq` returns the table's values beside its length; it already walks the brackets
-     (`sanoq.mjs:13-29`);
+   - `count` returns the table's values beside its length; it already walks the brackets
+     (`count.mjs:13-33`);
    - the sentence is held to the joined chart;
    - the re-timed chart must fail it.
 
    Not in the patch.
 
-   → **Also not in the patch:** the table in `oq-kocha/README.md:67-77`, whose other rows are
-   browser checks. Add the three rows above. The copy here is room 3's file with its four blank
-   context lines written as empty lines, which `git apply` reads the same. Apply it at the root
-   of your tree.
+   → **Also not in the patch:** the table in `studio/projects/oq-kocha/README.md:70-80`, whose
+   other rows are browser checks. Add the three rows above. The copy here is room 3's file with
+   its four blank context lines written as empty lines, which `git apply` reads the same. Apply
+   it at the root of your tree with `--directory=studio/projects`.
 
    → **Together with item 1:** this makes the sheet's arithmetic cover both feet, and item 1
    ties the pixels to the sheet's drawing. Together they answer the note in
    `checks-world.mjs:76-80`.
 
-   → **Where:** `oq-kocha/src/sheet.mjs`, `oq-kocha/test/checks-sheet.mjs`,
-   `oq-kocha/README.md:67-77`; for the card, `loyihalar/tools/sanoq.mjs` and
-   `loyihalar/tools/karta.mjs`.
+   → **Where** (at `f1340bf`): `studio/projects/oq-kocha/src/sheet.mjs`, `…/test/checks-sheet.mjs`,
+   `…/README.md:70-80`; for the card, `catalog/tools/count.mjs` and `catalog/tools/card.mjs`.
 
    → **Effort: S.** With the patch, an hour.
 
@@ -424,8 +488,10 @@ Where to start:
    it is yours. So apply it unchanged; no notice is owed, since a rule and a threshold are not
    the paper's text. The paper is CC BY 4.0 [room 3 s4 `abs.html:182`]. A credit in the
    commit message is a courtesy: "contact rule after UniMate, arXiv 2609.05415, App. E.5".
-   Room 3 found your remote's head still at `ff977c2` on 2026-10-04, so it applies as tested.
-   Nobody has applied it on top of patch 2 yet.
+   Room 3 tested it at `ff977c2`. At `f1340bf` (read 2026-10-12) its two files hold exactly the
+   patch's context under `studio/projects/`, so it applies there with `--directory`. Room 15 has now applied and built both patches
+   in either order, with seven sheet checks, 0 problems and identical pages [s19 `prep2.out.txt`].
+   The re-timed chart fault proof stays pinned to room 3's `ff977c2` runs.
 
 ## Not worth taking
 
