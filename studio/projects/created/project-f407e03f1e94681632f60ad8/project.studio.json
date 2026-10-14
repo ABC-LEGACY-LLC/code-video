@@ -1,0 +1,1024 @@
+{
+  "schemaVersion": 2,
+  "generation": 1,
+  "project": {
+    "id": "project-f407e03f1e94681632f60ad8",
+    "name": "Studio — timeline va layer tahriri",
+    "renderer": "canvas2d",
+    "seed": 2026,
+    "width": 1920,
+    "height": 1080,
+    "fps": {
+      "num": 24,
+      "den": 1
+    },
+    "components": {
+      "background": {
+        "version": "1.0.0",
+        "label": "Background",
+        "properties": {
+          "color": {
+            "type": "color",
+            "label": "Color",
+            "default": "#101827",
+            "animatable": false
+          }
+        }
+      },
+      "shape": {
+        "version": "1.0.0",
+        "label": "Shape",
+        "properties": {
+          "shape": {
+            "type": "enum",
+            "label": "Shape",
+            "options": [
+              "rectangle",
+              "ellipse"
+            ],
+            "default": "rectangle",
+            "animatable": false
+          },
+          "color": {
+            "type": "color",
+            "label": "Fill",
+            "default": "#8cb0ff",
+            "animatable": false
+          },
+          "width": {
+            "type": "number",
+            "label": "Width",
+            "default": 320,
+            "min": 1,
+            "max": 7680,
+            "unit": "px",
+            "animatable": true
+          },
+          "height": {
+            "type": "number",
+            "label": "Height",
+            "default": 180,
+            "min": 1,
+            "max": 7680,
+            "unit": "px",
+            "animatable": true
+          },
+          "radius": {
+            "type": "number",
+            "label": "Corner radius",
+            "default": 24,
+            "min": 0,
+            "max": 1000,
+            "unit": "px",
+            "animatable": true
+          }
+        }
+      }
+    },
+    "shots": [
+      {
+        "id": "project-f407e03f1e94681632f60ad8:s1",
+        "name": "Kirish",
+        "durationFrames": 96,
+        "entities": [
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s1:camera",
+            "name": "Camera",
+            "type": "camera2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1
+            },
+            "keyframes": {}
+          },
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s1:bg",
+            "name": "Background",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "color": "#101827"
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "background",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "background"
+          },
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s1:shape",
+            "name": "Accent",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 120,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "rectangle",
+              "color": "#8cb0ff",
+              "width": 1344,
+              "height": 12,
+              "radius": 6
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "shape",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "shape"
+          },
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s1:title",
+            "name": "Title",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": -180,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1
+            },
+            "keyframes": {
+              "opacity": [
+                {
+                  "frame": 0,
+                  "value": 0,
+                  "easing": "ease"
+                },
+                {
+                  "frame": 12,
+                  "value": 1,
+                  "easing": "hold"
+                }
+              ]
+            },
+            "layer": {
+              "binding": "text",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "content": {
+              "text": "KADRLARNI BOSHQARING",
+              "fontSize": 70,
+              "fontFamily": "sans-serif",
+              "color": "#ffffff",
+              "align": "center",
+              "width": 1728,
+              "height": 200
+            }
+          }
+        ],
+        "layerOrder": [
+          "project-f407e03f1e94681632f60ad8:s1:bg",
+          "project-f407e03f1e94681632f60ad8:s1:shape",
+          "project-f407e03f1e94681632f60ad8:s1:title"
+        ]
+      },
+      {
+        "id": "project-f407e03f1e94681632f60ad8:s2",
+        "name": "Tahrirlash",
+        "durationFrames": 96,
+        "entities": [
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s2:camera",
+            "name": "Camera",
+            "type": "camera2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1
+            },
+            "keyframes": {}
+          },
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s2:bg",
+            "name": "Background",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "color": "#162b32"
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "background",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "background"
+          },
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s2:shape",
+            "name": "Accent",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 120,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "rectangle",
+              "color": "#62c486",
+              "width": 1344,
+              "height": 12,
+              "radius": 6
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "shape",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "shape"
+          },
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s2:title",
+            "name": "Title",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": -180,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1
+            },
+            "keyframes": {
+              "opacity": [
+                {
+                  "frame": 0,
+                  "value": 0,
+                  "easing": "ease"
+                },
+                {
+                  "frame": 12,
+                  "value": 1,
+                  "easing": "hold"
+                }
+              ]
+            },
+            "layer": {
+              "binding": "text",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "content": {
+              "text": "TRIM · SPLIT · KEYFRAME",
+              "fontSize": 70,
+              "fontFamily": "sans-serif",
+              "color": "#ffffff",
+              "align": "center",
+              "width": 1728,
+              "height": 200
+            }
+          },
+          {
+            "id": "demo-card-a",
+            "name": "Shape",
+            "type": "layer2d",
+            "component": "shape",
+            "properties": {
+              "x": -280,
+              "y": 140,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "rectangle",
+              "color": "#8cb0ff",
+              "width": 240,
+              "height": 180,
+              "radius": 24
+            },
+            "keyframes": {
+              "scale": [
+                {
+                  "frame": -12,
+                  "value": 0.6,
+                  "easing": "ease"
+                },
+                {
+                  "frame": 58,
+                  "value": 1.2,
+                  "easing": "linear"
+                }
+              ]
+            },
+            "layer": {
+              "binding": "shape",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 36
+            }
+          },
+          {
+            "id": "demo-card-b",
+            "name": "Shape",
+            "type": "layer2d",
+            "component": "shape",
+            "properties": {
+              "x": 280,
+              "y": 140,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "rectangle",
+              "color": "#62c486",
+              "width": 240,
+              "height": 180,
+              "radius": 24
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "shape",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            }
+          },
+          {
+            "id": "demo-card-a-right",
+            "name": "Shape · split",
+            "type": "layer2d",
+            "component": "shape",
+            "properties": {
+              "x": -280,
+              "y": 140,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "rectangle",
+              "color": "#8cb0ff",
+              "width": 240,
+              "height": 180,
+              "radius": 24
+            },
+            "keyframes": {
+              "scale": [
+                {
+                  "frame": -12,
+                  "value": 0.6,
+                  "easing": "ease"
+                },
+                {
+                  "frame": 58,
+                  "value": 1.2,
+                  "easing": "linear"
+                }
+              ]
+            },
+            "layer": {
+              "binding": "shape",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 36,
+              "endFrame": 72
+            }
+          }
+        ],
+        "layerOrder": [
+          "project-f407e03f1e94681632f60ad8:s2:bg",
+          "project-f407e03f1e94681632f60ad8:s2:shape",
+          "project-f407e03f1e94681632f60ad8:s2:title",
+          "demo-card-a",
+          "demo-card-a-right",
+          "demo-card-b"
+        ]
+      },
+      {
+        "id": "project-f407e03f1e94681632f60ad8:s3",
+        "name": "Yakun",
+        "durationFrames": 96,
+        "entities": [
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s3:camera",
+            "name": "Camera",
+            "type": "camera2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1
+            },
+            "keyframes": {}
+          },
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s3:bg",
+            "name": "Background",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "color": "#261c37"
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "background",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "background"
+          },
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s3:shape",
+            "name": "Accent",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 120,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "rectangle",
+              "color": "#ffc97a",
+              "width": 1344,
+              "height": 12,
+              "radius": 6
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "shape",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "shape"
+          },
+          {
+            "id": "project-f407e03f1e94681632f60ad8:s3:title",
+            "name": "Title",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": -180,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1
+            },
+            "keyframes": {
+              "opacity": [
+                {
+                  "frame": 0,
+                  "value": 0,
+                  "easing": "ease"
+                },
+                {
+                  "frame": 12,
+                  "value": 1,
+                  "easing": "hold"
+                }
+              ]
+            },
+            "layer": {
+              "binding": "text",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "content": {
+              "text": "HIKOYA SIZDAN",
+              "fontSize": 70,
+              "fontFamily": "sans-serif",
+              "color": "#ffffff",
+              "align": "center",
+              "width": 1728,
+              "height": 200
+            }
+          }
+        ],
+        "layerOrder": [
+          "project-f407e03f1e94681632f60ad8:s3:bg",
+          "project-f407e03f1e94681632f60ad8:s3:shape",
+          "project-f407e03f1e94681632f60ad8:s3:title"
+        ]
+      }
+    ],
+    "annotations": []
+  },
+  "history": {
+    "past": [
+      {
+        "project": {
+          "id": "project-f407e03f1e94681632f60ad8",
+          "name": "Studio — timeline va layer tahriri",
+          "renderer": "canvas2d",
+          "seed": 2026,
+          "width": 1920,
+          "height": 1080,
+          "fps": {
+            "num": 24,
+            "den": 1
+          },
+          "components": {
+            "background": {
+              "version": "1.0.0",
+              "label": "Background",
+              "properties": {
+                "color": {
+                  "type": "color",
+                  "label": "Color",
+                  "default": "#101827",
+                  "animatable": false
+                }
+              }
+            },
+            "shape": {
+              "version": "1.0.0",
+              "label": "Shape",
+              "properties": {
+                "shape": {
+                  "type": "enum",
+                  "label": "Shape",
+                  "options": [
+                    "rectangle",
+                    "ellipse"
+                  ],
+                  "default": "rectangle",
+                  "animatable": false
+                },
+                "color": {
+                  "type": "color",
+                  "label": "Fill",
+                  "default": "#8cb0ff",
+                  "animatable": false
+                },
+                "width": {
+                  "type": "number",
+                  "label": "Width",
+                  "default": 320,
+                  "min": 1,
+                  "max": 7680,
+                  "unit": "px",
+                  "animatable": true
+                },
+                "height": {
+                  "type": "number",
+                  "label": "Height",
+                  "default": 180,
+                  "min": 1,
+                  "max": 7680,
+                  "unit": "px",
+                  "animatable": true
+                },
+                "radius": {
+                  "type": "number",
+                  "label": "Corner radius",
+                  "default": 24,
+                  "min": 0,
+                  "max": 1000,
+                  "unit": "px",
+                  "animatable": true
+                }
+              }
+            }
+          },
+          "shots": [
+            {
+              "id": "project-f407e03f1e94681632f60ad8:s1",
+              "name": "Opening",
+              "durationFrames": 96,
+              "entities": [
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s1:camera",
+                  "name": "Camera",
+                  "type": "camera2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1
+                  },
+                  "keyframes": {}
+                },
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s1:bg",
+                  "name": "Background",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "color": "#101827"
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "background",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "background"
+                },
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s1:shape",
+                  "name": "Accent",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 120,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "shape": "rectangle",
+                    "color": "#8cb0ff",
+                    "width": 1344,
+                    "height": 12,
+                    "radius": 6
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "shape",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "shape"
+                },
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s1:title",
+                  "name": "Title",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1
+                  },
+                  "keyframes": {
+                    "opacity": [
+                      {
+                        "frame": 0,
+                        "value": 0,
+                        "easing": "ease"
+                      },
+                      {
+                        "frame": 12,
+                        "value": 1,
+                        "easing": "hold"
+                      }
+                    ]
+                  },
+                  "layer": {
+                    "binding": "text",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "content": {
+                    "text": "YOUR STORY",
+                    "fontSize": 106,
+                    "fontFamily": "sans-serif",
+                    "color": "#ffffff",
+                    "align": "center",
+                    "width": 1728,
+                    "height": 200
+                  }
+                }
+              ],
+              "layerOrder": [
+                "project-f407e03f1e94681632f60ad8:s1:bg",
+                "project-f407e03f1e94681632f60ad8:s1:shape",
+                "project-f407e03f1e94681632f60ad8:s1:title"
+              ]
+            },
+            {
+              "id": "project-f407e03f1e94681632f60ad8:s2",
+              "name": "Story",
+              "durationFrames": 96,
+              "entities": [
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s2:camera",
+                  "name": "Camera",
+                  "type": "camera2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1
+                  },
+                  "keyframes": {}
+                },
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s2:bg",
+                  "name": "Background",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "color": "#162b32"
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "background",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "background"
+                },
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s2:shape",
+                  "name": "Accent",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 120,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "shape": "rectangle",
+                    "color": "#62c486",
+                    "width": 1344,
+                    "height": 12,
+                    "radius": 6
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "shape",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "shape"
+                },
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s2:title",
+                  "name": "Title",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1
+                  },
+                  "keyframes": {
+                    "opacity": [
+                      {
+                        "frame": 0,
+                        "value": 0,
+                        "easing": "ease"
+                      },
+                      {
+                        "frame": 12,
+                        "value": 1,
+                        "easing": "hold"
+                      }
+                    ]
+                  },
+                  "layer": {
+                    "binding": "text",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "content": {
+                    "text": "MAKE IT MOVE",
+                    "fontSize": 106,
+                    "fontFamily": "sans-serif",
+                    "color": "#ffffff",
+                    "align": "center",
+                    "width": 1728,
+                    "height": 200
+                  }
+                }
+              ],
+              "layerOrder": [
+                "project-f407e03f1e94681632f60ad8:s2:bg",
+                "project-f407e03f1e94681632f60ad8:s2:shape",
+                "project-f407e03f1e94681632f60ad8:s2:title"
+              ]
+            },
+            {
+              "id": "project-f407e03f1e94681632f60ad8:s3",
+              "name": "Closing",
+              "durationFrames": 96,
+              "entities": [
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s3:camera",
+                  "name": "Camera",
+                  "type": "camera2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1
+                  },
+                  "keyframes": {}
+                },
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s3:bg",
+                  "name": "Background",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "color": "#261c37"
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "background",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "background"
+                },
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s3:shape",
+                  "name": "Accent",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 120,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "shape": "rectangle",
+                    "color": "#ffc97a",
+                    "width": 1344,
+                    "height": 12,
+                    "radius": 6
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "shape",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "shape"
+                },
+                {
+                  "id": "project-f407e03f1e94681632f60ad8:s3:title",
+                  "name": "Title",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1
+                  },
+                  "keyframes": {
+                    "opacity": [
+                      {
+                        "frame": 0,
+                        "value": 0,
+                        "easing": "ease"
+                      },
+                      {
+                        "frame": 12,
+                        "value": 1,
+                        "easing": "hold"
+                      }
+                    ]
+                  },
+                  "layer": {
+                    "binding": "text",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "content": {
+                    "text": "MAKE IT YOURS",
+                    "fontSize": 106,
+                    "fontFamily": "sans-serif",
+                    "color": "#ffffff",
+                    "align": "center",
+                    "width": 1728,
+                    "height": 200
+                  }
+                }
+              ],
+              "layerOrder": [
+                "project-f407e03f1e94681632f60ad8:s3:bg",
+                "project-f407e03f1e94681632f60ad8:s3:shape",
+                "project-f407e03f1e94681632f60ad8:s3:title"
+              ]
+            }
+          ],
+          "annotations": []
+        },
+        "at": "2026-10-13T11:50:54.321Z",
+        "actor": {
+          "kind": "ai",
+          "identity": "local"
+        },
+        "label": "Prepare the editing demo: scenes, clip trim/move/split and animated shapes",
+        "transactionId": "phase4-demo-content-20261013",
+        "sourceHash": "ece176b0974740021eab63838c8a72c98ab4cc631fb88b4dc60c707d8f2dd716",
+        "expectedHash": "5baeef0c655538953a43c3b999de39323b5faa95d39e714de521669a70a84edc"
+      }
+    ],
+    "future": []
+  },
+  "receipts": [
+    {
+      "id": "phase4-demo-content-20261013",
+      "signature": "635096771844daae44c19bafc123641a6e22675653a3b9da998e35b58ffd83f6",
+      "revision": "84b1e1d6efd78dea69d5b9b72dc14f1f813cf9881be6c9a8f5cea6c78991a664"
+    }
+  ],
+  "migrations": [
+    {
+      "runtimeVersion": "sdk-1",
+      "at": "2026-10-14T03:47:30.594Z",
+      "beforeSourceHash": "2f1f08cfc16dc7d8165cf188df13fa0f9651592c6e57a8b195787bf5a2f9597c",
+      "afterSourceHash": "787888ef966c77f19e3bb98c5ba1a197c23e4f5634a218da543c752af71b56ef"
+    },
+    {
+      "runtimeVersion": "sdk-1",
+      "at": "2026-10-14T05:02:04.328Z",
+      "beforeSourceHash": "787888ef966c77f19e3bb98c5ba1a197c23e4f5634a218da543c752af71b56ef",
+      "afterSourceHash": "ece176b0974740021eab63838c8a72c98ab4cc631fb88b4dc60c707d8f2dd716"
+    }
+  ]
+}

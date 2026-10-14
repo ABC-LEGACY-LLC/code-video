@@ -1,12 +1,14 @@
 import {validatePropertyValue} from './core/component-schema.mjs';
+import {mountSelectionTools} from './selection-tools.mjs';
+import {mountSceneTools} from './scene-tools.mjs';
 import {mountEditorTools} from './editor-tools.mjs';
 import {entitySchema, evaluateEntity, layerTree, evaluatedLayers, isLayerLocked} from './core/project.mjs';
 
 const esc = value => String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
-const label = value => ({camera2d: '2D camera', object2d: 'Object', layer2d: 'Visual layer', group: 'Group', camera3d: '3D camera', audio: 'Audio', x: 'Horizontal position', y: 'Vertical position', zoom: 'Zoom', scale: 'Scale', rotation: 'Rotation', opacity: 'Opacity', gain: 'Volume', muted: 'Muted', az: 'Azimuth', el: 'Elevation', distance: 'Distance', fov: 'Field of view'}[value] || value);
+const label = value => ({camera2d: '2D camera', object2d: 'Object', layer2d: 'Visual layer', group: 'Group', camera3d: '3D camera', audio: 'Audio', audioCue: 'Audio clip', fadeIn: 'Fade in', fadeOut: 'Fade out', x: 'Horizontal position', y: 'Vertical position', zoom: 'Zoom', scale: 'Scale', rotation: 'Rotation', opacity: 'Opacity', gain: 'Volume', muted: 'Muted', az: 'Azimuth', el: 'Elevation', distance: 'Distance', fov: 'Field of view'}[value] || value);
 const requestId = () => crypto.randomUUID();
 
-export function createEditor({container, layerContainer, getFrame, isExporting, jump, pause, isVisible, onSaved, showInspector, setPreview, canFollow, markRegion, getImageContext}) {
+export function createEditor({container, layerContainer, getFrame, isExporting, jump, pause, isVisible, onSaved, showInspector, setPreview, canFollow, markRegion, getImageContext, windowOf, onSelectionChange}) {
  const states = new Map();
  let active = null, mounted = null;
  const dirty = s => Object.keys(s.extraDrafts||{}).length > 0 || Object.keys(s.cueDrafts||{}).length > 0 || Object.keys(s.fields).length > 0 || !!s.note.trim() || s.keyDirty;
@@ -45,6 +47,7 @@ export function createEditor({container, layerContainer, getFrame, isExporting, 
   s.loading = true;
   try {
    const next = await api('api/project?work=' + encodeURIComponent(s.work.id));
+   if (s.data && next.generation < s.data.generation) return;
    if (s.data && !review && (s.conflict || (next.revision !== s.data.revision && dirty(s)))) {
     s.incoming = next; s.conflict = true; s.error = 'The project changed while you were editing. Your draft is kept. Review the latest version before applying it.';
     if (active === s) update();
@@ -86,7 +89,7 @@ export function createEditor({container, layerContainer, getFrame, isExporting, 
     <div class="editor-actions"><button class="btn" type="button" data-jump-shot>Go to shot</button><button class="btn" type="button" data-current-shot>Select shot at playhead</button><button class="btn" type="button" data-prev-shot data-requires-op="moveShot">Move earlier</button><button class="btn" type="button" data-next-shot data-requires-op="moveShot">Move later</button></div>
     <label data-requires-op="renameShot">Name<input data-field="name|${esc(shot.id)}" value="${esc(fieldValue(s, `name|${shot.id}`, shot.name))}" maxlength="200" required></label>
     <label data-requires-op="trimShot">Duration (frames)${numberInput(`duration|${shot.id}`, shot.durationFrames, {min: 1, max: 36000, step: 1})}</label>
-    <p class="small mut" data-requires-op="trimShot">Changing duration scales layer ranges, keyframes, annotations and sound cues with the shot.</p>
+    <p class="small mut" data-requires-op="trimShot">Stretch changes animation and cue timing with the scene. Trim keeps animation speed.</p>
     ${s.data.capabilities.operations.includes('trimShot') ? '' : `<p class="small mut">${shot.durationFrames} frames · shot timing follows the authored soundtrack.</p>`}
    </fieldset></details><fieldset data-edit-fields data-inspector><legend>Inspector</legend>
     <label>Selected element<select data-entity><optgroup label="Cameras and audio">${shot.entities.filter(e => !e.layer).map(e => `<option value="${esc(e.id)}" ${e.id === entity?.id ? 'selected' : ''}>${esc(e.name)} · ${esc(label(e.type))}</option>`).join('')}</optgroup><optgroup label="Visual layers">${shot.entities.filter(e => e.layer).map(e => `<option value="${esc(e.id)}" ${e.id === entity?.id ? 'selected' : ''}>${esc(e.name)} · ${esc(label(e.type))}</option>`).join('')}</optgroup></select></label>
@@ -161,7 +164,9 @@ export function createEditor({container, layerContainer, getFrame, isExporting, 
    } catch (error) { s.error = 'Context could not be copied: ' + error.message; }
    update();
   };
-  mountEditorTools({container,s,shot,entity,api,update,getFrame,commit:(ops,name,done,actor)=>transact(s,ops,name,done,null,actor)});
+  mountSelectionTools({container,s,shot,windowOf,getFrame,commit:(ops,name)=>{if(!dirty(s))return transact(s,ops,name);}});
+  mountSceneTools({container,s,shot,commit:(ops,name,done)=>{if(!dirty(s))return transact(s,ops,name,done);}});
+  mountEditorTools({container,s,shot,entity,api,update,getFrame,commit:(ops,name,done,actor,revision)=>transact(s,ops,name,done,null,actor,revision??s.data.revision)});
   renderLists(s); update();
  }
  function operationsForFields(s) {
@@ -171,7 +176,7 @@ export function createEditor({container, layerContainer, getFrame, isExporting, 
    if (kind === 'name') { if (!String(value).trim()) throw new Error('Shot name is required.'); operations.push({type: 'renameShot', shotId: id, name: value}); }
    else if (kind === 'duration') {
     const number = Number(value); if (!String(value).trim() || !Number.isInteger(number) || number < 1 || number > 36000) throw new Error('Shot duration must be a whole number from 1 to 36000.');
-    operations.push({type: 'trimShot', shotId: id, durationFrames: number});
+    operations.push({type: s.timingMode==='trim'&&s.data.capabilities.operations.includes('trimScene')?'trimScene':'stretchShot', shotId: id, durationFrames: number});
    } else if (kind === 'layerName') {
     if (!String(value).trim()) throw new Error('Layer name is required.');
     operations.push({type: 'renameLayer', targetId: id, name: value});
@@ -196,13 +201,13 @@ export function createEditor({container, layerContainer, getFrame, isExporting, 
   if (!operations.length) throw new Error('No field changes to apply.');
   return operations;
  }
- async function transact(s, operations, name, committed, action, actor='human') {
+ async function transact(s, operations, name, committed, action, actor='human', baseRevision=s.data.revision) {
   if (s.busy || s.conflict || isExporting()) return;
   s.busy = true; s.error = ''; s.message = 'Saving…'; update();
   try {
-   const data = await api(action ? 'api/history' : 'api/operations', {work: s.work.id, baseRevision: s.data.revision, requestId: requestId(), actor, label: name, ...(action ? {action} : {operations})});
+   const data = await api(action ? 'api/history' : 'api/operations', {work: s.work.id, baseRevision, requestId: requestId(), actor, label: name, ...(action ? {action} : {operations})});
    s.data = data; committed?.(); s.incoming = null; s.conflict = false; s.message = 'Saved · ' + name;
-   normalize(s); if (active === s) { render(s); preview(s); } onSaved?.(s.work.id, name);
+   normalize(s); if (active === s) { render(s); preview(s); } onSaved?.(s.work.id, name); return data;
   } catch (error) {
    s.error = error.message; s.message = '';
    if (error.status === 409) { s.conflict = true; await refresh(s); }
@@ -227,9 +232,10 @@ export function createEditor({container, layerContainer, getFrame, isExporting, 
   if (active !== s || isExporting()) return;
   const {entity} = selected(s);
   setPreview?.({soloId: s.soloId, selectedId: entity?.layer ? entity.id : null}, entity?.layer ? entity.name : '');
+  onSelectionChange?.();
  }
  function layerSelection(s, id, multiple = false) {
-  if (isExporting()) return;
+  if (isExporting() || dirty(s)) return;
   const {shot} = selected(s);
   if (!shot?.layerOrder?.includes(id)) return;
   pause?.();
@@ -380,10 +386,16 @@ export function createEditor({container, layerContainer, getFrame, isExporting, 
   if (!s?.data || !shown(s) || !container.querySelector('[data-version]')) return;
   const {shot, entity, local, start} = selected(s), inside = Number.isInteger(local) && local >= 0 && local < shot.durationFrames;
   const blocked = s.busy || s.conflict || isExporting();
+  for(const b of container.querySelectorAll('[data-arrange]'))b.disabled=blocked||dirty(s);
+  for(const button of container.querySelectorAll('[data-scene-add],[data-scene-copy],[data-scene-delete]'))button.disabled=blocked||dirty(s)||(button.hasAttribute('data-scene-delete')&&s.data.project.shots.length===1);
   const readOnly = entity?.legacy?.readOnly || (entity?.layer && isLayerLocked(shot, entity.id));
   for(const el of container.querySelectorAll('[data-content] input,[data-content] textarea,[data-content] select,[data-content-save],[data-duplicate],[data-remove]'))el.disabled=blocked||readOnly||(['duplicate','remove'].some(k=>Object.hasOwn(el.dataset,k))&&!entity?.layer)||(Object.hasOwn(el.dataset,'duplicate')&&entity?.type==='group');
   for(const el of container.querySelectorAll('[data-new-text],[data-import],[data-cue-save],[data-cue-copy],[data-cue-delete],[data-proposal-apply]'))el.disabled=blocked;
   for(const el of container.querySelectorAll('[data-cue-fields] input,[data-cue-fields] select'))el.disabled=blocked;
+  for(const el of container.querySelectorAll('[data-av-tools] button,.audio-mix button,.audio-mix select'))el.disabled=blocked||dirty(s);
+  const linked=!!entity?.cue?.linkedVideoId;
+  for(const el of container.querySelectorAll('[data-cue-fields] input,[data-cue-save],[data-audio-trim],[data-audio-split]'))el.disabled=blocked||linked||(el.hasAttribute('data-audio-split')&&(!inside||local<=entity.cue.frame||local>=entity.cue.frame+entity.cue.durationFrames))||(el.hasAttribute('data-audio-trim')&&(Object.keys(s.fields).length>0||Object.keys(s.extraDrafts||{}).length>0));
+  const detach=container.querySelector('[data-audio-detach]');if(detach)detach.disabled ||= !linked;
   for (const control of container.querySelectorAll('[data-requires-op]')) control.hidden = !s.data.capabilities.operations.includes(control.dataset.requiresOp);
   container.querySelector('[data-selection-context]').textContent = `${shot.name} · ${entity?.name || 'Shot'}`;
   container.querySelector('[data-version]').textContent = `Version ${s.data.revision.slice(0, 8)}`;
@@ -406,7 +418,7 @@ export function createEditor({container, layerContainer, getFrame, isExporting, 
   container.querySelector('[data-region]').disabled=blocked||!inside||!markRegion;
   container.querySelector('[data-clear-region]').disabled=blocked;
   for (const button of container.querySelectorAll('[data-note-resolve]')) button.disabled = blocked;
-  const def = s.data.capabilities.entityTypes[entity?.type]?.[s.keyProperty];
+  const def = (s.data.capabilities.entitySchemas?.[entity?.id]||s.data.capabilities.entityTypes[entity?.type])?.[s.keyProperty];
   const values = entity ? evaluateEntity(entity, Math.max(0, Math.min(shot.durationFrames - 1, local))) : {};
   for (const text of container.querySelectorAll('[data-evaluated]')) text.textContent = inside ? `At frame ${local}: ${Number(values[text.dataset.evaluated].toFixed(4))}` : 'Playhead outside this shot';
   const input = container.querySelector('[data-key-value]');
@@ -422,26 +434,28 @@ export function createEditor({container, layerContainer, getFrame, isExporting, 
   const list = container.querySelector('[data-key-list]'), signature = JSON.stringify([s.entityId, s.keyProperty, keys]);
   if (list.dataset.signature !== signature) {
    list.dataset.signature = signature;
-   list.innerHTML = keys.map(key => `<button class="editor-key btn" data-key-jump="${key.frame}">f${key.frame} · ${key.value} · ${esc(key.easing)}</button>`).join('') || '<span class="small mut">No keyframes. The base value applies throughout the shot.</span>';
+   list.innerHTML = keys.map(key => key.frame<0||key.frame>=shot.durationFrames?`<span class="small mut">f${key.frame} · retained outside scene</span>`:`<button class="editor-key btn" data-key-jump="${key.frame}">f${key.frame} · ${key.value} · ${esc(key.easing)}</button>`).join('') || '<span class="small mut">No keyframes. The base value applies throughout the shot.</span>';
    list.onclick = event => { const button = event.target.closest('[data-key-jump]'); if (button) jump(start + Number(button.dataset.keyJump)); };
   }
  }
  return {
-  snapshot(){if(!active?.data)return null;return{...selected(active),generation:active.data.generation,revision:active.data.revision,project:active.data.project,work:active.work,blocked:active.busy||active.conflict||dirty(active)||isExporting()};},
-  commit(operations,name){if(!active?.data||dirty(active))return;return transact(active,operations,name);},
+  snapshot(){if(!active?.data)return null;return{...selected(active),selection:[...active.selection],generation:active.data.generation,revision:active.data.revision,capabilities:active.data.capabilities,project:active.data.project,work:active.work,blocked:active.busy||active.conflict||dirty(active)||isExporting()};},
+  commit(operations,name,{baseRevision}={}){if(!active?.data||dirty(active)||!operations.length)return;return transact(active,operations,name,null,null,'human',baseRevision??active.data.revision);},
+  history(action){if(active?.data&&!dirty(active))return transact(active,[],action,null,action);},
   async attach(work) { active = stateFor(work); render(active); await refresh(active); preview(active); },
   async open(work) { active = stateFor(work); const s = active; mounted = null; render(s); await refresh(s); },
   select(targetId) {
    if (!active?.data || isExporting()) return;
+   if(dirty(active)){active.message='Save or discard your draft before changing the selection.';update();return;}
    for (const shot of active.data.project.shots) {
     const entity = shot.entities.find(value => value.id === targetId);
     if (shot.id === targetId || entity) { active.shotId = shot.id; active.entityId = entity?.id || ''; active.selection = entity?.layer ? [entity.id] : []; active.keyDirty = false; showInspector?.(); render(active); preview(active); container.scrollTop = 0; break; }
    }
   },
   refresh(workId) { const s = states.get(workId); if (s) return refresh(s); },
-  pick(targetId) {
+  pick(targetId, multiple=false) {
    if (!active?.data || isExporting()) return;
-   for (const shot of active.data.project.shots) if (shot.layerOrder?.includes(targetId)) { active.shotId = shot.id; layerSelection(active, targetId); break; }
+   for (const shot of active.data.project.shots) if (shot.layerOrder?.includes(targetId)) { active.shotId = shot.id; layerSelection(active, targetId, multiple); break; }
   },
   restorePreview(workId) { const s = states.get(workId); if (s === active && s?.data) { normalize(s); preview(s); } },
   update,

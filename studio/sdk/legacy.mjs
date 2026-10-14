@@ -1,3 +1,4 @@
+import {createPlayback} from '../audio-transport.mjs';
 // Trusted pages remain compatible. This adapter does not claim to isolate them.
 export function adaptLegacyPage(page,{fps=24,totalFrames,control='frameTo'}={}){
  let disposed=false;
@@ -21,16 +22,19 @@ export function adaptLegacyPage(page,{fps=24,totalFrames,control='frameTo'}={}){
 }
 // Let new SDK pages participate in the existing Studio transport and export UI.
 export function installPageHooks(page,runtime,{generation=0,revision}={}){
- const project=runtime.project;let frame=0,playing=false,epoch=0;
- page.__studioProject={generation,revision};page.__fps=project.fps.num/project.fps.den;page.__totalFrames=project.shots.reduce((n,s)=>n+s.durationFrames,0);
- let start=0;page.__shots=project.shots.map(s=>{const row={k:s.id,f:start,df:s.durationFrames};start+=s.durationFrames;return row;});
- page.__frame=()=>({frame,playing});page.__pause=()=>{playing=false;epoch++;};
+ const project=runtime.project;let frame=0,playing=false,epoch=0;const playback=createPlayback(page,runtime);
+ page.__studioProject={generation,revision};page.__projectSize={width:project.width,height:project.height};page.__fps=project.fps.num/project.fps.den;page.__totalFrames=project.shots.reduce((n,s)=>n+s.durationFrames,0);
+ let start=0;page.__shots=project.shots.map(s=>{const row={k:s.id,label:s.name,f:start,df:s.durationFrames};start+=s.durationFrames;return row;});
+ page.__frame=()=>({frame,playing});page.__pause=()=>{playing=false;epoch++;playback.stop();};
+ if(runtime.audio&&project.shots.some(s=>s.entities.some(e=>e.type==='audioCue'))){page.__renderAudio=(duration,sampleRate)=>runtime.audio({duration,sampleRate});page.__audioChecks=()=>runtime.audioChecks();page.__renderAudioClip=(id,sr)=>runtime.audioClip(id,sr);}
+ page.__audioState=()=>playback.state();page.__setSound=async value=>{const wasPlaying=playing;page.__pause();await playback.enable(value);if(wasPlaying)await page.__play(frame);};
  page.__frameTo=async(n,width,height)=>{const result=await runtime.renderFrame({frame:n,width,height});frame=n;return result;};page.__sizable=true;
- page.__play=(from=frame)=>{page.__pause();playing=true;const token=epoch,base=performance.now();
-  const tick=async()=>{if(!playing||token!==epoch)return;const next=(from+Math.floor((performance.now()-base)*page.__fps/1000))%page.__totalFrames;
+ page.__play=async(from=frame)=>{page.__pause();playing=true;const token=epoch;
+  try{await playback.start(from);}catch(error){page.__audioError=error.message;page.__pause();return;}
+  const tick=async()=>{if(!playing||token!==epoch)return;const next=(from+Math.floor(playback.elapsed()*page.__fps))%page.__totalFrames;
    try{await page.__frameTo(next);if(playing&&token===epoch)page.requestAnimationFrame(tick);}catch(error){page.__failed=error.message;page.__pause();}};tick();};
  page.__tracks=()=>runtime.tracks?.()||[];page.__pickLayer=(x,y)=>runtime.selection({x,y});page.__layerGeometry=id=>runtime.selection({id});
  page.__setLayerPreview=value=>runtime.preview(value);page.__getLayerPreview=()=>runtime.getPreview();
  page.__renderer=runtime;page.__ready=true;
- page.addEventListener('pagehide',()=>{page.__pause();runtime.dispose();},{once:true});
+ page.addEventListener('pagehide',()=>{page.__pause();playback.dispose();runtime.dispose();},{once:true});
 }

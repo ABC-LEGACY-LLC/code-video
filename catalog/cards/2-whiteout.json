@@ -203,8 +203,8 @@
  ],
  "measureEvidence": {
   "schema": 2,
-  "measuredAt": "2026-10-13T08:42:33.189Z",
-  "sourceHash": "670b7175e57b254f23305fc56b06253075dddeb5d2b76825fbb609a417129115",
+  "measuredAt": "2026-10-14T05:02:25.151Z",
+  "sourceHash": "4d4a3480b49d9a2272802ca7894abc7f96c126cb438e08a8e615d58ff7f03edc",
   "sampling": {
    "frames": [
     96,
@@ -224,8 +224,8 @@
   "inputs": [
    {
     "file": "../tools/fingerprint.mjs",
-    "sha256": "58be72fdea16e7531ef3870c2a0dd968752afeebf8ec5519a7d56257627a3823",
-    "renderHash": "58be72fdea16e7531ef3870c2a0dd968752afeebf8ec5519a7d56257627a3823",
+    "sha256": "9e2cb10399e4e2afe400a8c88e83bfb23d2c6530db56acf675629e88647db247",
+    "renderHash": "9e2cb10399e4e2afe400a8c88e83bfb23d2c6530db56acf675629e88647db247",
     "projection": "bytes-v1"
    },
    {
@@ -236,8 +236,8 @@
    },
    {
     "file": "../tools/preview.mjs",
-    "sha256": "2fbe43cea14a43a6b15a35ff784be3579fa2492efc14e3b3ca2daa4cdbafa834",
-    "renderHash": "2fbe43cea14a43a6b15a35ff784be3579fa2492efc14e3b3ca2daa4cdbafa834",
+    "sha256": "be2807c69ab1cac85cc2cdc87d28b0ddf77daf10073ac35d204b721fc90bc9b3",
+    "renderHash": "be2807c69ab1cac85cc2cdc87d28b0ddf77daf10073ac35d204b721fc90bc9b3",
     "projection": "bytes-v1"
    },
    {
@@ -253,15 +253,39 @@
     "projection": "bytes-v1"
    },
    {
+    "file": "../../studio/audio-transport.mjs",
+    "sha256": "ee59d1bb330dde44976dc3550b0bb20059e37ec594f238c663409ecdf91758c3",
+    "renderHash": "ee59d1bb330dde44976dc3550b0bb20059e37ec594f238c663409ecdf91758c3",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/audio.mjs",
+    "sha256": "ad215558f3f9f81414505ac92b47e7d925b929e8736a9351f935a0dbcbc85b11",
+    "renderHash": "ad215558f3f9f81414505ac92b47e7d925b929e8736a9351f935a0dbcbc85b11",
+    "projection": "bytes-v1"
+   },
+   {
     "file": "../../studio/components/legacy.mjs",
     "sha256": "aa8ae250f6c711e92f7835a64fd0d5e4e4dc3f861db6ae590f2887e3bc5aa30b",
     "renderHash": "aa8ae250f6c711e92f7835a64fd0d5e4e4dc3f861db6ae590f2887e3bc5aa30b",
     "projection": "bytes-v1"
    },
    {
+    "file": "../../studio/core/audio.mjs",
+    "sha256": "1b312099a35726e28865a543a8e86771bb5ab311f99cd99f8ee021648dc96eee",
+    "renderHash": "1b312099a35726e28865a543a8e86771bb5ab311f99cd99f8ee021648dc96eee",
+    "projection": "bytes-v1"
+   },
+   {
     "file": "../../studio/core/component-schema.mjs",
     "sha256": "af9ad2a7c5d841aaae206fcca8940c78607963eea9ce6808695fd733cf49ea03",
     "renderHash": "af9ad2a7c5d841aaae206fcca8940c78607963eea9ce6808695fd733cf49ea03",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/core/editing.mjs",
+    "sha256": "9301a5d254a2f6c0f54dd34acd40e8e433b64b01e670b1c9bfd922ccc4a49b46",
+    "renderHash": "9301a5d254a2f6c0f54dd34acd40e8e433b64b01e670b1c9bfd922ccc4a49b46",
     "projection": "bytes-v1"
    },
    {
@@ -284,25 +308,43 @@
    },
    {
     "file": "../../studio/core/layers.mjs",
-    "sha256": "a0be434a1c7e2c7f4a4ddec10a62536e159586f11ae39cb5214bf308ca20c31e",
-    "renderHash": "a0be434a1c7e2c7f4a4ddec10a62536e159586f11ae39cb5214bf308ca20c31e",
+    "sha256": "f5bd7e3a977ee4139fd80d2a49ad328e1c88933bb11164f29b66ec4f5c3cc57e",
+    "renderHash": "f5bd7e3a977ee4139fd80d2a49ad328e1c88933bb11164f29b66ec4f5c3cc57e",
     "projection": "bytes-v1"
    },
    {
     "file": "../../studio/core/project.mjs",
-    "sha256": "a3b8bcbb336852a031b1ac624f2e373d213ed23770cea1d6e035ee2848981a31",
-    "renderHash": "a3b8bcbb336852a031b1ac624f2e373d213ed23770cea1d6e035ee2848981a31",
+    "sha256": "6a4e14b3c00e2f6a5f381aa75330b697ad21e953236469a1ef61359c1e7509eb",
+    "renderHash": "6a4e14b3c00e2f6a5f381aa75330b697ad21e953236469a1ef61359c1e7509eb",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/core/scenes.mjs",
+    "sha256": "7457a174e6ef89a14d1ce1ce315f45180bf63cd6e20da9d8902e595355d95cd8",
+    "renderHash": "7457a174e6ef89a14d1ce1ce315f45180bf63cd6e20da9d8902e595355d95cd8",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/core/typography.mjs",
+    "sha256": "841df730b5f34f8760c53e16abe95e51926659ad40ba7cff8f230b1800ce8b98",
+    "renderHash": "841df730b5f34f8760c53e16abe95e51926659ad40ba7cff8f230b1800ce8b98",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/input-asset.mjs",
+    "sha256": "0bfd847cae1b0411ce2980af1e52f2707868f9529374c6c0e88fd613b8963779",
+    "renderHash": "0bfd847cae1b0411ce2980af1e52f2707868f9529374c6c0e88fd613b8963779",
     "projection": "bytes-v1"
    },
    {
     "file": "../../studio/media.mjs",
-    "sha256": "389e4038902945edb185bfb912fc5e6b22d2ac9d7c5908c8dfb163c974828eb7",
-    "renderHash": "389e4038902945edb185bfb912fc5e6b22d2ac9d7c5908c8dfb163c974828eb7",
+    "sha256": "dcbf49d4170855a2b992ff89f52e8c2085b1c8182e87d66ebc6831c472fb4415",
+    "renderHash": "dcbf49d4170855a2b992ff89f52e8c2085b1c8182e87d66ebc6831c472fb4415",
     "projection": "bytes-v1"
    },
    {
     "file": "../../studio/projects/whiteout/project.studio.json",
-    "sha256": "5ebbcc8d791dfea6ed943570e5950afcf61593dcd3a55530ab239baa79f87c3d",
+    "sha256": "943e5e52cc5e613566e69be2ea9240aee60261af2f5d44d42d3e2f7878cbed9f",
     "renderHash": "5ac3e829e80e872c1276db616ade74b2e6d08621ba249ed748230a858f01aa6f",
     "projection": "studio-project-v1"
    },
@@ -310,6 +352,18 @@
     "file": "../../studio/projects/whiteout/whiteout.html",
     "sha256": "e6b16afb01c44370ffb891d42e620c552322ab5b5c00eb8e8b7e99f60c87a132",
     "renderHash": "e6b16afb01c44370ffb891d42e620c552322ab5b5c00eb8e8b7e99f60c87a132",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/snapshot-resource.mjs",
+    "sha256": "1fbccfe9df6fd784913bc4332f57aa52ad57213acc4e952916fe920b3525f1e8",
+    "renderHash": "1fbccfe9df6fd784913bc4332f57aa52ad57213acc4e952916fe920b3525f1e8",
+    "projection": "bytes-v1"
+   },
+   {
+    "file": "../../studio/typography.mjs",
+    "sha256": "bac8f7cac2ffa845f7c185561ee16a85eca05fa02b6df8abe0bfd38a8c95f0d6",
+    "renderHash": "bac8f7cac2ffa845f7c185561ee16a85eca05fa02b6df8abe0bfd38a8c95f0d6",
     "projection": "bytes-v1"
    }
   ],

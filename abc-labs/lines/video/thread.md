@@ -91,3 +91,31 @@ the keeper stopped with exit 1 after 79s: Selected model is at capacity. Please 
 Video added e0333/e0334, amended e0242/e0200/e0292, linked 3d e0265/e0332; treasury and memory updated, code-video page unchanged; N0223/N0226/N0228 folded.
 Verified saved source, component licences and pose fault runs: initial share is not final coverage, no temporal stability or generation quality gain proved; H3 public grant remains not-to-use.
 No duplicate techniques, new patch handoff, pending news or due checks.
+
+## 2026-10-13 13:04 · keeper ✅
+
+Video added e0338, extended e0200 and linked 3d e0337; treasury/memory updated, code-video page unchanged; N0236 folded.
+Checked Policy, pinned source, component terms and four saved CPU tests: independent inspiration only, no GPU/fidelity/latency claim or copied runtime/media clearance.
+No pending news or due entries; no patch or new project request.
+
+## 2026-10-13 13:09 · keeper ✅
+
+N0242 folded into e0075; treasury and memory updated, code-video page unchanged.
+Checked room 71 Policy and saved s1–s5: transcript/punctuation establish no caption alignment; independent words-and-timing validation required, no app/weights or vendor performance adopted.
+Voice owns recogniser technique; existing e0093 link retained. No duplicate, patch, pending news or due entries.
+
+## 2026-10-13 16:50 · keeper
+
+Room 75 home entry e0355 now exists and is linked; its ID is no longer needed. N0256/N0258 folded without copying the 3d technique.
+
+## 2026-10-13 16:51 · keeper ✅
+
+Video added e0354 and linked 3d e0355; treasury/memory updated, code-video page unchanged; N0254/N0256/N0258 folded, N0259 passed.
+Checked room 74/75 Policy and saved evidence: independent inspiration only; no depth fidelity, savings, Atlas export/import or third-party reuse proved.
+Library: 89 entries, 25 links, 3 outdated; no pending news or due entries, no patch handoff.
+
+## 2026-10-13 16:52 · keeper ✅
+
+Video retains the existing 3d e0355 link; memory refreshed, library, treasury and code-video page unchanged.
+Confirmed N0256/N0258 folded and N0259 passed; no duplicate technique or patch handoff.
+No pending news, due entries or new project requests.

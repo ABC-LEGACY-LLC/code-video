@@ -1,6 +1,7 @@
+import {canvasViewport} from './selection-tools.mjs';
 export function markRegion(W,onRegion){
  const c=W.document.querySelector('canvas');if(!c)return;W.__pause?.();
- W.document.querySelector('[data-region-overlay]')?.remove();const r=c.getBoundingClientRect(),overlay=W.document.createElement('div'),box=W.document.createElement('div');
+ W.document.querySelector('[data-region-overlay]')?.remove();const r=canvasViewport(c),overlay=W.document.createElement('div'),box=W.document.createElement('div');
  overlay.dataset.regionOverlay='true';overlay.tabIndex=0;overlay.setAttribute('aria-label','Drag a region for the frame annotation. Escape cancels.');
  const color=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
  overlay.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;z-index:30;cursor:crosshair;touch-action:none`;

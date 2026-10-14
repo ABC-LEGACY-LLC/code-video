@@ -1,0 +1,5 @@
+.player-controls{position:fixed;bottom:var(--s-4);left:var(--s-4);right:var(--s-4);display:flex;gap:var(--s-3);align-items:center;padding:var(--s-2);background:var(--panel);border:1px solid var(--edge);border-radius:var(--r-2)}
+.player-controls input{flex:1;min-width:0}
+.player-controls output{font:var(--fs-2) var(--mono);color:var(--ink)}
+
+.player-sound{position:fixed;bottom:var(--s-2);right:var(--s-2);z-index:2}

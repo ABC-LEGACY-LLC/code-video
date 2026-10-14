@@ -427,7 +427,7 @@ await check({name:'studio/edit-in-timeline', unit:'faults: the row written, the 
    which is not the length that was asked for. */
 async function exportOff(frames){
  const p=await studio('#zarra'); await ready(p,'zarra');
- const sent=[]; p.on('request',r=>{ if(r.method()!=='GET') sent.push(r.url()); });
+ const sent=[]; p.on('request',r=>{ if(r.method()!=='GET'&&!r.url().endsWith('/api/snapshots')) sent.push(r.url()); });
  const r=await p.evaluate(async frames=>{
   const blob=await exportVideo({from:0,to:frames-1,width:270});
   const v=document.createElement('video'); v.muted=true; v.src=URL.createObjectURL(blob);

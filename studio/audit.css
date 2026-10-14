@@ -1,0 +1,7 @@
+.audit-profiles{display:grid;gap:var(--s-2);margin-bottom:var(--s-3)}
+.audit-findings{display:grid;gap:var(--s-2);margin-top:var(--s-3)}
+.audit-finding{text-align:left;white-space:normal;overflow-wrap:anywhere}
+.audit-thumbnails{display:grid;gap:var(--s-2)}
+.audit-thumbnails figure{margin:var(--s-2) 0}.audit-thumbnails img{width:100%;height:auto}
+button.audit-finding{display:block}.audit-finding b{white-space:nowrap}
+.audit-finding .sub{display:block;margin-top:var(--s-1)}

@@ -29,3 +29,7 @@ done, opened 2026-10-03, from lead L0034
 ## Room 41 · parakeet.cpp
 
 done, opened 2026-10-04, from lead L0044
+
+## Room 71 · Embedding Gemma Transcribe
+
+done, opened 2026-10-13, from lead L0079

@@ -123,30 +123,18 @@ test('managed editor: atomic edits, persistent history, keyframes, annotations, 
    await page.evaluate(() => { exporting = null; setTransport(); });
    assert.equal(await page.locator('[data-apply]').isDisabled(), false);
   });
-  await t.test('codec preparation freezes the project and failures release the controls', async () => {
-   const result = await page.evaluate(async () => {
-    const original = exportCodec;
-    let release;
-    exportCodec = () => new Promise(resolve => { release = resolve; });
-    const promise = exportVideo({from: 0, to: 0, sound: false}).catch(error => error.message);
-    const frozen = !!exporting && document.querySelector('[data-apply]').disabled;
-    release(null);
-    const error = await promise;
-    exportCodec = original;
-    return {frozen, released: exporting === null, error};
-   });
-   assert.equal(result.frozen, true); assert.equal(result.released, true);
-   assert.match(result.error, /no video encoder/);
+  await t.test('saved-state export rejects drafts, then codec preparation locks editing and releases on failure', async () => {
+   assert.match(await page.evaluate(()=>exportVideo({from:0,to:0,sound:false}).catch(e=>e.message)),/drafts/);
+   await page.locator('[data-discard]').click();await page.waitForFunction(()=>!editor.snapshot().blocked);
+   const result=await page.evaluate(async()=>{
+    const original=VideoEncoder.isConfigSupported;let release,calls=0;
+    VideoEncoder.isConfigSupported=()=>++calls===1?new Promise(r=>release=r):Promise.resolve({supported:false});
+    try{const promise=exportVideo({from:0,to:0,sound:false}).catch(e=>e.message);const frozen=!!exporting&&document.querySelector('[data-apply]').disabled;while(!release)await new Promise(r=>setTimeout(r,5));release({supported:false});const error=await promise;return{frozen,released:exporting===null,error};}finally{VideoEncoder.isConfigSupported=original;}
+   });assert.equal(result.frozen,true);assert.equal(result.released,true);assert.match(result.error,/no video encoder/);
   });
-  await t.test('codec rejection releases the export lock', async () => {
-   const result = await page.evaluate(async () => {
-    const original = exportCodec;
-    exportCodec = async () => { throw new Error('codec probe failed'); };
-    try { await exportVideo({from: 0, to: 0, sound: false}); }
-    catch (error) { return {error: error.message, released: exporting === null}; }
-    finally { exportCodec = original; }
-   });
-   assert.deepEqual(result, {error: 'codec probe failed', released: true});
+  await t.test('codec rejection releases the export lock',async()=>{
+   const result=await page.evaluate(async()=>{const original=VideoEncoder.isConfigSupported;VideoEncoder.isConfigSupported=async()=>{throw new Error('codec probe failed');};try{await exportVideo({from:0,to:0,sound:false});}catch(error){return{error:error.message,released:exporting===null};}finally{VideoEncoder.isConfigSupported=original;}});
+   assert.match(result.error,/no video encoder/);assert.equal(result.released,true);
   });
   await t.test('Cancel and Escape wake an export waiting in a hidden tab', async () => {
    const result = await page.evaluate(async () => {

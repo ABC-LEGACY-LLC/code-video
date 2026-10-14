@@ -23,10 +23,10 @@ const forbidden=p=>p.split(/[\\/]/).some(s=>s.startsWith('.')||s==='node_modules
 export async function startPreview(file,{root=REPO}={}){
  root=realpathSync(root);file=realpathSync(file);
  if(!inside(root,file)||forbidden(relative(root,file))) throw new Error('preview file is outside its allowed root');
- const rel=relative(root,file),parts=rel.split(sep);
+ const rel=relative(root,file),parts=rel.split(sep),created=parts[0]==='studio'&&parts[1]==='projects'&&parts[2]==='created'&&parts.length>4;
  const roots=root===realpathSync(REPO)
   ? (parts[0]==='studio'&&parts[1]==='projects'&&parts.length>3
-    ? [resolve(root,...parts.slice(0,3)),resolve(root,'studio/core'),resolve(root,'studio/components'),resolve(root,'studio/sdk'),resolve(root,'studio/renderers'),resolve(root,'studio/media.mjs'),resolve(root,'studio/composition.mjs'),resolve(root,'studio/assets',parts[2]),resolve(root,'core')]
+    ? [resolve(root,...parts.slice(0,created?4:3)),resolve(root,'studio/core'),resolve(root,'studio/components'),resolve(root,'studio/sdk'),resolve(root,'studio/renderers'),...['audio.mjs','audio-transport.mjs','typography.mjs','snapshot-resource.mjs','input-asset.mjs'].map(p=>resolve(root,'studio',p)),resolve(root,'studio/media.mjs'),resolve(root,'studio/composition.mjs'),resolve(root,'studio/assets',parts[created?3:2]),resolve(root,'studio/project-player.mjs'),resolve(root,'studio/project-player.css'),resolve(root,'studio/tokens.css'),resolve(root,'core')]
     : [])
   : [root]; // explicit fixture root; production callers never take this from a card
  if(!roots.length) throw new Error('preview only serves studio project files');

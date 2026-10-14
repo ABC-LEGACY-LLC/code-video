@@ -9,7 +9,7 @@ export function createRendererRegistry(){
    if(!/^[a-z][a-z0-9-]{0,79}$/.test(d.id)||!/^\d+\.\d+\.\d+$/.test(d.version)||d.sdkVersion!==SDK_VERSION||typeof create!=='function')throw new Error('invalid renderer registration');
    if(entries.has(d.id))throw new Error('renderer already registered: '+d.id);
    if(!d.capabilities||methods.some(k=>typeof d.capabilities[k]!=='boolean')||!d.capabilities.renderFrame||!d.capabilities.dispose)throw new Error('renderer capabilities must be explicit');
-   if(!Array.isArray(d.auditChannels)||d.auditChannels.some(k=>!['color','geometry','depth','object-id','audio'].includes(k)))throw new Error('invalid audit channels');
+   if(!Array.isArray(d.auditChannels)||d.auditChannels.some(k=>!['color','geometry','depth','object-id','audio','text'].includes(k)))throw new Error('invalid audit channels');
    entries.set(d.id,{description:d,create});
   },
   describe(id){const e=entries.get(id);if(!e)throw new Error('unknown renderer: '+id);return structuredClone(e.description);},

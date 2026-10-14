@@ -1,5 +1,16 @@
 # Studio — a person and an AI on the same piece
 
+Use **New project** to create a Blank or three-scene 2D video. **Assets** imports
+and reuses media; **Project…** duplicates a created project or downloads its
+portable source. See [Creator workflow and API](CREATOR.md).
+
+Phase 4 adds **Projects / Scenes / Layers / Assets**, visual clip move/trim/split,
+separate Trim / Stretch timing, multi-selection, alignment and timeline key editing.
+See [Editing workflow and timing semantics](EDITING.md).
+
+Phase 5 adds music/voice/SFX tracks, linked video audio, pinned project fonts and
+timed captions. See [Audio and text workflow](AUDIO-TEXT.md).
+
 The reusable renderer/component contract and isolated **Code preview** are documented
 in [SDK.md](SDK.md). Open **Motion graphics · SDK** in Works to try typed component
 editing through the same Human/AI operations.
@@ -127,8 +138,9 @@ work:
   own disk: each frame is drawn by the page, encoded there (WebCodecs: H.264, or VP9 where the
   browser has no H.264) and written into an MP4 by the page itself. Nothing is uploaded and
   nothing is kept on the server. The person picks the size and the range (the whole film, the
-  shot on screen, from here to the end); what is exported is what is on the stage — the style,
-  the layers and the view chosen there. A work that can render its sound offline
+  shot on screen, from here to the end). Compatible managed works freeze their saved
+  source and project; Solo and selection overlays are excluded. Legacy adapters use
+  their loaded stage and explicitly report when source is not frozen. A work that can render its sound offline
   (`__renderAudio`: oq-kocha, whiteout, bir-tomchi) is exported with it, as AAC or, where the
   browser has no AAC encoder, Opus. Bir tomchi's calls come from what it draws, so its export
   records the frames as they are drawn (`__soundRecord`) and makes the sound from that record.
@@ -210,3 +222,11 @@ Room 2's six stages for a studio; the current Human/AI implementation is describ
 4. The same floor of checks under every card, in one order in CI.
 5. The studio page — this folder.
 6. A short skill and a template work, last.
+
+## Frozen checks and verified export
+
+See [Audit and export](AUDIT-EXPORT.md) for Checks profiles, immutable source snapshots,
+progress/cancel/retry, freshness, findings navigation and browser export receipts.
+Compatible managed works export their frozen saved state. Legacy adapters without
+pinned dependencies keep an explicitly unbound export. All final videos stay in
+the browser and on the user's disk.

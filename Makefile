@@ -279,14 +279,14 @@ audit: audit-studio audit-catalog audit-zarra audit-tong-kaptar audit-oq-kocha
 
 ## The quick checks: studio, the cards against their sources, Oq Ko'cha without a browser.
 audit-fast:
-	@node --test harness/test.mjs catalog/test/freshness.mjs catalog/test/render-input.mjs studio/test/core.mjs studio/test/layers.mjs studio/test/http-boundaries.mjs studio/test/watch-tree.mjs studio/test/sdk.mjs
+	@node --test harness/test.mjs catalog/test/freshness.mjs catalog/test/render-input.mjs studio/test/core.mjs studio/test/layers.mjs studio/test/http-boundaries.mjs studio/test/watch-tree.mjs studio/test/sdk.mjs studio/test/creator.mjs
 	@cd studio && node test/run.mjs
 	@cd catalog && node tools/card.mjs
 	@cd $(OQ) && node test/run.mjs --no-browser
 
 ## The studio's own checks: the server in seconds, then the page in a browser (a few minutes).
 audit-studio: deps-if-needed
-	@cd studio && node test/run.mjs && node --test test/core.mjs test/layers.mjs test/completion.mjs test/completion-ui.mjs test/sdk.mjs test/sdk-ui.mjs test/http-boundaries.mjs test/watch-tree.mjs test/editor-ui.mjs test/layers-ui.mjs && node test/whiteout-project.mjs && node test/whiteout-layers.mjs && node test/ui.mjs
+	@cd studio && node test/run.mjs && node --test --test-concurrency=1 test/snapshots.mjs test/audit-ui.mjs test/av.mjs test/av-ui.mjs test/editing.mjs test/editing-ui.mjs test/core.mjs test/layers.mjs test/completion.mjs test/completion-ui.mjs test/sdk.mjs test/sdk-ui.mjs test/creator.mjs test/creator-ui.mjs test/creator-preview.mjs test/http-boundaries.mjs test/watch-tree.mjs test/editor-ui.mjs test/layers-ui.mjs && node test/whiteout-project.mjs && node test/whiteout-layers.mjs && node test/ui.mjs
 
 ## Oq Ko'cha: every check, renders included (long).
 audit-oq-kocha: build deps-if-needed

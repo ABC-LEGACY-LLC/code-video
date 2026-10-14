@@ -1,0 +1,21 @@
+import test from 'node:test';
+import {get as httpGet} from 'node:http';
+import assert from 'node:assert/strict';
+import {rmSync,mkdirSync,writeFileSync,readFileSync} from 'node:fs';
+import {join} from 'node:path';
+import {chromium} from 'playwright';
+import {createProjectStore} from '../core/store.mjs';
+import {createLibrary} from '../core/project-library.mjs';
+import {importAsset} from '../core/assets.mjs';
+import {startPreview,REPO} from '../../catalog/tools/preview.mjs';
+test('audit preview can load a created project without serving sibling projects or server files',async t=>{
+ const library=createLibrary(REPO,createProjectStore(REPO)),request={requestId:crypto.randomUUID(),actor:'ai',name:'Audit preview fixture',format:'9:16',fps:24,durationSeconds:3,template:'title-sequence'},one=library.create(request).work,two=library.create({...request,requestId:crypto.randomUUID()}).work;
+ let preview,browser;t.after(async()=>{await browser?.close();await preview?.close();for(const w of [one,two]){rmSync(join(REPO,w.dir),{recursive:true,force:true});rmSync(join(REPO,'studio/assets',w.id),{recursive:true,force:true});}});
+ const font=importAsset(REPO,one,{name:'Pinned fixture font',data:readFileSync(join(REPO,'studio/test/fixtures/LiberationSans-Regular.ttf')).toString('base64')}),store=createProjectStore(REPO),head=store.get(one);store.transact(one,{requestId:crypto.randomUUID(),actor:'ai',baseRevision:head.revision,operations:[{type:'addFont',id:'font-preview',name:'Pinned font',src:font.src},{type:'addCaption',shotId:head.project.shots[0].id,id:'caption-preview',fontFamily:'font-preview'}]});
+ mkdirSync(join(REPO,one.dir,'private'));writeFileSync(join(REPO,one.dir,'private/reference.json'),'{"private":true}');
+ preview=await startPreview(join(REPO,one.page));browser=await chromium.launch();const page=await browser.newPage();await page.goto(preview.url+'?embed=1');await page.waitForFunction(()=>window.__ready===true);assert.deepEqual(await page.evaluate(()=>window.__projectSize),{width:1080,height:1920});assert.equal(await page.evaluate(()=>document.querySelector('canvas').height),720);assert.equal(await page.evaluate(()=>document.fonts.size),1);
+ for(const path of [one.dir+'/private/reference.json',two.page,'studio/server.mjs','studio/core/source-edit.mjs/../.env','studio/projects/whiteout/project.studio.json'])assert.equal((await fetch(preview.origin+'/w/'+path)).status,404,path);
+ assert.equal((await fetch(preview.origin+'/w/studio/project-player.mjs')).status,200);
+ assert.equal(await new Promise((resolve,reject)=>httpGet(preview.url,{headers:{host:'rebind.example'}},response=>{response.resume();resolve(response.statusCode);}).on('error',reject)),421);
+ await page.evaluate(async()=>{await window.__renderer.renderFrame({frame:30,quality:'audit'});});assert.deepEqual(await page.evaluate(()=>{const c=document.querySelector('canvas');return[c.width,c.height];}),[1080,1920]);
+});

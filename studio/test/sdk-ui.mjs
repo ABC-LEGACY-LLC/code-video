@@ -47,7 +47,7 @@ test('SDK component works through the real Inspector, AI API, selection and dete
   await page.evaluate(()=>goTo(36));await page.waitForFunction(()=>S.frame===36);mkdirSync(join(ROOT,'build/phase2'),{recursive:true});await page.screenshot({path:join(ROOT,'build/phase2/component-preview.png')});
  });
  await t.test('SDK frames encode, reopen and display without any server upload',async()=>{
-  const uploads=[];page.on('request',r=>{if(r.method()!=='GET')uploads.push(r.url());});
+  const uploads=[];page.on('request',r=>{if(r.method()!=='GET'&&!r.url().endsWith('/api/snapshots'))uploads.push(r.url());});
   const result=await page.evaluate(async()=>{
    const blob=await exportVideo({from:24,to:47,width:480,sound:false}),url=URL.createObjectURL(blob),video=document.createElement('video');video.muted=true;video.src=url;
    await new Promise((r,j)=>{video.onloadedmetadata=r;video.onerror=j;});video.currentTime=.5;await new Promise(r=>video.onseeked=r);

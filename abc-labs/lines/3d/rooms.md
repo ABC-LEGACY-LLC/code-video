@@ -45,3 +45,23 @@ done, opened 2026-10-13, from lead L0072
 ## Room 67 · Code Video Model
 
 done, opened 2026-10-13, from lead L0073
+
+## Room 68 · StreamRender-H3 interactive renderer
+
+done, opened 2026-10-13, from lead L0075
+
+## Room 69 · Anatomy Claude skill
+
+done, opened 2026-10-13, from lead L0077
+
+## Room 72 · bpy-drift-bench
+
+done, opened 2026-10-13, from lead L0080
+
+## Room 73 · Spark.js splat renderer
+
+done, opened 2026-10-13, from lead L0081
+
+## Room 75 · Atlas world model
+
+done, opened 2026-10-13, from lead L0084

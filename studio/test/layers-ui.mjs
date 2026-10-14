@@ -130,16 +130,14 @@ test('Human layers share operations, hierarchy, preview and export semantics', a
    await page.locator('[data-layer-solo="hero-a"]').click();
    await page.locator('#exportBtn').click(); assert.match(await page.locator('#exportWhat').textContent(), /all authored visible layers; Solo preview/); await page.locator('#exCancel').click();
    await page.evaluate(() => reloadStage()); await page.waitForFunction(() => S.ready && document.querySelector('#stage').contentWindow.__getLayerPreview().soloId === 'hero-a');
-   const outcome = await page.evaluate(async () => {
-    const W = document.querySelector('#stage').contentWindow, before = W.__getLayerPreview(), original = exportCodec; let release;
-    exportCodec = () => new Promise(resolve => { release = resolve; });
-    const pending = exportVideo({from: 10, to: 10, width: 160, sound: false}).catch(error => error.message);
-    const during = W.__getLayerPreview(); release(null); await pending; exportCodec = original;
-    return {before, during, after: W.__getLayerPreview()};
+   const outcome=await page.evaluate(async()=>{
+    const W=win(),before=W.__getLayerPreview(),original=VideoEncoder.isConfigSupported;let release,calls=0;
+    VideoEncoder.isConfigSupported=()=>++calls===1?new Promise(r=>release=r):Promise.resolve({supported:false});
+    try{const pending=exportVideo({from:10,to:10,width:160,sound:false}).catch(e=>e.message);while(!release)await new Promise(r=>setTimeout(r,5));const during=W.__getLayerPreview(),frozen=exporting.frozen.page.__getLayerPreview();release({supported:false});await pending;return{before,during,frozen,after:W.__getLayerPreview()};}finally{VideoEncoder.isConfigSupported=original;}
    });
-   assert.deepEqual(outcome.during, {soloId: null, selectedId: null}); assert.deepEqual(outcome.after, outcome.before);
-   const success = await page.evaluate(async () => { const W = document.querySelector('#stage').contentWindow, before = W.__getLayerPreview(); const blob = await exportVideo({from: 10, to: 10, width: 160, sound: false}); return {bytes: blob.size, before, after: W.__getLayerPreview(), cleanFrame: W.__previewLog.some(value => value.soloId === null && value.selectedId === null)}; });
-   assert.ok(success.bytes > 0); assert.equal(success.cleanFrame, true); assert.deepEqual(success.after, success.before);
+   assert.deepEqual(outcome.during,outcome.before);assert.deepEqual(outcome.frozen,{soloId:null,selectedId:null});assert.deepEqual(outcome.after,outcome.before);
+   const success=await page.evaluate(async()=>{const W=win(),before=W.__getLayerPreview();let cleanFrame=false;const blob=await exportVideo({from:10,to:10,width:160,sound:false,onStep:()=>{const p=exporting.frozen.page.__getLayerPreview();cleanFrame=p.soloId===null&&p.selectedId===null;}});return{bytes:blob.size,before,after:W.__getLayerPreview(),cleanFrame};});
+   assert.ok(success.bytes>0);assert.equal(success.cleanFrame,true);assert.deepEqual(success.after,success.before);
   });
   await t.test('playhead beyond the selected shot stays readable and marks layers outside the shot', async () => {
    await page.locator('[data-follow-playhead]').uncheck();

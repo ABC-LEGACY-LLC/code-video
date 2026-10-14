@@ -69,3 +69,9 @@ test('logout and expiry while a POST body arrives cannot authorize a later write
  const ok=await fetch(base+'/api/note',{method:'POST',headers:{...outside,cookie,'content-type':'application/json'},body:JSON.stringify({work:'zarra',text:'authorized control'})});
  assert.equal(ok.status,200);assert.match(readFileSync(join(temp,'notes','zarra.md'),'utf8'),/authorized control/);
 });
+
+test('snapshot metadata, source bytes and creation all require outside authentication',async t=>{
+ const temp=mkdtempSync(join(tmpdir(),'snapshot-auth-'));t.after(()=>rmSync(temp,{recursive:true,force:true}));const app=server({auth:createAuth({botToken:'TEST:TOKEN',owners:'111',publicUrl:'https://studio.test',stateDir:temp,log:()=>{}})});await new Promise(r=>app.listen(0,'127.0.0.1',r));t.after(async()=>{app.closeAllConnections();await new Promise(r=>app.close(r));});const base=`http://127.0.0.1:${app.address().port}`,headers={'x-forwarded-for':'203.0.113.12','content-type':'application/json'};
+ for(const path of ['/api/snapshot?id='+('a'.repeat(64)),'/api/snapshot/freshness?work=zarra&id='+('a'.repeat(64)),'/snapshots/'+('a'.repeat(64))+'/w/studio/project-player.mjs'])assert.equal((await fetch(base+path,{headers,redirect:'manual'})).status,path.startsWith('/api/')?401:302);
+ assert.equal((await fetch(base+'/api/snapshots',{method:'POST',headers,body:JSON.stringify({work:'zarra'}),redirect:'manual'})).status,401);
+});

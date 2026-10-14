@@ -1,0 +1,917 @@
+{
+  "schemaVersion": 2,
+  "generation": 1,
+  "project": {
+    "id": "project-cbbb106ffc75db142f0ace12",
+    "name": "Studio — 3 sahnali demo",
+    "renderer": "canvas2d",
+    "seed": 2026,
+    "width": 1920,
+    "height": 1080,
+    "fps": {
+      "num": 24,
+      "den": 1
+    },
+    "components": {
+      "background": {
+        "version": "1.0.0",
+        "label": "Background",
+        "properties": {
+          "color": {
+            "type": "color",
+            "label": "Color",
+            "default": "#101827",
+            "animatable": false
+          }
+        }
+      },
+      "shape": {
+        "version": "1.0.0",
+        "label": "Shape",
+        "properties": {
+          "shape": {
+            "type": "enum",
+            "label": "Shape",
+            "options": [
+              "rectangle",
+              "ellipse"
+            ],
+            "default": "rectangle",
+            "animatable": false
+          },
+          "color": {
+            "type": "color",
+            "label": "Fill",
+            "default": "#8cb0ff",
+            "animatable": false
+          },
+          "width": {
+            "type": "number",
+            "label": "Width",
+            "default": 320,
+            "min": 1,
+            "max": 7680,
+            "unit": "px",
+            "animatable": true
+          },
+          "height": {
+            "type": "number",
+            "label": "Height",
+            "default": 180,
+            "min": 1,
+            "max": 7680,
+            "unit": "px",
+            "animatable": true
+          },
+          "radius": {
+            "type": "number",
+            "label": "Corner radius",
+            "default": 24,
+            "min": 0,
+            "max": 1000,
+            "unit": "px",
+            "animatable": true
+          }
+        }
+      }
+    },
+    "shots": [
+      {
+        "id": "project-cbbb106ffc75db142f0ace12:s1",
+        "name": "Opening",
+        "durationFrames": 96,
+        "entities": [
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s1:camera",
+            "name": "Camera",
+            "type": "camera2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1
+            },
+            "keyframes": {}
+          },
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s1:bg",
+            "name": "Background",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "color": "#101827"
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "background",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "background"
+          },
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s1:shape",
+            "name": "Accent",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 120,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "rectangle",
+              "color": "#8cb0ff",
+              "width": 1344,
+              "height": 12,
+              "radius": 6
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "shape",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "shape"
+          },
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s1:title",
+            "name": "Title",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1
+            },
+            "keyframes": {
+              "opacity": [
+                {
+                  "frame": 0,
+                  "value": 0,
+                  "easing": "ease"
+                },
+                {
+                  "frame": 12,
+                  "value": 1,
+                  "easing": "hold"
+                }
+              ]
+            },
+            "layer": {
+              "binding": "text",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "content": {
+              "text": "STUDIO BILAN YARATING",
+              "fontSize": 106,
+              "fontFamily": "sans-serif",
+              "color": "#ffffff",
+              "align": "center",
+              "width": 1728,
+              "height": 200
+            }
+          }
+        ],
+        "layerOrder": [
+          "project-cbbb106ffc75db142f0ace12:s1:bg",
+          "project-cbbb106ffc75db142f0ace12:s1:shape",
+          "project-cbbb106ffc75db142f0ace12:s1:title"
+        ]
+      },
+      {
+        "id": "project-cbbb106ffc75db142f0ace12:s2",
+        "name": "Story",
+        "durationFrames": 96,
+        "entities": [
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s2:camera",
+            "name": "Camera",
+            "type": "camera2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1
+            },
+            "keyframes": {}
+          },
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s2:bg",
+            "name": "Background",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "color": "#162b32"
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "background",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "background"
+          },
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s2:shape",
+            "name": "Accent",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 120,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "rectangle",
+              "color": "#62c486",
+              "width": 1344,
+              "height": 12,
+              "radius": 6
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "shape",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "shape"
+          },
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s2:title",
+            "name": "Title",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1
+            },
+            "keyframes": {
+              "opacity": [
+                {
+                  "frame": 0,
+                  "value": 0,
+                  "easing": "ease"
+                },
+                {
+                  "frame": 12,
+                  "value": 1,
+                  "easing": "hold"
+                }
+              ]
+            },
+            "layer": {
+              "binding": "text",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "content": {
+              "text": "KOD + TASVIR + HARAKAT",
+              "fontSize": 106,
+              "fontFamily": "sans-serif",
+              "color": "#ffffff",
+              "align": "center",
+              "width": 1728,
+              "height": 200
+            }
+          }
+        ],
+        "layerOrder": [
+          "project-cbbb106ffc75db142f0ace12:s2:bg",
+          "project-cbbb106ffc75db142f0ace12:s2:shape",
+          "project-cbbb106ffc75db142f0ace12:s2:title"
+        ]
+      },
+      {
+        "id": "project-cbbb106ffc75db142f0ace12:s3",
+        "name": "Closing",
+        "durationFrames": 96,
+        "entities": [
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s3:camera",
+            "name": "Camera",
+            "type": "camera2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "zoom": 1
+            },
+            "keyframes": {}
+          },
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s3:bg",
+            "name": "Background",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "color": "#261c37"
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "background",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "background"
+          },
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s3:shape",
+            "name": "Accent",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 120,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "rectangle",
+              "color": "#ffc97a",
+              "width": 1344,
+              "height": 12,
+              "radius": 6
+            },
+            "keyframes": {},
+            "layer": {
+              "binding": "shape",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "component": "shape"
+          },
+          {
+            "id": "project-cbbb106ffc75db142f0ace12:s3:title",
+            "name": "Title",
+            "type": "layer2d",
+            "properties": {
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "opacity": 1
+            },
+            "keyframes": {
+              "opacity": [
+                {
+                  "frame": 0,
+                  "value": 0,
+                  "easing": "ease"
+                },
+                {
+                  "frame": 12,
+                  "value": 1,
+                  "easing": "hold"
+                }
+              ]
+            },
+            "layer": {
+              "binding": "text",
+              "parentId": null,
+              "space": "screen",
+              "visible": true,
+              "locked": false,
+              "startFrame": 0,
+              "endFrame": 96
+            },
+            "content": {
+              "text": "HIKOYA SIZDAN",
+              "fontSize": 106,
+              "fontFamily": "sans-serif",
+              "color": "#ffffff",
+              "align": "center",
+              "width": 1728,
+              "height": 200
+            }
+          }
+        ],
+        "layerOrder": [
+          "project-cbbb106ffc75db142f0ace12:s3:bg",
+          "project-cbbb106ffc75db142f0ace12:s3:shape",
+          "project-cbbb106ffc75db142f0ace12:s3:title"
+        ]
+      }
+    ],
+    "annotations": []
+  },
+  "history": {
+    "past": [
+      {
+        "project": {
+          "id": "project-cbbb106ffc75db142f0ace12",
+          "name": "Studio — 3 sahnali demo",
+          "renderer": "canvas2d",
+          "seed": 2026,
+          "width": 1920,
+          "height": 1080,
+          "fps": {
+            "num": 24,
+            "den": 1
+          },
+          "components": {
+            "background": {
+              "version": "1.0.0",
+              "label": "Background",
+              "properties": {
+                "color": {
+                  "type": "color",
+                  "label": "Color",
+                  "default": "#101827",
+                  "animatable": false
+                }
+              }
+            },
+            "shape": {
+              "version": "1.0.0",
+              "label": "Shape",
+              "properties": {
+                "shape": {
+                  "type": "enum",
+                  "label": "Shape",
+                  "options": [
+                    "rectangle",
+                    "ellipse"
+                  ],
+                  "default": "rectangle",
+                  "animatable": false
+                },
+                "color": {
+                  "type": "color",
+                  "label": "Fill",
+                  "default": "#8cb0ff",
+                  "animatable": false
+                },
+                "width": {
+                  "type": "number",
+                  "label": "Width",
+                  "default": 320,
+                  "min": 1,
+                  "max": 7680,
+                  "unit": "px",
+                  "animatable": true
+                },
+                "height": {
+                  "type": "number",
+                  "label": "Height",
+                  "default": 180,
+                  "min": 1,
+                  "max": 7680,
+                  "unit": "px",
+                  "animatable": true
+                },
+                "radius": {
+                  "type": "number",
+                  "label": "Corner radius",
+                  "default": 24,
+                  "min": 0,
+                  "max": 1000,
+                  "unit": "px",
+                  "animatable": true
+                }
+              }
+            }
+          },
+          "shots": [
+            {
+              "id": "project-cbbb106ffc75db142f0ace12:s1",
+              "name": "Opening",
+              "durationFrames": 96,
+              "entities": [
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s1:camera",
+                  "name": "Camera",
+                  "type": "camera2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1
+                  },
+                  "keyframes": {}
+                },
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s1:bg",
+                  "name": "Background",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "color": "#101827"
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "background",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "background"
+                },
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s1:shape",
+                  "name": "Accent",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 120,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "shape": "rectangle",
+                    "color": "#8cb0ff",
+                    "width": 1344,
+                    "height": 12,
+                    "radius": 6
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "shape",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "shape"
+                },
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s1:title",
+                  "name": "Title",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1
+                  },
+                  "keyframes": {
+                    "opacity": [
+                      {
+                        "frame": 0,
+                        "value": 0,
+                        "easing": "ease"
+                      },
+                      {
+                        "frame": 12,
+                        "value": 1,
+                        "easing": "hold"
+                      }
+                    ]
+                  },
+                  "layer": {
+                    "binding": "text",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "content": {
+                    "text": "YOUR STORY",
+                    "fontSize": 106,
+                    "fontFamily": "sans-serif",
+                    "color": "#ffffff",
+                    "align": "center",
+                    "width": 1728,
+                    "height": 200
+                  }
+                }
+              ],
+              "layerOrder": [
+                "project-cbbb106ffc75db142f0ace12:s1:bg",
+                "project-cbbb106ffc75db142f0ace12:s1:shape",
+                "project-cbbb106ffc75db142f0ace12:s1:title"
+              ]
+            },
+            {
+              "id": "project-cbbb106ffc75db142f0ace12:s2",
+              "name": "Story",
+              "durationFrames": 96,
+              "entities": [
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s2:camera",
+                  "name": "Camera",
+                  "type": "camera2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1
+                  },
+                  "keyframes": {}
+                },
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s2:bg",
+                  "name": "Background",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "color": "#162b32"
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "background",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "background"
+                },
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s2:shape",
+                  "name": "Accent",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 120,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "shape": "rectangle",
+                    "color": "#62c486",
+                    "width": 1344,
+                    "height": 12,
+                    "radius": 6
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "shape",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "shape"
+                },
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s2:title",
+                  "name": "Title",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1
+                  },
+                  "keyframes": {
+                    "opacity": [
+                      {
+                        "frame": 0,
+                        "value": 0,
+                        "easing": "ease"
+                      },
+                      {
+                        "frame": 12,
+                        "value": 1,
+                        "easing": "hold"
+                      }
+                    ]
+                  },
+                  "layer": {
+                    "binding": "text",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "content": {
+                    "text": "MAKE IT MOVE",
+                    "fontSize": 106,
+                    "fontFamily": "sans-serif",
+                    "color": "#ffffff",
+                    "align": "center",
+                    "width": 1728,
+                    "height": 200
+                  }
+                }
+              ],
+              "layerOrder": [
+                "project-cbbb106ffc75db142f0ace12:s2:bg",
+                "project-cbbb106ffc75db142f0ace12:s2:shape",
+                "project-cbbb106ffc75db142f0ace12:s2:title"
+              ]
+            },
+            {
+              "id": "project-cbbb106ffc75db142f0ace12:s3",
+              "name": "Closing",
+              "durationFrames": 96,
+              "entities": [
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s3:camera",
+                  "name": "Camera",
+                  "type": "camera2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1
+                  },
+                  "keyframes": {}
+                },
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s3:bg",
+                  "name": "Background",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "color": "#261c37"
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "background",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "background"
+                },
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s3:shape",
+                  "name": "Accent",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 120,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1,
+                    "shape": "rectangle",
+                    "color": "#ffc97a",
+                    "width": 1344,
+                    "height": 12,
+                    "radius": 6
+                  },
+                  "keyframes": {},
+                  "layer": {
+                    "binding": "shape",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "component": "shape"
+                },
+                {
+                  "id": "project-cbbb106ffc75db142f0ace12:s3:title",
+                  "name": "Title",
+                  "type": "layer2d",
+                  "properties": {
+                    "x": 0,
+                    "y": 0,
+                    "scale": 1,
+                    "rotation": 0,
+                    "opacity": 1
+                  },
+                  "keyframes": {
+                    "opacity": [
+                      {
+                        "frame": 0,
+                        "value": 0,
+                        "easing": "ease"
+                      },
+                      {
+                        "frame": 12,
+                        "value": 1,
+                        "easing": "hold"
+                      }
+                    ]
+                  },
+                  "layer": {
+                    "binding": "text",
+                    "parentId": null,
+                    "space": "screen",
+                    "visible": true,
+                    "locked": false,
+                    "startFrame": 0,
+                    "endFrame": 96
+                  },
+                  "content": {
+                    "text": "MAKE IT YOURS",
+                    "fontSize": 106,
+                    "fontFamily": "sans-serif",
+                    "color": "#ffffff",
+                    "align": "center",
+                    "width": 1728,
+                    "height": 200
+                  }
+                }
+              ],
+              "layerOrder": [
+                "project-cbbb106ffc75db142f0ace12:s3:bg",
+                "project-cbbb106ffc75db142f0ace12:s3:shape",
+                "project-cbbb106ffc75db142f0ace12:s3:title"
+              ]
+            }
+          ],
+          "annotations": []
+        },
+        "at": "2026-10-13T10:49:03.837Z",
+        "actor": {
+          "kind": "ai",
+          "identity": "local"
+        },
+        "label": "Prepare the three-scene Studio demo",
+        "transactionId": "phase3-demo-titles-20261013",
+        "sourceHash": "889c9988c308efb8ec0561c69c1b70a9902ea2d45e6b2aca5c08bdfb82fb0035",
+        "expectedHash": "340fd95cc145ab2fe16daf06e31a39d6167fd243f727d154ab46b0fedef7f976"
+      }
+    ],
+    "future": []
+  },
+  "receipts": [
+    {
+      "id": "phase3-demo-titles-20261013",
+      "signature": "2f81f22edb096016502e4b12bffdadf915cf2732f89e6777c43d57eb67dbb937",
+      "revision": "f737c8914cfaf003534e7ac4c848ca84556547a956b59575df61a32dfad709e7"
+    }
+  ],
+  "migrations": [
+    {
+      "runtimeVersion": "sdk-1",
+      "at": "2026-10-13T11:36:21.203Z",
+      "beforeSourceHash": "1b3141038258a4105e663f48eee0786f24d3e7865d50647c93a29d1f36a6ab01",
+      "afterSourceHash": "695a9b8d8c01824128c98c1c406ea9f831e5f546ca48f8b0aaee97dcb8081848"
+    },
+    {
+      "runtimeVersion": "sdk-1",
+      "at": "2026-10-14T03:47:30.571Z",
+      "beforeSourceHash": "695a9b8d8c01824128c98c1c406ea9f831e5f546ca48f8b0aaee97dcb8081848",
+      "afterSourceHash": "58a244db98bdf72b1828505d731213ada48a6032c6d30aef305971e14cbdf759"
+    },
+    {
+      "runtimeVersion": "sdk-1",
+      "at": "2026-10-14T05:02:04.285Z",
+      "beforeSourceHash": "58a244db98bdf72b1828505d731213ada48a6032c6d30aef305971e14cbdf759",
+      "afterSourceHash": "889c9988c308efb8ec0561c69c1b70a9902ea2d45e6b2aca5c08bdfb82fb0035"
+    }
+  ]
+}

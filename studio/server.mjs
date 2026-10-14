@@ -21,7 +21,10 @@ import {prepareNumber, atomicWrite, digest, sourcePath, withSourceLock} from './
 import {createProjectStore, ProjectError} from './core/store.mjs';
 import {watchTree} from './core/watch-tree.mjs';
 import {serveFile} from './core/http-file.mjs';
-import {importAsset} from './core/assets.mjs';
+import {importAsset,listAssets} from './core/assets.mjs';
+import {createLibrary,createdWorks,CREATED_DIR} from './core/project-library.mjs';
+import {createSnapshots} from './core/snapshots.mjs';
+import {sourcePackage} from './core/source-package.mjs';
 import {measurementStatus} from '../catalog/tools/fingerprint.mjs';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -30,7 +33,7 @@ const STUDIO = join(ROOT, 'studio');
 const TYPES = {'.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8',
  '.mjs':'text/javascript; charset=utf-8', '.json':'application/json; charset=utf-8',
  '.css':'text/css; charset=utf-8', '.png':'image/png', '.jpg':'image/jpeg', '.svg':'image/svg+xml',
- '.wav':'audio/wav', '.mp3':'audio/mpeg', '.ogg':'audio/ogg', '.webp':'image/webp', '.mp4':'video/mp4', '.webm':'video/webm', '.frag':'text/plain; charset=utf-8', '.glsl':'text/plain; charset=utf-8', '.md':'text/plain; charset=utf-8'};
+ '.woff':'font/woff','.woff2':'font/woff2','.ttf':'font/ttf','.otf':'font/otf','.wav':'audio/wav', '.mp3':'audio/mpeg', '.ogg':'audio/ogg', '.webp':'image/webp', '.mp4':'video/mp4', '.webm':'video/webm', '.frag':'text/plain; charset=utf-8', '.glsl':'text/plain; charset=utf-8', '.md':'text/plain; charset=utf-8'};
 
 /* ===== A SAFE PATH =====
    The repository root holds .env (the Labs token) and .git holds the whole history.
@@ -61,7 +64,7 @@ const cardPath = f => join(ROOT, 'catalog', 'cards', f);
 const worksFile = () => process.env.STUDIO_WORKS || join(STUDIO, 'works.json');   // a test brings its own list
 export function works(){
  const reg = JSON.parse(readFileSync(worksFile(), 'utf8'));
- return reg.works.map(w=>{
+ return [...reg.works,...createdWorks(ROOT)].map(w=>{
   const o = {...w, card:null, build:null};
   if(w.card){
    const cf = cardPath(w.card), cdir = dirname(cf);
@@ -301,7 +304,7 @@ export function watchWorks(){
  const watchers = [];
  const add = (dir, fn) => { if(!existsSync(dir)) mkdirSync(dir, {recursive:true});
   watchers.push(watchTree(dir,fn,{ignore:rel=>!!rel&&ignored(rel),onError:error=>send({type:'watch-error',message:error.message})})); };
- for(const w of works()){
+ for(const w of works().filter(w=>!w.creator)){
   add(join(ROOT, w.dir), rel=>{ if(ignored(rel)) return;
    changed(w.id, w.dir+'/'+rel, async files=>{
     const now = findWork(w.id);
@@ -310,6 +313,7 @@ export function watchWorks(){
     else send({type:'updated', work:w.id, files});
    }); });
  }
+ add(join(ROOT,CREATED_DIR),rel=>{const id=rel.split('/')[0];if(!rel.includes('/')){send({type:'library'});return;}if(!/^project-[a-f0-9]{24}$/.test(id))return;changed('created:'+id,rel,files=>send({type:'updated',work:id,files}));});
  add(join(ROOT, 'catalog', 'cards'), rel=>{ const w = works().find(x=>x.cardFile===rel);
   if(w) changed('card:'+w.id, rel, ()=>send({type:'card', work:w.id})); });
  add(join(ROOT, 'build', 'audit'), rel=>changed('audit', rel, ()=>send({type:'audit'})));
@@ -344,7 +348,7 @@ const body = (req,limit=65536) => new Promise((res, rej)=>{ let s=''; req.on('da
 /* `auth` decides who may come in from outside. Without one, every outside request is
    refused: a studio started without its login is a local studio, never an open one. */
 export function server({auth=createAuth({}), eventsHeartbeatMs=25000}={}){
- const projects=createProjectStore(ROOT);
+ const projects=createProjectStore(ROOT),library=createLibrary(ROOT,projects),snapshots=createSnapshots(ROOT,projects);
  return http.createServer(async (req, res)=>{
   try{
    let url;
@@ -362,6 +366,13 @@ export function server({auth=createAuth({}), eventsHeartbeatMs=25000}={}){
     res.writeHead(200, {'content-type':TYPES['.html'], 'cache-control':'no-store'});
     return res.end(studioPage());
    }
+   if(['GET','HEAD'].includes(req.method)&&p.startsWith('/snapshots/')){
+    try{const m=/^\/snapshots\/([a-f0-9]{64})\/w\/(.+)$/.exec(p);if(!m)throw new ProjectError('Invalid snapshot path',404);const {file}=snapshots.file(m[1],decodeURIComponent(m[2]));
+     const prefix="/snapshots/"+m[1]+"/w/",origin=req.headers.host;
+     res.setHeader('Content-Security-Policy',`default-src 'none'; script-src 'unsafe-inline' ${origin}${prefix}; style-src 'unsafe-inline' ${origin}${prefix}; img-src data: blob: ${origin}${prefix}; media-src blob: ${origin}${prefix}; font-src ${origin}${prefix}; connect-src ${origin}${prefix}; base-uri 'none'; form-action 'none'; frame-src 'none'`);
+     return serveFile(req,res,file,TYPES[extname(file)]);
+    }catch(e){return json(res,e.status||422,{error:e.message});}
+   }
    if(['GET','HEAD'].includes(req.method) && p.startsWith('/w/')){
     const f = safePath(p.slice(3));
     if(!f || !existsSync(f)){ res.writeHead(404); return res.end('not found'); }
@@ -378,6 +389,12 @@ export function server({auth=createAuth({}), eventsHeartbeatMs=25000}={}){
     try { return json(res,200,p==='/api/project'?projects.get(w):projects.context(w,Number(url.searchParams.get('frame')||0))); }
     catch(e){ return json(res,e.status||422,{error:e.message}); }
    }
+   if(req.method==='GET'&&(p==='/api/snapshot'||p==='/api/snapshot/freshness')){try{const id=url.searchParams.get('id');return json(res,200,p.endsWith('/freshness')?snapshots.freshness(w,id):snapshots.get(id));}catch(e){return json(res,e.status||400,{error:e.message});}}
+   if(req.method==='GET' && p==='/api/assets'){if(!w?.project)return json(res,404,{error:'no managed project'});return json(res,200,listAssets(ROOT,w,projects.get(w).project));}
+   if(req.method==='GET' && p==='/api/source-package'){
+    if(!w)return json(res,404,{error:'no such work'});
+    try{const zip=sourcePackage(ROOT,w,projects,url.searchParams.get('revision'));res.writeHead(200,{'content-type':'application/zip','content-disposition':'attachment; filename="'+w.id+'-source.zip"','cache-control':'no-store','content-length':zip.length});return res.end(zip);}catch(e){return json(res,e.status||400,{error:e.message});}
+   }
    if(req.method==='GET' && p==='/api/changes'){ if(!w) return json(res, 404, {error:'no such work'}); return json(res, 200, await changes(w)); }
    if(req.method==='GET' && p==='/api/where'){ if(!w) return json(res, 404, {error:'no such work'});
     const r = where(w, url.searchParams.get('file'), url.searchParams.get('find'));
@@ -393,8 +410,11 @@ export function server({auth=createAuth({}), eventsHeartbeatMs=25000}={}){
     // A session can be revoked or expire while the request body is still arriving.
     if(outside && !auth.userOf(req)) return auth.refuse(req,res,p);
     if(!b||typeof b!=='object'||Array.isArray(b)) return json(res,400,{error:'expected a JSON object'});
+    if(p==='/api/projects'){try{const result=library.create(b);send({type:'library'});return json(res,200,result);}catch(e){return json(res,e.status||400,{error:e.message});}}
     const bw = b.work ? findWork(b.work) : null;
     if(!bw) return json(res, 404, {error:'no such work'});
+    if(p==='/api/snapshots'){try{return json(res,200,snapshots.capture(bw,b.baseRevision));}catch(e){return json(res,e.status||400,{error:e.message});}}
+    if(p==='/api/projects/duplicate'){try{const result=library.create(b,bw);send({type:'library'});return json(res,200,result);}catch(e){return json(res,e.status||400,{error:e.message});}}
     if(p==='/api/assets'){
      try{if(!bw.project)throw new Error('This work has no media editor');return json(res,200,importAsset(ROOT,bw,b));}catch(e){return json(res,400,{error:e.message});}
     }

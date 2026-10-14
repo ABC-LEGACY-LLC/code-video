@@ -42,8 +42,8 @@ interrupted by a timer on the same thread. Use the isolated renderer for externa
 | `cancel()` | Invalidate pending work. The isolated adapter terminates its worker. |
 | `dispose()` | Release media, component resources and runtime transport. |
 
-The new Canvas2D runtime currently supports color, geometric selection and
-inspection; it does not advertise audio. Existing films retain their sound through
+Canvas2D 1.1 supports color, geometric selection, text metrics and generic file
+audio, including offline PCM and shared playback. Existing films retain their sound through
 the legacy page adapter. Studio scrubbing and frame-based browser export now call
 that common adapter, including frame preparation and offline audio. Live-only pages
 remain live-only. A Three.js renderer can register through the same interface in

@@ -1,6 +1,8 @@
 import {readFileSync, readdirSync, existsSync} from 'node:fs';
 import {resolve, join} from 'node:path';
 import {digest, atomicWrite, sourcePath, withSourceLock} from './source-edit.mjs';
+import {EDITING_OPERATIONS} from './editing.mjs';
+import {SCENE_OPERATIONS} from './scenes.mjs';
 import {SCHEMA_VERSION, validateProject, applyOperations, frameContext, entitySchema, ENTITY_TYPES, isPlainRecord, LAYER_OPERATIONS} from './project.mjs';
 
 export class ProjectError extends Error {
@@ -46,7 +48,7 @@ export function sourceRevision(root,work){
  }
  scan(resolve(root,work.dir));
  // The adapter imports this evaluator; changing interpolation also changes rendered output.
- for(const [name,key] of [['project.mjs','@studio/evaluator'],['layers.mjs','@studio/layers'],['layer-migration.mjs','@studio/layer-migration'],['editor-upgrade.mjs','@studio/editor-upgrade'],['../media.mjs','@studio/media'],['../composition.mjs','@studio/composition']]){
+ for(const [name,key] of [['../snapshot-resource.mjs','@studio/snapshot-resource'],['audio.mjs','@studio/audio-model'],['typography.mjs','@studio/typography-model'],['../audio.mjs','@studio/audio'],['../audio-transport.mjs','@studio/audio-transport'],['../input-asset.mjs','@studio/input-asset'],['../typography.mjs','@studio/typography'],['editing.mjs','@studio/editing'],['scenes.mjs','@studio/scenes'],['../project-player.mjs','@studio/project-player'],['project.mjs','@studio/evaluator'],['layers.mjs','@studio/layers'],['layer-migration.mjs','@studio/layer-migration'],['editor-upgrade.mjs','@studio/editor-upgrade'],['../media.mjs','@studio/media'],['../composition.mjs','@studio/composition']]){
   const evaluator=join(root,'studio','core',name);if(existsSync(evaluator))files.push([key,digest(readFileSync(evaluator))]);
  }
  for(const dir of ['sdk','renderers','components']){const base=join(root,'studio',dir);if(existsSync(base))for(const name of readdirSync(base).sort())if(/\.mjs$/.test(name))files.push(['@studio/'+dir+'/'+name,digest(readFileSync(join(base,name)))]);}
@@ -54,8 +56,8 @@ export function sourceRevision(root,work){
  return digest(JSON.stringify(files));
 }
 export function createProjectStore(root){
- const defaultOperations=['addComponent','setProperty','setKeyframe','deleteKeyframe','renameShot','trimShot','moveShot','addAnnotation','resolveAnnotation','setCue','addAudio','deleteAudio','duplicateAudio',...LAYER_OPERATIONS];
- const operations=r=>(r.work.editor?.operations||defaultOperations).filter(op=>(r.state.schemaVersion>=2||!LAYER_OPERATIONS.includes(op))&&(op!=='addComponent'||r.state.schemaVersion>=2&&Object.keys(r.state.project.components||{}).length>0));
+ const defaultOperations=[...EDITING_OPERATIONS,...SCENE_OPERATIONS,'stretchShot','addComponent','setProperty','setKeyframe','deleteKeyframe','renameShot','trimShot','moveShot','addAnnotation','resolveAnnotation','setCue','addAudio','deleteAudio','duplicateAudio',...LAYER_OPERATIONS];
+ const operations=r=>[...new Set([...(r.work.editor?.operations||defaultOperations),...((r.work.editor?.operations||defaultOperations).includes('trimShot')?['stretchShot']:[])])].filter(op=>(!EDITING_OPERATIONS.includes(op)||r.work.creator===1||op==='editKeyframes')&&(!SCENE_OPERATIONS.includes(op)||r.work.creator===1)&&(r.state.schemaVersion>=2||!LAYER_OPERATIONS.includes(op))&&(op!=='addComponent'||r.state.schemaVersion>=2&&Object.keys(r.state.project.components||{}).length>0));
  function read(work){
   if(!work.project)throw new ProjectError('this work has no managed editor yet',404);
   const {path}=sourcePath(root,work,work.project);

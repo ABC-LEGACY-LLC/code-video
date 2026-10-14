@@ -313,6 +313,10 @@ async function streamAuthFaults(mode, broken=false){
   if(!seen.has(req)) seen.set(req,auth.userOf(req)); return seen.get(req);
  }} : auth;
  const probe=server({auth:guard,eventsHeartbeatMs:mode==='expiry-heartbeat'?40:60000});
+ // Observe send time as well as connection closure. TCP may deliver an already
+ // authorized heartbeat after the fake clock advances; that is not a new write.
+ let revokedNow=false,revokedCookie=null;const postRevocationWrites=[];
+ probe.on('request',(req,res)=>{if(req.url!=='/api/events')return;const write=res.write.bind(res);res.write=(chunk,...args)=>{if(revokedNow&&req.headers.cookie===revokedCookie)postRevocationWrites.push(String(chunk));return write(chunk,...args);};});
  await new Promise(r=>probe.listen(0,'127.0.0.1',r));
  const base=`http://127.0.0.1:${probe.address().port}`, streams=[];
  const until=async predicate=>{ const end=Date.now()+800;
@@ -338,7 +342,7 @@ async function streamAuthFaults(mode, broken=false){
  const emit=()=>fetch(base+'/api/build',{method:'POST',headers:{'content-type':'application/json'},
   body:JSON.stringify({work:'zarra'})}).then(r=>r.arrayBuffer());
  try{
-  const cookie=await login(222), otherCookie=await login(111);
+  const cookie=await login(222), otherCookie=await login(111);revokedCookie=cookie;
   const revoked=await open({...OUT,cookie}), other=await open({...OUT,cookie:otherCookie}), local=await open({});
   await emit();
   let faults=(await until(()=>streams.every(s=>s.data.includes('data: ')))?0:1)
@@ -347,12 +351,13 @@ async function streamAuthFaults(mode, broken=false){
   if(mode==='page-logout') await fetch(base+'/logout',{method:'POST',headers:{...OUT,cookie},redirect:'manual'});
   else if(mode==='bot-logout') await botSays(222,'/logout');
   else SHIFT=31*24*3600*1000;
+  revokedNow=true;
   /* Delivery mode has a 60-second heartbeat: only event-time validation can close it.
      Logout modes must close before an event or heartbeat; idle expiry uses neither an
      HTTP request nor a file change to prompt revalidation. */
   if(mode==='expiry-delivery') await emit();
   if(!await until(()=>revoked.closed)) faults++;
-  if(revoked.data.includes('data: ')||revoked.data.includes(': alive')) faults++;
+  if(postRevocationWrites.some(data=>data.includes('data: ')||data.includes(': alive'))) faults++;
   if(mode!=='expiry-delivery') await emit();
   if(!await until(()=>local.data.includes('data: '))||local.closed) faults++;
   if(!mode.startsWith('expiry') && (!await until(()=>other.data.includes('data: '))||other.closed)) faults++;

@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {hash,renderInput,RENDER_INPUT_VERSION} from './render-input.mjs';
 const TOOL_INPUTS=[fileURLToPath(import.meta.url),fileURLToPath(new URL('./sample.mjs',import.meta.url)),fileURLToPath(new URL('./measure.mjs',import.meta.url)),
  fileURLToPath(new URL('./preview.mjs',import.meta.url)),fileURLToPath(new URL('./render-input.mjs',import.meta.url)),
- ...['http-file.mjs','project.mjs','layers.mjs','component-schema.mjs','../components/legacy.mjs'].map(name=>fileURLToPath(new URL('../../studio/core/'+name,import.meta.url)))];
+ ...['audio.mjs','typography.mjs','../audio.mjs','../audio-transport.mjs','../snapshot-resource.mjs','../input-asset.mjs','../typography.mjs','http-file.mjs','editing.mjs','scenes.mjs','project.mjs','layers.mjs','component-schema.mjs','../components/legacy.mjs'].map(name=>fileURLToPath(new URL('../../studio/core/'+name,import.meta.url)))];
 export function frameSpec(k){
  if(k.frame.project!==undefined&&(typeof k.frame.project!=='string'||!k.frame.project.trim()))throw new Error('frame.project must name an authored document');
  return {...k.frame,file:resolve(dirname(k._f),k.frame.file),...(k.frame.project?{project:resolve(dirname(k._f),k.frame.project)}:{})};

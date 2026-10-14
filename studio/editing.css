@@ -1,0 +1,25 @@
+.clip-tools{display:flex;align-items:center;flex-wrap:wrap;gap:var(--s-2);padding:var(--s-2) var(--s-4);border-bottom:1px solid var(--rule)}
+.clip-tools label{display:flex;align-items:center;gap:var(--s-1)}
+.clip-tools input{width:6em;background:var(--panel);color:var(--ink);border:1px solid var(--edge);border-radius:var(--r-1);padding:var(--s-1)}
+.clip-tools p,.clip-tools [role=status]{flex-basis:100%;margin:0}
+.clip-tools [role=status]:empty{display:none}
+.clip-edge{position:absolute;top:0;bottom:0;width:var(--s-2);background:var(--edge);cursor:ew-resize;touch-action:none}
+.clip-edge.clip-edge-in{left:0}.clip-edge.clip-edge-out{right:0}.tl-item[data-clip-id]{cursor:grab;touch-action:none;min-width:var(--s-3);padding-inline:var(--s-3)}
+.tl-item.clip-selected{border-color:var(--acc);background:var(--panel)}
+.scenes-list{list-style:none;padding:var(--s-2);margin:0;display:grid;gap:var(--s-3)}
+.scenes-list li{display:flex;flex-wrap:wrap;gap:var(--s-1);padding:var(--s-2);border:1px solid var(--rule);border-radius:var(--r-2)}
+.scenes-list [data-scene-select]{flex:1;justify-content:space-between;overflow-wrap:anywhere;text-align:left}
+#scenes-panel>p{padding:var(--s-2)}
+.sidebar-tabs{flex-wrap:wrap}.sidebar-tab{min-width:0}
+.key-diamond[aria-pressed=true]{background:var(--acc);outline:2px solid var(--ink)}
+.key-actions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2);padding:var(--s-2)}
+.key-actions select{max-width:12em;background:var(--panel);color:var(--ink);border:1px solid var(--edge)}
+@media(max-width:700px){.workspace-sidebar #scenes-panel{max-height:38vh;overflow:auto}.sidebar-tabs{flex-wrap:nowrap}.sidebar-tab{padding-inline:var(--s-1);font-size:var(--fs-1)}}
+
+.scenes-list li{display:grid;grid-template-columns:minmax(0,1fr) auto}
+.scenes-list [data-scene-select]{min-width:0}
+.scenes-list [data-scene-select] span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scenes-list [data-scene-select] small{white-space:nowrap;flex-shrink:0}
+
+.tl-bar select{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--edge);border-radius:var(--r-1);padding:var(--s-1)}
+.audio-mix{display:grid;gap:var(--s-2);padding-top:var(--s-3);border-top:1px solid var(--rule)}

@@ -1,11 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
+<link rel="stylesheet" href="w/studio/editing.css">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>code-video studio</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="w/studio/editor.css">
+<link rel="stylesheet" href="w/studio/project-tools.css">
 <!-- tokens.css -->
 <style>
  /* Every value below comes from tokens.css (the server puts it above this block);
@@ -192,11 +194,16 @@
  <button class="btn" id="logoutBtn" hidden>Log out</button>
 </header>
 <main>
- <nav aria-label="Works and layers" class="workspace-sidebar">
+ <nav aria-label="Projects, scenes, layers and assets" class="workspace-sidebar">
+  <div id="project-tools" class="project-toolbar"></div>
   <div class="sidebar-tabs" role="tablist" aria-label="Project navigation">
-   <button class="sidebar-tab" role="tab" id="sidebar-works" aria-controls="works-panel" aria-selected="true" data-sidebar="works">Works</button>
+   <button class="sidebar-tab" role="tab" id="sidebar-works" aria-controls="works-panel" aria-selected="true" data-sidebar="works">Projects</button>
+   <button class="sidebar-tab" role="tab" id="sidebar-scenes" aria-controls="scenes-panel" aria-selected="false" tabindex="-1" data-sidebar="scenes">Scenes</button>
    <button class="sidebar-tab" role="tab" id="sidebar-layers" aria-controls="layers-panel" aria-selected="false" tabindex="-1" data-sidebar="layers">Layers</button>
+   <button class="sidebar-tab" role="tab" id="sidebar-assets" aria-controls="assets-panel" aria-selected="false" tabindex="-1" data-sidebar="assets">Assets</button>
   </div>
+  <div id="scenes-panel" role="tabpanel" aria-labelledby="sidebar-scenes" hidden></div>
+  <div id="assets-panel" role="tabpanel" aria-labelledby="sidebar-assets" hidden></div>
   <div id="works-panel" role="tabpanel" aria-labelledby="sidebar-works"><ul id="list"></ul></div>
   <div id="layers-panel" class="layers-panel" role="tabpanel" aria-labelledby="sidebar-layers" hidden><p class="mut">Select a work to inspect its layers.</p></div>
  </nav>
@@ -251,9 +258,10 @@
   <label for="exSound">Sound</label><span><input type="checkbox" id="exSound"> <span id="exSoundText"></span></span>
  </div>
  <div id="exportRun" hidden><progress id="exBar" max="1" value="0"></progress><p class="small" id="exText" role="status"></p></div>
- <div class="row"><span class="sp"></span><button class="btn" id="exCancel">Close</button><button class="btn primary" id="exStart">Export</button></div>
+ <div class="row"><span class="sp"></span><button class="btn" id="exReceipt" hidden>Download verification report</button><button class="btn" id="exCancel">Close</button><button class="btn primary" id="exStart">Export</button></div>
 </div></dialog>
 <dialog id="decisions" aria-labelledby="decisionsTitle"><div class="inner" id="decisionsInner"></div></dialog>
+<link rel="stylesheet" href="w/studio/audit.css">
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -263,12 +271,17 @@ const READY_WAIT=10000;                 // after this a work that is not ready s
 const BUSY_MS=2000;                     // an update waits this long after the last scrub
 let WORKS=[], AUDITS={}, current=null, tab='card';
 const drafts=new Map();                 // work id -> the note being written, kept across every redraw
-let editor=null,timelineTools=null;
+let editor=null,timelineTools=null,projectTools=null,assetTools=null,auditTools=null;
+const auditReady=import('./w/studio/audit-tools.mjs').then(({createAuditTools})=>auditTools=createAuditTools({current:()=>current,editor:()=>editor,jump:goTo,showEditor:()=>{setTab('editor');panel();},isExporting:()=>!!exporting,saveBlob}));
+window.studioAudit={run:async(...args)=>(await auditReady).run(...args),cancel:id=>auditTools?.cancel(id),report:id=>auditTools?.report(id)};
+import('./w/studio/project-tools.mjs').then(({createProjectTools})=>{projectTools=createProjectTools({host:$('#project-tools'),editor:()=>editor,current:()=>current,refresh:load,navigate:id=>{location.hash=id+'/editor';},isExporting:()=>!!exporting});projectTools.refresh();});
+import('./w/studio/asset-tools.mjs').then(({createAssetTools})=>{assetTools=createAssetTools({host:$('#assets-panel'),editor:()=>editor,current:()=>current});});
 import('./w/studio/timeline-tools.mjs').then(({createTimelineTools})=>{timelineTools=createTimelineTools({host:$('#timeline'),body:$('#tlBody'),editor:()=>editor,windowOf:win,getState:()=>S,jump:goTo,isExporting:()=>!!exporting});});
+import('./w/studio/scenes-panel.mjs').then(({createScenesPanel})=>createScenesPanel({host:$('#scenes-panel'),editor:()=>editor,jump:goTo}));
 const editorReady=import('./w/studio/editor.mjs').then(({createEditor})=>editor=createEditor({
  markRegion:async callback=>{if(exporting||!S.ready)return;const {markRegion}=await import('./w/studio/region-tools.mjs');markRegion(win(),callback);},
  getImageContext:context=>{const W=win();if(!S.ready||S.pending||S.restoring||W.__studioProject?.generation!==context.generation)throw new Error('Reload the scene before copying its image and context.');const source=stageCanvas(),c=document.createElement('canvas');c.width=640;c.height=Math.round(source.height/source.width*640);c.getContext('2d').drawImage(source,0,0,c.width,c.height);return{frame:S.frame,documentGeneration:W.__studioProject.generation,image:c.toDataURL('image/webp',.8)};},
- canFollow:()=>S.ready&&!S.restoring,container:$('#panel'),layerContainer:$('#layers-panel'),getFrame:()=>S.frame||0,isExporting:()=>!!exporting,
+ onSelectionChange:()=>timelineTools?.refresh(),windowOf:win,canFollow:()=>S.ready&&!S.restoring,container:$('#panel'),layerContainer:$('#layers-panel'),getFrame:()=>S.frame||0,isExporting:()=>!!exporting,
  pause:()=>{if(exporting||!S.ready)return;if(S.mode==='play')pauseStage();setTransport();},
  jump:n=>goTo(n),isVisible:()=>tab==='editor',onSaved:(id,label)=>log(`${id}: ${label}`),
  showInspector:()=>{if(tab!=='editor'){setTab('editor');if(current)history.replaceState(null,'',`#${current.id}/editor`);panel();}},
@@ -276,10 +289,10 @@ const editorReady=import('./w/studio/editor.mjs').then(({createEditor})=>editor=
 })).catch(error=>{log('Editor could not load: '+error.message,{error:true});return null;});
 function setSidebar(name,focus=false){
  for(const button of document.querySelectorAll('[data-sidebar]')){const selected=button.dataset.sidebar===name;button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;if(selected&&focus)button.focus();}
- $('#works-panel').hidden=name!=='works';$('#layers-panel').hidden=name!=='layers';
+ $('#works-panel').hidden=name!=='works';$('#layers-panel').hidden=name!=='layers';$('#assets-panel').hidden=name!=='assets';$('#scenes-panel').hidden=name!=='scenes';if(name==='assets')assetTools?.refresh();else assetTools?.pause();
 }
 document.querySelector('.sidebar-tabs').onclick=event=>{const button=event.target.closest('[data-sidebar]');if(button)setSidebar(button.dataset.sidebar);};
-document.querySelector('.sidebar-tabs').onkeydown=event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const name=event.key==='Home'?'works':event.key==='End'?'layers':document.activeElement.dataset.sidebar==='works'?'layers':'works';setSidebar(name,true);};
+document.querySelector('.sidebar-tabs').onkeydown=event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const names=['works','scenes','layers','assets'],at=names.indexOf(document.activeElement.dataset.sidebar),name=event.key==='Home'?names[0]:event.key==='End'?names.at(-1):names[(at+(event.key==='ArrowRight'?1:names.length-1))%names.length];setSidebar(name,true);};
 
 /* relative URLs, so the studio also works behind a path prefix */
 async function api(p,o){ const r=await fetch(p,o); const j=await r.json(); if(!r.ok) throw new Error(j.error||r.status); return j; }
@@ -346,7 +359,7 @@ function renderList(){
 async function load(){
  [WORKS,AUDITS]=await Promise.all([api('api/works'),api('api/audits')]);
  if(current) current=WORKS.find(w=>w.id===current.id)||current;
- renderList();
+ renderList();projectTools?.refresh();
 }
 
 /* ===== THE STAGE =====
@@ -405,7 +418,7 @@ async function stageReady(g){
   if(H.frameTo||H.seek) S.total=Number.isInteger(W.__totalFrames)?W.__totalFrames
    :W.__total!=null?Math.round(val(W.__total)*S.fps):(w.frameCount||0);
   if(Array.isArray(W.__shots)&&S.total){
-   let f=0; const L=W.__shots.map(s=>{ const o={k:String(s.k),f:Number.isInteger(s.f)?s.f:f}; f=o.f+(Number.isInteger(s.df)?s.df:0); return o; });
+   let f=0; const L=W.__shots.map(s=>{ const o={k:String(s.label??s.k),id:String(s.k),f:Number.isInteger(s.f)?s.f:f}; f=o.f+(Number.isInteger(s.df)?s.df:0); return o; });
    if(L.every((s,i)=>i===0||s.f>L[i-1].f)) S.shots=L.map((s,i)=>({...s,n:(i+1<L.length?L[i+1].f:S.total)-s.f}));
   }
  }catch(e){ log(`${w.name}: its hooks could not be read — ${e.message}`,{error:true}); }
@@ -432,9 +445,10 @@ async function stageReady(g){
   W.document.addEventListener('pointerdown',event=>{if(!exporting&&event.target.tagName==='CANVAS')pointer={x:event.clientX,y:event.clientY,canvas:event.target};else pointer=null;});
   W.document.addEventListener('pointerup',event=>{
    const start=pointer;pointer=null;if(!start||exporting||event.target!==start.canvas||Math.hypot(event.clientX-start.x,event.clientY-start.y)>4)return;
-   const rect=start.canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
+   const rect=W.__studioCanvasViewport?.(start.canvas)||start.canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
+   if(event.clientX<rect.left||event.clientX>rect.left+rect.width||event.clientY<rect.top||event.clientY>rect.top+rect.height)return;
    const id=W.__pickLayer((event.clientX-rect.left)/rect.width,(event.clientY-rect.top)/rect.height,{allLayers:event.altKey});
-   if(id){setSidebar('layers');editor?.pick(id);}
+   if(id){setSidebar('layers');editor?.pick(id,event.shiftKey||event.ctrlKey||event.metaKey);}
   });
  }
 }
@@ -504,7 +518,7 @@ function setTransport(){
  else if(!can) t='Watch only — this work plays in its own time and does not report its frame.';
  else if(exporting) t=`Exporting · frame <b>${S.frame}</b> / ${S.total}`;
  else {
-  const at=`frame <b>${S.frame}</b> / ${S.total} · ${(S.frame/S.fps).toFixed(2)} s${S.shot?` · shot <b>${esc(S.shot)}</b>`:''}`;
+  const at=`frame <b>${S.frame}</b> / ${S.total} · ${(S.frame/S.fps).toFixed(2)} s${S.shot?` · shot <b>${esc(S.shots.find(s=>s.id===S.shot)?.k||S.shot)}</b>`:''}`;
   t=S.mode==='play'?(S.hooks.frame?`Playing · ${at}`:'Playing — this work does not report its frame while it plays'):`Paused at ${at}`;
  }
  info.innerHTML=t;
@@ -586,9 +600,9 @@ async function exportCodec(width,height,fps){
 /* THE SOUND OF AN EXPORT. A work that can render its sound offline (__renderAudio) gives
    the samples for the whole film; the part that belongs to the exported frames is cut out
    and encoded here: AAC where the browser has it, Opus where not. */
-async function exportAudio(from,to,fps){
- const W=win(); if(typeof W.__renderAudio!=='function'||!('AudioEncoder' in window)) return null;
- const r=await S.renderer.audio({duration:S.total/fps,sampleRate:48000}), sr=r.sr;
+async function exportAudio(from,to,fps,environment={}){
+ const W=environment.page||win(); if(typeof W.__renderAudio!=='function'||!('AudioEncoder' in window)) return null;
+ const r=await (environment.renderer||S.renderer).audio({duration:(environment.total??S.total)/fps,sampleRate:48000}), sr=r.sr;
  const whole=r.channels?r.channels.map(c=>Float32Array.from(c)):[Float32Array.from(r.pcm)];
  const a=Math.round(from/fps*sr), b=Math.min(whole[0].length,Math.round((to+1)/fps*sr)), n=b-a, ch=whole.length; if(n<=0) return null;
  let cfg=null, codec=null;
@@ -600,16 +614,18 @@ async function exportAudio(from,to,fps){
   samples.push({data:d,dur:Math.round((c.duration||0)*sr/1e6)});
   if(m&&m.decoderConfig&&m.decoderConfig.description) description=new Uint8Array(m.decoderConfig.description.buffer||m.decoderConfig.description); }});
  enc.configure(cfg);
+ try{
  const STEP=sr;                                        // a second at a time
- for(let i=0;i<n;i+=STEP){ const m=Math.min(STEP,n-i), d=new Float32Array(m*ch);
+ for(let i=0;i<n;i+=STEP){ environment.signal?.throwIfAborted();const m=Math.min(STEP,n-i), d=new Float32Array(m*ch);
   whole.forEach((c,k)=>d.set(c.subarray(a+i,a+i+m),k*m));
-  enc.encode(new AudioData({format:'f32-planar',sampleRate:sr,numberOfFrames:m,numberOfChannels:ch,timestamp:Math.round(i*1e6/sr),data:d})); }
- await enc.flush(); enc.close(); if(failed) throw failed;
+  const packet=new AudioData({format:'f32-planar',sampleRate:sr,numberOfFrames:m,numberOfChannels:ch,timestamp:Math.round(i*1e6/sr),data:d});try{enc.encode(packet);}finally{packet.close();}while(enc.encodeQueueSize>3){environment.signal?.throwIfAborted();if(failed)throw failed;await nextTurn();}await nextTurn(); }
+ await (environment.bounded||((p)=>p))(enc.flush(),environment.signal,60000);if(failed) throw failed;
  if(!description||!samples.length) return null;
- return {codec,description,sr,channels:ch,bitrate:cfg.bitrate,samples};
+ return {codec,description,sr,channels:ch,bitrate:cfg.bitrate,samples,reference:{sr,channels:whole.map(c=>c.slice(a,b))}};
+ }finally{try{enc.close();}catch{}}
 }
 const even=n=>Math.max(2,Math.round(n/2)*2);
-function stageCanvas(){ return [...win().document.querySelectorAll('canvas')].sort((a,b)=>b.width*b.height-a.width*a.height)[0]||null; }
+function stageCanvas(page=win()){ return [...page.document.querySelectorAll('canvas')].sort((a,b)=>b.width*b.height-a.width*a.height)[0]||null; }
 let exporting=null;
 /* frames from..to (inclusive) at `width`; returns the mp4 as a Blob. onStep(done,total) */
 /* a turn of the event loop that a background tab does not slow down (a timer there is
@@ -621,18 +637,27 @@ const whileHidden=job=>!document.hidden||job.cancel?null:new Promise(r=>{
  const check=()=>{ if(!document.hidden||job.cancel) finish(); };
  job.cancelWait=finish; document.addEventListener('visibilitychange',check); check();
 });
-function cancelExport(){ if(exporting){ exporting.cancel=true; exporting.cancelWait?.(); } }
+function cancelExport(){ if(exporting){ exporting.cancel=true; exporting.controller?.abort(new Error('cancelled'));exporting.frozen?.close(); exporting.cancelWait?.(); } }
 async function exportVideo({from=0,to=S.total-1,width=null,sound=true,onStep=()=>{},onPause=()=>{}}={}){
  if(!scrubbable()) throw new Error('this work cannot be asked for a frame, so it cannot be exported');
  if(exporting) throw new Error('an export is already running');
- const job=exporting={cancel:false}; let W=null, encoder=null, layerPreview=null;
+ if(auditTools?.isRunning())throw new Error('Finish or cancel checks before exporting');
+ if(editor?.snapshot()?.blocked)throw new Error('Resolve editor drafts or wait for the project to load before exporting');
+ window.lastExportReport=null;
+ const work=current,job=exporting={cancel:false,controller:new AbortController()}; let W=null, encoder=null, layerPreview=null,frozen=null,manifest=null;
  setTransport();
  try{
- W=win(); const fps=S.fps, src=stageCanvas(); if(!src) throw new Error('the work has no canvas');
+ const {bounded}=await import('./w/studio/audit.mjs');
+ if(S.mode==='play'){pauseStage();setTransport();}
+ if(work.project){try{const a=await auditReady,captured=await a.capture(work,job.controller.signal);manifest=captured.manifest;frozen=await a.openFrozen(manifest,{signal:job.controller.signal});job.frozen=frozen;}catch(e){if(work.creator===1||job.cancel)throw e;log('Snapshot unavailable; legacy export is unbound: '+e.message);}}
+ W=frozen?.page||win(); const fps=W.__fps||S.fps,total=W.__totalFrames||S.total,renderer=S.renderer,environment={page:W,renderer,total,signal:job.controller.signal,bounded};
+ if(!Number.isInteger(from)||!Number.isInteger(to)||from<0||to<from||to>=total)throw new Error('Invalid export frame range');
+ if(frozen){const {encodeFrozen}=await import(new URL(`snapshots/${manifest.id}/w/studio/export-engine.mjs`,document.baseURI).href);const blob=await encodeFrozen({page:W,manifest,from,to,width,sound,job,onStep,onPause,auditSnapshotId:auditTools?.report(work.id)?.snapshotId});window.lastExportReport=blob.studioReport;return blob;}
+ const src=stageCanvas(W); if(!src) throw new Error('the work has no canvas');
  if(S.mode==='play'){ pauseStage(); setTransport(); }
- if(typeof W.__getLayerPreview==='function'&&typeof W.__setLayerPreview==='function'){layerPreview=W.__getLayerPreview();W.__setLayerPreview({...layerPreview,soloId:null,selectedId:null,...(Object.hasOwn(layerPreview,'transform')?{transform:null}:{})});}
- const w=even(width||src.width), h=even(w*src.height/src.width);
- const enc=await exportCodec(w,h,fps); if(!enc) throw new Error('this browser has no video encoder (WebCodecs); a current Chrome, Edge or Firefox has');
+ if(typeof W.__getLayerPreview==='function'&&typeof W.__setLayerPreview==='function'){layerPreview=W.__getLayerPreview();W.__setLayerPreview({...layerPreview,soloId:null,selectedId:null,...(Object.hasOwn(layerPreview,'transform')?{transform:null,transforms:null}:{})});}
+ const native=W.__projectSize||src,w=even(width||native.width),h=even(w*native.height/native.width);
+ const enc=await bounded(exportCodec(w,h,fps),job.controller.signal,15000); if(!enc) throw new Error('this browser has no video encoder (WebCodecs); a current Chrome, Edge or Firefox has');
  if(job.cancel) throw new Error('cancelled');
  const samples=[]; let description=null, failed=null;
  encoder=new VideoEncoder({error:e=>{ failed=e; },
@@ -644,33 +669,40 @@ async function exportVideo({from=0,to=S.total-1,width=null,sound=true,onStep=()=
   /* a work whose sound follows its drawing records the frames as they are drawn, and its
      sound is made after them; the others render theirs first, while the film is as it was */
   const record=sound&&typeof W.__soundRecord==='function';
-  let audio=sound&&!record?await exportAudio(from,to,fps):null;
+  let audio=sound&&!record?await bounded(exportAudio(from,to,fps,environment),job.controller.signal,60000):null;
   if(record) W.__soundRecord(true);
   for(let n=from,i=0;n<=to;n++,i++){
    if(document.hidden){ onPause(true); await whileHidden(job); onPause(false); }
    if(job.cancel) throw new Error('cancelled');
    if(failed) throw failed;
-   S.frame=n; if(i%6===0) setTransport();
-   if(S.hooks.frameTo){ await S.renderer.renderFrame({frame:n,width:w,height:h,quality:'export'}); }
+   if(!frozen){S.frame=n; if(i%6===0) setTransport();}
+   if(typeof W.__frameTo==='function'){ await renderer.renderFrame({frame:n,width:w,height:h,quality:'export'}); }
    else { W.__seek(n/fps); await paint(); }             // a film on a clock draws on its own next frame
-   const c=stageCanvas(); g.drawImage(c,0,0,w,h);
+   const c=stageCanvas(W); g.drawImage(c,0,0,w,h);
    const frame=new VideoFrame(scaled,{timestamp:Math.round(i*1e6/fps),duration:Math.round(1e6/fps)});
    encoder.encode(frame,{keyFrame:i%48===0}); frame.close();
    onStep(i+1,to-from+1);
-   while(encoder.encodeQueueSize>3) await turn();
+   while(encoder.encodeQueueSize>3){job.controller.signal.throwIfAborted();if(failed)throw failed;await turn();}
    await turn();                                        // the studio stays answerable, and Cancel is heard
   }
-  await encoder.flush(); if(failed) throw failed;
-  if(record){ W.__soundRecord(false); audio=await exportAudio(from,to,fps); }
+  await bounded(encoder.flush(),job.controller.signal,60000); if(failed) throw failed;
+  if(record){ W.__soundRecord(false); audio=await bounded(exportAudio(from,to,fps,environment),job.controller.signal,60000); }
   if(enc.codec==='avc'&&!description) throw new Error('the encoder gave no stream description');
-  return MP4.file({codec:enc.codec,description,width:w,height:h,fps,samples,audio});
- } finally { try{ encoder?.close(); }catch(e){} try{ W?.__soundRecord&&W.__soundRecord(false); }catch(e){} try{if(layerPreview)W?.__setLayerPreview?.(layerPreview);}catch(e){} exporting=null; setTransport(); }
+  if(sound&&typeof W.__renderAudio==='function'&&!audio)throw new Error('Audio encoding failed; sound was requested');
+  const blob=MP4.file({codec:enc.codec,description,width:w,height:h,fps,samples,audio});
+  const {verifyExport}=await import('./w/studio/export-verify.mjs');
+  const verification=await verifyExport(blob,{width:w,height:h,fps,frames:to-from+1,audio:audio?.reference,signal:job.controller.signal,onProgress:p=>{onStep(p.done,p.total,p.stage);}});
+  const report={...verification,snapshotId:manifest?.id||null,work:work.id,from,to,width:w,height:h,fps,auditSnapshotId:manifest&&auditTools?.report(work.id)?.snapshotId===manifest.id?manifest.id:null,snapshotLimit:manifest?null:'Legacy export: immutable source snapshot unavailable'};
+  window.lastExportReport=report;Object.defineProperty(blob,'studioReport',{value:report});
+  if(verification.findings.some(f=>f.status==='FAIL'))throw new Error('Export verification failed: '+verification.findings.filter(f=>f.status==='FAIL').map(f=>f.rule).join(', '));
+  return blob;
+ } finally { try{ encoder?.close(); }catch(e){} try{ W?.__soundRecord&&W.__soundRecord(false); }catch(e){} try{if(layerPreview)W?.__setLayerPreview?.(layerPreview);}catch(e){} frozen?.close(); exporting=null; setTransport(); }
 }
 function saveBlob(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
  document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),60000); }
 $('#exportBtn').onclick=()=>{
- if(!scrubbable()) return; const c=stageCanvas(), w=current;
- const sizes=[['',`as drawn · ${c.width}×${c.height}`],...[1920,1280,854,640].filter(x=>x!==c.width&&(W=>W<=c.width||win().__sizable)(x)).map(x=>[x,`${x}×${even(x*c.height/c.width)}`])];
+ if(!scrubbable()) return; const c=win().__projectSize||stageCanvas(), w=current;
+ const sizes=[['',`project size · ${c.width}×${c.height}`],...[1920,1280,854,640].filter(x=>x!==c.width&&(W=>W<=c.width||win().__sizable)(x)).map(x=>[x,`${x}×${even(x*c.height/c.width)}`])];
  $('#exSize').innerHTML=sizes.map(([v,t])=>`<option value="${v}">${esc(t)}</option>`).join('');
  const shot=S.shots.find(s=>S.frame>=s.f&&S.frame<s.f+s.n);
  $('#exRange').innerHTML=`<option value="all">the whole film · ${S.total} frames</option>`+(shot?`<option value="shot">the shot on screen · ${esc(shot.k)} · ${shot.n} frames</option>`:'')
@@ -680,7 +712,7 @@ $('#exportBtn').onclick=()=>{
  const canSound=typeof win().__renderAudio==='function'&&'AudioEncoder' in window;
  $('#exSound').disabled=!canSound; $('#exSound').checked=canSound;
  $('#exSoundText').textContent=canSound?'with the film\'s sound':typeof win().__renderAudio==='function'?'this browser cannot encode sound':'this work cannot render its sound offline yet';
- $('#exportForm').hidden=false; $('#exportRun').hidden=true; $('#exStart').hidden=false; $('#exCancel').textContent='Close';
+ $('#exReceipt').hidden=true;$('#exportForm').hidden=false; $('#exportRun').hidden=true; $('#exStart').hidden=false; $('#exCancel').textContent='Close';
  $('#exportDlg').showModal();
 };
 $('#exStart').onclick=async()=>{
@@ -689,14 +721,16 @@ $('#exStart').onclick=async()=>{
  $('#exportForm').hidden=true; $('#exportRun').hidden=false; $('#exStart').hidden=true; $('#exCancel').textContent='Cancel';
  const t0=performance.now();
  try{
-  const blob=await exportVideo({from,to,width,sound:$('#exSound').checked,onStep:(d,n)=>{ $('#exBar').value=d/n; $('#exText').textContent=`frame ${d} of ${n}`; busy(); },
+  const blob=await exportVideo({from,to,width,sound:$('#exSound').checked,onStep:(d,n,stage)=>{ $('#exBar').value=d/n; $('#exText').textContent=stage?`${stage}: ${d} of ${n}`:`frame ${d} of ${n}`; busy(); },
    onPause:on=>{ $('#exText').textContent=on?'Waiting: this tab is in the background. It goes on when you come back.':'Going on…'; }});
   const name=`${w.id}${from||to!==S.total-1?`-${from}-${to}`:''}.mp4`; saveBlob(blob,name);
-  $('#exText').textContent=`Saved ${name} · ${(blob.size/1048576).toFixed(1)} MB`;
+  $('#exReceipt').dataset.name=name+'.report.json';$('#exReceipt').hidden=false;
+  $('#exText').textContent=`Saved ${name} · ${(blob.size/1048576).toFixed(1)} MB · ${blob.studioReport.decodedFrames} frames decoded · ${blob.studioReport.snapshotId?'snapshot '+blob.studioReport.snapshotId.slice(0,12):'legacy: source not frozen'}${blob.studioReport.findings.some(f=>f.status==='REVIEW')?' · audio timing needs review':''}`;
   log(`${w.name}: exported ${to-from+1} frames in ${((performance.now()-t0)/1000).toFixed(0)} s · ${name} · ${(blob.size/1048576).toFixed(1)} MB, saved by the browser`);
  }catch(e){ $('#exText').textContent=e.message==='cancelled'?'Cancelled.':`Not exported: ${e.message}`; if(e.message!=='cancelled') log(`${w.name}: not exported — ${e.message}`,{error:true}); }
  $('#exCancel').textContent='Close'; reloadStage();          // the stage goes back to its own size and frame
 };
+$('#exReceipt').onclick=()=>{if(window.lastExportReport)saveBlob(new Blob([JSON.stringify(window.lastExportReport,null,2)],{type:'application/json'}),$('#exReceipt').dataset.name);};
 $('#exCancel').onclick=()=>{ if(exporting) cancelExport(); else $('#exportDlg').close(); };
 $('#exportDlg').addEventListener('cancel',e=>{ if(exporting){ e.preventDefault(); cancelExport(); } });
 
@@ -821,6 +855,7 @@ $('#shots').addEventListener('keydown',e=>{
  L.forEach((b,x)=>b.tabIndex=x===k?0:-1); L[k].focus();
 });
 addEventListener('keydown',e=>{
+ if((e.ctrlKey||e.metaKey)&&!e.altKey&&!e.defaultPrevented&&!e.target.closest('input,textarea,select,dialog')){if(e.key.toLowerCase()==='z'||e.key.toLowerCase()==='y'){e.preventDefault();editor?.history(e.shiftKey||e.key.toLowerCase()==='y'?'redo':'undo');return;}}
  if(e.altKey||e.ctrlKey||e.metaKey||e.defaultPrevented) return;
  if(e.target.closest('textarea,input:not([type=range]),select,dialog,[role=tablist],[role=toolbar]')) return;
  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){ if(!scrubbable()) return; goTo(S.frame+(e.key==='ArrowLeft'?-1:1)); e.preventDefault(); }
@@ -897,6 +932,7 @@ async function panel(){
     <div class="sub">${r.time?`ran ${ago(Date.parse(r.time))}`:'time unknown'}${stale(w,r)?'<span class="badge">stale</span>':''}</div></td>
     <td class="st ${esc(r.status)}">${esc(r.status)}</td><td class="num">${num(r.value)}<div class="sub">known-bad ${num(r.cal)}</div></td></tr>`).join('')}</tbody></table>`
    :'<p class="mut">No results yet. When the checks run they land here.</p>');
+  const checksHost=document.createElement('section');checksHost.id='snapshotChecks';el.prepend(checksHost);auditReady.then(a=>{if(checksHost.isConnected)a.mount(checksHost,w);});
  } else if(tab==='changes'){
   el.innerHTML='<p class="mut">Loading…</p>';
   const o=await api('api/changes?work='+encodeURIComponent(w.id)); if(g!==panelGen) return;
@@ -988,8 +1024,9 @@ function connect(){
    if(ev.built&&!ev.built.ok){ log(`${name}: the build failed, the page stays as it was`,{error:true,detail:ev.built.output.slice(-1200)}); return; }
    log(`${name}: ${ev.files.join(', ')||'rebuilt'}${ev.built&&ev.built.ms?` · built in ${(ev.built.ms/1000).toFixed(1)} s`:''} · updated`);
    await load().catch(()=>{});
-   if(current&&ev.work===current.id){ updateArrived(); editor?.refresh(ev.work); if(tab==='changes'||tab==='checks') panel(); }
+   if(current&&ev.work===current.id){ auditTools?.invalidate(ev.work);updateArrived(); editor?.refresh(ev.work); if(tab==='changes'||tab==='checks') panel(); }
   }
+  if(ev.type==='library'){await load();}
   if(ev.type==='card'){ log(`${name}: the card changed`); await load(); if(tab==='card'&&current&&ev.work===current.id) panel(); }
   if(ev.type==='audit'){ log('check results updated'); await load(); if(tab==='checks') panel(); }
   if(ev.type==='note'){ await load(); if(tab==='notes'&&current&&ev.work===current.id) renderNotes(await api('api/notes?work='+encodeURIComponent(current.id))); }
@@ -1002,7 +1039,7 @@ function route(){
  const w=WORKS.find(x=>x.id===id)||WORKS[0]; if(!w) return;
  if(exporting&&current&&w.id!==current.id){ history.replaceState(null,'',`#${current.id}/${tab}`); log('Finish or cancel the export before switching works.'); return; }
  if(t&&TABS.includes(t)&&t!==tab) setTab(t);
- if(!current||current.id!==w.id){ current=w; renderList(); $('#stageSelection').hidden=true; loadStage(); editorReady.then(control=>{if(current?.id===w.id)control?.attach(w);}); }
+ if(!current||current.id!==w.id){ current=w;assetTools?.pause(); renderList();projectTools?.refresh();if(!$('#assets-panel').hidden)assetTools?.refresh(); $('#stageSelection').hidden=true; loadStage(); editorReady.then(control=>{if(current?.id===w.id)control?.attach(w);}); }
  panel();
 }
 addEventListener('hashchange',route);

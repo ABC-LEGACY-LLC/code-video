@@ -126,13 +126,13 @@ export function applyLayerOperation(project,op){
 
 export function validateContent(c,kind){
  assert(record(c),'layer content must be an object');
- const common=['width','height'],keys=kind==='text'?['text','fontSize','fontFamily','color','align',...common]:['src','offsetSeconds','playbackRate',...common];
+ const common=['width','height'],keys=kind==='text'?['text','fontSize','fontFamily','color','align','caption',...common]:['src','offsetSeconds','playbackRate',...common];
  assert(Object.keys(c).every(k=>keys.includes(k)),'unknown content field');
  for(const k of common)assert(Number.isFinite(c[k])&&c[k]>=1&&c[k]<=7680,'invalid content dimensions');
  if(kind==='text'){
   assert(typeof c.text==='string'&&c.text.length<=4000,'invalid text');
   assert(Number.isFinite(c.fontSize)&&c.fontSize>=8&&c.fontSize<=500,'invalid font size');
-  assert(['sans-serif','serif','monospace'].includes(c.fontFamily),'invalid font family');
+  assert(['sans-serif','serif','monospace'].includes(c.fontFamily)||/^font-[a-zA-Z0-9_-]{1,80}$/.test(c.fontFamily),'invalid font family');
   assert(/^#[0-9a-f]{6}$/i.test(c.color),'use a six digit color');
   assert(['left','center','right'].includes(c.align),'invalid alignment');
  }else{

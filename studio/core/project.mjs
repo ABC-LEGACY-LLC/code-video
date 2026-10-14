@@ -3,6 +3,10 @@ import {validateLayers,layerStates,isLayerLocked,applyLayerOperation,LAYER_OPERA
 import {validateComponents,componentFor,validatePropertyValue} from './component-schema.mjs';
 import {validateLegacyVoice} from '../components/legacy.mjs';
 export {layerTree,isLayerLocked,LAYER_OPERATIONS} from './layers.mjs';
+import {EDITING_OPERATIONS,applyEditingOperation} from './editing.mjs';
+import {SCENE_OPERATIONS,applySceneOperation} from './scenes.mjs';
+import {AUDIO_OPERATIONS,applyAudioOperation,validateAudio,linkedBefore,syncLinked} from './audio.mjs';
+import {TYPOGRAPHY_OPERATIONS,applyTypographyOperation,validateTypography} from './typography.mjs';
 export const SCHEMA_VERSION=2;
 const number=(min,max,unit,initial=0)=>({type:'number',min,max,unit,default:initial,animatable:true});
 export const ENTITY_TYPES={
@@ -59,14 +63,15 @@ export function validateProject(project,{requireLayers=false}={}){
    for(const key of Object.keys(schema)) assert(Object.hasOwn(entity.properties,key),'missing property: '+key);
    for(const [key,keys] of Object.entries(entity.keyframes)){
     assert(Object.hasOwn(schema,key)&&schema[key].animatable,'property cannot be animated');assert(Array.isArray(keys)&&keys.length<=1000,'too many keyframes');
-    let previous=-1;
-    for(const k of keys){record(k,'keyframe');integer(k.frame,0,shot.durationFrames-1,'keyframe');assert(k.frame>previous,'keyframes must be unique and sorted');previous=k.frame;
+    let previous=-Infinity;
+    for(const k of keys){record(k,'keyframe');integer(k.frame,-216000,216000,'keyframe');assert(k.frame>previous,'keyframes must be unique and sorted');previous=k.frame;
      propertyValue(schema[key],k.value);assert(['linear','hold','ease'].includes(k.easing),'unknown easing');}
    }
   }
   validateLayers(shot,{required:requireLayers,components:project.components});
   if(requireLayers)for(const e of shot.entities)if(e.type==='object2d')assert(e.legacy?.readOnly,'schema 2 object needs a layer or an explicit legacy binding');
  }
+ validateAudio(project);validateTypography(project);
  assert(total<=216000,'sequence is too long');
  assert(Array.isArray(project.annotations)&&project.annotations.length<=1000,'invalid annotations');
  for(const note of project.annotations){
@@ -111,7 +116,14 @@ export function applyOperations(original,operations){
  const project=structuredClone(original);
  for(const op of operations){
   record(op,'operation');
-  if(op.type==='addComponent'){
+  const links=linkedBefore(project);
+  if(AUDIO_OPERATIONS.includes(op.type))applyAudioOperation(project,op);
+  else if(TYPOGRAPHY_OPERATIONS.includes(op.type))applyTypographyOperation(project,op);
+  else if(EDITING_OPERATIONS.includes(op.type)){
+   applyEditingOperation(project,op);
+  }else if(SCENE_OPERATIONS.includes(op.type)){
+   applySceneOperation(project,op);
+  }else if(op.type==='addComponent'){
    const shot=project.shots.find(s=>s.id===op.shotId);assert(shot&&Array.isArray(shot.layerOrder),'choose a managed shot');
    assert(typeof op.component==='string'&&Object.hasOwn(project.components||{},op.component),'unknown component');
    const c=project.components[op.component],properties=Object.fromEntries(Object.entries({...ENTITY_TYPES.layer2d,...c.properties}).map(([k,d])=>[k,d.default]));
@@ -124,11 +136,13 @@ export function applyOperations(original,operations){
    shot.entities.push({id:op.id,name:op.name||'Audio',type:'audioCue',properties:{gain:1,muted:false,fadeIn:0,fadeOut:0},keyframes:{},cue:{voice:'file',frame:0,durationFrames:op.durationFrames,args:[],src:op.src,offsetSeconds:0}});
   }else if(op.type==='deleteAudio'||op.type==='duplicateAudio'){
    const {shot,entity}=entityAt(project,op.targetId);assert(entity.type==='audioCue','choose an audio cue');
-   if(op.type==='duplicateAudio'){const copy=structuredClone(entity);copy.cue.seed=entity.cue.seed??((0x53434f52+Number(entity.id.split(':').at(-1))*2654435761)>>>0);copy.id=op.id;copy.name=entity.name+' copy';shot.entities.push(copy);}
+   if(op.type==='duplicateAudio'){const copy=structuredClone(entity);copy.cue.seed=entity.cue.seed??((0x53434f52+Number(entity.id.split(':').at(-1))*2654435761)>>>0);delete copy.cue.linkedVideoId;copy.id=op.id;copy.name=entity.name.slice(0,195)+' copy';shot.entities.push(copy);}
    else{shot.entities=shot.entities.filter(e=>e.id!==entity.id);for(const note of project.annotations)if(note.targetId===entity.id)delete note.targetId;}
   }else if(op.type==='setCue'){
    const {shot,entity}=entityAt(project,op.targetId);assert(entity.type==='audioCue','choose an audio cue');
-   assert(isPlainRecord(op.patch)&&Object.keys(op.patch).every(k=>['frame','durationFrames','args','offsetSeconds'].includes(k)),'invalid audio patch');
+   assert(isPlainRecord(op.patch)&&Object.keys(op.patch).every(k=>['frame','durationFrames','args','offsetSeconds',...(project.renderer==='canvas2d'?['playbackRate']:[])].includes(k)),'invalid audio patch');
+   assert(!entity.cue.linkedVideoId,'Detach audio to edit its timing independently, or edit its video');
+   if(entity.cue.envelope&&op.patch.frame!==undefined)entity.cue.envelope.startFrame+=op.patch.frame-entity.cue.frame;
    Object.assign(entity.cue,op.patch);validateCue(entity.cue,shot);
   }else if(op.type==='setProperty'){
    const {shot,entity}=entityAt(project,op.targetId),schema=entitySchema(project,entity);editableEntity(shot,entity);
@@ -142,16 +156,17 @@ export function applyOperations(original,operations){
    integer(op.frame,0,shot.durationFrames-1,'keyframe');
    const keys=entity.keyframes[op.property]||[];entity.keyframes[op.property]=keys.filter(k=>k.frame!==op.frame);
    if(op.type==='setKeyframe'){propertyValue(schema,op.value);entity.keyframes[op.property].push({frame:op.frame,value:op.value,easing:op.easing||'linear'});entity.keyframes[op.property].sort((a,b)=>a.frame-b.frame);}
-  }else if(op.type==='renameShot'||op.type==='trimShot'||op.type==='moveShot'){
+  }else if(op.type==='renameShot'||op.type==='trimShot'||op.type==='stretchShot'||op.type==='moveShot'){
    const i=project.shots.findIndex(s=>s.id===op.shotId);assert(i>=0,'unknown shot');
    if(op.type==='renameShot'){string(op.name,200,'shot name');project.shots[i].name=op.name;}
-   if(op.type==='trimShot')retimeShot(project,project.shots[i],op.durationFrames);
+   if(op.type==='trimShot'||op.type==='stretchShot')retimeShot(project,project.shots[i],op.durationFrames,op.type==='stretchShot');
    if(op.type==='moveShot'){integer(op.index,0,project.shots.length-1,'shot index');project.shots.splice(op.index,0,...project.shots.splice(i,1));}
   }else if(op.type==='addAnnotation'){
    project.annotations.push({id:op.id,shotId:op.shotId,frame:op.frame,text:op.text,status:'open',...(op.targetId?{targetId:op.targetId}:{}),...(op.region?{region:op.region}:{} )});
   }else if(op.type==='resolveAnnotation'){
    const note=project.annotations.find(n=>n.id===op.id);assert(note,'unknown annotation');assert(typeof op.resolved==='boolean','resolved must be boolean');note.status=op.resolved?'resolved':'open';
   }else throw new Error('unsupported operation: '+op.type);
+  syncLinked(project,links,op);
  }
  return validateProject(project);
 }
@@ -160,19 +175,20 @@ function validateCue(c,shot){
  record(c,'audio cue');integer(c.frame,0,shot.durationFrames-1,'cue frame');integer(c.durationFrames,1,216000,'cue duration');
  if(c.seed!==undefined)integer(c.seed,0,0xffffffff,'sound seed');
  if(c.voice==='file'){
-  assert(typeof c.src==='string'&&/^\/w\/studio\/assets\/[a-zA-Z0-9_-]+\/[a-f0-9]{64}\.(wav|mp3|ogg)$/.test(c.src),'choose imported audio');
+  assert(typeof c.src==='string'&&/^\/w\/studio\/assets\/[a-zA-Z0-9_-]+\/[a-f0-9]{64}\.(wav|mp3|ogg|mp4|webm)$/.test(c.src),'choose imported audio');
   assert(Number.isFinite(c.offsetSeconds)&&c.offsetSeconds>=0&&c.offsetSeconds<=21600,'invalid audio offset');return;
  }
  validateLegacyVoice(c);
 }
 
-function retimeShot(project,shot,duration){
+function retimeShot(project,shot,duration,extended=false){
  integer(duration,1,36000,'shot duration');assert(!shot.entities.some(e=>e.layer&&isLayerLocked(shot,e.id)),'unlock layers before changing shot duration');const old=shot.durationFrames,ratio=duration/old;
  const frame=f=>Math.min(duration-1,Math.round(f*ratio));
  for(const e of shot.entities){
-  for(const [key,keys] of Object.entries(e.keyframes)){const unique=new Map();for(const k of keys)unique.set(frame(k.frame),{...k,frame:frame(k.frame)});e.keyframes[key]=[...unique.values()];}
+  for(const [key,keys] of Object.entries(e.keyframes)){const unique=new Map();for(const k of keys){const at=extended?Math.round(k.frame*ratio):frame(k.frame);if(extended)assert(!unique.has(at),'This stretch would merge keyframes; use a longer duration');unique.set(at,{...k,frame:at});}e.keyframes[key]=[...unique.values()];}
   if(e.layer){e.layer.startFrame=frame(e.layer.startFrame);e.layer.endFrame=Math.max(e.layer.startFrame+1,Math.min(duration,Math.round(e.layer.endFrame*ratio)));}
-  if(e.cue){e.cue.frame=frame(e.cue.frame);e.cue.durationFrames=Math.max(1,Math.round(e.cue.durationFrames*ratio));}
+  if(extended&&e.layer?.binding==='video')e.content.playbackRate/=ratio;
+  if(e.cue){if(e.cue.envelope){e.cue.envelope.startFrame=Math.round(e.cue.envelope.startFrame*ratio);e.cue.envelope.durationFrames=Math.max(1,Math.round(e.cue.envelope.durationFrames*ratio));}if(extended&&project.renderer==='canvas2d'&&e.cue.voice==='file')e.cue.playbackRate=(e.cue.playbackRate??1)/ratio;e.cue.frame=frame(e.cue.frame);e.cue.durationFrames=Math.max(1,Math.round(e.cue.durationFrames*ratio));}
  }
  for(const n of project.annotations)if(n.shotId===shot.id)n.frame=frame(n.frame);
  shot.durationFrames=duration;

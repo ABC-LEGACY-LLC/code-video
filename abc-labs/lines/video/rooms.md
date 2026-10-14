@@ -199,3 +199,19 @@ done, opened 2026-10-08, from lead L0067
 ## Room 67 · Code Video Model
 
 done, opened 2026-10-13, from lead L0073
+
+## Room 68 · StreamRender-H3 interactive renderer
+
+done, opened 2026-10-13, from lead L0075
+
+## Room 71 · Embedding Gemma Transcribe
+
+done, opened 2026-10-13, from lead L0079
+
+## Room 74 · Seedance depth previs
+
+done, opened 2026-10-13, from lead L0083
+
+## Room 75 · Atlas world model
+
+done, opened 2026-10-13, from lead L0084

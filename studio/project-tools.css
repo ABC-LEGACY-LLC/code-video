@@ -1,0 +1,13 @@
+.project-toolbar,.asset-toolbar{padding:var(--s-3);display:flex;flex-wrap:wrap;gap:var(--s-2)}
+.project-toolbar p,.asset-toolbar p{margin:0;flex-basis:100%}
+.project-dialog{width:min(480px,calc(100vw - 32px));max-height:90vh;overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--edge);border-radius:var(--r-3);padding:var(--s-5)}
+.project-dialog::backdrop{background:var(--shade)}
+.project-dialog h2{font-size:var(--fs-5);margin:0 0 var(--s-4)}
+.project-dialog form,.project-dialog label{display:grid;gap:var(--s-2)}
+.project-dialog form{gap:var(--s-3)}
+.project-dialog input,.project-dialog select{width:100%;font:inherit;padding:var(--s-2);color:var(--ink);background:var(--pa);border:1px solid var(--edge);border-radius:var(--r-1)}
+.asset-card{margin:var(--s-2);padding:var(--s-2);display:grid;gap:var(--s-2);border:1px solid var(--rule);border-radius:var(--r-2);overflow-wrap:anywhere}
+.asset-card img,.asset-card video{width:100%;max-height:150px;object-fit:contain;background:var(--stage)}
+.asset-card audio{width:100%}
+.project-toolbar [data-library-status]:empty{display:none}
+@media(max-width:700px){.project-toolbar{padding:0 var(--s-1);gap:var(--s-1)}.workspace-sidebar #assets-panel{max-height:38vh;overflow:auto}}

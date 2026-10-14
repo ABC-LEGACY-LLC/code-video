@@ -288,5 +288,31 @@
     "past": [],
     "future": []
   },
-  "receipts": []
+  "receipts": [],
+  "migrations": [
+    {
+      "runtimeVersion": "sdk-1",
+      "at": "2026-10-13T10:31:40.418Z",
+      "beforeSourceHash": "f4a2c14ffb7f62c55462e8b61b78b57a26338815a1ff830f1d2739f6fa1f1a4d",
+      "afterSourceHash": "3c4059e1b422edb11dfe031756951a9da6d45dc0ce0bdb9b4babf10eb4353449"
+    },
+    {
+      "runtimeVersion": "sdk-1",
+      "at": "2026-10-13T11:36:21.168Z",
+      "beforeSourceHash": "3c4059e1b422edb11dfe031756951a9da6d45dc0ce0bdb9b4babf10eb4353449",
+      "afterSourceHash": "47bb6ecc8ba6a0aa36bf4b554a5d1557efbd9849d092fe5002525b887d73044a"
+    },
+    {
+      "runtimeVersion": "sdk-1",
+      "at": "2026-10-14T03:47:30.547Z",
+      "beforeSourceHash": "47bb6ecc8ba6a0aa36bf4b554a5d1557efbd9849d092fe5002525b887d73044a",
+      "afterSourceHash": "f34ae24b08e84ddea11c73ef692589daab42daa01624b5b0190bb957300dfaef"
+    },
+    {
+      "runtimeVersion": "sdk-1",
+      "at": "2026-10-14T05:02:04.239Z",
+      "beforeSourceHash": "f34ae24b08e84ddea11c73ef692589daab42daa01624b5b0190bb957300dfaef",
+      "afterSourceHash": "e2d9a411ccd8fb58bf2178dc201826f1520ba4dc1f524f610fa060a4aee470be"
+    }
+  ]
 }
